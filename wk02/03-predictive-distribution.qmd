@@ -1,0 +1,208 @@
+```{r include=FALSE}
+library(tidyverse)
+```
+
+# Predictive Distribution
+
+In Bayesian statistics, a popular tool for model evaluation is the *posterior predictive distribution.* But we might use an analogous approach for models fit with maximum likelihood. 
+
+The predictive distribution is just the distribution given the ML estimates. Using our notation above, the predictive distribution is $f(y; \hat{\theta})$. 
+
+We're going to use this predictive distribution to understand and evaluate our model.
+
+In my view, the predictive distribution is the best way to (1) understand, (2) evaluate, and then (3) improve models.
+
+You can use the predictive distribution as follows:
+
+1. Fit your model with maximum likelihood.
+1. Simulate a new outcome variable using the estimated model parameters (i.e., $f(y; \hat{\theta})$). Perhaps simulate a several for comparison.
+1. Compare the simulated outcome variable(s) to the observed outcome variables. You can use histograms and or plots of the ECDF.
+
+There are two reasons why an observed data set might not look like the distribution assumed by the model. 
+
+1. First, the model might not capture the observed data well. For example, you might use a normal distribution to model a variable that isn't similar to a normal distribution. 
+2. Second, the deviations between the observed data and model might be consistent with noise. For example, if you take 25 draws from a normal distribution and draw a histogram of those values, the histogram will not look exactly normal. It will be lumpy, bumpy, and/or skewed, simply due to noise.
+
+When we compare the observed data with the predictive distribution, we are keeping both of these deviations in mind. We simulate several fake data sets to understand how the outcome might change from sample to sample if the assumed distrubtion were correct. The we compare the patterns across the simulated fake data sets to the observed data set: are the two easily distiguishable?
+
+## Example: Poisson Distribution
+
+Earlier, we fit a Poisson distribution to data from @Holland2015.
+
+```{r include=FALSE}
+# load holland's data (once per session)
+holland2015 <- crdata::holland2015 |>
+  glimpse()
+
+# get data for lima
+y <- holland2015$operations[holland2015$city == "lima"]
+```
+
+```{r}
+# compute ml estimates of poisson parameter
+ml_est <- mean(y)
+print(ml_est, digits = 3)
+
+# simulate from predictive distribution
+n <- length(y)
+y_pred <- rpois(n, lambda = ml_est)
+print(y_pred[1:10])
+print(y[1:10])
+```
+
+Simply printing a few results, we can immediately see a problem with data, when compared with the raw data
+
+To see it even more clearly, we can create a histogram of the observed and simulated data.
+
+```{r}
+# load packages
+library(patchwork)
+
+# make plot
+gg1 <- ggplot() + geom_histogram(aes(x = y)) + xlim(min(y), max(y))
+gg2 <- ggplot() + geom_histogram(aes(x = y_pred)) + xlim(min(y), max(y))
+gg1 / gg2 +  plot_layout(axes = "collect")  # stitch these together w/ patchwork
+
+```
+
+We can use plots of the ECDFs rather than histograms.
+
+```{r}
+# make plot
+gg1 <- ggplot() + stat_ecdf(aes(x = y)) + xlim(min(y), max(y))
+gg2 <- ggplot() + stat_ecdf(aes(x = y_pred)) + xlim(min(y), max(y))
+gg1 / gg2 +  plot_layout(axes = "collect")  # stitch these together w/ patchwork
+```
+
+For a more accurate and complete comparison, let's simulate five fake data sets. By using five fake data sets, we'll see clearly how much of the variation might be due to noise (across the five fake data sets) and how the observed data set differs from the model.
+
+```{r message=FALSE, warning=FALSE}
+# create observed data set
+observed_data <- tibble(operations = y, type = "observed") %>%
+  glimpse()
+
+# simulate five fake data sets
+sim_list <- list()
+for (i in 1:5) {
+  y_pred <- rpois(n, lambda = ml_est)
+  sim_list[[i]] <- tibble(operations = y_pred, 
+                          type = paste0("simulated #", i))
+}
+
+# combine the fake and observed data sets
+gg_data <- bind_rows(sim_list) %>%
+  bind_rows(observed_data) %>%
+  glimpse()
+
+# plot the observed and fake data sets
+ggplot(gg_data, aes(x = operations)) + 
+  geom_histogram() + 
+  facet_wrap(vars(type))
+```
+
+```{r message=FALSE, warning=FALSE}
+# make plots of ecdf
+ggplot(gg_data, aes(x = operations)) + 
+  stat_ecdf() + 
+  facet_wrap(vars(type))
+```
+
+## Example: Beta Distribution
+
+Now let's return to our beta model of batting averages from earlier.
+
+```{r include=FALSE}
+# load packages
+library(Lahman)  # data from Lahman's baseball database
+
+# create data frame with batting average
+bstats <- battingStats() |> 
+  filter(yearID == 2023, AB > 100) |>  # data from 2023
+  filter(AB >= 100) |>  # players with at least 100 at-bats
+  select(player_id = playerID, batting_average = BA) |>
+  arrange(-batting_average) |>
+  na.omit() |>
+  glimpse()
+
+# create function to estimate beta parameters
+ll_fn <- function(theta, y) { 
+  alpha <- theta[1] 
+  beta <- theta[2] 
+  ll <- sum(dbeta(y, shape1 = alpha, shape2 = beta, log = TRUE))
+  return(ll)
+}
+est_beta <- function(y) {
+  est <- optim(par = c(2, 2), fn = ll_fn, y = y,
+               control = list(fnscale = -1),
+               method = "BFGS") # for >1d problems
+  if (est$convergence != 0) print("Model did not converge!")
+  res <- list(est = est$par)
+  return(res)
+}
+
+# estimate beta model
+theta_hat <- est_beta(bstats$batting_average)
+theta_hat$est
+```
+
+Now let's simulate five fake data sets from the predictive distribution and compare that to the observed data. In this case, the beta model fits the data pretty well, so let's add a pdf of the fitted model to the plots as well for even more precise comparisons of the real and fitted data.
+
+```{r message=FALSE, warning=FALSE}
+# create a dataframe of observed data
+observed_data <- bstats %>%
+  mutate(type = "observed") %>%
+  select(-player_id) %>%  # variable not needed, makes things neater later
+  glimpse()
+
+# simulate fake data sets
+n <- nrow(bstats)
+sim_list <- list()
+for (i in 1:5) {
+  y_pred <- rbeta(n, shape1 = theta_hat$est[1], shape2 = theta_hat$est[2])
+  sim_list[[i]] <- tibble(batting_average = y_pred, 
+                          type = paste0("simulated #", i))
+}
+
+# combine the fake and observed data sets
+gg_data <- bind_rows(sim_list) %>%
+  bind_rows(observed_data) %>%
+  glimpse()
+
+# plot histograms of real and fake data
+ggplot(gg_data, aes(x = batting_average)) + 
+  geom_histogram(aes(y = after_stat(density))) + 
+  facet_wrap(vars(type)) + 
+  stat_function(fun = dbeta, args = list(shape1 = theta_hat$est[1], 
+                                         shape2 = theta_hat$est[2]), 
+                color = "red")
+```
+
+On the whole, we see hear a close correspondence between the observed and simulated data. That suggests that our model is a good description of the data.
+
+If we use the ECDFs rather than the histograms, we see a similarly well-fitting model.
+```{r}
+# plot histograms of real and fake data
+ggplot(gg_data, aes(x = batting_average)) + 
+  stat_ecdf() + 
+  facet_wrap(vars(type)) + 
+  stat_function(fun = pbeta, args = list(shape1 = theta_hat$est[1], 
+                                         shape2 = theta_hat$est[2]), 
+                color = "red")
+```
+
+It's really hard to tell this apart!
+
+To make the comparison even more refined, let's put all the curves in the same panel.
+
+```{r}
+# separate the labels of the simulated data into two parts
+gg_data2 <- gg_data |>
+  separate(type, into = c("type", "version")) |>
+  glimpse()
+
+# plot histograms of real and fake data
+ggplot(gg_data2, aes(x = batting_average, color = type, group = version)) + 
+  stat_ecdf() 
+```
+
+If we look *really* hard, we can start to see some small differences between these the observed data and the model, but the model is a really good one. With only two parameters, the beta distribution does an excellent job of recreating the distribution of the observed data.

@@ -1,0 +1,128 @@
+
+```{r include=FALSE}
+library(tidyverse)
+library(hrbrthemes)
+library(latex2exp)
+```
+
+# The Invariance Property
+
+When discussing the properties of an ML estimate $\hat{\theta}$: we've mentioned two properties. First, $\hat{\theta}$ is a consistent estimator. Second, @thm-ml-invariance shows that we can transform $\hat{\theta}$ to obtain an ML estimate of the transformation (i.e., $\hat{\tau} = \tau{(\hat{\theta})}$). Let's explore this invariance property a bit more.
+
+Model parameters sometimes have a nice interpretation. For example, the parameter $\pi$ in the Bernoulli model has a nice interpretation--it's a probability or the expected fraction of 1s in the long-run. However, the model parameters might not always have nice interpretation. For example, the shape parameters $\alpha$ and $\beta$ of the beta distribution do not have a nice interpretation. Fortunately, it's easy to transform the ML estimates of the model parameters into ML estimates of a quantity of interest.
+
+::: callout-important
+## Invariance Property (@thm-ml-invariance)
+
+Suppose we obtain an ML estimate $\hat{\theta}$ of a parameter $\theta$. But we also (or instead) want to estimate a transformation $\tau(\theta)$. The we can estimate $\tau(\theta)$ by applying the transformation $\tau$ to the ML estimate $\hat{\theta}$, so that $\widehat{\tau(\theta)} = \hat{\tau} = \tau(\hat{\theta})$.
+:::
+
+## Example: Bernoulli Odds
+
+Suppose that we want an ML estimator of the *odds* of getting a top for the toothpaste cap problem. We already used ML to estimate the *probability* $\pi$ of getting a top and came up with $\frac{8}{150} \approx 0.053$. We can directly transform a probability into odds using $\text{odds} = \frac{\pi}{1 - \pi}$. This has a nice interpretation: odds = 2 means that a top is twice as likely as not; odds = 0.5 means that a top is half as likely as not.
+
+In our case, we can plug our ML estimate of $\pi$ into the transformation to obtain the ML estimate of the odds. $$
+\begin{aligned}
+\widehat{\text{odds}} &= \frac{\hat{\pi}}{1 - \hat{\pi}} \\
+& = \frac{\frac{8}{150}}{1 - \frac{8}{150}} \\
+& = \frac{\frac{8}{150}}{\frac{150}{150} - \frac{8}{150}} \\
+& = \frac{\frac{8}{150}}{\frac{142}{150}} \\
+& = \frac{8}{142} \\
+& \approx 0.056
+\end{aligned}
+$$ This means that tops are about 0.06 times as likelihood as not-tops. Inverted, you're about $\frac{142}{8} \approx 18$ times more likely to not get a top than get a top.
+
+## Example: Poisson SD
+
+In this example, we use real data from @Holland2015, who is interested in the number of enforcement operations across districts in three cities. See `?crdata::holland2015` for the details. We can model the number of enforcement operations in each city as a Poisson distribution and estimate $\lambda$ in each of the three cities. (We previously found that the sample mean is the ML estimator for the mean parameter $\lambda$ for the Poisson distribution.)
+
+```{r}
+# install package (once per computer)
+# remotes::install_github("carlislerainey/crdata")
+
+# load holland's data (once per session)
+holland2015 <- crdata::holland2015 |>
+  glimpse()
+
+# compute ml estimate of poisson mean parameter lambda
+holland2015 |>
+  group_by(city) |>
+  summarize(lambda_hat = mean(operations))
+```
+
+The parameter $\lambda$ is a nice, interpretable quantity---it's a mean! But we might want also want the SD. For the Poisson distribution, the variance equals the mean, so $\text{Var}(y) = \text{E}(y) = \lambda$. Therefore, the SD is $\sqrt{\lambda}$. We don't need to do the hard work of finding a new ML estimator for the SD, we can just use $\widehat{\text{SD}} = \sqrt{\hat{\lambda}}$. This is the ML estimate of the SD of the data, and it carries all the properties of ML estimators. 
+
+
+```{r}
+# compute compute ml estimate of lambda (mean) and sd
+holland2015 |>
+  group_by(city) |>
+  summarize(lambda_hat = mean(operations), 
+            sd_hat = sqrt(lambda_hat))
+```
+
+
+We're using the invariance property to move from the mean to the SD by a simple transformation. Note that we can do this because the Poisson distribution assumes that the variance and SD are a function of the mean. We couldn't similarly infer the variance from the mean in a normal model, for example. But we're also *assuming* a Poisson distribution. A later exercise asks you if these estimates of the SD are close to the actual SD of the data.
+
+## Example: Beta Mean and Variance
+
+Now let's see an example of the beta distribution $Y \sim \text{beta}(\alpha, \beta)$. The beta distribution does not have parameters that are easily interpretable in terms of mean and variance. Instead, it has two "shape" parameters $\alpha$ and $\beta$ that are in tension---one pulls the distribution to the left and the other pulls the distribution to the right.
+
+For an example, let's return to the batting average data.
+
+```{r}
+# load packages
+library(Lahman)  # data from Lahman's baseball database
+
+# create data frame with batting average
+bstats <- battingStats() |> 
+  filter(yearID == 2023, AB > 100) |>  # data from 2023
+  filter(AB >= 100) |>  # players with at least 100 at-bats
+  select(player_id = playerID, batting_average = BA) |>
+  arrange(-batting_average) |>
+  na.omit() |>
+  glimpse()
+
+# create function to estimate beta parameters
+ll_fn <- function(theta, y) { 
+  alpha <- theta[1] 
+  beta <- theta[2] 
+  ll <- sum(dbeta(y, shape1 = alpha, shape2 = beta, log = TRUE))
+  return(ll)
+}
+est_beta <- function(y) {
+  est <- optim(par = c(2, 2), fn = ll_fn, y = y,
+               control = list(fnscale = -1),
+               method = "BFGS") # for >1d problems
+  if (est$convergence != 0) print("Model did not converge!")
+  res <- list(est = est$par)
+  return(res)
+}
+
+# estimate beta model
+theta_hat <- est_beta(bstats$batting_average)
+theta_hat$est
+```
+
+For the beta distribution, the mean is given by $\frac{\alpha}{\alpha + \beta}$ and the variance is given by $\frac{\alpha\beta}{(\alpha + \beta)^2(\alpha + \beta + 1)}$. (See @tbl-beta.)
+
+We can use the invariance property to obtain ML estimates of the mean, variance, and SD using our ML estimates of $\alpha$ and $\beta$.
+
+```{r}
+a <- theta_hat$est[1]
+b <- theta_hat$est[2]
+
+a/(a + b)  # mean
+(a * b)/((a + b)^2 * (a + b + 1))  # var
+sqrt((a * b)/((a + b)^2 * (a + b + 1)))  # sd
+
+```
+
+It's worth noting that these correspond closely, *but not exactly* to the observed mean, variance, and SD.
+
+```{r}
+mean(bstats$batting_average)
+var(bstats$batting_average)
+sd(bstats$batting_average)
+
+```

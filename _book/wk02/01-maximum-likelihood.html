@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.42">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>6&nbsp; Maximum Likelihood – Modern Probability Modeling</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../wk02/02-invariance-property.html" rel="next">
+<link href="../wk01/probability.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-2db5a64a0f9238d29502e24e892d8c52.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../_styles.css">
+</head>
+
+<body class="nav-sidebar floating slimcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../wk02/01-maximum-likelihood.html">Week Two</a></li><li class="breadcrumb-item"><a href="../wk02/01-maximum-likelihood.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Maximum Likelihood</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Modern Probability Modeling</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week One</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk01/01-frac-exp-log.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Fractions, Exponents, and Logarithms</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk01/calculus-1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Derivatives</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk01/calculus-2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Integration</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk01/matrices.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Matrices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk01/probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Probability Theory</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week Two</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk02/01-maximum-likelihood.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Maximum Likelihood</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk02/02-invariance-property.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">The Invariance Property</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk02/03-predictive-distribution.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Predictive Distribution</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../appendicies/999-distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Common Distribution</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#example-bernoulli-distribution" id="toc-example-bernoulli-distribution" class="nav-link active" data-scroll-target="#example-bernoulli-distribution"><span class="header-section-number">6.1</span> Example: Bernoulli Distribution</a></li>
+  <li><a href="#principle-maximum-likelihood" id="toc-principle-maximum-likelihood" class="nav-link" data-scroll-target="#principle-maximum-likelihood"><span class="header-section-number">6.2</span> Principle: Maximum Likelihood</a></li>
+  <li><a href="#example-poisson-distribution" id="toc-example-poisson-distribution" class="nav-link" data-scroll-target="#example-poisson-distribution"><span class="header-section-number">6.3</span> Example: Poisson Distribution</a></li>
+  <li><a href="#example-normal-distribution" id="toc-example-normal-distribution" class="nav-link" data-scroll-target="#example-normal-distribution"><span class="header-section-number">6.4</span> Example: Normal Distribution</a></li>
+  <li><a href="#example-beta-distribution" id="toc-example-beta-distribution" class="nav-link" data-scroll-target="#example-beta-distribution"><span class="header-section-number">6.5</span> Example: Beta Distribution</a></li>
+  <li><a href="#principle-method-of-moments" id="toc-principle-method-of-moments" class="nav-link" data-scroll-target="#principle-method-of-moments"><span class="header-section-number">6.6</span> Principle: Method of Moments</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../wk02/01-maximum-likelihood.html">Week Two</a></li><li class="breadcrumb-item"><a href="../wk02/01-maximum-likelihood.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Maximum Likelihood</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Maximum Likelihood</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>This week, I introduce our first “engine”: maximum likelihood. As a starting point, we use ML to estimate the parameters of Bernoulli, Poisson, and beta distributions (without covariates). Then I introduce the invariance property and show how we can use the invariance property to transform the estimated parameters into other quantities of interest. To evaluate the models, we use the predictive distribution.</p>
+<section id="example-bernoulli-distribution" class="level2 page-columns page-full" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="example-bernoulli-distribution"><span class="header-section-number">6.1</span> Example: Bernoulli Distribution</h2>
+<p>As a running example, we use the <strong>toothpaste cap problem</strong>:</p>
+<blockquote class="blockquote">
+<p>We have a toothpaste cap–one with a wide bottom and a narrow top. We’re going to toss the toothpaste cap. It can either end up lying on its side, its (wide) bottom, or its (narrow) top. We want to estimate the probability of the toothpaste cap landing on its top.</p>
+</blockquote>
+<p><em>How can we do this in a principled way?</em></p>
+<p>If we’re clever, we might immediately recognize that we can think of each toss as a sample from large population of sides, tops, and bottoms. Each toss is like a random sample from this large population. Then we know that the average of the sample is an unbiased estimator of the population mean. And this intuition works! As you might expect, the sample average is an unbiased estimator of the long-run chance of the cap landing on its top.</p>
+<p>But not all problems are so easy. Suppose we create a histogram of our data and we notice several observations more than three standard deviations away from the mean. We might want to model these data with a Student’s <em>t</em> distribution. But how can we estimate the degrees-of-freedom parameter. It isn’t immediately clear how to estimate this parameter.</p>
+<div class="cell page-columns page-full">
+
+<div class="no-row-height column-margin column-container"><div class="cell-output-display">
+<div id="fig-heavy-tails" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-heavy-tails-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="01-maximum-likelihood_files/figure-html/fig-heavy-tails-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-heavy-tails-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.1: A histogram with heavy tails.
+</figcaption>
+</figure>
+</div>
+</div></div></div>
+<p>To approach the toothpaste cap problem in a more principled way, we can use use a <strong>probability model</strong> by specifying a probability distribution for the data. Then we can use <strong>maximum likelihood</strong> to find an estimator for the parameters of that probability distribution.</p>
+<p>For the toothpaste cap problem, we can model each toss as a Bernoulli trial. We think of each toss as a random variable <span class="math inline">\(X\)</span> where <span class="math inline">\(X \sim \text{Bernoulli}(\pi)\)</span>. If the cap lands on its top, we think of the outcome as 1. If not, as 0.</p>
+<p>Suppose we toss the cap <span class="math inline">\(N\)</span> times and observe <span class="math inline">\(k\)</span> tops. To find the ML estimator, we simply find the parameter that is most likely to generate these data. Suppose we observe <span class="math inline">\(k = 25\)</span> successes (i.e., tops) in <span class="math inline">\(N = 50\)</span> trials (i.e., tosses). It’s intuitive that these data would be relatively unlikely if <span class="math inline">\(\pi = 0.1\)</span> (i.e., the chance of a top is 10%) or if <span class="math inline">\(\pi = 0.1\)</span> (i.e., the chance of a top is 90%). However, these data are relatively more likely if the c<span class="math inline">\(\pi = 0.45\)</span> or <span class="math inline">\(\pi = 0.55\)</span>. But what value of <span class="math inline">\(\pi\)</span> makes the data <em>most</em> likely? (You can probably guess, but let’s be formal!)</p>
+<p>What is the ML estimate <span class="math inline">\(\hat{\pi}\)</span> of <span class="math inline">\(\pi\)</span>?</p>
+<p>According to the model <span class="math inline">\(f(x_i; \pi) = \pi^{x_i} (1 - \pi)^{(1 - x_i)}\)</span>—this is just the Bernoulli pmf. Because the samples are iid, we can find the <em>joint</em> distribution <span class="math inline">\(f(x) = f(x_1) \times ... \times f(x_N) = \prod_{i = 1}^N f(x_i)\)</span>. This product includes several repetitions of <span class="math inline">\(\pi\)</span> and several repetitions of <span class="math inline">\((1 - \pi)\)</span>. We include <span class="math inline">\(k\)</span> <span class="math inline">\(\pi\)</span>s, because each of the <span class="math inline">\(k\)</span> ones has probability <span class="math inline">\(\pi\)</span>. Similarly, we include <span class="math inline">\((N - k)\)</span> <span class="math inline">\((1 - \pi)\)</span>s, because each of the <span class="math inline">\(N - k\)</span> zeros has probability <span class="math inline">\(1 - \pi\)</span>). This gives us <span class="math inline">\(f(x; \pi) = \pi^{k} (1 - \pi)^{(N - k)}\)</span>. <span class="math display">\[
+\text{the likelihood:  } f(x; \pi) =  \pi^{k} (1 - \pi)^{(N - k)}, \text{where } k = \sum_{n = 1}^N x_n \\
+\]</span> All we have to do now is find the value of <span class="math inline">\(\pi\)</span> that maximizes this likelihood. This will be our ML estimator. But let’s proceed slowly.</p>
+<p>First, it’s a little strange to maximize <span class="math inline">\(f(x; \pi)\)</span> with respect to <span class="math inline">\(\pi\)</span>. After all, the notation encourages us to think of <span class="math inline">\(\pi\)</span> as a fixed value and <span class="math inline">\(x\)</span> as the variable. To make it clear that we’re now thinking of <span class="math inline">\(\pi\)</span> as the variable, let’s write <span class="math inline">\(L(\pi) = f(x; \pi)\)</span>.</p>
+<p><span class="math display">\[
+\text{the likelihood:  } L(\pi) = \pi^{k} (1 - \pi)^{(N - k)}\\
+\]</span> Second, it turns out that products of are difficult to work with. First, calculus is easier sums than with products (we’re optimizing, which means derivatives are coming). Second, multiplying lots of numbers together can often mean very small or large numbers that are hard for computers to track. We’re interested in the maximum of the likelihood. However, notice that the value of <span class="math inline">\(\pi\)</span> that maximizes the likelihood also maximizes the log of that likelihood. Taking the log of the likelihood makes things <em>much</em> easier for us.</p>
+<p>Then, we take the log and simplify.</p>
+<p><span class="math display">\[
+\begin{align*}
+\log L(\pi) &amp;= \log\!\bigl[\pi^k (1 - \pi)^{N - k}\bigr], \\[6pt]
+&amp;= \log\bigl(\pi^k\bigr) + \log\Bigl[(1 - \pi)^{N - k}\Bigr], \\[6pt]
+&amp;= k \log(\pi) + (N - k)\log(1 - \pi).
+\end{align*}
+\]</span> This gives us the log-likelihood.</p>
+<p><span class="math display">\[
+\text{the log-likelihood:  } \log L(\pi) = k \log (\pi) + (N - k) \log(1 - \pi)\\
+\]</span> To find the ML estimator, we find <span class="math inline">\(\hat{\pi}\)</span> that maximizes <span class="math inline">\(\log L(\pi)\)</span>.</p>
+<p>As a concrete example, the plot below shows <span class="math inline">\(\log L(\pi)\)</span> for <span class="math inline">\(N = 150\)</span> and <span class="math inline">\(k = 8\)</span>.</p>
+<div class="cell page-columns page-full">
+
+<div class="no-row-height column-margin column-container"><div class="cell-output-display">
+<div id="fig-bernoulli-8-150-likelihood" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-bernoulli-8-150-likelihood-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="01-maximum-likelihood_files/figure-html/fig-bernoulli-8-150-likelihood-1.png" class="img-fluid figure-img" width="384">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-bernoulli-8-150-likelihood-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.2: A plot of the log-likelihood function for <span class="math inline">\(N = 150\)</span> and <span class="math inline">\(k = 8\)</span>.
+</figcaption>
+</figure>
+</div>
+</div></div></div>
+<p>However, we only need this figure to develop our intuition because, for this Bernoulli model, the analytical optimum is easy.</p>
+<p>First, we can find the derivative of the log-likelihood with respect to <span class="math inline">\(\pi\)</span>.</p>
+<p><span class="math display">\[
+\frac{d \log L}{d\hat{\pi}} = k \left( \frac{1}{\hat{\pi}}\right) + (N - k) \left( \frac{1}{1 - \hat{\pi}}\right)(-1)
+\]</span></p>
+<p>Then we can set <span class="math inline">\(\frac{d \log L}{d\hat{\pi}} = 0\)</span> and <span class="math inline">\(\pi = \hat{\pi}\)</span>.</p>
+<p><span class="math display">\[
+\begin{aligned}
+k \left( \frac{1}{\hat{\pi}}\right) + (N - k) \left( \frac{1}{1 - \hat{\pi}}\right)(-1) &amp;= 0\\
+\frac{k}{\hat{\pi}} - \frac{N - k}{1 - \hat{\pi}} &amp;= 0 \\
+\frac{k}{\hat{\pi}} &amp;= \frac{N - k}{1 - \hat{\pi}} \\
+k(1 - \hat{\pi}) &amp;= (N - k)\hat{\pi} \\
+k - k\hat{\pi} &amp;= N\hat{\pi} - k\hat{\pi} \\
+k  &amp;= N\hat{\pi} \\
+\hat{\pi} &amp;= \frac{k}{N}\\
+\end{aligned}
+\]</span> Importantly, <span class="math inline">\(k\)</span> is simply the number of successes. This mean that <span class="math inline">\(\frac{k}{N} = \frac{\sum_i^N x_i}{N} = \text{avg}(x)\)</span>. Thus, the ML estimator of <span class="math inline">\(\pi\)</span> is the average of the <span class="math inline">\(N\)</span> Bernoulli trials, or, equivalently, the fraction of successes.</p>
+<p>The collected data consist of 150 trials and 8 successes, so the ML estimate of <span class="math inline">\(\pi\)</span> is <span class="math inline">\(\frac{8}{150} \approx 0.053\)</span>.</p>
+</section>
+<section id="principle-maximum-likelihood" class="level2 page-columns page-full" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="principle-maximum-likelihood"><span class="header-section-number">6.2</span> Principle: Maximum Likelihood</h2>
+<p>Suppose we have a random sample from a distribution <span class="math inline">\(f(x; \theta)\)</span>. We find the maximum likelihood (ML) estimator <span class="math inline">\(\hat{\theta}\)</span> of <span class="math inline">\(\theta\)</span> by maximizing the likelihood of the observed data with respect to <span class="math inline">\(\theta\)</span>.</p>
+<p>In short, we take the likelihood of the data (given the model and a particular <span class="math inline">\(\theta\)</span>) and find the parameter <span class="math inline">\(\theta\)</span> that maximizes it.</p>
+<p>In practice, to make the math and/or computation a bit easier, we manipulate the likelihood function in two ways:</p>
+<ol type="1">
+<li>Relabel the likelihood function <span class="math inline">\(f(x; \theta) = L(\theta)\)</span>. This makes it clear that the parameter <span class="math inline">\(\theta\)</span> is now the varying parameter of interest.</li>
+<li>Take the log and work with <span class="math inline">\(\log L(\theta)\)</span> rather than <span class="math inline">\(L(\theta)\)</span>. Because <span class="math inline">\(\log()\)</span> is a monotonically increasing function, the <span class="math inline">\(\theta\)</span> that maximizes <span class="math inline">\(L(\theta)\)</span> also maximizes <span class="math inline">\(\log L(\theta)\)</span>. The log-likelihood is much simpler to work with.</li>
+</ol>
+<div id="def-mle" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 6.1 (Maximum Likelihood (ML) Estimator)</strong></span> Suppose we have iid samples <span class="math inline">\(x_1, x_2, ..., x_N\)</span> from pdf or pmf <span class="math inline">\(f(x; \theta)\)</span>. Then the joint density/probability is <span class="math inline">\(f(x; \theta) = \prod_{n = 1}^N f(x_n; \theta)\)</span> and <span class="math inline">\(\log L(\theta) = \sum_{n = 1}^N \log \left[ f(x_n; \theta) \right]\)</span>. The ML estimator <span class="math inline">\(\hat{\theta}\)</span> of <span class="math inline">\(\theta\)</span> is <span class="math inline">\(\arg \max \log L(\theta)\)</span>.</p>
+</div>
+<p>In applied problems, we can occasionally find a nice analytical maximum. In most cases, though, we have a computer find the parameter that maximizes <span class="math inline">\(\log L\)</span>.</p>
+<p>ML estimators have nice properties. Here’s let’s consider just consistency.</p>
+<div id="def-consistency" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 6.2 (Consistent Estimator)</strong></span> Let <span class="math inline">\(\hat{\theta}_n\)</span> be an estimator of <span class="math inline">\(\theta\)</span> based on a sample of size <span class="math inline">\(n\)</span>. Say that <span class="math inline">\(\hat{\theta}_n\)</span> is a <strong>consistent</strong> estimator for <span class="math inline">\(\theta\)</span> if <span class="math inline">\(\lim_{n \to \infty} \Pr \left( |\hat{\theta}_n - \theta| \ge \varepsilon \right) = 0\)</span> for every <span class="math inline">\(\varepsilon &gt; 0\)</span>.</p>
+</div>
+<div id="thm-ml-consistency" class="theorem page-columns page-full">
+<p><span class="theorem-title"><strong>Theorem 6.1 (Consistency of ML Estimators)</strong></span> Suppose an ML estimator <span class="math inline">\(\hat{\theta}\)</span> of <span class="math inline">\(\theta\)</span> as in <a href="#def-mle" class="quarto-xref">Definition&nbsp;<span>6.1</span></a>. Under certain regularity conditions,<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> <span class="math inline">\(\hat{\theta}\)</span> is a consistent estimator of <span class="math inline">\(\theta\)</span>.</p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;<span class="citation" data-cites="Casella2002">Casella and Berger (<a href="#ref-Casella2002" role="doc-biblioref">2002, 516</a>)</span> write that “‘regularity conditions’ are typically very technical, rather boring, and usually satisfied in most reasonable problems.” However, they note that they are a “necessary evil.” The conditions below suffice for consistency.</p>
+<ul>
+<li>Condition 1 (Identifiable): For <span class="math inline">\(\theta \neq \theta'\)</span>, <span class="math inline">\(f(x; \theta) \neq f(x; \theta')\)</span></li>
+<li>Condition 2 (Common Support): The support of <span class="math inline">\(f(x; \theta)\)</span> does not change with <span class="math inline">\(\theta\)</span>.</li>
+<li>Condition 3 (Differentiable): <span class="math inline">\(f(x; \theta)\)</span> is differentiable with respect to <span class="math inline">\(\theta\)</span>.</li>
+<li>Condition 4 (Open Bounds): The parameter space of <span class="math inline">\(\theta\)</span> is an open interval <span class="math inline">\((\underline{\theta}, \overline{\theta})\)</span> and <span class="math inline">\(\theta\)</span> lie in the interior such that <span class="math inline">\(-\infty \leq \underline{\theta} &lt; \theta &lt; \overline{\theta} \leq \infty\)</span>.</li>
+</ul>
+<p>See <span class="citation" data-cites="Casella2002">Casella and Berger (<a href="#ref-Casella2002" role="doc-biblioref">2002, 467–70, 516</a>)</span> and <span class="citation" data-cites="Lehmann2004e">(<a href="#ref-Lehmann2004e" role="doc-biblioref"><strong>Lehmann2004e?</strong></a>)</span> a more detailed discussion.</p><div id="ref-Casella2002" class="csl-entry" role="listitem">
+Casella, George, and Roger L. Berger. 2002. <em>Statistical Inference</em>. 2nd ed. Pacific Grove, CA: Duxbury.
+</div></div></div></div>
+<p><a href="#def-consistency" class="quarto-xref">Definition&nbsp;<span>6.2</span></a> and <a href="#thm-ml-consistency" class="quarto-xref">Theorem&nbsp;<span>6.1</span></a> mean that as the sample size grows to infinitely, an ML estimator <span class="math inline">\(\hat{\theta}\)</span> falls arbitrarily close to <span class="math inline">\(\theta\)</span> with high probability. Less formally, consistency means that the estimator <span class="math inline">\(\hat{\theta}\)</span> becomes increasingly concentrated around the true value <span class="math inline">\(\theta\)</span> as the samples size grows large. <a href="#fig-illustrating-consistency" class="quarto-xref">Figure&nbsp;<span>6.3</span></a> illustrates how an estimator might converge to the true value.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn2"><p><sup>2</sup>&nbsp;This definition of consistency is a “weak” version of consistency that describes an estimator that “converges in probability” to the true value. This is distinct from “converges almost surely,” which would mean that <span class="math inline">\(\Pr\left( \lim_{n \to \infty} \hat{\theta}_n = \theta \right) = 1\)</span>. There is substantial theoretical distinction between these two forms of consistency, but little to no practical distinction.</p></div><div class="">
+<div id="fig-illustrating-consistency" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-illustrating-consistency-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figs/consistency.gif" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-illustrating-consistency-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6.3: A figure illustrating a consistent estimator converging to the true value as the sample size increases.
+</figcaption>
+</figure>
+</div>
+</div><div id="fn3"><p><sup>3</sup>&nbsp;For example, most people convert coefficient from logistic regression models into substantively meaningful “quantities of interest.”</p></div></div>
+<p>Next, we have an incredibly important and useful result. Suppose we have ML estimator for the model parameter <span class="math inline">\(\theta\)</span>, but we actually care about a <em>transformation</em> of that parameter.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> How can we find the ML estimator for the quantity of interest? It turns out that we can simply transform the ML estimates of the model parameters.</p>
+<div id="thm-ml-invariance" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 6.2 (Invariance Property of ML Estimators)</strong></span> Suppose an ML estimator <span class="math inline">\(\hat{\theta}\)</span> of <span class="math inline">\(\theta\)</span> as in <a href="#def-mle" class="quarto-xref">Definition&nbsp;<span>6.1</span></a> and a quantity of interest <span class="math inline">\(\tau = \tau{\theta}\)</span> for any function <span class="math inline">\(\tau\)</span>. The ML estimate <span class="math inline">\(\hat{\tau}\)</span> of <span class="math inline">\(\tau = \tau(\theta)\)</span> is <span class="math inline">\(\tau(\hat{\theta})\)</span>.</p>
+</div>
+<p>This is an important result that underlies many of the subsequent recommendations and practices.</p>
+</section>
+<section id="example-poisson-distribution" class="level2" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="example-poisson-distribution"><span class="header-section-number">6.3</span> Example: Poisson Distribution</h2>
+<p>Suppose we collect <span class="math inline">\(N\)</span> random samples <span class="math inline">\(x = \{x_1, x_2, ..., x_N\}\)</span> and model each draw as a random variable <span class="math inline">\(X \sim \text{Poisson}(\lambda)\)</span>. Find the ML estimator of <span class="math inline">\(\lambda\)</span>.</p>
+<p><span class="math display">\[
+\begin{aligned}
+\text{Poisson likelihood: } f(x; \lambda) &amp;= \prod_{n = 1}^N \frac{\lambda^{x_n} e^{-\lambda}}{x_n!} \\
+L(\lambda) &amp;= \prod_{n = 1}^N \frac{\lambda^{x_n} e^{-\lambda}}{x_n!} \\
+\log L(\lambda) &amp;= \sum_{n = 1}^N \log \left[ \frac{\lambda^{x_n} e^{-\lambda}}{x_n!} \right]\\
+&amp;= \sum_{n = 1}^N \left[ x_n \log \lambda + (-\lambda) \log e - \log x_n! \right]\\
+&amp;= \log \lambda \left[ \sum_{n = 1}^N x_n \right]  -N\lambda + \sum_{n = 1}^N \log (x_n!) \\
+\end{aligned}
+\]</span></p>
+<p>To find the ML estimator, we find <span class="math inline">\(\hat{\lambda}\)</span> that maximizes <span class="math inline">\(\log L\)</span>. In this case, the analytical optimum is easy.</p>
+<p>First, find the derivative of the log-likelihod function with respect to the parameter <span class="math inline">\(\lambda\)</span>.</p>
+<p><span class="math display">\[
+\frac{d \log L}{d\lambda} = \frac{1}{\lambda} \left[ \sum_{i = 1}^N x_i \right] - N
+\]</span></p>
+<p>Then set <span class="math inline">\(\frac{d \log L}{d\hat{\lambda}}\)</span>, <span class="math inline">\(\lambda = \hat{\lambda}\)</span>, and solve for <span class="math inline">\(\hat{\lambda}\)</span>.</p>
+<p><span class="math display">\[
+\begin{aligned}
+\frac{1}{\hat{\lambda}} \left[ \sum_{i = 1}^N x_i \right] - N = 0 \\
+\frac{1}{\hat{\lambda}} \left[ \sum_{i = 1}^N x_i \right] - N \\
+\frac{1}{\hat{\lambda}} \left[ \sum_{i = 1}^N x_i \right] &amp;= N \\
+\left[ \sum_{i = 1}^N x_i \right] &amp;= N \hat{\lambda} \\
+\hat{\lambda} &amp;= \frac{ \sum_{i = 1}^N x_i }{N} = \text{avg}(x)  \\
+\end{aligned}
+\]</span> The ML estimator for the Poisson distribution is just the average of the samples.</p>
+</section>
+<section id="example-normal-distribution" class="level2 page-columns page-full" data-number="6.4">
+<h2 data-number="6.4" class="anchored" data-anchor-id="example-normal-distribution"><span class="header-section-number">6.4</span> Example: Normal Distribution</h2>
+<p>The normal distribution extends the Bernoulli and Poisson examples by adding multliple parameters.</p>
+<p>Suppose we collect <span class="math inline">\(N\)</span> random samples <span class="math inline">\(x = \{x_1, x_2, ..., x_N\}\)</span> and model each draw as a random variable <span class="math inline">\(X \sim \mathcal{N}(\mu, \sigma^2)\)</span>. Find the ML estimators of <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma^2\)</span>.</p>
+<p><span class="math display">\[
+\begin{aligned}
+\text{Normal likelihood: } f(x; \mu, \sigma^2) &amp;= \prod_{n = 1}^N \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left( -\frac{(x_n - \mu)^2}{2\sigma^2} \right) \\
+L(\mu, \sigma^2) &amp;= \prod_{n = 1}^N \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left( -\frac{(x_n - \mu)^2}{2\sigma^2} \right) \\
+\log L(\mu, \sigma^2) &amp;= \sum_{n = 1}^N \log \left[ \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left( -\frac{(x_n - \mu)^2}{2\sigma^2} \right) \right] \\
+&amp;= \sum_{n = 1}^N \left[ -\frac{1}{2} \log(2\pi\sigma^2) - \frac{(x_n - \mu)^2}{2\sigma^2} \right] \\
+&amp;= -\frac{N}{2} \log(2\pi\sigma^2) - \frac{1}{2\sigma^2} \sum_{n = 1}^N (x_n - \mu)^2 \\
+\end{aligned}
+\]</span></p>
+<p>To find the ML estimators, we find <span class="math inline">\(\hat{\mu}\)</span> and <span class="math inline">\(\hat{\sigma}^2\)</span> that maximize <span class="math inline">\(\log L\)</span>. In this case, the analytical optima are straightforward.</p>
+<p>First, find the derivative of the log-likelihood function with respect to the parameter <span class="math inline">\(\mu\)</span>.</p>
+<p><span class="math display">\[
+\frac{d \log L}{d\mu} = \frac{1}{\sigma^2} \left[ \sum_{i = 1}^N (x_i - \mu) \right]
+\]</span></p>
+<p>Now take the derivative with respect to <span class="math inline">\(\sigma^2\)</span>.</p>
+<p><span class="math display">\[
+\frac{d \log L}{d\sigma^2} = -\frac{N}{2\sigma^2} + \frac{1}{2(\sigma^2)^2} \sum_{i = 1}^N (x_i - \mu)^2
+\]</span></p>
+<p>Then set <span class="math inline">\(\frac{d \log L}{d\mu} = 0\)</span>, <span class="math inline">\(\frac{d \log L}{d\sigma^2} = 0\)</span>, <span class="math inline">\(\sigma^2 = \hat{\sigma}^2\)</span>, <span class="math inline">\(\mu = \hat{\mu}\)</span>, and solve for <span class="math inline">\(\hat{\mu}\)</span> and <span class="math inline">\(\hat{\sigma}^2\)</span>.</p>
+<p>First, solve for <span class="math inline">\(\hat{\mu}\)</span>.</p>
+<p><span class="math display">\[
+\begin{aligned}
+\frac{1}{\sigma}^2 \left[ \sum_{i = 1}^N (x_i - \hat{\mu}) \right] &amp;= 0 \\
+\sum_{i = 1}^N (x_i - \hat{\mu}) &amp;= 0 \\
+N \hat{\mu} &amp;= \sum_{i = 1}^N x_i \\
+\hat{\mu} &amp;= \frac{ \sum_{i = 1}^N x_i }{N} = \text{avg}(x) \\
+\end{aligned}
+\]</span></p>
+<p>Now solve for <span class="math inline">\(\hat{\sigma}^2\)</span>.</p>
+<p><span class="math display">\[
+\begin{aligned}
+-\frac{N}{2\hat{\sigma}^2} + \frac{1}{2(\hat{\sigma}^2)^2} \sum_{i = 1}^N (x_i - \hat{\mu})^2 &amp;= 0 \\
+-N \hat{\sigma}^2 + \sum_{i = 1}^N (x_i - \hat{\mu})^2 &amp;= 0 \\
+\hat{\sigma}^2 &amp;= \frac{ \sum_{i = 1}^N (x_i - \hat{\mu})^2 }{N} \\
+\end{aligned}
+\]</span></p>
+<p>The ML estimators for the parameters of the normal distribution are the sample average (i.e., <span class="math inline">\(\hat{\mu} = \text{avg}(x)\)</span>) and the MSE from the sample average (i.e., <span class="math inline">\(\hat{\sigma}^2 = \frac{ \sum_{i = 1}^N (x_i - \hat{\mu})^2 }{N}\)</span>).<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn4"><p><sup>4</sup>&nbsp;Notice that the ML estimate for the variance is difference from the classic estimate, which is <span class="math display">\[
+    \hat{\sigma}^2_{\text{classic}} = \frac{ \sum_{i = 1}^N (x_i - \hat{\mu})^2 }{N - 1}.
+    \]</span> (Notice the <span class="math inline">\(N - 1\)</span> in the denominator.)</p></div></div><p>As an example, let’s model the WDI measure percentage change in GDP in 2022. We can load these data directly into R using the <code>WDI()</code> function in the WDI package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load package</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(WDI)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># get annual % gdp growth (annual %) for 2022</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># - note: "NY.GDP.MKTP.KD.ZG" is percentage gdp growth</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">#         see https://data.worldbank.org/indicator/NY.GDP.MKTP.KD.ZG</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>gdp_growth_2022 <span class="ot">&lt;-</span> <span class="fu">WDI</span>(<span class="at">indicator =</span> <span class="st">"NY.GDP.MKTP.KD.ZG"</span>, </span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>                       <span class="at">start =</span> <span class="dv">2022</span>, </span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>                       <span class="at">end =</span> <span class="dv">2022</span>, </span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>                       <span class="at">extra =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># data includes aggregates (e.g., European Union); filter these out</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(region <span class="sc">!=</span> <span class="st">"Aggregates"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 216
+Columns: 13
+$ country           &lt;chr&gt; "Afghanistan", "Albania", "Algeria", "American Samoa…
+$ iso2c             &lt;chr&gt; "AF", "AL", "DZ", "AS", "AD", "AO", "AG", "AR", "AM"…
+$ iso3c             &lt;chr&gt; "AFG", "ALB", "DZA", "ASM", "AND", "AGO", "ATG", "AR…
+$ year              &lt;int&gt; 2022, 2022, 2022, 2022, 2022, 2022, 2022, 2022, 2022…
+$ NY.GDP.MKTP.KD.ZG &lt;dbl&gt; -6.240172, 4.826696, 3.600000, 1.735016, 9.564612, 3…
+$ status            &lt;chr&gt; "", "", "", "", "", "", "", "", "", "", "", "", "", …
+$ lastupdated       &lt;chr&gt; "2025-07-01", "2025-07-01", "2025-07-01", "2025-07-0…
+$ region            &lt;chr&gt; "South Asia", "Europe &amp; Central Asia", "Middle East …
+$ capital           &lt;chr&gt; "Kabul", "Tirane", "Algiers", "Pago Pago", "Andorra …
+$ longitude         &lt;chr&gt; "69.1761", "19.8172", "3.05097", "-170.691", "1.5218…
+$ latitude          &lt;chr&gt; "34.5228", "41.3317", "36.7397", "-14.2846", "42.507…
+$ income            &lt;chr&gt; "Low income", "Upper middle income", "Upper middle i…
+$ lending           &lt;chr&gt; "IDA", "IBRD", "IBRD", "Not classified", "Not classi…</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot histogram</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(gdp_growth_2022<span class="sc">$</span>NY.GDP.MKTP.KD.ZG)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01-maximum-likelihood_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ml estimate of mu</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(gdp_growth_2022<span class="sc">$</span>NY.GDP.MKTP.KD.ZG, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 4.478777</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ml estimate of sigma^2</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(gdp_growth_2022<span class="sc">$</span>NY.GDP.MKTP.KD.ZG)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>((x <span class="sc">-</span> <span class="fu">mean</span>(x))<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span><span class="fu">length</span>(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 45.93108</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># compare to classic, unbiased estimate that uses N - 1 in denominator</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">var</span>(gdp_growth_2022<span class="sc">$</span>NY.GDP.MKTP.KD.ZG, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 46.15405</code></pre>
+</div>
+</div>
+</section>
+<section id="example-beta-distribution" class="level2 page-columns page-full" data-number="6.5">
+<h2 data-number="6.5" class="anchored" data-anchor-id="example-beta-distribution"><span class="header-section-number">6.5</span> Example: Beta Distribution</h2>
+<p>With the beta distribution, we add another complication that typically occurs when using ML: <strong>an intractable log-likelihood</strong>.</p>
+<p>The beta distribution is perhaps unfamiliar. However, it will become important to us, so it’s worth learning more about it now.</p>
+<ul>
+<li>It has a support on the [0, 1] interval, meaning that samples from the beta distribution are values between zero and one.</li>
+<li>It is a continuous distribution, meaning that it is defined with a pdf (rather than a pmf).</li>
+<li>It has pdf <span class="math inline">\(f(y_i; \alpha, \beta) = \dfrac{y_i^{\alpha - 1}(1 - y_i)^{\beta - 1}}{B(\alpha, \beta)}\)</span>, where <span class="math inline">\(B(\alpha, \beta) = \displaystyle \int_0^1 t^{\alpha - 1}(1 - t)^{\beta - 1}dt\)</span>.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></li>
+<li>The <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> don’t have a convenient interpretation. They are “shape” parameters. You can think of <span class="math inline">\(\alpha\)</span> as pushing the distribution to the right and <span class="math inline">\(\beta\)</span> as pushing the distribution to the left. Thus, when <span class="math inline">\(\alpha &gt; \beta\)</span>, the distribution seems pushed to the right (or skewed to the left). And when <span class="math inline">\(\alpha &lt; \beta\)</span>, the distribution seems pushed to the left (or skewed to the right). The code below plots the pdf for <span class="math inline">\(\alpha = 2\)</span> and <span class="math inline">\(\beta = 5\)</span>.</li>
+</ul>
+<div class="no-row-height column-margin column-container"><div id="fn5"><p><sup>5</sup>&nbsp;Wow that’s a lot of betas. We have three floating around: the beta distribution, the beta function <span class="math inline">\(B(\cdot)\)</span>, and the beta parameter <span class="math inline">\(\beta\)</span>.</p></div></div><div class="cell page-columns page-full">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># parameters</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co"># plot</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> dbeta, </span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>                <span class="at">args =</span> <span class="fu">list</span>(<span class="at">shape1 =</span> alpha, <span class="at">shape2 =</span> beta)) <span class="sc">+</span> </span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">0</span>, <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+<div class="no-row-height column-margin column-container"><div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01-maximum-likelihood_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div></div></div>
+<p>Suppose we collect <span class="math inline">\(N\)</span> random samples <span class="math inline">\(y = \{y_1, y_2, ..., y_N\}\)</span> and model each draw as a random variable <span class="math inline">\(X \sim \text{beta}(\alpha, \beta)\)</span>. Find the ML estimators of <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span>.</p>
+<p>In general, this is how we do ML:</p>
+<p><strong>Step 1</strong> Write down the likelihood function. Recall that we can obtain the joint density of <span class="math inline">\(y_1\)</span> AND <span class="math inline">\(y_2\)</span> AND … AND <span class="math inline">\(y_n\)</span> by multiplying the probabilities of each (assuming independence).</p>
+<p><span class="math display">\[
+\begin{aligned}
+L(\alpha, \beta) = \displaystyle\prod_{i = 1}^n \overbrace{f(y_i;\alpha, \beta)}^{\text{density}} = \displaystyle\prod_{i = 1}^n \dfrac{y_i^{\alpha - 1}(1 - y_i)^{\beta - 1}}{B(\alpha, \beta)}
+\end{aligned}
+\]</span></p>
+<p>We see again, as will be usual, that we have a complicated product that makes things challenging. However, taking the log is helpful and standard.</p>
+<p><strong>Step 2</strong> Take the log and simplify.</p>
+<p><span class="math display">\[
+\begin{aligned}
+L(\alpha, \beta) &amp;= \displaystyle\prod_{i = 1}^n \dfrac{y_i^{\alpha - 1}(1 - y_i)^{\beta - 1}}{B(\alpha, \beta)}\\
+\log L(\alpha, \beta) &amp;= \displaystyle\sum_{i = 1}^n \log \dfrac{y_i^{\alpha - 1}(1 - y_i)^{\beta - 1}}{B(\alpha, \beta)}\\
+&amp;= \displaystyle\sum_{i = 1}^n \left[ \log y_i^{\alpha - 1} + \log (1 - y_i)^{\beta - 1} - \log B(\alpha, \beta)\right]\\
+&amp;= \displaystyle\sum_{i = 1}^n \left[ (\alpha - 1)\log y_i + (\beta - 1)\log (1 - y_i) - \log B(\alpha, \beta)\right]\\
+&amp;= \displaystyle\sum_{i = 1}^n \left[ (\alpha - 1)\log y_i + (\beta - 1)\log (1 - y_i)\right] - n \log B(\alpha, \beta)\\
+\log L(\alpha, \beta) &amp;= (\alpha - 1) \sum_{i = 1}^n \log y_i + (\beta - 1) \sum_{i = 1}^n \log (1 - y_i) - n \log B(\alpha, \beta)
+\end{aligned}
+\]</span> <strong>Step 3</strong> Maximize.</p>
+<p>If we wanted, we could work on this one analytically.</p>
+<ol type="1">
+<li>Take the derivative w.r.t. <span class="math inline">\(\alpha\)</span>.</li>
+<li>Take the derivative w.r.t. <span class="math inline">\(\beta\)</span>.</li>
+<li>Set both equal to zero and solve. (Two equations and two unknowns.)</li>
+</ol>
+<p>But the last term <span class="math inline">\(B(\alpha, \beta) = \int_0^1 t^{\alpha - 1}(1 - t)^{\beta - 1}dt\)</span> is tricky! In fact, there is no analytical solution. In the examples above (Bernoulli, Poisson, and normal), there were closed-form, analytical solution. But closed-form solutions are relatively rare. In this case, and many others, we’ll need to optimize numerically.</p>
+<p>To perform the optimization, we need a data set. For now, let’s simulate a fake data set with known parameters</p>
+<div class="cell page-columns page-full">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create a fake data set</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">rbeta</span>(<span class="dv">100</span>, <span class="at">shape1 =</span> <span class="dv">10</span>, <span class="at">shape2 =</span> <span class="dv">10</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co"># print first few values</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.4287691 0.4709244 0.7053158 0.5088962 0.5163171 0.7270786</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot entire data set</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> <span class="cn">NULL</span>, <span class="fu">aes</span>(<span class="at">x =</span> y)) <span class="sc">+</span> </span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">30</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+<div class="no-row-height column-margin column-container"><div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01-maximum-likelihood_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div></div></div>
+<p>We can start by plotting the log-likelihood function. The function has two inputs (<span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span>) and outputs a log-likelihood value. To understand how these two inputs relate to the output, we can use a contour plot.<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> The plot below shows that the log-likelihood is maximized somewhere around <span class="math inline">\(\alpha = 12\)</span> and <span class="math inline">\(\beta = 12\)</span>.</p>
+<div class="no-row-height column-margin column-container"><div id="fn6"><p><sup>6</sup>&nbsp;A contour plot can visualize how a function (e.g., a log-likelihood function) changes across two parameters. Each curved line connects combinations of parameter values that produce the same value of the log-likelihood. The lines highlight regions where the log-likelihood is higher or lower (i.e., parameter combinations for which the observed data are more or less likely).</p></div></div><div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load packages</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(geomtextpath)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># set parameters</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">1</span>, <span class="dv">25</span>, <span class="at">length.out =</span> <span class="dv">100</span>)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>beta  <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">1</span>, <span class="dv">25</span>, <span class="at">length.out =</span> <span class="dv">100</span>)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="co"># compute log-likelihood for each combination of parameters</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">crossing</span>(alpha, beta) <span class="sc">%&gt;%</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">log_lik =</span> alpha<span class="sc">*</span><span class="fu">sum</span>(<span class="fu">log</span>(y)) <span class="sc">+</span> beta<span class="sc">*</span><span class="fu">sum</span>(<span class="fu">log</span>(<span class="dv">1</span> <span class="sc">-</span> y)) <span class="sc">-</span> </span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>           <span class="fu">length</span>(y)<span class="sc">*</span><span class="fu">log</span>(<span class="fu">beta</span>(alpha, beta)))</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="co"># make contour plot with labelled contours</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> alpha, </span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>                 <span class="at">y =</span> beta, </span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>                 <span class="at">z =</span> log_lik)) <span class="sc">+</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_contour_filled</span>(<span class="at">breaks =</span> <span class="fu">c</span>(<span class="cn">Inf</span>, <span class="sc">-</span><span class="dv">55</span>, <span class="sc">-</span><span class="dv">60</span>, <span class="sc">-</span><span class="dv">70</span>, <span class="sc">-</span><span class="dv">100</span>, <span class="sc">-</span><span class="dv">200</span>, <span class="sc">-</span><span class="dv">500</span>, <span class="sc">-</span><span class="cn">Inf</span>)) <span class="sc">+</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_labelcontour</span>(<span class="at">breaks =</span> <span class="fu">c</span>(<span class="cn">Inf</span>, <span class="sc">-</span><span class="dv">55</span>, <span class="sc">-</span><span class="dv">60</span>, <span class="sc">-</span><span class="dv">70</span>, <span class="sc">-</span><span class="dv">100</span>, <span class="sc">-</span><span class="dv">200</span>, <span class="sc">-</span><span class="dv">500</span>, <span class="sc">-</span><span class="cn">Inf</span>), <span class="at">straight =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01-maximum-likelihood_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>But we only need to plot the log-likelihood to help our intuition. It’s easy to give the log-likelihood to a hill-climbing algorithm and have it spit out the maximum.</p>
+<p>Let’s program the log-likelihood function in R to handle the optimization numerically.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="annotated-cell-10"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><a class="code-annotation-anchor" data-target-cell="annotated-cell-10" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-10-1" class="code-annotation-target"><a href="#annotated-cell-10-1" aria-hidden="true" tabindex="-1"></a>ll_fn <span class="ot">&lt;-</span> <span class="cf">function</span>(theta, y) {</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-10" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-10-2" class="code-annotation-target"><a href="#annotated-cell-10-2" aria-hidden="true" tabindex="-1"></a>  alpha <span class="ot">&lt;-</span> theta[<span class="dv">1</span>]</span>
+<span id="annotated-cell-10-3"><a href="#annotated-cell-10-3" aria-hidden="true" tabindex="-1"></a>  beta <span class="ot">&lt;-</span> theta[<span class="dv">2</span>]</span>
+<span id="annotated-cell-10-4"><a href="#annotated-cell-10-4" aria-hidden="true" tabindex="-1"></a>  ll <span class="ot">&lt;-</span> alpha<span class="sc">*</span><span class="fu">sum</span>(<span class="fu">log</span>(y)) <span class="sc">+</span> beta<span class="sc">*</span><span class="fu">sum</span>(<span class="fu">log</span>(<span class="dv">1</span> <span class="sc">-</span> y)) <span class="sc">-</span></span>
+<span id="annotated-cell-10-5"><a href="#annotated-cell-10-5" aria-hidden="true" tabindex="-1"></a>           <span class="fu">length</span>(y)<span class="sc">*</span><span class="fu">log</span>(<span class="fu">beta</span>(alpha, beta))</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-10" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-10-6" class="code-annotation-target"><a href="#annotated-cell-10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(ll)</span>
+<span id="annotated-cell-10-7"><a href="#annotated-cell-10-7" aria-hidden="true" tabindex="-1"></a>}</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-10" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-10" data-code-lines="1" data-code-annotation="1">The parameter vector must be the <em>first</em> argument to our log-likelihood function; all parameters must be included in this single argument. We also want our likelihood function to take a data set, so we include the numeric vector <code>y</code>.</span>
+</dd>
+<dt data-target-cell="annotated-cell-10" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-10" data-code-lines="2,3,4,5" data-code-annotation="2">Inside the function, we split the parameter vector into different parts. (This will not always be helpful, but it seems helpful here.)</span>
+</dd>
+<dt data-target-cell="annotated-cell-10" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-10" data-code-lines="6" data-code-annotation="3">The function returns the value (i.e., “height”) of the log-likelihood function. That is, the function takes a given set of parameters (and the data) and returns the log-likelihood for that set of parameters (and those data). See below for a different approach.</span>
+</dd>
+</dl>
+</div>
+</div>
+<p>The computation of the log-likelihood is complicated. It’s difficult to derive, enter, and check—it’s easy to make a mistake and difficult to understand. Instead, we can use the <code>dbeta()</code> function with <code>log = TRUE</code>, which computes the log-likelihood for the individuals observations. We can simply sum up the <code>dbeta(..., log = TRUE)</code>s to obtain the log-likelihood. This is easier do implement and understand. <code>dbeta(..., log = TRUE)</code> is also built by professionals, so it’s probably more numerically accurate than our home-spun version.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>ll_fn <span class="ot">&lt;-</span> <span class="cf">function</span>(theta, y) { </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  alpha <span class="ot">&lt;-</span> theta[<span class="dv">1</span>] </span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  beta <span class="ot">&lt;-</span> theta[<span class="dv">2</span>] </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  ll <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">dbeta</span>(y, <span class="at">shape1 =</span> alpha, <span class="at">shape2 =</span> beta, <span class="at">log =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(ll)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now let’s use <code>optim()</code> to do the maximization.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="annotated-cell-12"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><a class="code-annotation-anchor" data-target-cell="annotated-cell-12" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-12-1" class="code-annotation-target"><a href="#annotated-cell-12-1" aria-hidden="true" tabindex="-1"></a>est <span class="ot">&lt;-</span> <span class="fu">optim</span>(<span class="at">par =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>),</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-12" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-12-2" class="code-annotation-target"><a href="#annotated-cell-12-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">fn =</span> ll_fn,</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-12" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-12-3" class="code-annotation-target"><a href="#annotated-cell-12-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">y =</span> y,</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-12" data-target-annotation="4" onclick="event.preventDefault();">4</a><span id="annotated-cell-12-4" class="code-annotation-target"><a href="#annotated-cell-12-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">control =</span> <span class="fu">list</span>(<span class="at">fnscale =</span> <span class="sc">-</span><span class="dv">1</span>),</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-12" data-target-annotation="5" onclick="event.preventDefault();">5</a><span id="annotated-cell-12-5" class="code-annotation-target"><a href="#annotated-cell-12-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">method =</span> <span class="st">"Nelder-Mead"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-12" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-12" data-code-lines="1" data-code-annotation="1">First, <code>par</code> is the initial value of the parameter that <code>optim()</code> inputs as the initial values for the <em>first</em> argment to the function it is trying to optimize. This must be the correct length (i.e., our log-likehood has two parameters here).</span>
+</dd>
+<dt data-target-cell="annotated-cell-12" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-12" data-code-lines="2" data-code-annotation="2">Second, <code>fn</code> is the function we want optimized. In this case, we use <code>ll_fn</code> that we created above, which is the log-likelihood for the beta distribution.</span>
+</dd>
+<dt data-target-cell="annotated-cell-12" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-12" data-code-lines="3" data-code-annotation="3">Third, <code>y = y</code> is passed to <code>ll_fn</code>. This is important because <code>ll_fn</code> needs the data.</span>
+</dd>
+<dt data-target-cell="annotated-cell-12" data-target-annotation="4">4</dt>
+<dd>
+<span data-code-cell="annotated-cell-12" data-code-lines="4" data-code-annotation="4">Forth, <code>fnscale = -1</code> tells <code>optim()</code> to <em>maximize</em> the log-likelihood rather than mimize the log-likelihood. By default, <code>optim()</code> is a minimizer. <code>fnscale = -1</code> flips the log-likelihood over, so that <code>optim()</code> is now effectively a maximizer.</span>
+</dd>
+<dt data-target-cell="annotated-cell-12" data-target-annotation="5">5</dt>
+<dd>
+<span data-code-cell="annotated-cell-12" data-code-lines="5" data-code-annotation="5">Fifth, <code>method = "Nelder-Mead"</code> tells <code>optim()</code> to use the Nelder-Mead algorithm. Nelder-Mead is the default I use. Another good option is <code>"BFGS"</code>, which uses the Broyden–Fletcher–Goldfarb–Shanno algorithm. BFGS works really well for well-behaved likelihoods; Nelder-Mead is more robust.</span>
+</dd>
+</dl>
+</div>
+</div>
+<p><code>optim()</code> returns a list with several components.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(est)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "par"         "value"       "counts"      "convergence" "message"    </code></pre>
+</div>
+</div>
+<p>For now, we want the following:</p>
+<ul>
+<li><code>par</code>: contains the parameters that maximize the log-likelihood.</li>
+<li><code>convergence</code>: equals <code>0</code> if the algorithm successfully converged (see <code>?optim</code> for other values).</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>est<span class="sc">$</span>convergence</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>est<span class="sc">$</span>par</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 11.98350 11.91888</code></pre>
+</div>
+</div>
+<p>We can also wrap the <code>optim()</code> in a function to make obtaining the estimates a little bit easier.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>est_beta <span class="ot">&lt;-</span> <span class="cf">function</span>(y) {</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  est <span class="ot">&lt;-</span> <span class="fu">optim</span>(<span class="at">par =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>), <span class="at">fn =</span> ll_fn, <span class="at">y =</span> y,</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">control =</span> <span class="fu">list</span>(<span class="at">fnscale =</span> <span class="sc">-</span><span class="dv">1</span>),</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">method =</span> <span class="st">"BFGS"</span>) <span class="co"># for &gt;1d problems</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (est<span class="sc">$</span>convergence <span class="sc">!=</span> <span class="dv">0</span>) <span class="fu">print</span>(<span class="st">"Model did not converge!"</span>)</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  res <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">est =</span> est<span class="sc">$</span>par)</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(res)</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>ml_est <span class="ot">&lt;-</span> <span class="fu">est_beta</span>(y)</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(ml_est, <span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$est
+[1] 12.0 11.9</code></pre>
+</div>
+</div>
+<p>The beta distribution might be useful for modeling variables that lie between zero and one–proportions are a natural candidate. In baseball, a player’s batting average is the proportion of at-bats in which a player gets a hit. If estimate a beta model with batting averages from 2023 for players with at least 100 at-bats, we get <span class="math inline">\(\alpha \approx 37\)</span> and <span class="math inline">\(\beta \approx 115\)</span>.</p>
+<div class="cell page-columns page-full">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load packages</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Lahman)  <span class="co"># data from Lahman's baseball database</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="co"># create data frame with batting average</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>bstats <span class="ot">&lt;-</span> <span class="fu">battingStats</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(yearID <span class="sc">==</span> <span class="dv">2023</span>, AB <span class="sc">&gt;</span> <span class="dv">100</span>) <span class="sc">|&gt;</span>  <span class="co"># data from 2023</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(AB <span class="sc">&gt;=</span> <span class="dv">100</span>) <span class="sc">|&gt;</span>  <span class="co"># players with at least 100 at-bats</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="at">player_id =</span> playerID, <span class="at">batting_average =</span> BA) <span class="sc">|&gt;</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="sc">-</span>batting_average) <span class="sc">|&gt;</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>() <span class="sc">|&gt;</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 457
+Columns: 2
+$ player_id       &lt;chr&gt; "arraelu01", "acunaro01", "freemfr01", "diazya01", "se…
+$ batting_average &lt;dbl&gt; 0.354, 0.337, 0.331, 0.330, 0.327, 0.319, 0.316, 0.312…</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot histogram</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(bstats<span class="sc">$</span>batting_average)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+<div class="no-row-height column-margin column-container"><div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01-maximum-likelihood_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div></div><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># estimate beta model</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>theta_hat <span class="ot">&lt;-</span> <span class="fu">est_beta</span>(bstats<span class="sc">$</span>batting_average)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>theta_hat</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$est
+[1]  37.07655 114.92550</code></pre>
+</div>
+</div>
+</section>
+<section id="principle-method-of-moments" class="level2 page-columns page-full" data-number="6.6">
+<h2 data-number="6.6" class="anchored" data-anchor-id="principle-method-of-moments"><span class="header-section-number">6.6</span> Principle: Method of Moments</h2>
+<p>After seeing the idea of maximum likelihood, you might get the idea that ML is the <em>only</em> reasonable method to find point estimates. But it’s not! One competitor is called the method of moments. I’ll discuss it here <em>briefly</em>, only so you’re aware that ML isn’t the only approach. And closely related ideas you might see elsewhere are called generalized method of moments (GMM) and generalized estimating equations (GEE).</p>
+<p>Suppose a random variable <span class="math inline">\(X\)</span>. Then we refer to <span class="math inline">\(E(X^k)\)</span> as the <span class="math inline">\(k\)</span>-th moment of the distribution or population. Similarly, we refer to <span class="math inline">\(\text{avg}(x^k)\)</span> as the <span class="math inline">\(k\)</span>-th sample moment.</p>
+<p><strong>Example 1</strong>: The first moments are just <span class="math inline">\(E(X)\)</span> and <span class="math inline">\(\text{avg}(x)\)</span>, respectively.</p>
+<p><strong>Example 2</strong>: recall that <span class="math inline">\(V(X) = E \left(X^2 \right) - \left[ E(X)\right]^2\)</span>. In example the variance of <span class="math inline">\(X\)</span> is the difference between the second moment and the square of the first moment.</p>
+<p>To use the method of moments, set the first <span class="math inline">\(k\)</span> sample moments equal to the first <span class="math inline">\(k\)</span> moments of <span class="math inline">\(f\)</span> and relabel <span class="math inline">\(\theta_i\)</span> as <span class="math inline">\(\hat{\theta}_i\)</span>. Solve the system of equations for each <span class="math inline">\(\hat{\theta}_i\)</span>. This turns out to work pretty well!<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn7"><p><sup>7</sup>&nbsp;Recall that the law of large numbers guarantees that <span class="math inline">\(\text{avg}(x) \xrightarrow[]{p} E(X)\)</span>. Thus, the first sample moment (the average) converges in probability to the first moment of <span class="math inline">\(f\)</span> (the expected value or mean). By the law of the unconscious statistician, we can similarly guarantee that <span class="math inline">\(\text{avg}(x^k) \xrightarrow[]{p} E(X^k)\)</span>. Thus, the sample moments converge in distribution to moments of <span class="math inline">\(f\)</span>. Now suppose that <span class="math inline">\(f\)</span> has parameters <span class="math inline">\(\theta_1, \theta_2, ..., \theta_k\)</span> so that <span class="math inline">\(X \sim f(\theta_1, \theta_2, ..., \theta_k)\)</span>. We know (or can solve) for the moments of <span class="math inline">\(f\)</span> so that <span class="math inline">\(E(X^1) = g_1(\theta_1, \theta_2, ..., \theta_k)\)</span>, <span class="math inline">\(E(X^2) = g_2(\theta_1, \theta_2, ..., \theta_k)\)</span>, and so on.</p></div></div><p>ML estimators have nicer properties. Perhaps most importantly, they are invariant to transformation.</p>
+<p><strong>Example 3</strong>: For the exponential model, we have <span class="math inline">\(E(y) = \frac{1}{\lambda}\)</span>. Using the method of moments, we would set <span class="math inline">\(\text{avg}(y) = \frac{1}{\hat{\lambda}}\)</span> and solve for <span class="math inline">\(\lambda\)</span>.<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a> This gives us <span class="math inline">\(\hat{\lambda} = \frac{1}{\text{avg}(y)}\)</span>. In this case, ML and the method of moments produce the same estimate. This does not happen always.</p>
+<div class="no-row-height column-margin column-container"><div id="fn8"><p><sup>8</sup>&nbsp;There’s only one parameter, so we just need one moment.</p></div></div><p><strong>Example 4</strong>: For the beta model, assume <span class="math inline">\(X \sim \text{Beta}(\alpha, \beta)\)</span>. The mean and variance are <span class="math inline">\(E(X) = \frac{\alpha}{\alpha + \beta}\)</span> and <span class="math inline">\(V(X) = \frac{\alpha \beta}{(\alpha + \beta)^2 (\alpha + \beta + 1)}\)</span>. Using the method of moments, we would set <span class="math inline">\(\text{avg}(x) = \frac{\alpha}{\alpha + \beta}\)</span> and <span class="math inline">\(\text{var}(x) = \frac{\alpha \beta}{(\alpha + \beta)^2 (\alpha + \beta + 1)}\)</span>. To make the math easy, let’s set <span class="math inline">\(t = \alpha + \beta\)</span> so that <span class="math inline">\(\alpha = \text{avg}(x) \cdot t\)</span> and <span class="math inline">\(\beta = (1 - \text{avg}(x)) \cdot t\)</span>. Substituting into the variance equation gives <span class="math inline">\(\text{var}(x) = \frac{\text{avg}(x)(1 - \text{avg}(x))}{t + 1}\)</span>. Solving for <span class="math inline">\(t\)</span> gives <span class="math inline">\(t = \frac{\text{avg}(x)(1 - \text{avg}(x))}{\text{var}(x)} - 1\)</span>. Plugging back in, we get <span class="math inline">\(\hat{\alpha} = \text{avg}(x) \left( \frac{\text{avg}(x)(1 - \text{avg}(x))}{\text{var}(x)} - 1 \right)\)</span> and <span class="math inline">\(\hat{\beta} = (1 - \text{avg}(x)) \left( \frac{\text{avg}(x)(1 - \text{avg}(x))}{\text{var}(x)} - 1 \right)\)</span>. We can compare the method of moments estimates for the beta distribution to the ML estimates we obtains above. They are similar, but not identical.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># method of moments estimator for beta distribution</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>est_beta_mm <span class="ot">&lt;-</span> <span class="cf">function</span>(y) {</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  avg_x <span class="ot">&lt;-</span> <span class="fu">mean</span>(y)</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  var_x <span class="ot">&lt;-</span> <span class="fu">var</span>(y)</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>  t <span class="ot">&lt;-</span> (avg_x <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> avg_x)) <span class="sc">/</span> var_x <span class="sc">-</span> <span class="dv">1</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>  alpha_hat <span class="ot">&lt;-</span> avg_x <span class="sc">*</span> t</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>  beta_hat <span class="ot">&lt;-</span> (<span class="dv">1</span> <span class="sc">-</span> avg_x) <span class="sc">*</span> t</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>  res <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">est =</span> <span class="fu">c</span>(alpha_hat, beta_hat))</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(res)</span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a><span class="co"># estimate beta parameters using method of moments</span></span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>theta_hat_mm <span class="ot">&lt;-</span> <span class="fu">est_beta_mm</span>(bstats<span class="sc">$</span>batting_average)</span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>theta_hat_mm<span class="sc">$</span>est  <span class="co"># method of moments</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  38.70942 119.95708</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>theta_hat<span class="sc">$</span>est  <span class="co"># ml (from above)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  37.07655 114.92550</code></pre>
+</div>
+</div>
+
+
+
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../wk01/probability.html" class="pagination-link" aria-label="Probability Theory">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Probability Theory</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../wk02/02-invariance-property.html" class="pagination-link" aria-label="The Invariance Property">
+        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">The Invariance Property</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

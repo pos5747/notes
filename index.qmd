@@ -1,0 +1,11 @@
+# Introduction {.unnumbered}
+
+These are notes for my class on probability models. In these notes, I walk through the concepts and computation that support modern probability modeling in political science using both maximum likelihood and Bayesian approaches.
+
+## The Goal
+
+There are many excellent books on probability models. But I felt the need to write my own. Why? I saw three problems.
+
+1. First, some classes assign a huge textbook. It might be possible for the strongest and most motivated students to become familiar with the range of topics covered in these textbook, but impossible to master. Instead, these textbooks seem like references, something you're supposed to constantly be referring back to throughout your career. I know this because many of these books have instructors' guides that suggest what should be covered in a single semester, what should be skipped, and how one might jump around. Instead, *I want a book that students can work through beginning to end and master each idea.*
+1. Second, some classes assign a variety of sections from several books and a collection of articles. But then the story told in the readings isn't coherent. The styles are changing, the author's tastes are changing, and the notation is changing. Switching among authors can feel like whiplash when learning a difficult subject. Instead, *I want a book that tells a continuous story with consistent style, tastes, and notation.*
+1. Third, some classes assign readings that support the lecture material, without exact alignment between the two. For better or worse, the content covered by the instructor in class feels like the most important material. Thus, *I want a book that exactly aligns with the material I cover in class.* 

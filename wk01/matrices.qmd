@@ -1,0 +1,438 @@
+# Matrices
+
+## Definitions
+
+A **scalar** is a single number.
+
+A **vector** is a 1-dimensional array of numbers.^[By default, we treat these as $1 \times n$ *column* vectors (see definition of *matrix* below).]
+
+A **matrix** is a two-dimensional array of numbers.
+
+- $x$ is $n \times 1$ (column vector).
+- $x'$ is $1 \times n$ (row vector).
+- $A$ is $n \times p$ (matrix).
+
+Matrices allow us to efficiently describe and perform complex calculations involving many, many numbers (e.g., data sets).
+
+::: {#exm-matrix1}
+```{r}
+x <- c(1, 2, 3)           # 3 x 1 (column vector)
+x
+t(x)                      # 1 x 3 (row vector); t() finds transpose, see below
+A <- matrix(1:6, nrow = 2)
+A                         # 2 x 3 matrix
+```
+:::
+
+## Transpose
+
+The **transpose** of a matrix flips its rows and columns. If $A$ is $n \times p$, then $A'$ is $p \times n$.
+
+Key identity: $(AB)' = B'A'$
+
+::: {#exm-matrix2}
+```{r}
+A <- matrix(c(1, 2, 3, 4), nrow = 2)
+
+A
+t(A)  # transpose
+
+A2 <- matrix(c(1, 2, 3, 4), nrow = 2, byrow = TRUE)  # note the byrow arg
+A2
+
+
+B <- matrix(c(5, 6, 7, 8), nrow = 2)
+AB  <- A %*% B            # matrix multiplication
+t(AB)                     # transpose of product
+t(B) %*% t(A)             # product of transposes
+```
+:::
+
+## Matrix Multiplication
+
+### Definition and Computation
+
+The **matrix product** $C = AB$ is defined when the number of columns in $A$ equals the number of rows in $B$. If $A$ is an $n \times p$ matrix and $B$ is a $p \times q$ matrix, then the product $C = AB$ is an $n \times q$ matrix.
+
+The $(i, j)$-entry of $C$ is computed as the *dot product* of the $i$th row of $A$ and the $j$th column of $B$:
+
+$$
+C_{ij} = \sum_{k=1}^{p} A_{ik} B_{kj}
+$$
+
+That is, to compute the entry in the $i$th row and $j$th column of $C$, multiply corresponding elements from the $i$th row of $A$ and the $j$th column of $B$, and then sum the results.
+
+::: {#exm-matrix-mult-check}
+
+Suppose 
+$$
+A = \begin{bmatrix}
+1 & 2 & 3 & 4 \\
+5 & 6 & 7 & 8 \\
+9 & 0 & 1 & 2
+\end{bmatrix}, \quad
+B = \begin{bmatrix}
+1 & 0 \\
+0 & 1 \\
+1 & 0 \\
+0 & 1
+\end{bmatrix}
+$$.
+
+The product $C = AB$ is a $3 \times 2$ matrix. Each entry is computed as $C_{ij} = \sum_{k=1}^4 A_{ik} B_{kj}$.
+
+$$
+C = AB = \begin{bmatrix}
+1 \cdot 1 + 2 \cdot 0 + 3 \cdot 1 + 4 \cdot 0 & 1 \cdot 0 + 2 \cdot 1 + 3 \cdot 0 + 4 \cdot 1 \\
+5 \cdot 1 + 6 \cdot 0 + 7 \cdot 1 + 8 \cdot 0 & 5 \cdot 0 + 6 \cdot 1 + 7 \cdot 0 + 8 \cdot 1 \\
+9 \cdot 1 + 0 \cdot 0 + 1 \cdot 1 + 2 \cdot 0 & 9 \cdot 0 + 0 \cdot 1 + 1 \cdot 0 + 2 \cdot 1
+\end{bmatrix}
+$$
+
+Simplifying, we have 
+
+$$
+= \begin{bmatrix}
+1 + 0 + 3 + 0 & 0 + 2 + 0 + 4 \\
+5 + 0 + 7 + 0 & 0 + 6 + 0 + 8 \\
+9 + 0 + 1 + 0 & 0 + 0 + 0 + 2
+\end{bmatrix}
+= \begin{bmatrix}
+4 & 6 \\
+12 & 14 \\
+10 & 2
+\end{bmatrix}
+$$.
+
+We can confirm our answer with R.
+
+```{r}
+A <- matrix(c(
+  1, 2, 3, 4,
+  5, 6, 7, 8,
+  9, 0, 1, 2
+), nrow = 3, byrow = TRUE)
+
+B <- matrix(c(
+  1, 0,
+  0, 1,
+  1, 0,
+  0, 1
+), nrow = 4, byrow = TRUE)
+
+A %*% B
+```
+:::
+
+::: {#exm-matrix9}
+Let $X$ be a $3 \times 2$ matrix and $\beta$ a $2 \times 1$ vector. Then $X\beta$ is a $3 \times 1$ vector. $X'X$ is $2 \times 2$ and symmetric.
+
+We have a couple of famililar matrix multiplications from linear regression. $X\beta$ is especially important to us!.
+
+```{r}
+X <- matrix(c(1, 1, 1, 2, 3, 4), nrow = 3)
+beta <- c(0.5, 1)
+X %*% beta                          # linear prediction
+t(X) %*% X                          # 2 x 2 matrix
+```
+:::
+
+### Rules
+
+- **Associative**: $(AB)C = A(BC)$
+- **Distributive**: $A(B + C) = AB + AC$
+- **Not commutative**: $AB \neq BA$ in general
+
+::: {#exm-matrix5}
+```{r}
+A <- matrix(c(1, 2, 3, 4), 2)         # 2 x 2
+B <- matrix(c(5, 6, 7, 8), 2)         # 2 x 2
+C <- matrix(c(100, 200, 300, 400), 2) # 2 x 2
+
+# same
+(A %*% B) %*% C 
+A %*% (B %*% C) 
+
+# same
+A %*% (B + C) 
+(A %*% B) + (A %*% C) 
+
+# different
+A %*% B
+B %*% A 
+```
+:::
+
+## Special Matrices
+
+### Identity Matrix
+
+An **identity matrix** is a square matrix with 1s on the diagonal and 0s elsewhere. Denoted $I$.
+
+- $AI = A$
+- $IA = A$
+- $I_n$ is $n \times n$
+
+```{r}
+I <- diag(3)  # shortcut to make 3x3 identity matrix
+I
+A <- matrix(1:9, nrow = 3)
+A %*% I                           # same as A
+```
+
+### Diagonal Matrix
+
+A **diagonal matrix** has nonzero entries only on the diagonal. These matrices are often used for variances or weights.
+
+```{r}
+d <- c(2, 4, 6)
+D <- diag(d)  # shortcut to make diagonal matrix
+```
+
+### Symmetric Matrix
+
+A matrix $A$ is **symmetric** if $A' = A$.
+
+- $X'X$ is always symmetric.
+
+```{r}
+X <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 3)
+t(X) %*% X                        # symmetric
+```
+
+
+::: {#exm-matrix1}
+
+Construct the following matrices:
+
+- Identity matrix $I_2$
+- Diagonal matrix with entries $1, 2, 3$
+- Symmetric matrix $S = \begin{bmatrix}2 & 1 \\ 1 & 3\end{bmatrix}$
+
+```{r}
+I2 <- diag(2)
+diag_mat <- diag(1:3)
+S <- matrix(c(2, 1, 1, 3), 2)
+```
+
+:::
+
+::: {#exm-matrix2}
+
+Let $\Sigma = \begin{bmatrix}4 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 9\end{bmatrix}$. This is a diagonal covariance matrix.
+
+Extract the standard deviations.
+
+```{r}
+Sigma <- diag(c(4, 1, 9))
+sqrt(diag(Sigma))                # std devs
+```
+
+:::
+
+
+## Matrix Inverses and Rank
+
+### Inverse
+
+The **inverse** of a square matrix $A$ is a matrix $A^{-1}$ such that $AA^{-1} = A^{-1}A = I$.
+
+- Not all square matrices have an inverse.
+- Inverse exists only if matrix is **full rank**.
+
+```{r}
+A <- matrix(c(2, 1, 1, 1), 2)
+solve(A)                         # A-inverse
+A %*% solve(A)                   # should be identity
+```
+
+## Full Rank
+
+A matrix has **full rank** if its columns are linearly independent.
+
+- $n \times p$ matrix has full column rank if rank = $p$.
+- A square matrix is invertible if and only if full rank.
+
+```{r}
+B <- matrix(c(1, 2, 2, 4), 2)
+qr(B)$rank # use QR decomposition to find rank
+```
+
+## Why Rank Matters
+
+- If $X$ is not full rank, $X'X$ is not invertible.
+- In regression, full rank $X$ ensures a unique $\hat\beta$.
+- If rank is less than the number of columns, this means on variable is perfectly collinear with another.
+
+## Examples
+
+::: {#exm-matrix3}
+
+Let $A = \begin{bmatrix}4 & 7 \\ 2 & 6\end{bmatrix}$. Compute $A^{-1}$.
+
+```{r}
+A <- matrix(c(4, 2, 7, 6), 2)
+solve(A)
+```
+
+:::
+
+::: {#exm-matrix4}
+
+Let $C = \begin{bmatrix}1 & 2 \\ 2 & 4\end{bmatrix}$. Is $C$ invertible?
+
+```{r}
+C <- matrix(c(1, 2, 2, 4), 2)
+qr(C)$rank                      # rank < n
+```
+We can see that the second column is simple 2 times the first column, so the matrix is not full rank and thus not invertible.
+:::
+
+## Matrix Calculus (Introductory)
+
+Matrix calculus helps compute gradients and Hessians of functions involving vectors and matrices.
+
+- Used in optimization, MLE, and Bayesian computation
+- Especially common in linear models
+
+### Gradients
+
+If $f(x)$ is a **scalar-valued function** of a **vector** $x$, then the **gradient** of $f$ with respect to $x$, denoted $\frac{\partial f}{\partial x}$ or $\nabla_x f$, is a vector containing the partial derivatives of $f$ with respect to each component of $x$, so that 
+
+$$
+\frac{\partial f}{\partial x} =
+\begin{bmatrix}
+\frac{\partial f}{\partial x_1} \\
+\frac{\partial f}{\partial x_2} \\
+\vdots \\
+\frac{\partial f}{\partial x_n}
+\end{bmatrix}
+$$.
+
+This vector tells us how the function $f(x)$ changes in each coordinate direction, and it points in the direction of steepest ascent.
+
+::: {#exm-grad1}
+
+Let $f(x) = x_1^2 + 3x_2$, where $x = \begin{bmatrix} x_1 \\ x_2 \end{bmatrix}$.
+
+Then the gradient is
+
+$$
+\frac{\partial f}{\partial x} =
+\begin{bmatrix}
+\frac{\partial}{\partial x_1}(x_1^2 + 3x_2) \\
+\frac{\partial}{\partial x_2}(x_1^2 + 3x_2)
+\end{bmatrix}
+=
+\begin{bmatrix}
+2x_1 \\
+3
+\end{bmatrix}.
+$$
+
+:::
+
+
+::: {#exm-grad3}
+
+Let $f(x) = x_1^2 + x_1 x_2 + \log(x_3) + e^{x_4}$, where $x = \begin{bmatrix} x_1 \\ x_2 \\ x_3 \\ x_4 \end{bmatrix}$ and $x_3 > 0$.
+
+Then the gradient is
+
+$$
+\frac{\partial f}{\partial x} =
+\begin{bmatrix}
+\frac{\partial}{\partial x_1}(x_1^2 + x_1 x_2 + \log(x_3) + e^{x_4}) \\
+\frac{\partial}{\partial x_2}(x_1^2 + x_1 x_2 + \log(x_3) + e^{x_4}) \\
+\frac{\partial}{\partial x_3}(x_1^2 + x_1 x_2 + \log(x_3) + e^{x_4}) \\
+\frac{\partial}{\partial x_4}(x_1^2 + x_1 x_2 + \log(x_3) + e^{x_4})
+\end{bmatrix}
+=
+\begin{bmatrix}
+2x_1 + x_2 \\
+x_1 \\
+\frac{1}{x_3} \\
+e^{x_4}
+\end{bmatrix}
+$$.
+
+:::
+
+
+
+### Hessians
+
+If $f(x)$ is a **scalar-valued function** of a **vector** $x$, then the **Hessian** of $f$ with respect to $x$, denoted $\frac{\partial^2 f}{\partial x \partial x'}$, is an $n \times n$ matrix of second-order partial derivatives:
+
+$$
+\frac{\partial^2 f}{\partial x \partial x'} =
+\begin{bmatrix}
+\frac{\partial^2 f}{\partial x_1^2} & \frac{\partial^2 f}{\partial x_1 \partial x_2} & \cdots & \frac{\partial^2 f}{\partial x_1 \partial x_n} \\
+\frac{\partial^2 f}{\partial x_2 \partial x_1} & \frac{\partial^2 f}{\partial x_2^2} & \cdots & \frac{\partial^2 f}{\partial x_2 \partial x_n} \\
+\vdots & \vdots & \ddots & \vdots \\
+\frac{\partial^2 f}{\partial x_n \partial x_1} & \frac{\partial^2 f}{\partial x_n \partial x_2} & \cdots & \frac{\partial^2 f}{\partial x_n^2}
+\end{bmatrix}.
+$$
+
+The Hessian describes the curvature of $f(x)$ and is used in second-order optimization methods (like Newton’s method) and in statistical approximations (e.g., Laplace approximation).
+
+::: {#exm-hess1}
+
+Let $f(x) = x_1^2 + 3x_2$, where $x = \begin{bmatrix} x_1 \\ x_2 \end{bmatrix}$.
+
+Then the Hessian is
+
+$$
+\frac{\partial^2 f}{\partial x \partial x'} =
+\begin{bmatrix}
+\frac{\partial^2}{\partial x_1^2}(x_1^2 + 3x_2) & \frac{\partial^2}{\partial x_1 \partial x_2}(x_1^2 + 3x_2) \\
+\frac{\partial^2}{\partial x_2 \partial x_1}(x_1^2 + 3x_2) & \frac{\partial^2}{\partial x_2^2}(x_1^2 + 3x_2)
+\end{bmatrix}
+=
+\begin{bmatrix}
+2 & 0 \\
+0 & 0
+\end{bmatrix}.
+$$
+
+:::
+
+::: {#exm-hess2}
+
+Let $f(x) = x_1^2 + x_1 x_2 + \log(x_3) + e^{x_4}$, where $x = \begin{bmatrix} x_1 \\ x_2 \\ x_3 \\ x_4 \end{bmatrix}$ and $x_3 > 0$.
+
+Then the Hessian is
+
+$$
+\frac{\partial^2 f}{\partial x \partial x'} =
+\begin{bmatrix}
+2 & 1 & 0 & 0 \\
+1 & 0 & 0 & 0 \\
+0 & 0 & -\frac{1}{x_3^2} & 0 \\
+0 & 0 & 0 & e^{x_4}
+\end{bmatrix}.
+$$
+
+:::
+
+
+## Where These Ideas Arise in Modeling
+
+- **Vectors and matrices**: Represent the outcome variable $y$, a matrix of explanatory variables $X$ (usually including a column of ones in the first column), parameters $\beta$, or residuals $\epsilon$.
+- **Matrix multiplication**:
+  - Linear predictor: $X\beta$
+  - OLS and ML estimate of normal-linear model: $\hat{\beta} = (X'X)^{-1}X'y$
+- **Transpose**:
+  - Quadratic loss: $(y - X\beta)'(y - X\beta)$ 
+  - Covariance formulas: $X'\Sigma^{-1}X$
+- **Special matrices**:
+  - Identity matrix $I$: appears in prior variances, regularization, ridge regression
+  - Diagonal matrices: independent variances, prior precision matrices
+  - Symmetric matrices: $X'X$, covariance matrices, Hessians
+- **Inverses and rank**:
+  - Invert $X'X$ to find MLE in linear regression
+  - Non-full-rank $X$ causes identifiability issues
+- **Matrix calculus**:
+  - Score function: gradient of log-likelihood and log-posteriors
+  - Hessian matrix: used for Newton-Raphson and Fisher information 
+

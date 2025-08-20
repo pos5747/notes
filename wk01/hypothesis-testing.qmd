@@ -1,0 +1,141 @@
+# Hypothesis Testing
+
+# Hypotheses
+
+## Research Hypothesis
+
+In the typical hypothesis testing situation in political science, the researcher posits a theoretically interesting hypothesis $H_r$, often called the "alternative" or "research" hypothesis.
+
+::: {#def-research-hypothesis}
+A research hypothesis, denoted by $H_r$, is a claim that a quantity of interest $\theta$ lies in a specific region $B \subset \mathbb{R}$.
+:::
+
+The first step in hypothesis testing requires the researcher to precisely state the prediction that she wishes to test, usually derived from some theory. The research hypothesis might suggest that a variable has a non-zero, positive, negative, or negligible effect, among others.
+
+In almost all political science applications, $B$ is either the interval $(-\infty, 0)$, predicting a negative effect, or $(0,\infty)$, predicting a positive effect. But we can also test other research hypotheses, such as $H_r: \theta \in (m,\infty)$, where $m$ is a threshold that defines a substantively meaningful effect. Such a test would partially address the concerns raised by @mcclosky1996, \@ziliak2004, and @mccloskey2008, who note that statistical significance based on a null hypothesis of zero does not imply a substantively large effect. @rainey2014, for example, argues that political scientists should consider the hypothesis that a variable does not have a substantively meaningful effect on the outcome of interest $H_r: \theta \in (-m,m)$.
+
+### Null Hypothesis
+
+Each research hypothesis implies a particular null hypothesis. 
+
+By definition, the null hypothesis is a claim that $\theta \in B^C$, or alternatively, that the reseach hypothesis is false.
+
+::: {#def-null-hypothesis}
+The research hypothesis $H_r: \theta \in B$ implies a **null hypothesis**, denoted by $H_0$, that the quantity of interest lies in the region $B^C$ (i.e., outside the region claimed by the research hypothesis).
+:::
+
+
+Importantly, the null hypothesis does not necessarily claim that a variable has exactly no effect, although it might in some cases.
+
+## Testing Hypotheses 
+
+Once we carefully state the research hypothesis and the null implied null hypothesis, we must evaluate the hypotheses empirically. 
+
+Typically, we compute a test statistic that summarizes the amount of evidence against the null hypothesis.
+
+::: {#def-test-statistic}
+Define a **test statistic** $T({\bf{x}}) \in [0, \infty)$ as a function of the observed data $\bf{x}$ such that larger [smaller] values of $T$ indicate greater evidence against the null hypothesis $H_0$.
+:::
+
+Once we obtain the test statistic $T$, we must make a decision. We can decide to reject the null hypothesis (and therefore accept the research hypothesis as correct). Or we can decide *not* to reject the null hypothesis. 
+
+Importantly, if we do not have enough evidence against the null hypothesis to reject it, then we fail to reject the null and *the evidence is considered ambiguous*. 
+
+Researchers usually make this decision using a hypothesis test.
+
+::: {#def-hypothesis-test}
+A **hypothesis test** partitions the interval $[0,\infty)$ into two regions $R$ and $R^C$, such that if $T \in R$ then we rejects the null hypothesis (and accept the research hypothesis). If $T \in R^C$, then we fail to reject the null hypothesis. 
+:::
+
+## Errors
+
+A hypothesis test can generate two types of errors: 
+
+1. Rejecting the null hypothesis when it is actually correct, known as a Type-I error or false-positive error. 
+2. Failing to reject the null when it is actually false, a Type-II error or false-negative error. 
+
+Obviously, we prefer tests that make fewer errors to those that make more, but we also care about the specific type of error that a test makes. In particular, convention requires that tests have a low error rate (usually less than or equal to 5%) when the null hypothesis is true.
+
+
+## $p$-Value
+
+The $p$-value is a particularly useful test statistics, because many test statistics can be converted to $p$-values, which, in turn, have a common interpretation and are broadly familiar.
+
+::: {#def-hypothesis-test}
+Suppose a test statistic $T$ such that larger values indicate evidence against the null hypothesis. Define a **$p$-value** such that $p =\displaystyle \max_{\theta \in B^C} P(T({\bf X}) \geq T({\bf x}))$, where ${\bf X}$ is a hypothetical (random) data set generated when the true quantity of interest is $\theta$.
+:::
+
+$p$-values allow us to be more specific about the rejection region defined more generally in @def-hypothesis-test. In particular, we reject the null if and only if the $p$-value is less than or equal to $\alpha$, where $\alpha \in [0, 1]$.
+
+
+## Power Function and Size
+
+::: {#def-power-function}
+The **power function** of a hypothesis test is the probability of rejecting the null hypothesis for a given value of $\theta$. 
+:::
+
+Assuming we are using $p$-values as a test statistics, then the power function is $\Pr(\text{$p$-value} \leq \alpha \mid \theta)$.
+
+We want the power function to have certain properties. First, we want the probability of rejecting the null hypothesis to be low when the null hypothesis is true.
+
+::: {#def-size}
+Say that a hypothesis test is a  **size-$\alpha$ test** if the largest probability of rejecting the null hypothesis across all values of $\theta$ consistent with the null hypothesis equals^[Some authors distinguish between "size" and "level" and others use these two words interchangeably. Where authors distinguish between the two, "size" requires a strict equality here and "level" requires "less than or equal to." For most purposes, it's not critical to make the distinction, but "level" is a weaker criterion because it only bounds the size from above.] $\alpha$. 
+:::
+
+In the social sciences, we typically use size-0.05 tests. We can easily create a size-0.05 by rejecting the null hypothesis if the $p$-value is less than 0.05.
+
+## Example 
+
+Suppose we conduct a experiment comparing two conditions and test whether the difference in mean outcomes between the two groups exceeds a substantively meaningful threshold $m=1$.
+
+Let $\theta=\mu_1 - \mu_2$ denote the true difference in population means. Our research hypothesis is $H_r: \theta \in (1,\infty)$, that is, the treatment effect is not merely positive, but exceeds the threshold $m=1$.
+
+The null hypothesis is $H_0: \theta \in (-\infty, 1]$. 
+
+To evaluate these hypotheses, we compute the observed difference in sample means $\hat{\theta} = \bar{X}_1 - \bar{X}_2$ and its standard error $\text{SE}(\hat{\theta})$. Assuming a large sample size, we use the z-statistic $z = \frac{\hat{\theta} - 1}{\text{SE}(\hat{\theta})}$
+
+This statistic summarizes the evidence against the null hypothesis that $\theta \leq 1$. Larger values of $T$ provide stronger evidence against $H_0$.
+
+We reject $H_0$ if the p-value is less than or equal to $\alpha=0.05$. Since the alternative is one-sided, the p-value is $p = P(Z \geq T)$, where $Z \sim \text{Normal}(0,1)$. If $p \leq 0.05$, we reject the null and conclude that the treatment effect exceeds the threshold $m=1$. Otherwise, we fail to reject the null and conclude that the evidence is ambiguous.
+
+This test is a size-0.05 test for the null hypothesis $H_0: \theta \in (-\infty,1]$. It controls the Type I error rate at 5% when the true effect $\theta$ is equal to or less than 1 and has increasing power for values of $\theta$ greater than 1.
+
+### Power Function
+
+```{r}
+library(ggplot2)
+
+# Parameters
+alpha <- 0.05
+se_hat <- 0.3
+theta_seq <- seq(0, 2, length.out = 500)
+z_alpha <- qnorm(1 - alpha)
+
+# Correct power function:
+# Power(theta) = 1 - Φ(z_alpha - (theta - 1) / SE)
+power <- 1 - pnorm(z_alpha - (theta_seq - 1) / se_hat)
+
+# Identify null-consistent values
+df <- data.frame(
+  theta = theta_seq,
+  power = power,
+  null_region = theta_seq <= 1
+)
+
+# Plot
+ggplot(df, aes(x = theta, y = power)) +
+  geom_line(size = 1.2) +
+  geom_area(data = subset(df, null_region), aes(x = theta, y = power), fill = "gray90", alpha = 0.6) +
+  geom_hline(yintercept = alpha, linetype = "dashed", color = "red") +
+  labs(
+    title = "Power Function for One-Sided Superiority Test",
+    subtitle = expression(H[0]*":"~theta <= 1~~"vs"~~H[r]*":"~theta > 1),
+    x = expression(theta),
+    y = "Power"
+  ) +
+  theme_minimal(base_size = 14)
+```
+
+In the figure above, the shaded region corresponds to values of $\theta$ consistent with the null hypothesis. The power function increases as $\theta$ moves away from the null threshold, showing that the test becomes more likely to reject the null as the true effect grows larger. The dashed red line at 0.05 marks the size of the test.
+
+

@@ -1,0 +1,54 @@
+project:
+  type: book
+  output-dir: _book
+  
+freeze: auto  
+
+execute:
+  warning: false
+  message: false
+
+
+book:
+  title: "Modern Probability Modeling"
+  subtitle: "A Tools Approach"
+  author: "Carlisle Rainey"
+  chapters:
+    - index.qmd
+    - part: "Week One"
+      chapters: 
+      - wk01/01-frac-exp-log.qmd
+      - wk01/calculus-1.qmd
+      - wk01/calculus-2.qmd
+      - wk01/matrices.qmd
+      - wk01/probability.qmd
+      #- wk01/hypothesis-testing.qmd
+    - part: "Week Two"
+      chapters:
+      - wk02/01-maximum-likelihood.qmd
+      - wk02/02-invariance-property.qmd
+      - wk02/03-predictive-distribution.qmd
+    #- part: "Week 3"
+    #  chapters: 
+    #  - wk03/01-sampling-distribution.qmd
+    #  - wk03/02-parametric-bootstrap.qmd
+    #  - wk03/03-fisher-information-matrix.qmd
+    #  - wk03/04-evaluating-cis.qmd
+  appendices:
+    - appendicies/999-distributions.qmd
+
+bibliography: references.bib
+
+format:
+  html:
+    theme:
+      - journal
+      - brand
+    css: _styles.css  
+    citation-location: margin
+    reference-location: margin
+    
+
+
+
+

@@ -1,0 +1,80 @@
+
+# Common Distribution
+
+## Beta Distribution
+
+| Property         | Description                                                                 |
+|------------------|-----------------------------------------------------------------------------|
+| **Name**         | Beta distribution                                                           |
+| **Notation**     | $\text{Beta}(\alpha, \beta)$                                                |
+| **Parameters**   | $\alpha > 0$: shape; $\beta > 0$: shape                                     |
+| **Support**      | $x \in (0, 1)$                                                              |
+| **PDF**          | $f(x) = \dfrac{x^{\alpha - 1} (1 - x)^{\beta - 1}}{B(\alpha, \beta)}$       |
+| **CDF**          | $F(x) = I_x(\alpha, \beta)$, the regularized incomplete beta function       |
+| **Mean**         | $\dfrac{\alpha}{\alpha + \beta}$                                            |
+| **Variance**     | $\dfrac{\alpha \beta}{(\alpha + \beta)^2 (\alpha + \beta + 1)}$             |
+| **Special cases**| - $\text{Beta}(1,1)$: Uniform(0,1)  <br> - $\text{Beta}(\alpha, 1)$: Power function  <br> - Conjugate prior for Bernoulli/Binomial likelihood <br> - General case of the Kumaraswamy distribution |
+
+: Summary of the Beta distribution {#tbl-beta}
+
+## Location-Scale *t* Distribution
+
+| Property         | Description                                                                 |
+|------------------|-----------------------------------------------------------------------------|
+| **Name**         | Location-scale $t$ distribution                                             |
+| **Notation**     | $t(\mu, \sigma, \nu)$                                                       |
+| **Parameters**   | $\mu \in \mathbb{R}$: location; $\sigma > 0$: scale; $\nu > 0$: degrees of freedom |
+| **Support**      | $x \in \mathbb{R}$                                                          |
+| **PDF**          | $f(x) = \dfrac{\Gamma\left(\frac{\nu+1}{2}\right)}{\Gamma\left(\frac{\nu}{2}\right)\sqrt{\nu\pi}\sigma} \left[1 + \dfrac{1}{\nu} \left(\dfrac{x - \mu}{\sigma}\right)^2\right]^{-\frac{\nu+1}{2}}$ |
+| **CDF**          | $F(x) = T_\nu\left(\dfrac{x - \mu}{\sigma}\right)$, where $T_\nu$ is the CDF of the standard $t$ distribution |
+| **Mean**         | $\mu$ for $\nu > 1$; undefined for $\nu \le 1$                              |
+| **Variance**     | $\dfrac{\nu \sigma^2}{\nu - 2}$ for $\nu > 2$; infinite for $1 < \nu \le 2$; undefined for $\nu \le 1$ |
+| **Special cases**| - $t(0,1,\nu)$: standard Student's $t$  <br> - $\nu \to \infty$: converges to $\mathcal{N}(\mu, \sigma^2)$  <br> - Heavy-tailed alternative to the normal distribution |
+
+: Summary of the location-scale $t$ distribution {#tbl-t}
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+# Load necessary libraries
+library(ggplot2)
+library(metRology)
+library(dplyr)
+library(tidyr)
+
+# Set parameters
+mu <- 10
+sigma <- 2
+df_values <- c(1, 3, 5)
+
+# Create a sequence of x values
+x <- seq(0, 20, length.out = 500)
+
+# Create a data frame for the t-distributions
+t_dists <- expand.grid(x = x, df = df_values) |>
+  mutate(density = dt.scaled(x, df = df, mean = mu, sd = sigma),
+         distribution = paste0("t(df=", df, ")"))
+
+# Create the normal distribution data
+normal_df <- data.frame(
+  x = x,
+  density = dnorm(x, mean = mu, sd = sigma),
+  distribution = "Normal"
+)
+
+# Combine both
+plot_df <- bind_rows(t_dists, normal_df)
+
+# Plot
+ggplot(plot_df, aes(x = x, y = density, color = distribution)) +
+  geom_line(linewidth = 1) +
+  labs(
+    title = "Location-scale t-distribution vs Normal distribution",
+    x = "x",
+    y = "Density",
+    color = "Distribution"
+  ) +
+  theme_minimal()
+
+```

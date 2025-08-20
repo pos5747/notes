@@ -1,0 +1,17 @@
+.theorem, .defn, .algorithm, .exercise {
+  border-left: 4px solid #2c3e50;
+  background-color: #f9f9f9;
+  padding: 1em;
+  margin: 1em 0;
+  font-style: italic;
+  border-radius: 4px;
+}
+
+/* Optionally differentiate them */
+.thm {
+  border-color: #3498db;
+}
+
+.defn {
+  border-color: #27ae60;
+}

@@ -1,0 +1,532 @@
+# Probability Theory
+
+Probability theory gives us a language to describe uncertainty. 
+
+## Probability, Outcomes, and Events
+
+Probability theory begins with the idea of a **random process**, which an ``experiment'' or procedure whose outcome is not known in advance.
+
+::: {#def-random-process}
+A **random process** is a repeatable procedure to obtain an observation from a defined set of outcomes.
+:::
+
+::: {#def-sample}
+The **sample space** $\Omega$ is the set of all possible outcomes of a random process.
+:::
+
+::: {#def-realization}
+A **realization** of the random process produces an outcome from the sample space.
+:::
+
+::: {#def-event}
+An **event** is any subset  of outcomes $A \subseteq \Omega$. The probability of an event $A$ is denoted $\Pr(A)$.
+:::
+
+
+
+## Axioms of Probability
+
+The probability function $P(\cdot)$ must satisfy the following three rules.
+
+::: {#thm-axioms}
+Let $P$ be a probability function defined on a sample space $\Omega$. Then:
+
+1. $P(A) \ge 0$ for all events $A$.
+2. $P(\Omega) = 1$.
+3. For every infinite sequence of disjoint events $A_1, A_2, ...$, $\Pr \left( \displaystyle \bigcup_{i = 1}^\infty A_i \right) = \displaystyle \sum_{i = 1}^\infty \Pr(A_i)$.^[Some notes on Axiom 3. Examples of an infinite sequence of disjoint events? For $\Omega = \mathbb{R}^+$? For $S =\{0, 1\}$? An infinite sequence of disjoint events is difficult to conceptualize. For $S = \mathbb{R}^+$, *one* such sequence would be $[0, 1), [1, 2), [2, 3), ...$. For $S =\{0, 1\}$, *one* such sequence would be $\{0\}, \{1\}, \emptyset, \emptyset, \emptyset,...$.]
+:::
+
+::: {#def-probability}
+For a sample space $\Omega$, a **probability** is a collection of real numbers assigned to all events $A$ consistent with Axioms 1, 2, and 3.
+:::
+
+
+::: {#exm-axiom1}
+Let $\Omega = \{\text{H}, \text{T}\}$ represent the outcomes of a fair coin flip.  
+Define a probability function:  
+- $P(\{\text{H}\}) = 0.5$  
+- $P(\{\text{T}\}) = 0.5$
+
+Then the three axioms of probability are satisfied as follows:
+
+1. $P(\{\text{H}\}) = 0.5 \ge 0$, $P(\{\text{T}\}) = 0.5 \ge 0$
+1. $P(\Omega) = P(\{\text{H}, \text{T}\}) = 0.5 + 0.5 = 1$
+1. Let $A = \{\text{H}\}$, $B = \{\text{T}\}$. These are disjoint, so, $P(A \cup B) = P(A) + P(B) = 0.5 + 0.5 = 1$.
+:::
+
+
+## Some Results of the Axioms
+
+::: {#thm-empty-zero}
+$\Pr(\emptyset) = 0$. 
+:::
+
+::: {.proof}
+$\Pr(\emptyset) = \Pr(\cup_{i = 1}^\infty \emptyset) = \sum_{i = 1}^\infty \Pr(\emptyset)$. $\Pr(\emptyset) = \sum_{i = 1}^\infty \Pr(\emptyset)$ iff $\Pr(\emptyset) = 0$.
+:::
+
+::: {#thm-add-disjoint}
+For every finite sequence of $n$ disjoint events $A_1, A_2, ..., A_n$,
+\begin{equation}
+\Pr \left( \displaystyle \bigcup_{i = 1}^n A_i \right) = \displaystyle \sum_{i = 1}^n \Pr(A_i). \nonumber
+\end{equation}
+:::
+
+::: {#thm-addition-rule}
+**Addition Rule for Two Disjoint Events**  
+For disjoint events $A$ and $B$, $\Pr ( A \cup B) = \Pr(A) + \Pr(B)$
+:::
+
+::: {#thm-monotonicity}
+If event $A \subseteq B$, then $\Pr(A) \leq \Pr(B)$. 
+:::
+
+::: {#thm-bounds}
+For event $A$, $0 \leq \Pr(A) \leq 1$. 
+:::
+
+::: {#thm-addition-for-2}
+**Addition Rule for Two Events**  
+For any events $A$ and $B$, $\Pr ( A \cup B) = \Pr(A) + \Pr(B) - \Pr(A \cap B)$.
+:::
+
+::: {#thm-addition-for-3}
+**Addition Rule for Three Events**  
+For any events $A$, $B$, and $C$,
+ \begin{align*}
+ \Pr ( A \cup B \cup C) &= \Pr(A) + \Pr(B) + \Pr(C)\\
+                                   &- \left[ \Pr(A \cap B) + \Pr(A \cap C) + \Pr(B \cap C) \right]\\
+                                   &+ \Pr(A \cap B \cap C).
+                                   \end{align*}
+:::
+
+
+
+## Conditional Probability and Independence
+
+::: {#def-conditional-probability}
+**Conditional Probability**  
+$\Pr(A \mid B) = \dfrac{\Pr(A \cap B)}{\Pr(B)}$ for $\Pr(B) > 0$. If $\Pr(B) = 0$, then $\Pr(A \mid B)$ is undefined.
+:::
+
+We interpret the conditional probability $\Pr(A \mid B)$ as the probability of $A$ given that $B$ happens (or has already happened). Suppose a bag with two green marbles and two red marbles. I draw two marbles without replacement and see that the first is green. Then the probability that the second is green, given that the first is/was green, is
+
+$$
+\Pr(\text{second is green} \mid \text{first is green}) = \frac{\Pr(\text{second is green AND first is green})}{\Pr (\text{first is green)}}.
+$$
+
+::: {#def-independence}
+**Independence of Two Events**  
+Events $A$ and $B$ are **independent** if $\Pr(A \cap B) = \Pr(A) \Pr(B)$.
+
+If $\Pr(A) > 0$ and $\Pr(B) > 0$, then @def-conditional-probability and @def-independence imply that two events are independent if and only if their conditional probabilities equal their unconditional probabilities so that $\Pr(A \mid B) = \Pr(A)$ and $\Pr(B \mid A) = \Pr(B)$.
+:::
+
+::: {#def-independence-n}
+**Independence of $n$ Events**  
+Events $A_1, A_2, ..., A_n$ are independent if for every subset $A_a,..., A_m$ with at least two events, $\Pr(A_a \cap ... \cap A_m) = \Pr(A_a)...\Pr(A_m)$.
+:::
+
+The "every subset" part of @def-independence-n is subtle, so let's create a specific example. "Every subset" of $A$, $B$, and $C$ with at least two events includes the following: $\{A, B\}$, $\{A, C\}$, $\{B, C\}$, and $\{A, B, C\}$.
+
+
+## Fundamental Laws
+
+::: {#def-partition}
+To create a **partition** $B_1, B_2, ..., B_k$ of the sample space $S$, divide $S$ into $k$ disjoint events $B_1, B_2, ..., B_k$ so that $\bigcup_{i = 1}^n B_i = S$.
+:::
+
+::: {#thm-ltp}
+**Law of Total Probability**  
+Suppose a partition $B_1, B_2, ..., B_k$ of the sample space $S$ where $\Pr(B_j) > 0$ for $j = 1, 2, ... , k$. Then
+
+$$
+\Pr(A) = \sum_{j = 1}^k \Pr(B_j )\Pr(A \mid B_j).
+$$
+:::
+
+::: {#thm-bayes}
+**Bayes' Rule**  
+Suppose a partition $B_1, B_2, ..., B_k$ of the sample space $S$ where $\Pr(B_j) > 0$ for $j = 1, 2, ... , k$. Suppose an event $A$, where $\Pr(A) > 0$. Then
+
+$$
+\Pr(B_i \mid A) = \dfrac{\Pr(B_i) \Pr(A \mid B_i)}{\sum_{j = 1}^k \Pr(B_j )\Pr(A \mid B_j)}.
+$$
+:::
+
+::: {#thm-bayes-simple}
+**Bayes' Rule for a simpler partition**  
+Suppose the simple partition $B$ and $B^c$ of the sample space $S$ where $\Pr(B) > 0$ and $\Pr(B^c) > 0$. Suppose an event $A$, where $\Pr(A) > 0$. Then
+
+$$
+\Pr(B \mid A) = \dfrac{\Pr(B) \Pr(A \mid B)}{\Pr(B) \Pr(A \mid B) + \Pr(B^c) \Pr(A \mid B^c)}.
+$$
+:::
+
+
+::: {#exr-bayes-rule}
+You're considering getting tested for a rare disease that 1 in 100,000 people have. If given to a person with the disease, the test will produce a positive result 99\% of the time. If given to a person without the disease, the test will produce a positive result 0.1\% of the time (i.e., 1 in 1,000). You are given the test and the result comes back positive. Use Bayes' rule to compute the chance that you have the disease. 
+
+**Solution**
+
+Let $D$ denote having the disease and $T$ a positive test.
+
+- $P(D) = 1/100{,}000 = 10^{-5}$
+- $P(T \mid D) = 0.99$
+- $P(T \mid D^c) = 0.001$
+
+Compute the marginal
+
+$$
+P(T) \;=\; P(T\mid D)P(D) + P(T\mid D^c)P(D^c)
+= 0.99(10^{-5}) + 0.001(1-10^{-5})
+= 9.9\times 10^{-6} + 0.00099999
+= 0.00100989.
+$$
+
+Apply Bayes' rule
+
+$$
+P(D\mid T) \;=\; \frac{P(T\mid D)P(D)}{P(T)}
+= \frac{0.99 \times 10^{-5}}{0.00100989}
+\approx 0.0098.
+$$
+
+So the chance you have the disease given a positive test is about $0.98\%$ (i.e., less than 1%).
+
+:::
+
+## Random Variables
+
+A **random variable** is a numerical summary of the **possible outcomes** from a random process.
+
+::: {#def-rv}
+A **random variable** $X$ is a function from a sample space $\Omega$ to the real numbers:
+
+$$
+X: \Omega \rightarrow \mathbb{R}
+$$
+
+That is, $X(\omega)$ is the number assigned to the outcome $\omega$.
+:::
+
+The random part comes from the fact that the outcome $\omega$ is not known in advance so the value $X(\omega)$ is also uncertain.
+
+
+We often use random variables to model outcomes of interest
+
+- Whether or not someone votes
+- The time until a bill passes in a legislature
+- The ideology score of a member of Congress
+- The percentage of survey respondents who support a policy
+- The number of protests in a country during a given year
+
+We usually classify random variables as
+
+- **Discrete**: takes values in a finite or countably infinite set (e.g., $\{0, 1, 2, \dots\}$)
+- **Continuous**: takes values in an interval of the real line (e.g., $[0, \infty)$)
+
+::: {#exm-rv1}
+Let $X$ be the number protests in a given country-year.  
+- Possible values: $0, 1, 2, \dots$  
+- So $X$ is a **discrete** random variable.
+
+Let $Y$ be the time between protests.  
+- Possible values: any real number $\ge 0$  
+- So $Y$ is a **continuous** random variable.
+:::
+
+
+### Random Variables and Events
+
+Random variables allow us to define numerical events using real numbers.
+
+For example, if $X$ is the number of protests:
+
+- $X = 27$ is shorthand for the event $\{\omega \in \Omega : X(\omega) = 27\}$
+- $X \le 27$ is shorthand for $\{\omega \in \Omega : X(\omega) \le 27\}$
+
+
+
+## PMFs, PDFs, and CDFs
+
+### PMF (Probability Mass Function)
+
+A discrete random variable $X$ has a **PMF** $p(x)$ satisfying $p(x) \ge 0$ for all $x$ and $\sum_x p(x) = 1$.
+
+### PDF (Probability Density Function)
+
+A continuous random variable $X$ has a **PDF** $f(x)$ satisfying $f(x) \ge 0$ for all $x$ and $\int_{-\infty}^{\infty} f(x)\, dx = 1$.
+
+For continuous variables, probabilities are areas under the density curve:
+
+$$
+P(a \le X \le b) = \int_a^b f(x)\, dx
+$$
+
+### CDF (Cumulative Distribution Function)
+
+The **CDF** $F(x)$ of a random variable $X$ is $F(x) = P(X \le x)$.
+
+- For discrete $X$: $F(x) = \sum_{t \le x} p(t)$.
+- For continuous $X$: $F(x) = \int_{-\infty}^x f(t)\, dt$.
+
+::: {#exm-pmfpdf1}
+Let $X \sim \text{Bernoulli}(0.7)$. Then:
+
+- PMF: $P(X = 1) = 0.7$, $P(X = 0) = 0.3$
+- CDF: $F(x) = 0$ for $x < 0$, $0.3$ for $0 \le x < 1$, $1$ for $x \ge 1$
+
+Let $Y \sim \text{Exponential}(\lambda = 2)$. Then:
+
+- PDF: $f(y) = 2 e^{-2y}$ for $y \ge 0$
+- CDF: $F(y) = 1 - e^{-2y}$ for $y \ge 0$
+:::
+
+
+## Expected Value, Variance, and Moments
+
+::: {#def-expect}
+The **expected value** of a random variable $X$ is $\mathbb{E}[X] = \sum_x x \cdot p(x)$ for discrete random variables and $\mathbb{E}[X] = \int_{-\infty}^{\infty} x \cdot f(x)\, dx$ for continuous random variables.
+:::
+
+::: {#def-var}
+The **variance** of $X$ is $\text{Var}(X) = \mathbb{E}[(X - \mathbb{E}[X])^2] = \mathbb{E}[X^2] - (\mathbb{E}[X])^2$.
+:::
+
+
+::: {#exm-expect1}
+Let $X \sim \text{Poisson}(\lambda = 3)$. Then $\mathbb{E}[X] = 3$ and $\text{Var}(X) = 3$.
+
+Let $Y \sim \text{Exponential}(\lambda = 2)$. Then $\mathbb{E}[Y] = \frac{1}{2} = 0.5$ and $\text{Var}(Y) = \frac{1}{4} = 0.25$.
+:::
+
+::: {#exm-expect2}
+Let $X \sim \text{Bernoulli}(0.7)$. Compute $\mathbb{E}[X]$ and $\text{Var}(X)$.
+
+*Solution.*  
+PMF: $P(X = 1) = 0.7$, $P(X = 0) = 0.3$
+
+- $\mathbb{E}[X] = 0 \cdot 0.3 + 1 \cdot 0.7 = 0.7$
+- $\mathbb{E}[X^2] = 0^2 \cdot 0.3 + 1^2 \cdot 0.7 = 0.7$
+- $\text{Var}(X) = 0.7 - (0.7)^2 = 0.7 - 0.49 = 0.21$
+
+:::
+
+
+
+### Properties of Expectations, Variances, and Covariances
+
+::: {#thm-linearity-expect}
+## Linearity of Expectation
+For any constants $a, b$ and random variables $X, Y$,
+$\mathbb{E}[X + bY] = a\,\mathbb{E}[X] + b\,\mathbb{E}[Y]$.
+:::
+
+::: {#thm-expect-constant}
+## Expectation of a Constant 
+For any constant $c$, $\mathbb{E}[c] = c$.
+:::
+
+::: {#thm-expect-product}
+## Expectation of a Product
+For any random variables $X$ and $Y$,  
+$\mathbb{E}[XY] = \mathrm{Cov}(X, Y) + \mathbb{E}[X]\,\mathbb{E}[Y]$.  
+If $X$ and $Y$ are independent, then $\mathbb{E}[XY] = \mathbb{E}[X]\,\mathbb{E}[Y]$.
+:::
+
+::: {#thm-var-scaling}
+## Variance Scaling
+For any constant $a$, $\mathrm{Var}(aX) = a^2\,\mathrm{Var}(X)$.
+:::
+
+::: {#thm-var-sum}
+## Variance of a Sum
+For any random variables $X$ and $Y$,  
+$\mathrm{Var}(X + Y) = \mathrm{Var}(X) + \mathrm{Var}(Y) + 2\,\mathrm{Cov}(X, Y)$.  
+If $X$ and $Y$ are independent, then $\mathrm{Var}(X + Y) = \mathrm{Var}(X) + \mathrm{Var}(Y)$.
+:::
+
+::: {#thm-cov-scaling}
+## Covariance Scaling  
+For any constants $a, b$, $\mathrm{Cov}(aX, bY) = ab\,\mathrm{Cov}(X, Y)$.
+:::
+
+::: {#thm-cov-linearity}
+## Linearity of Covariance 
+For any random variables $X, Y, Z$,  
+$\mathrm{Cov}(X + Y, Z) = \mathrm{Cov}(X, Z) + \mathrm{Cov}(Y, Z)$, and similarly in the second argument.
+:::
+
+::: {#thm-indep-zero-cov}
+## Independence Implies Zero Covariance
+If $X$ and $Y$ are independent, then $\mathrm{Cov}(X, Y) = 0$.  
+However, $\mathrm{Cov}(X, Y) = 0$ does not necessarily imply independence.
+:::
+
+
+
+## Joint, Marginal, and Conditional Distributions
+
+Let $X$ and $Y$ be random variables.
+
+### Joint Distribution
+
+- Discrete: $p(x, y) = P(X = x, Y = y)$
+- Continuous: $f(x, y)$ such that $P((X, Y) \in A) = \iint_A f(x, y)\, dx\, dy$
+
+### Marginal Distribution
+
+- Discrete: $p_X(x) = \sum_y p(x, y)$
+- Continuous: $f_X(x) = \int f(x, y)\, dy$
+
+### Conditional Distribution
+
+- Discrete: $P(Y = y \mid X = x) = \frac{P(X = x, Y = y)}{P(X = x)}$
+- Continuous: $f(y \mid x) = \frac{f(x, y)}{f_X(x)}$
+
+
+::: {#exm-joint1}
+Let $X, Y$ be discrete with joint PMF:
+
+| $X \backslash Y$ | 0   | 1   |
+|------------------|-----|-----|
+| 0                | 0.1 | 0.3 |
+| 1                | 0.2 | 0.4 |
+
+Compute $P(X = 1)$, $P(Y = 0)$, and $P(Y = 1 \mid X = 1)$.
+
+*Solution.*
+
+- $P(X = 1) = 0.2 + 0.4 = 0.6$
+- $P(Y = 0) = 0.1 + 0.2 = 0.3$
+- $P(Y = 1 \mid X = 1) = \frac{0.4}{0.6} = 0.\overline{6}$
+
+:::
+
+
+
+### Covariance and Correlation
+
+::: {#def-cov}
+The **covariance** between $X$ and $Y$ is $\text{Cov}(X, Y) = \mathbb{E}[XY] - \mathbb{E}[X] \mathbb{E}[Y]$.
+:::
+
+::: {#def-cor}
+The **correlation** between $X$ and $Y$ is $\text{Corr}(X, Y) = \frac{\text{Cov}(X, Y)}{\sqrt{\text{Var}(X) \text{Var}(Y)}}$.
+:::
+
+::: {#exm-cov1}
+Let $X, Y$ be defined as in @exm-joint1. Compute $\text{Cov}(X, Y)$.
+
+*Solution.*
+
+First compute
+
+- $\mathbb{E}[X] = 0 \cdot (0.1 + 0.3) + 1 \cdot (0.2 + 0.4) = 0.6$,
+- $\mathbb{E}[Y] = 0 \cdot (0.1 + 0.2) + 1 \cdot (0.3 + 0.4) = 0.7$, and
+- $\mathbb{E}[XY] = 0 \cdot 0.1 + 0 \cdot 0.3 + 1 \cdot 0.2 + 1 \cdot 0.4 = 0.6$.
+
+Then $\text{Cov}(X, Y) = 0.6 - (0.6)(0.7) = 0.6 - 0.42 = 0.18$.
+
+:::
+
+
+## Additional Laws
+
+
+::: {#thm-lotus}
+
+## Law of the Unconscious Statistician
+
+If $X$ is a random variable and $g$ is a function, then $\mathbb{E}[g(X)] = \sum_x g(x) p(x)$ for discrete random variables and $\mathbb{E}[g(X)] = \int g(x) f(x)\, dx$ for continuous random variables.
+:::
+
+
+::: {#thm-total-exp}
+
+## Law of Total Expectation
+
+For another variable $Y$, $\mathbb{E}[X] = \mathbb{E}[\mathbb{E}[X \mid Y]]$.
+:::
+
+
+::: {#thm-total-var}
+
+## Law of Total Variance
+
+
+$$
+\text{Var}(X) = \mathbb{E}[\text{Var}(X \mid Y)] + \text{Var}(\mathbb{E}[X \mid Y])
+$$
+:::
+
+
+
+
+
+::: {#thm-changevar}
+
+## Change of Variables
+
+
+Suppose $X$ is a continuous variable with PDF $f_X(x)$ and $Y = g(X)$ is a strictly monotonic transformation. Then the PDF of $Y$ is $f_Y(y) = f_X(g^{-1}(y)) \cdot \left| \frac{d}{dy} g^{-1}(y) \right|$.
+:::
+
+
+::: {#exm-change1}
+Let $X \sim \text{Exponential}(1)$ and $Y = \log(X)$. Find the PDF of $Y$.
+
+*Solution.*
+
+Notice that $g^{-1}(y) = e^y$. Thus, $\frac{d}{dy} g^{-1}(y) = e^y$.
+
+$f_X(x) = e^{-x}$.
+
+Then $f_Y(y) = f_X(e^y) \cdot e^y = e^{-e^y} \cdot e^y = e^y \cdot e^{-e^y}$.
+
+:::
+
+
+## Normal Distribution and `*norm()` in R
+
+Let $X \sim \mathcal{N}(\mu, \sigma^2)$. Then:
+
+::: {#def-normal}
+$$
+f(x) = \frac{1}{\sqrt{2\pi \sigma^2}} \exp\left( -\frac{(x - \mu)^2}{2\sigma^2} \right)
+$$
+:::
+
+- $\mathbb{E}[X] = \mu$
+- $\text{Var}(X) = \sigma^2$
+
+
+### R Functions for Normal Distribution
+
+| Function    | Description                        |
+|-------------|------------------------------------|
+| `dnorm(x)`  | PDF: $f(x)$                        |
+| `pnorm(x)`  | CDF: $P(X \le x)$                  |
+| `qnorm(p)`  | Quantile: inverse CDF              |
+| `rnorm(n)`  | Simulate from $\mathcal{N}(\mu, \sigma^2)$ |
+
+
+::: {#exm-rnorm1}
+Simulate 5 draws from $\mathcal{N}(2, 1)$:
+
+```{r}
+rnorm(5, mean = 2, sd = 1)
+```
+:::
+
+::: {#exm-rnorm2}
+Compute $P(X \le 1.96)$ for $X \sim \mathcal{N}(0, 1)$:
+
+```{r}
+pnorm(1.96)
+```
+
+Returns approximately `0.975`.
+:::
+

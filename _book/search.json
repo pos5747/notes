@@ -1,0 +1,693 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Modern Probability Modeling",
+    "section": "",
+    "text": "Introduction\nThese are notes for my class on probability models. In these notes, I walk through the concepts and computation that support modern probability modeling in political science using both maximum likelihood and Bayesian approaches.",
+    "crumbs": [
+      "Introduction"
+    ]
+  },
+  {
+    "objectID": "index.html#the-goal",
+    "href": "index.html#the-goal",
+    "title": "Modern Probability Modeling",
+    "section": "The Goal",
+    "text": "The Goal\nThere are many excellent books on probability models. But I felt the need to write my own. Why? I saw three problems.\n\nFirst, some classes assign a huge textbook. It might be possible for the strongest and most motivated students to become familiar with the range of topics covered in these textbook, but impossible to master. Instead, these textbooks seem like references, something you’re supposed to constantly be referring back to throughout your career. I know this because many of these books have instructors’ guides that suggest what should be covered in a single semester, what should be skipped, and how one might jump around. Instead, I want a book that students can work through beginning to end and master each idea.\nSecond, some classes assign a variety of sections from several books and a collection of articles. But then the story told in the readings isn’t coherent. The styles are changing, the author’s tastes are changing, and the notation is changing. Switching among authors can feel like whiplash when learning a difficult subject. Instead, I want a book that tells a continuous story with consistent style, tastes, and notation.\nThird, some classes assign readings that support the lecture material, without exact alignment between the two. For better or worse, the content covered by the instructor in class feels like the most important material. Thus, I want a book that exactly aligns with the material I cover in class.",
+    "crumbs": [
+      "Introduction"
+    ]
+  },
+  {
+    "objectID": "wk01/01-frac-exp-log.html",
+    "href": "wk01/01-frac-exp-log.html",
+    "title": "1  Fractions, Exponents, and Logarithms",
+    "section": "",
+    "text": "1.1 Fractions\nYou can manipulate fractions with the identities below:\nSolution. The denominators match, so add the numerators to obtain \\(\\frac{1 + 3}{4} = \\frac{4}{4} = 1\\).\nSolution. Multiply numerators and denominators to obtain \\(\\frac{2 \\times 5}{3 \\times 7} = \\frac{10}{21}\\).\nSolution. Multiply by the reciprocal to obtain \\(\\frac{5}{6} \\times \\frac{9}{2} = \\frac{5 \\times 9}{6 \\times 2} = \\frac{45}{12} = \\frac{15}{4}\\).\nSolution. The denominator matches, so add the numerators to obtain \\(\\frac{x + 2x}{3} = \\frac{3x}{3} = x\\).\nSolution. Multiply across to obtain \\(\\frac{\\alpha \\times \\gamma}{\\beta \\times \\alpha}\\). Cancel \\(\\alpha\\) from numerator and denominator to obtain \\(\\frac{\\gamma}{\\beta}\\).\nSolution. The denominator matches, so add the numerators to obtain \\(\\frac{y_1 + y_2 + y_3}{n}\\).",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Fractions, Exponents, and Logarithms</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/01-frac-exp-log.html#fractions",
+    "href": "wk01/01-frac-exp-log.html#fractions",
+    "title": "1  Fractions, Exponents, and Logarithms",
+    "section": "",
+    "text": "\\(\\dfrac{a}{c} + \\dfrac{b}{c} = \\dfrac{a + b}{c}\\)\n\\(\\dfrac{a}{c} - \\dfrac{b}{c} = \\dfrac{a - b}{c}\\)\n\\(\\dfrac{a}{b} \\times \\dfrac{c}{d} = \\dfrac{a \\times c}{b \\times d}\\)\n\\(\\dfrac{\\frac{a}{b}}{\\frac{c}{d}} = \\dfrac{a}{b} \\times \\dfrac{d}{c} = \\dfrac{a \\times d}{b \\times c}\\)\n\n\n\n\n\n\n\nWarning\n\n\n\nPotential Pitfalls\n\nDo not add fractions with different denominators directly. For example, \\(\\frac{1}{2} + \\frac{1}{3} \\ne \\frac{2}{5}\\) and \\(\\frac{1}{a} + \\frac{1}{b} \\ne \\frac{1}{a + b}\\).\n\n\n\n\nExample 1.1 Compute \\(\\frac{1}{4} + \\frac{3}{4}\\).\n\n\n\nExample 1.2 Compute \\(\\frac{2}{3} \\times \\frac{5}{7}\\).\n\n\n\nExample 1.3 Compute \\(\\dfrac{\\frac{5}{6}}{\\frac{2}{9}}\\), which is the same as \\({\\frac{5}{6}} \\div {\\frac{2}{9}}\\).\n\n\n\nExample 1.4 Simplify \\(\\frac{x}{3} + \\frac{2x}{3}\\).\n\n\n\nExample 1.5 Simplify \\(\\frac{\\alpha}{\\beta} \\times \\frac{\\gamma}{\\alpha}\\).\n\n\n\nExample 1.6 Simplify \\(\\frac{y_1}{n} + \\frac{y_2 + y_3}{n}\\).",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Fractions, Exponents, and Logarithms</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/01-frac-exp-log.html#exponents-and-logarithms",
+    "href": "wk01/01-frac-exp-log.html#exponents-and-logarithms",
+    "title": "1  Fractions, Exponents, and Logarithms",
+    "section": "1.2 Exponents and Logarithms",
+    "text": "1.2 Exponents and Logarithms\nExponents and logarithms are inverse operations. If \\(b^x = y\\), then \\(\\log_b(y) = x\\). In this course, we mostly use the natural logarithm, which uses base \\(e \\approx 2.718\\). We denote the natural log as \\(\\log(x)\\) (not as \\(\\ln(x)\\)). In plots, we’ll sometimes use the base-10 exponents and logarithms \\(10^x\\) and \\(\\log_{10}(x)\\).\nYou can manipulate exponents and logarithms with the identities below:\n\n\\(e^{\\log(x)} = x\\) for \\(x &gt; 0\\)\n\\(\\log(e^x) = x\\)\n\\(\\log(ab) = \\log(a) + \\log(b)\\)\n\\(\\log\\left(\\dfrac{a}{b}\\right) = \\log(a) - \\log(b)\\)\n\\(\\log(a^b) = b\\log(a)\\)\n\\(a^{\\log(b)} = b^{\\log(a)}\\)\n\n\n\n\n\n\n\nCommon Pitfalls\n\n\n\n\n\\(\\log(a + b) \\ne \\log(a) + \\log(b)\\)\n\\(\\log(a - b) \\ne \\log(a) - \\log(b)\\)\n\\(\\log(x)\\) is undefined for \\(x \\le 0\\)\n\n\n\n\nExample 1.7 Evaluate \\(\\log(e^3)\\).\n\nSolution. \\(\\log(e^3) = 3 \\log(e) = 3\\).\n\nExample 1.8 Evaluate \\(e^{\\log(7)}\\).\n\nSolution. Since exponentiation and log are inverse operations, so \\(e^{\\log(7)} = 7\\). In general, \\(e^{\\log(x)} = x\\).\n\nExample 1.9 Simplify then evaluate \\(\\log(8) + \\log(2)\\).\n\nSolution. \\(\\log(8 \\times 2) = \\log(16)\\). Using R, \\(\\log(16) \\approx 2.7726\\).\n\nlog(16)\n\n[1] 2.772589\n\n\n\nExample 1.10 Simplify \\(\\log(a^3b^2)\\).\n\nSolution. \\(\\log(a^3b^2) = \\log(a^3) + \\log(b^2) = 3\\log(a) + 2\\log(b)\\)\n\nExample 1.11 Simplify \\(\\log\\left(\\dfrac{x^4}{y^2}\\right)\\).\n\nSolution. \\(\\log\\left(\\dfrac{x^4}{y^2}\\right) = \\log(x^4) - \\log(y^2) = 4\\log(x) - 2\\log(y)\\)\n\nExample 1.12 Simplify \\(\\log\\left(\\prod_{i=1}^n y_i\\right)\\).\n\nSolution. \\(\\log\\left(\\prod_{i=1}^n y_i\\right) = \\sum_{i=1}^n \\log(y_i)\\). This follows from the identity \\(\\log(ab) = \\log(a) + \\log(b)\\). See the example below in R.\n\n# example\ny &lt;- 1:5\nlog(prod(y))\n\n[1] 4.787492\n\nsum(log(y))\n\n[1] 4.787492",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Fractions, Exponents, and Logarithms</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/01-frac-exp-log.html#solving-equations",
+    "href": "wk01/01-frac-exp-log.html#solving-equations",
+    "title": "1  Fractions, Exponents, and Logarithms",
+    "section": "1.3 Solving Equations",
+    "text": "1.3 Solving Equations\nTo solve an equation, find all values of the variable(s) that make the equation true.\n\nExample 1.13 Solve \\(\\frac{x}{2} + 3 = 5\\).\n\nSolution. Subtract 3 from both sides to obtain \\(\\frac{x}{2} = 2\\). Multiply both sides by 2 to obtain \\(x = 4\\).\n\nExample 1.14 Solve \\(\\frac{2y - 1}{3} = 3\\).\n\nSolution. Multiply both sides by 3 to obtain \\(2y - 1 = 9\\). Add 1 to obtain \\(2y = 10\\). Divide by 2 to obtain \\(y = 5\\).\n\nExample 1.15 Solve \\(x^2 = 4\\).\n\nSolution. Take square roots to obtain \\(x = \\pm 2\\). Notice that there are two solutions. The plot below shows that the curve \\(x^2 - 4\\) crosses the \\(x\\)-axis in two places (i.e., at \\(x = \\pm 2\\), which are the solutions we found above).\n\n# load packages\nlibrary(ggplot2)\n\n# create function\nf &lt;- function(x) x^2 - 4\n\n# plot the function to see the two solutions\nggplot() +\n  xlim(-3, 3) + \n  stat_function(fun = f) +\n  geom_hline(yintercept = 0, linetype = \"dashed\") +\n  labs(y = \"f(x)\", \n       x = \"x\")\n\n\n\n\n\n\n\n\n\nExample 1.16 Solve \\(e^x = 7\\).\n\nSolution. Take natural logs to obtain \\(x = \\log(7)\\). Using R, \\(\\log(y) \\approx 1.9459\\).\n\nlog(7)\n\n[1] 1.94591\n\n\n\nExample 1.17 Solve \\(\\log(x) = 2\\).\n\nSolution. Exponentiate both sides to obtain \\(x = e^2\\). Using R, \\(e^2 \\approx 7.3891\\).\n\nexp(2)\n\n[1] 7.389056\n\n\n\nExample 1.18 Solve \\(2^x = 16\\).\n\nSolution. Recognize that \\(2^4 = 16\\), so \\(x = 4\\).\nAlternatively, use logs to obtain\n\\[\\begin{align}\n\\log(2^x) &= \\log(16) \\\\\nx \\log(2) &= \\log(16) \\\\\nx &= \\frac{\\log(16)}{\\log(2)}.\n\\end{align}\\]\nUsing R, we can see that \\(\\frac{\\log(16)}{\\log(2)} = 4\\).\n\nlog(16) / log(2)\n\n[1] 4\n\n\n\n\n\n\n\n\nChange-of-Base Formula\n\n\n\nYou might have noticed that \\(\\log(16)/\\log(2) = 4\\) by recalling the change-of-base formula \\(\\log_b(a) = \\frac{\\log(a)}{\\log(b)}\\). In this case, we have \\(\\frac{\\log(16)}{\\log(2)} = \\log_2(16)\\) (i.e., “To what power must I raise 2 to get 16?”). Since \\(2^4 = 16\\), we have \\(\\log_2(16) = 4\\). Thus \\(\\frac{\\log(16)}{\\log(2)} = 4\\). If we had been clever, we wouldn’t have needed a calculator.\n\n\n\nExample 1.19 Solve \\(\\log\\left(\\frac{y}{3}\\right) = 2\\).\n\nSolution. Exponentiate both sides to obtain \\(\\frac{y}{3} = e^2\\). Multiply both sides by 3 to obtain \\(y = 3e^2\\). Use R to compute \\(3e^2 \\approx 22.167\\).\n\n3 * exp(2)\n\n[1] 22.16717\n\n\n\nExample 1.20 Solve \\(\\log(x^2 + 1) = 3\\).\n\nSolution. Exponentiate both sides to obtain \\(x^2 + 1 = e^3\\). Subtract 1 from both sides to obtain \\(x^2 = e^3 - 1\\). Take the square root to obtain \\(x = \\pm \\sqrt{e^3 - 1} \\approx \\pm 4.369\\).\n\nsqrt(exp(3) - 1)\n\n[1] 4.3687\n\n\n\nExample 1.21 Solve \\(3a + 2 = 5a - 4\\).\n\nSolution. Subtract \\(3a\\) from both sides to obtain \\(2 = 2a - 4\\). Add 4 to obtain \\(6 = 2a\\). Divide by 2 to obtain \\(a = 3\\).\n\nExample 1.22 Solve \\(\\alpha^2 + 3\\alpha = 0\\).\n\nSolution. Factor the left-hand side to obtain \\(\\alpha(\\alpha + 3) = 0\\). Then it’s clear that \\(\\alpha = 0\\) or \\(\\alpha = -3\\). The plot below shows the two solutions.\n\n# load packages\nlibrary(ggplot2)\n\n# create function\nf &lt;- function(x) x^2 + 3*x\n\n# plot the function to see the two solutions\nggplot() +\n  xlim(-4, 2) + \n  stat_function(fun = f) +\n  geom_hline(yintercept = 0, linetype = \"dashed\") +\n  labs(y = \"f(x)\", \n       x = \"x\")\n\n\n\n\n\n\n\n\n\nExample 1.23 Solve \\(y_1 - 2y_2 = 4\\) for \\(y_1\\) in terms of \\(y_2\\).\n\nSolution. Add \\(2y_2\\) to both side to obtain \\(y_1 = 4 + 2y_2\\).",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Fractions, Exponents, and Logarithms</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/calculus-1.html",
+    "href": "wk01/calculus-1.html",
+    "title": "2  Derivatives",
+    "section": "",
+    "text": "2.1 Definition\nFirst derivatives describe the rate of change of a function.\nSolution. Use the definition of the derivative: \\(f'(x) = \\lim_{h \\to 0} \\frac{f(x + h) - f(x)}{h}\\).\nWe have: - \\(f(x + h) = (x + h)^2 = x^2 + 2xh + h^2\\) - \\(f(x + h) - f(x) = x^2 + 2xh + h^2 - x^2 = 2xh + h^2\\) - \\(\\frac{f(x + h) - f(x)}{h} = \\frac{2xh + h^2}{h} = 2x + h\\)\nTaking the limit as \\(h \\to 0\\), we get \\(f'(x) = \\lim_{h \\to 0} (2x + h) = 2x\\).",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Derivatives</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/calculus-1.html#definition",
+    "href": "wk01/calculus-1.html#definition",
+    "title": "2  Derivatives",
+    "section": "",
+    "text": "Definition 2.1 The derivative of a function \\(f\\) at a point \\(x\\) is defined as \\(f'(x) = \\frac{df}{dx} = \\lim_{h \\to 0} \\frac{f(x + h) - f(x)}{h}\\). If this limit exists, then \\(f\\) is differentiable at \\(x\\).\n\n\nExample 2.1 Let \\(f(x) = x^2\\). Use the definition to compute \\(f'(x)\\).",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Derivatives</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/calculus-1.html#physical-interpretation-of-derivatives",
+    "href": "wk01/calculus-1.html#physical-interpretation-of-derivatives",
+    "title": "2  Derivatives",
+    "section": "2.2 Physical Interpretation of Derivatives",
+    "text": "2.2 Physical Interpretation of Derivatives\nSuppose you’re driving a car, and you know how far you’ve traveled at every point in time. This distance is given by the function \\(f(x)\\), where \\(x\\) is time and \\(f(x)\\) is the distance you’ve traveled (say, in meters).\nBut if I ask you how fast you are going at a specific point, that’s a different question. You’re no longer asking about distance. Instead, you’re asking about rate of change.\nDerivatives help us learn about rate of change from a function describing distance traveled.\nThe derivative describes a quantity is changing at a given moment. If \\(f(x)\\) is your position, then \\(f'(x)\\) is your velolcity—-how fast your position is changing. And \\(f''(x)\\) is your acceleration—how fast your velocity is changing. This idea extends naturally to even higher-order changes, in the table below.\n\n\n\n\n\n\n\n\n\n\nOrder\nNotation\nName\nInterpretation\nUnits (if \\(x\\) is time)\n\n\n\n\n0\n\\(f(x)\\)\nPosition\nWhere you are\nMeters (m)\n\n\n1\n\\(f'(x)\\)\nVelocity\nHow fast you’re moving\nMeters per second (m/s)\n\n\n2\n\\(f''(x)\\)\nAcceleration\nHow fast your speed is changing\nMeters per second² (m/s²)\n\n\n3\n\\(f^{(3)}(x)\\)\nJerk\nHow fast your acceleration changes\nMeters per second³ (m/s³)\n\n\n4\n\\(f^{(4)}(x)\\)\nSnap (Jounce)\nRate of change of jerk\nMeters per second⁴ (m/s⁴)\n\n\n5\n\\(f^{(5)}(x)\\)\nCrackle\nRarely used\nMeters per second⁵ (m/s⁵)\n\n\n6\n\\(f^{(6)}(x)\\)\nPop\nEven more rarely used\nMeters per second⁶ (m/s⁶)\n\n\n\nFor example, when you are taking off in a jet, you might have felt your head pressed harder and harder into your headrest. This is because \\(f^{(3)}(x)\\) (i.e., “jerk”) is positive. The jet is accelerating at an increasing rate, or the jet’s speed is increasing at an increasing rate. In a car, jerk is generally what makes aggressive driving feel uncomfortable. Accelerating at a constant rate (i.e., jerk equals zero) to the desired speed and then maintaining that speed (i.e., again, jerk equals zero) feels comfortable.\nThe key idea is this: derivatives measure how things change. This concept is fundamental to both statistical theory and social science.\n\n\n2.2.1 Why this matters\nMany real-world questions are really about change:\n\nHow fast is inflation rising?\nAt what point is profit maximized?\nHow steep is this hill at this point?\nHow quickly is a treatment effect decaying over time?\n\nAll of these questions require derivatives. And to understand them, you need to develop a feel for what a derivative is. That’s what we’ll do next.",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Derivatives</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/calculus-1.html#rules-for-derivatives",
+    "href": "wk01/calculus-1.html#rules-for-derivatives",
+    "title": "2  Derivatives",
+    "section": "2.3 Rules for Derivatives",
+    "text": "2.3 Rules for Derivatives\nThe rules below describe how differentiate common types of functions. Each rule can be derived from Definition 2.1.\n\n2.3.1 Constant Rule\n\nTheorem 2.1 (Constant Rule) If \\(f(x) = a\\) (a constant), then \\(f'(x) = 0\\).\n\n\nExample 2.2 Let \\(f(x) = 5\\). Compute \\(f'(x)\\).\n\nSolution. The derivative of a constant is zero: \\(f'(x) = 0\\). Remember that a derivative is a rate of change. A constant function is not changing, so it makes sense that the derivative is zero.\n\n\n\n2.3.2 Power Rule\n\nTheorem 2.2 (Power Rule) If \\(f(x) = x^n\\), then \\(f'(x) = nx^{n-1}\\).\n\n\nProof. This proof assumes that \\(n\\) is a positive integer. However, Theorem 2.2 holds for all real numbers.\nStart with definition of the derivative from Definition 2.1 \\(f'(x) = \\lim_{h \\to 0} \\frac{f(x + h) - f(x)}{h}\\).\nLet \\(f(x) = x^n\\). Then \\(f'(x) = \\lim_{h \\to 0} \\frac{(x + h)^n - x^n}{h}\\)\nExpand \\((x + h)^n\\) using the binomial theorem so that\n\\[\n(x + h)^n = \\sum_{k = 0}^n \\binom{n}{k} x^{n - k} h^k = x^n + \\binom{n}{1} x^{n - 1} h + \\binom{n}{2} x^{n - 2} h^2 + \\cdots + h^n.\n\\]\nSubtract \\(x^n\\) so that\n\\[\n(x + h)^n - x^n = \\binom{n}{1} x^{n - 1} h + \\binom{n}{2} x^{n - 2} h^2 + \\cdots + h^n.\n\\]\nDivide by \\(h\\) so that\n\\[\n\\frac{(x + h)^n - x^n}{h} = \\binom{n}{1} x^{n - 1} + \\binom{n}{2} x^{n - 2} h + \\cdots + h^{n - 1}.\n\\]\nTake the limit as \\(h \\to 0\\) so that\n\\[\nf'(x) = \\lim_{h \\to 0} \\left[\\binom{n}{1} x^{n - 1} + \\binom{n}{2} x^{n - 2} h + \\cdots + h^{n - 1} \\right] = \\binom{n}{1} x^{n - 1} = n x^{n - 1}\n\\]\n\n\nExample 2.3 Let \\(f(x) = x^3\\). Compute \\(f'(x)\\).\n\nSolution. Using the power rule \\(f'(x) = 3x^2\\).\n\nExample 2.4 Let \\(f(x) = x^5 - 2x^2 + 7\\). Compute \\(f'(x)\\).\n\nSolution. Notice that this function is a sum of three functions. Differentiate each term using the power rule, giving \\(f'(x) = 5x^4 - 4x + 0 = 5x^4 - 4x\\).\n\n\n\n2.3.3 Exponential Rule\n\nTheorem 2.3 (Exponential Rule) If \\(f(x) = e^x\\), then \\(f'(x) = e^x\\).\n\n\n\n2.3.4 Logarithm Rule\n\nTheorem 2.4 (Logarithm Rule) If \\(f(x) = \\log(x)\\), then \\(f'(x) = \\frac{1}{x}\\) for \\(x &gt; 0\\).\n\n\n\n2.3.5 Sum Rule\n\nTheorem 2.5 (Sum Rule) If \\(f(x) = g(x) + h(x)\\), then \\(f'(x) = g'(x) + h'(x)\\).\n\n\nExample 2.5 Let \\(f(x) = x^2 + \\log(x)\\). Compute \\(f'(x)\\).\n\nSolution. Differentiate each term so that \\(f'(x) = 2x + \\frac{1}{x}\\).\n\n\n2.3.6 Product Rule\n\nTheorem 2.6 (Product Rule) If \\(f(x) = g(x) h(x)\\), then \\(f'(x) = g'(x) h(x) + g(x) h'(x)\\).\n\n\nExample 2.6 Let \\(f(x) = x^2 \\cdot \\log(x)\\). Compute \\(f'(x)\\).\n\nSolution. Let \\(g(x) = x^2\\) and \\(h(x) = \\log(x)\\). Then \\(g'(x) = 2x\\) and \\(h'(x) = \\frac{1}{x}\\). Apply the product rule so that\n\\[\nf'(x) = 2x \\cdot \\log(x) + x^2 \\cdot \\frac{1}{x} = 2x \\log(x) + x.\n\\]\n\n\n2.3.7 Quotient Rule\n\nTheorem 2.7 (Quotient Rule) If \\(f(x) = \\frac{g(x)}{h(x)}\\), then \\(f'(x) = \\frac{g'(x) h(x) - g(x) h'(x)}{[h(x)]^2}\\).\n\n\nExample 2.7 Let \\(f(x) = \\frac{\\log(x)}{x^2}\\). Compute \\(f'(x)\\).\n\nSolution. Let \\(g(x) = \\log(x)\\) and \\(h(x) = x^2\\). Then \\(g'(x) = \\frac{1}{x}\\) and \\(h'(x) = 2x\\). Apply the quotient rule so that\n\\[\nf'(x) = \\frac{(1/x) \\cdot x^2 - \\log(x) \\cdot 2x}{x^4} = \\frac{x - 2x \\log(x)}{x^4} = \\frac{1 - 2 \\log(x)}{x^3}.\n\\]\n\n\n2.3.8 Chain Rule\nThe chain rule is really important! We can think of many functions \\(f\\) as a function of a function. In this case, This allows us to use the rules above, which apply to relatively simple functions, to much more complicated function.\n\nTheorem 2.8 (Chain Rule) If \\(f(x) = h(g(x))\\), then \\(f'(x) = h'(g(x)) \\cdot g'(x)\\).\n\n\nExample 2.8 Let \\(f(x) = \\log(x^2 + 1)\\). Compute \\(f'(x)\\).\n\nSolution. We have \\(f(x) = \\log(x^2 + 1)\\) (complicated!). But let \\(g(x) = x^2 + 1\\) (simple!) and \\(h(u) = \\log(u)\\) (simple!). Then \\(g'(x) = 2x\\) and \\(h'(u) = \\frac{1}{u}\\). Then \\(f'(x) = \\frac{1}{x^2 + 1} \\cdot 2x = \\frac{2x}{x^2 + 1}\\).\n\nExample 2.9 Let \\(f(x) = \\exp(x^2 + 3x)\\). Compute \\(f'(x)\\).\n\nSolution. We have \\(f(x) = \\exp(x^2 + 3x)\\) (complicated!). But let \\(g(x) = x^2 + 3x\\) (simple!) and \\(h(u) = \\exp(u)\\) (simple!). Then \\(g'(x) = 2x + 3\\) and \\(h'(u) = \\exp(u)\\). So \\(f'(x) = \\exp(x^2 + 3x) \\cdot (2x + 3)\\).\n\nExample 2.10 Let \\(f(x) = x^2 \\cdot \\exp(x^2)\\). Compute \\(f'(x)\\).\n\nSolution. We have \\(f(x) = x^2 \\cdot \\exp(x^2)\\). We can use the product rule. Breaking it into pieces, we have \\(g(x) = x^2\\) (simple!) and \\(h(x) = \\exp(x^2)\\) (we can handle this with the chain rule).\nApply the product rule:\n\n\\(g'(x) = 2x\\)\nTo differentiate \\(h(x) = \\exp(x^2)\\), use the chain rule. Let \\(u(x) = x^2\\) and \\(h(u) = \\exp(u)\\), so \\(h'(x) = \\exp(x^2) \\cdot 2x\\).\n\n\\[\nf'(x) = g'(x) \\cdot h(x) + g(x) \\cdot h'(x) = 2x \\cdot \\exp(x^2) + x^2 \\cdot (2x \\cdot \\exp(x^2)) = 2x \\exp(x^2) + 2x^3 \\exp(x^2)\n\\]\nYou could factor if you wanted: \\(f'(x) = 2x \\exp(x^2)(1 + x^2)\\).",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Derivatives</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/calculus-1.html#mixed-examples",
+    "href": "wk01/calculus-1.html#mixed-examples",
+    "title": "2  Derivatives",
+    "section": "2.4 Mixed Examples",
+    "text": "2.4 Mixed Examples\nThese examples require two or more rules.\n\nExample 2.11 Let \\(f(x) = x^2 \\cdot \\log(x^2 + 1)\\). Compute \\(f'(x)\\).\n\nSolution. This is a product of \\(x^2\\) and \\(\\log(x^2 + 1)\\).\nLet \\(g(x) = x^2\\) and \\(h(x) = \\log(x^2 + 1)\\).\n\n\\(g'(x) = 2x\\)\n\\(h'(x) = \\frac{1}{x^2 + 1} \\cdot 2x = \\frac{2x}{x^2 + 1}\\) by the chain rule\n\nApply the product rule:\n\\(f'(x) = 2x \\cdot \\log(x^2 + 1) + x^2 \\cdot \\frac{2x}{x^2 + 1}\\)\nSimplify: \\(f'(x) = 2x \\log(x^2 + 1) + \\frac{2x^3}{x^2 + 1}\\)\n\nExample 2.12 Let \\(f(x) = \\frac{x^2}{\\log(x)}\\). Compute \\(f'(x)\\).\n\nSolution. This is a quotient with \\(g(x) = x^2\\), \\(g'(x) = 2x\\), \\(h(x) = \\log(x)\\), \\(h'(x) = \\frac{1}{x}\\).\nApply the quotient rule:\n\\(f'(x) = \\frac{2x \\cdot \\log(x) - x^2 \\cdot \\frac{1}{x}}{(\\log(x))^2}\\)\nSimplify numerator: \\(2x \\log(x) - x\\)\nFinal result: \\(f'(x) = \\frac{2x \\log(x) - x}{(\\log(x))^2}\\)\n\nExample 2.13 Let \\(f(x) = \\log(e^{x^2})\\). Compute \\(f'(x)\\).\n\nSolution. Use the identity \\(\\log(e^u) = u\\):\nSo \\(f(x) = x^2\\), and \\(f'(x) = 2x\\).\nAlternatively, apply the chain rule directly:\nLet \\(g(x) = e^{x^2}\\), so \\(g'(x) = e^{x^2} \\cdot 2x\\)\nThen \\(f(x) = \\log(g(x))\\), so \\(f'(x) = \\frac{1}{g(x)} \\cdot g'(x) = \\frac{1}{e^{x^2}} \\cdot (e^{x^2} \\cdot 2x) = 2x\\)\n\nExample 2.14 Let \\(f(x) = \\exp(x) \\cdot \\log(x^2 + 1)\\). Compute \\(f'(x)\\).\n\nSolution. This is a product rule with a chain inside.\nLet \\(g(x) = \\exp(x)\\), \\(g'(x) = \\exp(x)\\)\nLet \\(h(x) = \\log(x^2 + 1)\\), \\(h'(x) = \\frac{2x}{x^2 + 1}\\)\nApply product rule:\n\\(f'(x) = \\exp(x) \\cdot \\log(x^2 + 1) + \\exp(x) \\cdot \\frac{2x}{x^2 + 1}\\)\n\nExample 2.15 Let \\(f(x) = \\frac{x^3 \\cdot \\log(x)}{e^x}\\). Compute \\(f'(x)\\).\n\nSolution. This is a quotient with a product in the numerator.\nLet numerator \\(u(x) = x^3 \\cdot \\log(x)\\) and denominator \\(v(x) = e^x\\)\n\n\\(u'(x) = 3x^2 \\cdot \\log(x) + x^3 \\cdot \\frac{1}{x} = 3x^2 \\log(x) + x^2\\)\n\\(v'(x) = e^x\\)\n\nApply the quotient rule:\n\\(f'(x) = \\frac{u'(x) \\cdot v(x) - u(x) \\cdot v'(x)}{(e^x)^2}\\)\nSubstitute: \\(f'(x) = \\frac{[3x^2 \\log(x) + x^2] \\cdot e^x - x^3 \\log(x) \\cdot e^x}{e^{2x}}\\)\nFactor \\(e^x\\) in the numerator: \\(f'(x) = \\frac{e^x \\cdot [3x^2 \\log(x) + x^2 - x^3 \\log(x)]}{e^{2x}} = \\frac{3x^2 \\log(x) + x^2 - x^3 \\log(x)}{e^x}\\)",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Derivatives</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/calculus-1.html#higher-order-derivatives",
+    "href": "wk01/calculus-1.html#higher-order-derivatives",
+    "title": "2  Derivatives",
+    "section": "2.5 Higher-Order Derivatives",
+    "text": "2.5 Higher-Order Derivatives\nOnce we compute the first derivative \\(f'(x)\\), we can keep differentiating.\n\nThe second derivative measures how the rate of change itself is changing — that is, the curvature of the function.\nThe third derivative measures how the curvature is changing.\nThis process can continue as long as the function is smooth enough.\n\n\n2.5.1 Notation\n\n\\(f'(x) = \\frac{df}{dx}\\): first derivative\n\\(f''(x) = \\frac{d^2f}{dx^2}\\): second derivative\n\\(f^{(3)}(x) = \\frac{d^3f}{dx^3}\\): third derivative\nIn general, \\(f^{(n)}(x)\\) is the \\(n\\)th derivative of \\(f\\)\n\n\n\n2.5.2 Examples\n\nExample 2.16 Let \\(f(x) = x^3\\). Compute the second and third derivatives.\n\nSolution. First derivative: \\(f'(x) = 3x^2\\)\nSecond derivative: \\(f''(x) = 6x\\)\nThird derivative: \\(f^{(3)}(x) = 6\\)\nSo \\(f^{(n)}(x) = 0\\) for all \\(n \\ge 4\\).\n\n\nExample 2.17 Let \\(f(x) = x^2 \\log(x)\\). Compute the second derivative.\n\nSolution.\nWe already computed the first derivative:\n\\(f'(x) = 2x \\log(x) + x\\)\nDifferentiate again:\n\nFirst term: \\(d/dx[2x \\log(x)] = 2 \\log(x) + 2\\)\nSecond term: \\(d/dx[x] = 1\\)\n\nSo \\(f''(x) = 2 \\log(x) + 2 + 1 = 2 \\log(x) + 3\\)\n\nHigher-order derivatives are especially useful in:\n\nOptimization: Second derivatives help determine concavity and maxima/minima.\nTaylor approximations: Higher-order derivatives appear in polynomial expansions.\nDifferential equations and modeling: Many physical laws involve second or third derivatives.",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Derivatives</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/calculus-1.html#derivatives-for-multivariable-functions",
+    "href": "wk01/calculus-1.html#derivatives-for-multivariable-functions",
+    "title": "2  Derivatives",
+    "section": "2.6 Derivatives for Multivariable Functions",
+    "text": "2.6 Derivatives for Multivariable Functions\nFor functions of more than one variable, we still talk about rates of change — but now we consider how the function changes in each direction.\nLet \\(f(x_1, x_2, \\dots, x_n)\\) be a function of \\(n\\) variables.\n\n2.6.1 Gradient\nThe gradient is the multivariable generalization of the first derivative. It tells us how \\(f\\) changes with respect to each input variable.\n\nDefinition 2.2 The gradient of \\(f\\) is the vector of partial derivatives:\n\\[\n\\nabla f(x) = \\left[\n\\frac{\\partial f}{\\partial x_1},\\\n\\frac{\\partial f}{\\partial x_2},\\\n\\cdots,\\\n\\frac{\\partial f}{\\partial x_n}\n\\right]\n\\]\nIt points in the direction of steepest ascent.\n\n\n2.6.1.1 Example\nLet \\(f(x, y) = x^2 + 3y\\). Then:\n\\[\n\\nabla f(x, y) = \\left[ \\frac{\\partial f}{\\partial x}, \\frac{\\partial f}{\\partial y} \\right] = [2x,\\ 3]\n\\]\nAt the point \\((1, 2)\\), the gradient is \\([2,\\ 3]\\).\n\n\n\n\n2.6.2 Hessian\nThe Hessian is the multivariable generalization of the second derivative. It contains all second partial derivatives and describes the curvature of the function.\n\nDefinition 2.3 The Hessian matrix of \\(f\\) is the \\(n \\times n\\) matrix of second-order partial derivatives:\n\\[\nH_f(x) =\n\\begin{bmatrix}\n\\frac{\\partial^2 f}{\\partial x_1^2} & \\frac{\\partial^2 f}{\\partial x_1 \\partial x_2} & \\cdots \\\\\n\\frac{\\partial^2 f}{\\partial x_2 \\partial x_1} & \\frac{\\partial^2 f}{\\partial x_2^2} & \\cdots \\\\\n\\vdots & \\vdots & \\ddots\n\\end{bmatrix}\n\\]\n\n\nThe diagonal entries describe curvature in each direction.\nThe off-diagonal entries describe how changes in one variable affect curvature in another.\n\n\n2.6.2.1 Example\nLet \\(f(x, y) = x^2 y + y^3\\). Then:\n\n\\(\\frac{\\partial^2 f}{\\partial x^2} = 2y\\)\n\\(\\frac{\\partial^2 f}{\\partial y^2} = 6y\\)\n\\(\\frac{\\partial^2 f}{\\partial x \\partial y} = \\frac{\\partial^2 f}{\\partial y \\partial x} = 2x\\)\n\nSo the Hessian is:\n\\[\nH_f(x, y) =\n\\begin{bmatrix}\n2y & 2x \\\\\n2x & 6y\n\\end{bmatrix}\n\\]\n\nThese ideas are especially important in:\n\nOptimization: Gradient = direction to move; Hessian = curvature (convexity/concavity)\nStatistical modeling: Maximum likelihood estimation uses gradients (score functions) and Hessians (information matrices)\nMachine learning: Gradients are used in backpropagation and optimization algorithms.",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Derivatives</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/calculus-1.html#symbolic-differentiation-in-r",
+    "href": "wk01/calculus-1.html#symbolic-differentiation-in-r",
+    "title": "2  Derivatives",
+    "section": "2.7 Symbolic Differentiation in R",
+    "text": "2.7 Symbolic Differentiation in R\nYou can compute derivatives symbolically in R using the D() function.\nThe basic syntax is:\nD(expression, \"variable\")\nThis returns the symbolic derivative of an expression with respect to the named variable.\n\nExample 2.18 Differentiate \\(x^2\\).\n\nSolution. Use D() with a formula input:\n\nD(expression(x^2), \"x\")\n\n2 * x\n\n\nThis returns:\n2 * x\n\nExample 2.19 Differentiate \\(x^2 \\log(x)\\) using the product rule.\n\nSolution. R handles this automatically:\n\nD(expression(x^2 * log(x)), \"x\")\n\n2 * x * log(x) + x^2 * (1/x)\n\n\nReturns:\n2 * x * log(x) + x\nThis matches the product rule: \\(f'(x) = 2x \\log(x) + x\\).\n\nExample 2.20 Differentiate \\(\\frac{x^3}{\\exp(x)}\\).\n\nSolution. R will apply the quotient rule:\n\nD(expression(x^3 / exp(x)), \"x\")\n\n3 * x^2/exp(x) - x^3 * exp(x)/exp(x)^2\n\n\nReturns:\n((3 * x^2 * exp(x)) - (x^3 * exp(x))) / exp(x)^2\nThis simplifies to the same expression obtained manually.\n\nTo simplify or evaluate expressions numerically, you can use deriv(), eval(), or symbolic math tools in packages like Ryacas, caracas, or symengine.",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Derivatives</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/calculus-1.html#numeric-differentiation-in-r",
+    "href": "wk01/calculus-1.html#numeric-differentiation-in-r",
+    "title": "2  Derivatives",
+    "section": "2.8 Numeric Differentiation in R",
+    "text": "2.8 Numeric Differentiation in R\nWhen symbolic derivatives are unavailable, R can approximate first derivatives numerically using finite differences. The numDeriv package provides convenient tools.\nInstall the package if needed:\nThen load it:\n\nlibrary(numDeriv)\n\n\n2.8.1 First Derivative\nUse grad() to compute the approximate derivative of a single-variable function at a point.\n\nExample 2.21 Let \\(f(x) = x^2 \\log(x)\\). Compute \\(f'(2)\\) numerically.\n\nSolution. Define the function and apply grad():\n\nf &lt;- function(x) x^2 * log(x)\ngrad(f, x = 2)\n\n[1] 4.772589\n\n\nReturns:\n[1] 4.772589\nThis matches the exact result: \\(f'(x) = 2x \\log(x) + x\\), so \\(f'(2) = 4 \\log(2) + 2 \\approx 4.7726\\).\n\nNumeric differentiation is useful when working with functions that are not easily expressed in closed form.",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Derivatives</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/calculus-1.html#comparing-derivatives-by-hand-symbolic-and-numeric",
+    "href": "wk01/calculus-1.html#comparing-derivatives-by-hand-symbolic-and-numeric",
+    "title": "2  Derivatives",
+    "section": "2.9 Comparing Derivatives: By Hand, Symbolic, and Numeric",
+    "text": "2.9 Comparing Derivatives: By Hand, Symbolic, and Numeric\nAll three approaches — manual rules, symbolic differentiation, and numeric approximation — should yield consistent results.\n\nExample 2.22 Let \\(f(x) = x^2 \\log(x)\\). Compute \\(f'(2)\\): - by hand using rules, - symbolically using D(), - numerically using grad().\n\nSolution.\n\n2.9.1 By Hand\nUse the product rule: \\(f(x) = x^2 \\cdot \\log(x)\\)\n\n\\(f'(x) = 2x \\log(x) + x\\)\nSo \\(f'(2) = 4 \\log(2) + 2 \\approx 4.7726\\)\n\n\n\n2.9.2 Symbolic in R\n\nD(expression(x^2 * log(x)), \"x\")\n\n2 * x * log(x) + x^2 * (1/x)\n\n\nReturns:\n2 * x * log(x) + x\nSame expression as the hand-calculated result.\nTo evaluate at \\(x = 2\\):\n\neval(D(expression(x^2 * log(x)), \"x\"), list(x = 2))\n\n[1] 4.772589\n\n\nReturns:\n[1] 4.772589\n\n\n2.9.3 Numeric in R\n\nlibrary(numDeriv)\nf &lt;- function(x) x^2 * log(x)\ngrad(f, x = 2)\n\n[1] 4.772589\n\n\nReturns:\n[1] 4.772589\n\n\n2.9.4 Conclusion\nAll three methods give the same result:\n\\(f'(2) = 4.772589\\), verifying the equivalence of symbolic, numeric, and manual differentiation.",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Derivatives</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/calculus-2.html",
+    "href": "wk01/calculus-2.html",
+    "title": "3  Integration",
+    "section": "",
+    "text": "3.1 Definition\nIf derivatives describe the rate of change of a function, integrals do the opposite—they accumulate values over an interval.\nThis limit represents the total area under the curve \\(f(x)\\) from \\(a\\) to \\(b\\).",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Integration</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/calculus-2.html#definition",
+    "href": "wk01/calculus-2.html#definition",
+    "title": "3  Integration",
+    "section": "",
+    "text": "Definition 3.1 The definite integral of a function \\(f(x)\\) from \\(a\\) to \\(b\\) is defined as:\n\\[\n\\int_a^b f(x)\\, dx = \\lim_{n \\to \\infty} \\sum_{i=1}^n f(x_i^*) \\Delta x\n\\]\nwhere the interval \\([a, b]\\) is divided into \\(n\\) subintervals of width \\(\\Delta x = \\frac{b - a}{n}\\) and \\(x_i^*\\) is a sample point in the \\(i\\)th subinterval.\n\n\n\n3.1.1 Indefinite Integral\nAn indefinite integral (or antiderivative) is a function whose derivative is the original function.\n\nDefinition 3.2 If \\(F'(x) = f(x)\\), then \\(F(x)\\) is an antiderivative of \\(f(x)\\), and we write:\n\\[\n\\int f(x)\\, dx = F(x) + C\n\\]\nwhere \\(C\\) is an arbitrary constant.",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Integration</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/calculus-2.html#physical-interpretation-of-integrals",
+    "href": "wk01/calculus-2.html#physical-interpretation-of-integrals",
+    "title": "3  Integration",
+    "section": "3.2 Physical Interpretation of Integrals",
+    "text": "3.2 Physical Interpretation of Integrals\nSuppose your car is moving at a velocity \\(f(x)\\), where \\(x\\) is time and \\(f(x)\\) is in meters per second. Then:\n\n\\(\\int_a^b f(x)\\, dx\\) is the total distance traveled between time \\(x = a\\) and \\(x = b\\).\n\nIn this way, integration undoes differentiation. If the derivative of position is velocity, then the integral of velocity is position.\n\n\n\n\n\n\n\n\n\nQuantity\nSymbol\nInterpretation\nUnits (if \\(x\\) is time)\n\n\n\n\nVelocity\n\\(f(x)\\)\nRate of change of position\nMeters per second (m/s)\n\n\nPosition\n\\(\\int f(x)\\, dx\\)\nTotal distance traveled (accumulated)\nMeters (m)\n\n\n\nThe key idea is this: integration accumulates change. It’s the natural inverse of differentiation.",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Integration</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/calculus-2.html#why-this-matters",
+    "href": "wk01/calculus-2.html#why-this-matters",
+    "title": "3  Integration",
+    "section": "3.3 Why This Matters",
+    "text": "3.3 Why This Matters\nMany real-world questions ask about totals or areas:\n\nHow much profit was earned over the year?\nWhat is the total rainfall over a week?\nWhat’s the area under the likelihood curve?\nHow much change accumulates over time?\n\nAll of these questions require integration. Let’s build some fluency with it.",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Integration</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/calculus-2.html#basic-rules-of-integration",
+    "href": "wk01/calculus-2.html#basic-rules-of-integration",
+    "title": "3  Integration",
+    "section": "3.4 Basic Rules of Integration",
+    "text": "3.4 Basic Rules of Integration\n\n3.4.1 Constant Rule\n\nTheorem 3.1 (Constant Rule) If \\(f(x) = a\\), then:\n\\[\n\\int a\\, dx = ax + C\n\\]\n\n\nExample 3.1 Compute \\(\\int 5\\, dx\\).\n\nSolution. Use the constant rule: \\(\\int 5\\, dx = 5x + C\\).\n\n\n\n3.4.2 Power Rule\n\nTheorem 3.2 (Power Rule) If \\(f(x) = x^n\\), then:\n\\[\n\\int x^n\\, dx = \\frac{x^{n + 1}}{n + 1} + C,\\quad \\text{for } n \\ne -1\n\\]\n\n\nExample 3.2 Compute \\(\\int x^3\\, dx\\).\n\nSolution. Apply the power rule:\n\\[\n\\int x^3\\, dx = \\frac{x^4}{4} + C\n\\]\n\nExample 3.3 Compute \\(\\int x^5 - 2x^2 + 7\\, dx\\).\n\nSolution. Integrate each term using the power rule:\n\\[\n\\int x^5\\, dx = \\frac{x^6}{6},\\quad\n\\int -2x^2\\, dx = -\\frac{2x^3}{3},\\quad\n\\int 7\\, dx = 7x\n\\]\nSo the full result is:\n\\[\n\\frac{x^6}{6} - \\frac{2x^3}{3} + 7x + C\n\\]\n\n\n\n3.4.3 Exponential Rule\n\nTheorem 3.3 (Exponential Rule) If \\(f(x) = e^x\\), then:\n\\[\n\\int e^x\\, dx = e^x + C\n\\]\n\n\n\n\n3.4.4 Logarithm Rule\n\nTheorem 3.4 (Logarithm Rule) If \\(f(x) = \\frac{1}{x}\\), then:\n\\[\n\\int \\frac{1}{x}\\, dx = \\log|x| + C,\\quad x \\ne 0\n\\]\n\n\n\n\n3.4.5 Sum Rule\n\nTheorem 3.5 (Sum Rule) If \\(f(x) = g(x) + h(x)\\), then:\n\\[\n\\int f(x)\\, dx = \\int g(x)\\, dx + \\int h(x)\\, dx\n\\]\n\n\nExample 3.4 Compute \\(\\int (x^2 + \\frac{1}{x})\\, dx\\).\n\nSolution. Apply the sum and power rules:\n\\[\n\\int x^2\\, dx = \\frac{x^3}{3},\\quad\n\\int \\frac{1}{x}\\, dx = \\log|x|\n\\]\nSo:\n\\[\n\\int (x^2 + \\frac{1}{x})\\, dx = \\frac{x^3}{3} + \\log|x| + C\n\\]\n\n\n\n3.4.6 Integration by Substitution (Chain Rule Reversed)\nSubstitution allows us to integrate composite functions, reversing the chain rule.\n\nTheorem 3.6 (Substitution Rule) Let \\(u = g(x)\\). Then:\n\\[\n\\int f(g(x)) g'(x)\\, dx = \\int f(u)\\, du\n\\]\n\n\nExample 3.5 Compute \\(\\int 2x \\cdot \\exp(x^2)\\, dx\\).\n\nSolution. Let \\(u = x^2\\), so \\(du = 2x\\, dx\\). Then:\n\\[\n\\int 2x \\cdot \\exp(x^2)\\, dx = \\int \\exp(u)\\, du = \\exp(u) + C = \\exp(x^2) + C\n\\]\n\n\n\n3.4.7 Integration by Parts (Product Rule Reversed)\nSometimes, it helps to reverse the product rule.\n\nTheorem 3.7 (Integration by Parts) If \\(u = u(x)\\) and \\(v = v(x)\\), then:\n\\[\n\\int u\\, dv = uv - \\int v\\, du\n\\]\n\n\nExample 3.6 Compute \\(\\int x \\cdot \\log(x)\\, dx\\).\n\nSolution. Use integration by parts:\nLet \\(u = \\log(x)\\), so \\(du = \\frac{1}{x} dx\\)\nLet \\(dv = x\\, dx\\), so \\(v = \\frac{x^2}{2}\\)\nThen:\n\\[\n\\int x \\log(x)\\, dx = \\frac{x^2}{2} \\log(x) - \\int \\frac{x^2}{2} \\cdot \\frac{1}{x}\\, dx\n= \\frac{x^2}{2} \\log(x) - \\int \\frac{x}{2}\\, dx\n= \\frac{x^2}{2} \\log(x) - \\frac{x^2}{4} + C\n\\]",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Integration</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/calculus-2.html#definite-integrals",
+    "href": "wk01/calculus-2.html#definite-integrals",
+    "title": "3  Integration",
+    "section": "3.5 Definite Integrals",
+    "text": "3.5 Definite Integrals\nIf we want to compute the total accumulated value over a specific interval \\([a, b]\\), we use definite integrals.\n\nDefinition 3.3 The definite integral from \\(a\\) to \\(b\\) is:\n\\[\n\\int_a^b f(x)\\, dx = F(b) - F(a)\n\\]\nwhere \\(F(x)\\) is any antiderivative of \\(f(x)\\).\n\n\nExample 3.7 Compute \\(\\int_1^2 x^2\\, dx\\).\n\nSolution. Find the antiderivative: \\(F(x) = \\frac{x^3}{3}\\)\nEvaluate:\n\\[\n\\int_1^2 x^2\\, dx = \\frac{2^3}{3} - \\frac{1^3}{3} = \\frac{8 - 1}{3} = \\frac{7}{3}\n\\]",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Integration</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/calculus-2.html#integration-in-r",
+    "href": "wk01/calculus-2.html#integration-in-r",
+    "title": "3  Integration",
+    "section": "3.6 Integration in R",
+    "text": "3.6 Integration in R\nR does not compute symbolic integrals with base functions, but numerical integration is straightforward using integrate().\n\nExample 3.8 Compute \\(\\int_1^2 x^2\\, dx\\) numerically.\n\n\nf &lt;- function(x) x^2\nintegrate(f, lower = 1, upper = 2)\n\n2.333333 with absolute error &lt; 2.6e-14\n\n\nReturns:\n7/3 = 2.333...\n\nExample 3.9 Compute \\(\\int_0^1 x \\log(x)\\, dx\\) numerically.\n\n\nf &lt;- function(x) ifelse(x == 0, 0, x * log(x))\nintegrate(f, 0, 1)\n\n-0.25 with absolute error &lt; 3e-05\n\n\nThis returns approximately:\n-0.25\n\nNumerical integration is useful for functions that have no closed-form antiderivative or are only defined computationally.",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Integration</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/calculus-2.html#summary-derivatives-vs-integrals",
+    "href": "wk01/calculus-2.html#summary-derivatives-vs-integrals",
+    "title": "3  Integration",
+    "section": "3.7 Summary: Derivatives vs Integrals",
+    "text": "3.7 Summary: Derivatives vs Integrals\n\n\n\n\n\n\n\n\nOperation\nSymbol\nMeaning\n\n\n\n\nDerivative\n\\(f'(x)\\) or \\(\\frac{df}{dx}\\)\nInstantaneous rate of change\n\n\nIntegral\n\\(\\int f(x)\\, dx\\)\nAccumulated change (area under curve)\n\n\nDefinite Int.\n\\(\\int_a^b f(x)\\, dx\\)\nTotal change from \\(x = a\\) to \\(x = b\\)\n\n\n\nTogether, derivatives and integrals are the fundamental tools of calculus. They describe change and accumulation—central ideas in modeling, statistics, economics, physics, and beyond.",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Integration</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/matrices.html",
+    "href": "wk01/matrices.html",
+    "title": "4  Matrices",
+    "section": "",
+    "text": "4.1 Definitions\nA scalar is a single number.\nA vector is a 1-dimensional array of numbers.1\nA matrix is a two-dimensional array of numbers.\nMatrices allow us to efficiently describe and perform complex calculations involving many, many numbers (e.g., data sets).",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Matrices</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/matrices.html#definitions",
+    "href": "wk01/matrices.html#definitions",
+    "title": "4  Matrices",
+    "section": "",
+    "text": "1 By default, we treat these as \\(1 \\times n\\) column vectors (see definition of matrix below).\n\n\\(x\\) is \\(n \\times 1\\) (column vector).\n\\(x'\\) is \\(1 \\times n\\) (row vector).\n\\(A\\) is \\(n \\times p\\) (matrix).\n\n\n\nExample 4.1  \n\nx &lt;- c(1, 2, 3)           # 3 x 1 (column vector)\nx\n\n[1] 1 2 3\n\nt(x)                      # 1 x 3 (row vector); t() finds transpose, see below\n\n     [,1] [,2] [,3]\n[1,]    1    2    3\n\nA &lt;- matrix(1:6, nrow = 2)\nA                         # 2 x 3 matrix\n\n     [,1] [,2] [,3]\n[1,]    1    3    5\n[2,]    2    4    6",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Matrices</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/matrices.html#transpose",
+    "href": "wk01/matrices.html#transpose",
+    "title": "4  Matrices",
+    "section": "4.2 Transpose",
+    "text": "4.2 Transpose\nThe transpose of a matrix flips its rows and columns. If \\(A\\) is \\(n \\times p\\), then \\(A'\\) is \\(p \\times n\\).\nKey identity: \\((AB)' = B'A'\\)\n\nExample 4.2  \n\nA &lt;- matrix(c(1, 2, 3, 4), nrow = 2)\n\nA\n\n     [,1] [,2]\n[1,]    1    3\n[2,]    2    4\n\nt(A)  # transpose\n\n     [,1] [,2]\n[1,]    1    2\n[2,]    3    4\n\nA2 &lt;- matrix(c(1, 2, 3, 4), nrow = 2, byrow = TRUE)  # note the byrow arg\nA2\n\n     [,1] [,2]\n[1,]    1    2\n[2,]    3    4\n\nB &lt;- matrix(c(5, 6, 7, 8), nrow = 2)\nAB  &lt;- A %*% B            # matrix multiplication\nt(AB)                     # transpose of product\n\n     [,1] [,2]\n[1,]   23   34\n[2,]   31   46\n\nt(B) %*% t(A)             # product of transposes\n\n     [,1] [,2]\n[1,]   23   34\n[2,]   31   46",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Matrices</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/matrices.html#matrix-multiplication",
+    "href": "wk01/matrices.html#matrix-multiplication",
+    "title": "4  Matrices",
+    "section": "4.3 Matrix Multiplication",
+    "text": "4.3 Matrix Multiplication\n\n4.3.1 Definition and Computation\nThe matrix product \\(C = AB\\) is defined when the number of columns in \\(A\\) equals the number of rows in \\(B\\). If \\(A\\) is an \\(n \\times p\\) matrix and \\(B\\) is a \\(p \\times q\\) matrix, then the product \\(C = AB\\) is an \\(n \\times q\\) matrix.\nThe \\((i, j)\\)-entry of \\(C\\) is computed as the dot product of the \\(i\\)th row of \\(A\\) and the \\(j\\)th column of \\(B\\):\n\\[\nC_{ij} = \\sum_{k=1}^{p} A_{ik} B_{kj}\n\\]\nThat is, to compute the entry in the \\(i\\)th row and \\(j\\)th column of \\(C\\), multiply corresponding elements from the \\(i\\)th row of \\(A\\) and the \\(j\\)th column of \\(B\\), and then sum the results.\n\nExample 4.3 Suppose \\[\nA = \\begin{bmatrix}\n1 & 2 & 3 & 4 \\\\\n5 & 6 & 7 & 8 \\\\\n9 & 0 & 1 & 2\n\\end{bmatrix}, \\quad\nB = \\begin{bmatrix}\n1 & 0 \\\\\n0 & 1 \\\\\n1 & 0 \\\\\n0 & 1\n\\end{bmatrix}\n\\].\nThe product \\(C = AB\\) is a \\(3 \\times 2\\) matrix. Each entry is computed as \\(C_{ij} = \\sum_{k=1}^4 A_{ik} B_{kj}\\).\n\\[\nC = AB = \\begin{bmatrix}\n1 \\cdot 1 + 2 \\cdot 0 + 3 \\cdot 1 + 4 \\cdot 0 & 1 \\cdot 0 + 2 \\cdot 1 + 3 \\cdot 0 + 4 \\cdot 1 \\\\\n5 \\cdot 1 + 6 \\cdot 0 + 7 \\cdot 1 + 8 \\cdot 0 & 5 \\cdot 0 + 6 \\cdot 1 + 7 \\cdot 0 + 8 \\cdot 1 \\\\\n9 \\cdot 1 + 0 \\cdot 0 + 1 \\cdot 1 + 2 \\cdot 0 & 9 \\cdot 0 + 0 \\cdot 1 + 1 \\cdot 0 + 2 \\cdot 1\n\\end{bmatrix}\n\\]\nSimplifying, we have\n\\[\n= \\begin{bmatrix}\n1 + 0 + 3 + 0 & 0 + 2 + 0 + 4 \\\\\n5 + 0 + 7 + 0 & 0 + 6 + 0 + 8 \\\\\n9 + 0 + 1 + 0 & 0 + 0 + 0 + 2\n\\end{bmatrix}\n= \\begin{bmatrix}\n4 & 6 \\\\\n12 & 14 \\\\\n10 & 2\n\\end{bmatrix}\n\\].\nWe can confirm our answer with R.\n\nA &lt;- matrix(c(\n  1, 2, 3, 4,\n  5, 6, 7, 8,\n  9, 0, 1, 2\n), nrow = 3, byrow = TRUE)\n\nB &lt;- matrix(c(\n  1, 0,\n  0, 1,\n  1, 0,\n  0, 1\n), nrow = 4, byrow = TRUE)\n\nA %*% B\n\n     [,1] [,2]\n[1,]    4    6\n[2,]   12   14\n[3,]   10    2\n\n\n\n\nExample 4.4 Let \\(X\\) be a \\(3 \\times 2\\) matrix and \\(\\beta\\) a \\(2 \\times 1\\) vector. Then \\(X\\beta\\) is a \\(3 \\times 1\\) vector. \\(X'X\\) is \\(2 \\times 2\\) and symmetric.\nWe have a couple of famililar matrix multiplications from linear regression. \\(X\\beta\\) is especially important to us!.\n\nX &lt;- matrix(c(1, 1, 1, 2, 3, 4), nrow = 3)\nbeta &lt;- c(0.5, 1)\nX %*% beta                          # linear prediction\n\n     [,1]\n[1,]  2.5\n[2,]  3.5\n[3,]  4.5\n\nt(X) %*% X                          # 2 x 2 matrix\n\n     [,1] [,2]\n[1,]    3    9\n[2,]    9   29\n\n\n\n\n\n4.3.2 Rules\n\nAssociative: \\((AB)C = A(BC)\\)\nDistributive: \\(A(B + C) = AB + AC\\)\nNot commutative: \\(AB \\neq BA\\) in general\n\n\nExample 4.5  \n\nA &lt;- matrix(c(1, 2, 3, 4), 2)         # 2 x 2\nB &lt;- matrix(c(5, 6, 7, 8), 2)         # 2 x 2\nC &lt;- matrix(c(100, 200, 300, 400), 2) # 2 x 2\n\n# same\n(A %*% B) %*% C \n\n      [,1]  [,2]\n[1,]  8500 19300\n[2,] 12600 28600\n\nA %*% (B %*% C) \n\n      [,1]  [,2]\n[1,]  8500 19300\n[2,] 12600 28600\n\n# same\nA %*% (B + C) \n\n     [,1] [,2]\n[1,]  723 1531\n[2,] 1034 2246\n\n(A %*% B) + (A %*% C) \n\n     [,1] [,2]\n[1,]  723 1531\n[2,] 1034 2246\n\n# different\nA %*% B\n\n     [,1] [,2]\n[1,]   23   31\n[2,]   34   46\n\nB %*% A \n\n     [,1] [,2]\n[1,]   19   43\n[2,]   22   50",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Matrices</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/matrices.html#special-matrices",
+    "href": "wk01/matrices.html#special-matrices",
+    "title": "4  Matrices",
+    "section": "4.4 Special Matrices",
+    "text": "4.4 Special Matrices\n\n4.4.1 Identity Matrix\nAn identity matrix is a square matrix with 1s on the diagonal and 0s elsewhere. Denoted \\(I\\).\n\n\\(AI = A\\)\n\\(IA = A\\)\n\\(I_n\\) is \\(n \\times n\\)\n\n\nI &lt;- diag(3)  # shortcut to make 3x3 identity matrix\nI\n\n     [,1] [,2] [,3]\n[1,]    1    0    0\n[2,]    0    1    0\n[3,]    0    0    1\n\nA &lt;- matrix(1:9, nrow = 3)\nA %*% I                           # same as A\n\n     [,1] [,2] [,3]\n[1,]    1    4    7\n[2,]    2    5    8\n[3,]    3    6    9\n\n\n\n\n4.4.2 Diagonal Matrix\nA diagonal matrix has nonzero entries only on the diagonal. These matrices are often used for variances or weights.\n\nd &lt;- c(2, 4, 6)\nD &lt;- diag(d)  # shortcut to make diagonal matrix\n\n\n\n4.4.3 Symmetric Matrix\nA matrix \\(A\\) is symmetric if \\(A' = A\\).\n\n\\(X'X\\) is always symmetric.\n\n\nX &lt;- matrix(c(1, 2, 3, 4, 5, 6), nrow = 3)\nt(X) %*% X                        # symmetric\n\n     [,1] [,2]\n[1,]   14   32\n[2,]   32   77\n\n\n\nExample 4.6 Construct the following matrices:\n\nIdentity matrix \\(I_2\\)\nDiagonal matrix with entries \\(1, 2, 3\\)\nSymmetric matrix \\(S = \\begin{bmatrix}2 & 1 \\\\ 1 & 3\\end{bmatrix}\\)\n\n\nI2 &lt;- diag(2)\ndiag_mat &lt;- diag(1:3)\nS &lt;- matrix(c(2, 1, 1, 3), 2)\n\n\n\nExample 4.7 Let \\(\\Sigma = \\begin{bmatrix}4 & 0 & 0 \\\\ 0 & 1 & 0 \\\\ 0 & 0 & 9\\end{bmatrix}\\). This is a diagonal covariance matrix.\nExtract the standard deviations.\n\nSigma &lt;- diag(c(4, 1, 9))\nsqrt(diag(Sigma))                # std devs\n\n[1] 2 1 3",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Matrices</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/matrices.html#matrix-inverses-and-rank",
+    "href": "wk01/matrices.html#matrix-inverses-and-rank",
+    "title": "4  Matrices",
+    "section": "4.5 Matrix Inverses and Rank",
+    "text": "4.5 Matrix Inverses and Rank\n\n4.5.1 Inverse\nThe inverse of a square matrix \\(A\\) is a matrix \\(A^{-1}\\) such that \\(AA^{-1} = A^{-1}A = I\\).\n\nNot all square matrices have an inverse.\nInverse exists only if matrix is full rank.\n\n\nA &lt;- matrix(c(2, 1, 1, 1), 2)\nsolve(A)                         # A-inverse\n\n     [,1] [,2]\n[1,]    1   -1\n[2,]   -1    2\n\nA %*% solve(A)                   # should be identity\n\n     [,1] [,2]\n[1,]    1    0\n[2,]    0    1",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Matrices</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/matrices.html#full-rank",
+    "href": "wk01/matrices.html#full-rank",
+    "title": "4  Matrices",
+    "section": "4.6 Full Rank",
+    "text": "4.6 Full Rank\nA matrix has full rank if its columns are linearly independent.\n\n\\(n \\times p\\) matrix has full column rank if rank = \\(p\\).\nA square matrix is invertible if and only if full rank.\n\n\nB &lt;- matrix(c(1, 2, 2, 4), 2)\nqr(B)$rank # use QR decomposition to find rank\n\n[1] 1",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Matrices</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/matrices.html#why-rank-matters",
+    "href": "wk01/matrices.html#why-rank-matters",
+    "title": "4  Matrices",
+    "section": "4.7 Why Rank Matters",
+    "text": "4.7 Why Rank Matters\n\nIf \\(X\\) is not full rank, \\(X'X\\) is not invertible.\nIn regression, full rank \\(X\\) ensures a unique \\(\\hat\\beta\\).\nIf rank is less than the number of columns, this means on variable is perfectly collinear with another.",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Matrices</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/matrices.html#examples",
+    "href": "wk01/matrices.html#examples",
+    "title": "4  Matrices",
+    "section": "4.8 Examples",
+    "text": "4.8 Examples\n\nExample 4.8 Let \\(A = \\begin{bmatrix}4 & 7 \\\\ 2 & 6\\end{bmatrix}\\). Compute \\(A^{-1}\\).\n\nA &lt;- matrix(c(4, 2, 7, 6), 2)\nsolve(A)\n\n     [,1] [,2]\n[1,]  0.6 -0.7\n[2,] -0.2  0.4\n\n\n\n\nExample 4.9 Let \\(C = \\begin{bmatrix}1 & 2 \\\\ 2 & 4\\end{bmatrix}\\). Is \\(C\\) invertible?\n\nC &lt;- matrix(c(1, 2, 2, 4), 2)\nqr(C)$rank                      # rank &lt; n\n\n[1] 1\n\n\nWe can see that the second column is simple 2 times the first column, so the matrix is not full rank and thus not invertible.",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Matrices</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/matrices.html#matrix-calculus-introductory",
+    "href": "wk01/matrices.html#matrix-calculus-introductory",
+    "title": "4  Matrices",
+    "section": "4.9 Matrix Calculus (Introductory)",
+    "text": "4.9 Matrix Calculus (Introductory)\nMatrix calculus helps compute gradients and Hessians of functions involving vectors and matrices.\n\nUsed in optimization, MLE, and Bayesian computation\nEspecially common in linear models\n\n\n4.9.1 Gradients\nIf \\(f(x)\\) is a scalar-valued function of a vector \\(x\\), then the gradient of \\(f\\) with respect to \\(x\\), denoted \\(\\frac{\\partial f}{\\partial x}\\) or \\(\\nabla_x f\\), is a vector containing the partial derivatives of \\(f\\) with respect to each component of \\(x\\), so that\n\\[\n\\frac{\\partial f}{\\partial x} =\n\\begin{bmatrix}\n\\frac{\\partial f}{\\partial x_1} \\\\\n\\frac{\\partial f}{\\partial x_2} \\\\\n\\vdots \\\\\n\\frac{\\partial f}{\\partial x_n}\n\\end{bmatrix}\n\\].\nThis vector tells us how the function \\(f(x)\\) changes in each coordinate direction, and it points in the direction of steepest ascent.\n\nExample 4.10 Let \\(f(x) = x_1^2 + 3x_2\\), where \\(x = \\begin{bmatrix} x_1 \\\\ x_2 \\end{bmatrix}\\).\nThen the gradient is\n\\[\n\\frac{\\partial f}{\\partial x} =\n\\begin{bmatrix}\n\\frac{\\partial}{\\partial x_1}(x_1^2 + 3x_2) \\\\\n\\frac{\\partial}{\\partial x_2}(x_1^2 + 3x_2)\n\\end{bmatrix}\n=\n\\begin{bmatrix}\n2x_1 \\\\\n3\n\\end{bmatrix}.\n\\]\n\n\nExample 4.11 Let \\(f(x) = x_1^2 + x_1 x_2 + \\log(x_3) + e^{x_4}\\), where \\(x = \\begin{bmatrix} x_1 \\\\ x_2 \\\\ x_3 \\\\ x_4 \\end{bmatrix}\\) and \\(x_3 &gt; 0\\).\nThen the gradient is\n\\[\n\\frac{\\partial f}{\\partial x} =\n\\begin{bmatrix}\n\\frac{\\partial}{\\partial x_1}(x_1^2 + x_1 x_2 + \\log(x_3) + e^{x_4}) \\\\\n\\frac{\\partial}{\\partial x_2}(x_1^2 + x_1 x_2 + \\log(x_3) + e^{x_4}) \\\\\n\\frac{\\partial}{\\partial x_3}(x_1^2 + x_1 x_2 + \\log(x_3) + e^{x_4}) \\\\\n\\frac{\\partial}{\\partial x_4}(x_1^2 + x_1 x_2 + \\log(x_3) + e^{x_4})\n\\end{bmatrix}\n=\n\\begin{bmatrix}\n2x_1 + x_2 \\\\\nx_1 \\\\\n\\frac{1}{x_3} \\\\\ne^{x_4}\n\\end{bmatrix}\n\\].\n\n\n\n4.9.2 Hessians\nIf \\(f(x)\\) is a scalar-valued function of a vector \\(x\\), then the Hessian of \\(f\\) with respect to \\(x\\), denoted \\(\\frac{\\partial^2 f}{\\partial x \\partial x'}\\), is an \\(n \\times n\\) matrix of second-order partial derivatives:\n\\[\n\\frac{\\partial^2 f}{\\partial x \\partial x'} =\n\\begin{bmatrix}\n\\frac{\\partial^2 f}{\\partial x_1^2} & \\frac{\\partial^2 f}{\\partial x_1 \\partial x_2} & \\cdots & \\frac{\\partial^2 f}{\\partial x_1 \\partial x_n} \\\\\n\\frac{\\partial^2 f}{\\partial x_2 \\partial x_1} & \\frac{\\partial^2 f}{\\partial x_2^2} & \\cdots & \\frac{\\partial^2 f}{\\partial x_2 \\partial x_n} \\\\\n\\vdots & \\vdots & \\ddots & \\vdots \\\\\n\\frac{\\partial^2 f}{\\partial x_n \\partial x_1} & \\frac{\\partial^2 f}{\\partial x_n \\partial x_2} & \\cdots & \\frac{\\partial^2 f}{\\partial x_n^2}\n\\end{bmatrix}.\n\\]\nThe Hessian describes the curvature of \\(f(x)\\) and is used in second-order optimization methods (like Newton’s method) and in statistical approximations (e.g., Laplace approximation).\n\nExample 4.12 Let \\(f(x) = x_1^2 + 3x_2\\), where \\(x = \\begin{bmatrix} x_1 \\\\ x_2 \\end{bmatrix}\\).\nThen the Hessian is\n\\[\n\\frac{\\partial^2 f}{\\partial x \\partial x'} =\n\\begin{bmatrix}\n\\frac{\\partial^2}{\\partial x_1^2}(x_1^2 + 3x_2) & \\frac{\\partial^2}{\\partial x_1 \\partial x_2}(x_1^2 + 3x_2) \\\\\n\\frac{\\partial^2}{\\partial x_2 \\partial x_1}(x_1^2 + 3x_2) & \\frac{\\partial^2}{\\partial x_2^2}(x_1^2 + 3x_2)\n\\end{bmatrix}\n=\n\\begin{bmatrix}\n2 & 0 \\\\\n0 & 0\n\\end{bmatrix}.\n\\]\n\n\nExample 4.13 Let \\(f(x) = x_1^2 + x_1 x_2 + \\log(x_3) + e^{x_4}\\), where \\(x = \\begin{bmatrix} x_1 \\\\ x_2 \\\\ x_3 \\\\ x_4 \\end{bmatrix}\\) and \\(x_3 &gt; 0\\).\nThen the Hessian is\n\\[\n\\frac{\\partial^2 f}{\\partial x \\partial x'} =\n\\begin{bmatrix}\n2 & 1 & 0 & 0 \\\\\n1 & 0 & 0 & 0 \\\\\n0 & 0 & -\\frac{1}{x_3^2} & 0 \\\\\n0 & 0 & 0 & e^{x_4}\n\\end{bmatrix}.\n\\]",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Matrices</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/matrices.html#where-these-ideas-arise-in-modeling",
+    "href": "wk01/matrices.html#where-these-ideas-arise-in-modeling",
+    "title": "4  Matrices",
+    "section": "4.10 Where These Ideas Arise in Modeling",
+    "text": "4.10 Where These Ideas Arise in Modeling\n\nVectors and matrices: Represent the outcome variable \\(y\\), a matrix of explanatory variables \\(X\\) (usually including a column of ones in the first column), parameters \\(\\beta\\), or residuals \\(\\epsilon\\).\nMatrix multiplication:\n\nLinear predictor: \\(X\\beta\\)\nOLS and ML estimate of normal-linear model: \\(\\hat{\\beta} = (X'X)^{-1}X'y\\)\n\nTranspose:\n\nQuadratic loss: \\((y - X\\beta)'(y - X\\beta)\\)\nCovariance formulas: \\(X'\\Sigma^{-1}X\\)\n\nSpecial matrices:\n\nIdentity matrix \\(I\\): appears in prior variances, regularization, ridge regression\nDiagonal matrices: independent variances, prior precision matrices\nSymmetric matrices: \\(X'X\\), covariance matrices, Hessians\n\nInverses and rank:\n\nInvert \\(X'X\\) to find MLE in linear regression\nNon-full-rank \\(X\\) causes identifiability issues\n\nMatrix calculus:\n\nScore function: gradient of log-likelihood and log-posteriors\nHessian matrix: used for Newton-Raphson and Fisher information",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Matrices</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/probability.html",
+    "href": "wk01/probability.html",
+    "title": "5  Probability Theory",
+    "section": "",
+    "text": "5.1 Probability, Outcomes, and Events\nProbability theory gives us a language to describe uncertainty.\nProbability theory begins with the idea of a random process, which an ``experiment’’ or procedure whose outcome is not known in advance.",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Probability Theory</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/probability.html#probability-outcomes-and-events",
+    "href": "wk01/probability.html#probability-outcomes-and-events",
+    "title": "5  Probability Theory",
+    "section": "",
+    "text": "Definition 5.1 A random process is a repeatable procedure to obtain an observation from a defined set of outcomes.\n\n\nDefinition 5.2 The sample space \\(\\Omega\\) is the set of all possible outcomes of a random process.\n\n\nDefinition 5.3 A realization of the random process produces an outcome from the sample space.\n\n\nDefinition 5.4 An event is any subset of outcomes \\(A \\subseteq \\Omega\\). The probability of an event \\(A\\) is denoted \\(\\Pr(A)\\).",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Probability Theory</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/probability.html#axioms-of-probability",
+    "href": "wk01/probability.html#axioms-of-probability",
+    "title": "5  Probability Theory",
+    "section": "5.2 Axioms of Probability",
+    "text": "5.2 Axioms of Probability\nThe probability function \\(P(\\cdot)\\) must satisfy the following three rules.\n\nTheorem 5.1 Let \\(P\\) be a probability function defined on a sample space \\(\\Omega\\). Then:\n\n\\(P(A) \\ge 0\\) for all events \\(A\\).\n\\(P(\\Omega) = 1\\).\nFor every infinite sequence of disjoint events \\(A_1, A_2, ...\\), \\(\\Pr \\left( \\displaystyle \\bigcup_{i = 1}^\\infty A_i \\right) = \\displaystyle \\sum_{i = 1}^\\infty \\Pr(A_i)\\).1\n\n1 Some notes on Axiom 3. Examples of an infinite sequence of disjoint events? For \\(\\Omega = \\mathbb{R}^+\\)? For \\(S =\\{0, 1\\}\\)? An infinite sequence of disjoint events is difficult to conceptualize. For \\(S = \\mathbb{R}^+\\), one such sequence would be \\([0, 1), [1, 2), [2, 3), ...\\). For \\(S =\\{0, 1\\}\\), one such sequence would be \\(\\{0\\}, \\{1\\}, \\emptyset, \\emptyset, \\emptyset,...\\).\n\nDefinition 5.5 For a sample space \\(\\Omega\\), a probability is a collection of real numbers assigned to all events \\(A\\) consistent with Axioms 1, 2, and 3.\n\n\nExample 5.1 Let \\(\\Omega = \\{\\text{H}, \\text{T}\\}\\) represent the outcomes of a fair coin flip.\nDefine a probability function:\n- \\(P(\\{\\text{H}\\}) = 0.5\\)\n- \\(P(\\{\\text{T}\\}) = 0.5\\)\nThen the three axioms of probability are satisfied as follows:\n\n\\(P(\\{\\text{H}\\}) = 0.5 \\ge 0\\), \\(P(\\{\\text{T}\\}) = 0.5 \\ge 0\\)\n\\(P(\\Omega) = P(\\{\\text{H}, \\text{T}\\}) = 0.5 + 0.5 = 1\\)\nLet \\(A = \\{\\text{H}\\}\\), \\(B = \\{\\text{T}\\}\\). These are disjoint, so, \\(P(A \\cup B) = P(A) + P(B) = 0.5 + 0.5 = 1\\).",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Probability Theory</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/probability.html#some-results-of-the-axioms",
+    "href": "wk01/probability.html#some-results-of-the-axioms",
+    "title": "5  Probability Theory",
+    "section": "5.3 Some Results of the Axioms",
+    "text": "5.3 Some Results of the Axioms\n\nTheorem 5.2 \\(\\Pr(\\emptyset) = 0\\).\n\n\nProof. \\(\\Pr(\\emptyset) = \\Pr(\\cup_{i = 1}^\\infty \\emptyset) = \\sum_{i = 1}^\\infty \\Pr(\\emptyset)\\). \\(\\Pr(\\emptyset) = \\sum_{i = 1}^\\infty \\Pr(\\emptyset)\\) iff \\(\\Pr(\\emptyset) = 0\\).\n\n\nTheorem 5.3 For every finite sequence of \\(n\\) disjoint events \\(A_1, A_2, ..., A_n\\), \\[\\begin{equation}\n\\Pr \\left( \\displaystyle \\bigcup_{i = 1}^n A_i \\right) = \\displaystyle \\sum_{i = 1}^n \\Pr(A_i). \\nonumber\n\\end{equation}\\]\n\n\nTheorem 5.4 Addition Rule for Two Disjoint Events\nFor disjoint events \\(A\\) and \\(B\\), \\(\\Pr ( A \\cup B) = \\Pr(A) + \\Pr(B)\\)\n\n\nTheorem 5.5 If event \\(A \\subseteq B\\), then \\(\\Pr(A) \\leq \\Pr(B)\\).\n\n\nTheorem 5.6 For event \\(A\\), \\(0 \\leq \\Pr(A) \\leq 1\\).\n\n\nTheorem 5.7 Addition Rule for Two Events\nFor any events \\(A\\) and \\(B\\), \\(\\Pr ( A \\cup B) = \\Pr(A) + \\Pr(B) - \\Pr(A \\cap B)\\).\n\n\nTheorem 5.8 Addition Rule for Three Events\nFor any events \\(A\\), \\(B\\), and \\(C\\), \\[\\begin{align*}\n\\Pr ( A \\cup B \\cup C) &= \\Pr(A) + \\Pr(B) + \\Pr(C)\\\\\n                                   &- \\left[ \\Pr(A \\cap B) + \\Pr(A \\cap C) + \\Pr(B \\cap C) \\right]\\\\\n                                   &+ \\Pr(A \\cap B \\cap C).\n                                   \\end{align*}\\]",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Probability Theory</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/probability.html#conditional-probability-and-independence",
+    "href": "wk01/probability.html#conditional-probability-and-independence",
+    "title": "5  Probability Theory",
+    "section": "5.4 Conditional Probability and Independence",
+    "text": "5.4 Conditional Probability and Independence\n\nDefinition 5.6 Conditional Probability\n\\(\\Pr(A \\mid B) = \\dfrac{\\Pr(A \\cap B)}{\\Pr(B)}\\) for \\(\\Pr(B) &gt; 0\\). If \\(\\Pr(B) = 0\\), then \\(\\Pr(A \\mid B)\\) is undefined.\n\nWe interpret the conditional probability \\(\\Pr(A \\mid B)\\) as the probability of \\(A\\) given that \\(B\\) happens (or has already happened). Suppose a bag with two green marbles and two red marbles. I draw two marbles without replacement and see that the first is green. Then the probability that the second is green, given that the first is/was green, is\n\\[\n\\Pr(\\text{second is green} \\mid \\text{first is green}) = \\frac{\\Pr(\\text{second is green AND first is green})}{\\Pr (\\text{first is green)}}.\n\\]\n\nDefinition 5.7 Independence of Two Events\nEvents \\(A\\) and \\(B\\) are independent if \\(\\Pr(A \\cap B) = \\Pr(A) \\Pr(B)\\).\nIf \\(\\Pr(A) &gt; 0\\) and \\(\\Pr(B) &gt; 0\\), then Definition 5.6 and Definition 5.7 imply that two events are independent if and only if their conditional probabilities equal their unconditional probabilities so that \\(\\Pr(A \\mid B) = \\Pr(A)\\) and \\(\\Pr(B \\mid A) = \\Pr(B)\\).\n\n\nDefinition 5.8 Independence of \\(n\\) Events\nEvents \\(A_1, A_2, ..., A_n\\) are independent if for every subset \\(A_a,..., A_m\\) with at least two events, \\(\\Pr(A_a \\cap ... \\cap A_m) = \\Pr(A_a)...\\Pr(A_m)\\).\n\nThe “every subset” part of Definition 5.8 is subtle, so let’s create a specific example. “Every subset” of \\(A\\), \\(B\\), and \\(C\\) with at least two events includes the following: \\(\\{A, B\\}\\), \\(\\{A, C\\}\\), \\(\\{B, C\\}\\), and \\(\\{A, B, C\\}\\).",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Probability Theory</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/probability.html#fundamental-laws",
+    "href": "wk01/probability.html#fundamental-laws",
+    "title": "5  Probability Theory",
+    "section": "5.5 Fundamental Laws",
+    "text": "5.5 Fundamental Laws\n\nDefinition 5.9 To create a partition \\(B_1, B_2, ..., B_k\\) of the sample space \\(S\\), divide \\(S\\) into \\(k\\) disjoint events \\(B_1, B_2, ..., B_k\\) so that \\(\\bigcup_{i = 1}^n B_i = S\\).\n\n\nTheorem 5.9 Law of Total Probability\nSuppose a partition \\(B_1, B_2, ..., B_k\\) of the sample space \\(S\\) where \\(\\Pr(B_j) &gt; 0\\) for \\(j = 1, 2, ... , k\\). Then\n\\[\n\\Pr(A) = \\sum_{j = 1}^k \\Pr(B_j )\\Pr(A \\mid B_j).\n\\]\n\n\nTheorem 5.10 Bayes’ Rule\nSuppose a partition \\(B_1, B_2, ..., B_k\\) of the sample space \\(S\\) where \\(\\Pr(B_j) &gt; 0\\) for \\(j = 1, 2, ... , k\\). Suppose an event \\(A\\), where \\(\\Pr(A) &gt; 0\\). Then\n\\[\n\\Pr(B_i \\mid A) = \\dfrac{\\Pr(B_i) \\Pr(A \\mid B_i)}{\\sum_{j = 1}^k \\Pr(B_j )\\Pr(A \\mid B_j)}.\n\\]\n\n\nTheorem 5.11 Bayes’ Rule for a simpler partition\nSuppose the simple partition \\(B\\) and \\(B^c\\) of the sample space \\(S\\) where \\(\\Pr(B) &gt; 0\\) and \\(\\Pr(B^c) &gt; 0\\). Suppose an event \\(A\\), where \\(\\Pr(A) &gt; 0\\). Then\n\\[\n\\Pr(B \\mid A) = \\dfrac{\\Pr(B) \\Pr(A \\mid B)}{\\Pr(B) \\Pr(A \\mid B) + \\Pr(B^c) \\Pr(A \\mid B^c)}.\n\\]\n\n\nExercise 5.1 You’re considering getting tested for a rare disease that 1 in 100,000 people have. If given to a person with the disease, the test will produce a positive result 99% of the time. If given to a person without the disease, the test will produce a positive result 0.1% of the time (i.e., 1 in 1,000). You are given the test and the result comes back positive. Use Bayes’ rule to compute the chance that you have the disease.\nSolution\nLet \\(D\\) denote having the disease and \\(T\\) a positive test.\n\n\\(P(D) = 1/100{,}000 = 10^{-5}\\)\n\\(P(T \\mid D) = 0.99\\)\n\\(P(T \\mid D^c) = 0.001\\)\n\nCompute the marginal\n\\[\nP(T) \\;=\\; P(T\\mid D)P(D) + P(T\\mid D^c)P(D^c)\n= 0.99(10^{-5}) + 0.001(1-10^{-5})\n= 9.9\\times 10^{-6} + 0.00099999\n= 0.00100989.\n\\]\nApply Bayes’ rule\n\\[\nP(D\\mid T) \\;=\\; \\frac{P(T\\mid D)P(D)}{P(T)}\n= \\frac{0.99 \\times 10^{-5}}{0.00100989}\n\\approx 0.0098.\n\\]\nSo the chance you have the disease given a positive test is about \\(0.98\\%\\) (i.e., less than 1%).",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Probability Theory</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/probability.html#random-variables",
+    "href": "wk01/probability.html#random-variables",
+    "title": "5  Probability Theory",
+    "section": "5.6 Random Variables",
+    "text": "5.6 Random Variables\nA random variable is a numerical summary of the possible outcomes from a random process.\n\nDefinition 5.10 A random variable \\(X\\) is a function from a sample space \\(\\Omega\\) to the real numbers:\n\\[\nX: \\Omega \\rightarrow \\mathbb{R}\n\\]\nThat is, \\(X(\\omega)\\) is the number assigned to the outcome \\(\\omega\\).\n\nThe random part comes from the fact that the outcome \\(\\omega\\) is not known in advance so the value \\(X(\\omega)\\) is also uncertain.\nWe often use random variables to model outcomes of interest\n\nWhether or not someone votes\nThe time until a bill passes in a legislature\nThe ideology score of a member of Congress\nThe percentage of survey respondents who support a policy\nThe number of protests in a country during a given year\n\nWe usually classify random variables as\n\nDiscrete: takes values in a finite or countably infinite set (e.g., \\(\\{0, 1, 2, \\dots\\}\\))\nContinuous: takes values in an interval of the real line (e.g., \\([0, \\infty)\\))\n\n\nExample 5.2 Let \\(X\\) be the number protests in a given country-year.\n- Possible values: \\(0, 1, 2, \\dots\\)\n- So \\(X\\) is a discrete random variable.\nLet \\(Y\\) be the time between protests.\n- Possible values: any real number \\(\\ge 0\\)\n- So \\(Y\\) is a continuous random variable.\n\n\n5.6.1 Random Variables and Events\nRandom variables allow us to define numerical events using real numbers.\nFor example, if \\(X\\) is the number of protests:\n\n\\(X = 27\\) is shorthand for the event \\(\\{\\omega \\in \\Omega : X(\\omega) = 27\\}\\)\n\\(X \\le 27\\) is shorthand for \\(\\{\\omega \\in \\Omega : X(\\omega) \\le 27\\}\\)",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Probability Theory</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/probability.html#pmfs-pdfs-and-cdfs",
+    "href": "wk01/probability.html#pmfs-pdfs-and-cdfs",
+    "title": "5  Probability Theory",
+    "section": "5.7 PMFs, PDFs, and CDFs",
+    "text": "5.7 PMFs, PDFs, and CDFs\n\n5.7.1 PMF (Probability Mass Function)\nA discrete random variable \\(X\\) has a PMF \\(p(x)\\) satisfying \\(p(x) \\ge 0\\) for all \\(x\\) and \\(\\sum_x p(x) = 1\\).\n\n\n5.7.2 PDF (Probability Density Function)\nA continuous random variable \\(X\\) has a PDF \\(f(x)\\) satisfying \\(f(x) \\ge 0\\) for all \\(x\\) and \\(\\int_{-\\infty}^{\\infty} f(x)\\, dx = 1\\).\nFor continuous variables, probabilities are areas under the density curve:\n\\[\nP(a \\le X \\le b) = \\int_a^b f(x)\\, dx\n\\]\n\n\n5.7.3 CDF (Cumulative Distribution Function)\nThe CDF \\(F(x)\\) of a random variable \\(X\\) is \\(F(x) = P(X \\le x)\\).\n\nFor discrete \\(X\\): \\(F(x) = \\sum_{t \\le x} p(t)\\).\nFor continuous \\(X\\): \\(F(x) = \\int_{-\\infty}^x f(t)\\, dt\\).\n\n\nExample 5.3 Let \\(X \\sim \\text{Bernoulli}(0.7)\\). Then:\n\nPMF: \\(P(X = 1) = 0.7\\), \\(P(X = 0) = 0.3\\)\nCDF: \\(F(x) = 0\\) for \\(x &lt; 0\\), \\(0.3\\) for \\(0 \\le x &lt; 1\\), \\(1\\) for \\(x \\ge 1\\)\n\nLet \\(Y \\sim \\text{Exponential}(\\lambda = 2)\\). Then:\n\nPDF: \\(f(y) = 2 e^{-2y}\\) for \\(y \\ge 0\\)\nCDF: \\(F(y) = 1 - e^{-2y}\\) for \\(y \\ge 0\\)",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Probability Theory</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/probability.html#expected-value-variance-and-moments",
+    "href": "wk01/probability.html#expected-value-variance-and-moments",
+    "title": "5  Probability Theory",
+    "section": "5.8 Expected Value, Variance, and Moments",
+    "text": "5.8 Expected Value, Variance, and Moments\n\nDefinition 5.11 The expected value of a random variable \\(X\\) is \\(\\mathbb{E}[X] = \\sum_x x \\cdot p(x)\\) for discrete random variables and \\(\\mathbb{E}[X] = \\int_{-\\infty}^{\\infty} x \\cdot f(x)\\, dx\\) for continuous random variables.\n\n\nDefinition 5.12 The variance of \\(X\\) is \\(\\text{Var}(X) = \\mathbb{E}[(X - \\mathbb{E}[X])^2] = \\mathbb{E}[X^2] - (\\mathbb{E}[X])^2\\).\n\n\nExample 5.4 Let \\(X \\sim \\text{Poisson}(\\lambda = 3)\\). Then \\(\\mathbb{E}[X] = 3\\) and \\(\\text{Var}(X) = 3\\).\nLet \\(Y \\sim \\text{Exponential}(\\lambda = 2)\\). Then \\(\\mathbb{E}[Y] = \\frac{1}{2} = 0.5\\) and \\(\\text{Var}(Y) = \\frac{1}{4} = 0.25\\).\n\n\nExample 5.5 Let \\(X \\sim \\text{Bernoulli}(0.7)\\). Compute \\(\\mathbb{E}[X]\\) and \\(\\text{Var}(X)\\).\nSolution.\nPMF: \\(P(X = 1) = 0.7\\), \\(P(X = 0) = 0.3\\)\n\n\\(\\mathbb{E}[X] = 0 \\cdot 0.3 + 1 \\cdot 0.7 = 0.7\\)\n\\(\\mathbb{E}[X^2] = 0^2 \\cdot 0.3 + 1^2 \\cdot 0.7 = 0.7\\)\n\\(\\text{Var}(X) = 0.7 - (0.7)^2 = 0.7 - 0.49 = 0.21\\)\n\n\n\n5.8.1 Properties of Expectations, Variances, and Covariances\n\nTheorem 5.12 (Linearity of Expectation) For any constants \\(a, b\\) and random variables \\(X, Y\\), \\(\\mathbb{E}[X + bY] = a\\,\\mathbb{E}[X] + b\\,\\mathbb{E}[Y]\\).\n\n\nTheorem 5.13 (Expectation of a Constant) For any constant \\(c\\), \\(\\mathbb{E}[c] = c\\).\n\n\nTheorem 5.14 (Expectation of a Product) For any random variables \\(X\\) and \\(Y\\),\n\\(\\mathbb{E}[XY] = \\mathrm{Cov}(X, Y) + \\mathbb{E}[X]\\,\\mathbb{E}[Y]\\).\nIf \\(X\\) and \\(Y\\) are independent, then \\(\\mathbb{E}[XY] = \\mathbb{E}[X]\\,\\mathbb{E}[Y]\\).\n\n\nTheorem 5.15 (Variance Scaling) For any constant \\(a\\), \\(\\mathrm{Var}(aX) = a^2\\,\\mathrm{Var}(X)\\).\n\n\nTheorem 5.16 (Variance of a Sum) For any random variables \\(X\\) and \\(Y\\),\n\\(\\mathrm{Var}(X + Y) = \\mathrm{Var}(X) + \\mathrm{Var}(Y) + 2\\,\\mathrm{Cov}(X, Y)\\).\nIf \\(X\\) and \\(Y\\) are independent, then \\(\\mathrm{Var}(X + Y) = \\mathrm{Var}(X) + \\mathrm{Var}(Y)\\).\n\n\nTheorem 5.17 (Covariance Scaling) For any constants \\(a, b\\), \\(\\mathrm{Cov}(aX, bY) = ab\\,\\mathrm{Cov}(X, Y)\\).\n\n\nTheorem 5.18 (Linearity of Covariance) For any random variables \\(X, Y, Z\\),\n\\(\\mathrm{Cov}(X + Y, Z) = \\mathrm{Cov}(X, Z) + \\mathrm{Cov}(Y, Z)\\), and similarly in the second argument.\n\n\nTheorem 5.19 (Independence Implies Zero Covariance) If \\(X\\) and \\(Y\\) are independent, then \\(\\mathrm{Cov}(X, Y) = 0\\).\nHowever, \\(\\mathrm{Cov}(X, Y) = 0\\) does not necessarily imply independence.",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Probability Theory</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/probability.html#joint-marginal-and-conditional-distributions",
+    "href": "wk01/probability.html#joint-marginal-and-conditional-distributions",
+    "title": "5  Probability Theory",
+    "section": "5.9 Joint, Marginal, and Conditional Distributions",
+    "text": "5.9 Joint, Marginal, and Conditional Distributions\nLet \\(X\\) and \\(Y\\) be random variables.\n\n5.9.1 Joint Distribution\n\nDiscrete: \\(p(x, y) = P(X = x, Y = y)\\)\nContinuous: \\(f(x, y)\\) such that \\(P((X, Y) \\in A) = \\iint_A f(x, y)\\, dx\\, dy\\)\n\n\n\n5.9.2 Marginal Distribution\n\nDiscrete: \\(p_X(x) = \\sum_y p(x, y)\\)\nContinuous: \\(f_X(x) = \\int f(x, y)\\, dy\\)\n\n\n\n5.9.3 Conditional Distribution\n\nDiscrete: \\(P(Y = y \\mid X = x) = \\frac{P(X = x, Y = y)}{P(X = x)}\\)\nContinuous: \\(f(y \\mid x) = \\frac{f(x, y)}{f_X(x)}\\)\n\n\nExample 5.6 Let \\(X, Y\\) be discrete with joint PMF:\n\n\n\n\\(X \\backslash Y\\)\n0\n1\n\n\n\n\n0\n0.1\n0.3\n\n\n1\n0.2\n0.4\n\n\n\nCompute \\(P(X = 1)\\), \\(P(Y = 0)\\), and \\(P(Y = 1 \\mid X = 1)\\).\nSolution.\n\n\\(P(X = 1) = 0.2 + 0.4 = 0.6\\)\n\\(P(Y = 0) = 0.1 + 0.2 = 0.3\\)\n\\(P(Y = 1 \\mid X = 1) = \\frac{0.4}{0.6} = 0.\\overline{6}\\)\n\n\n\n\n5.9.4 Covariance and Correlation\n\nDefinition 5.13 The covariance between \\(X\\) and \\(Y\\) is \\(\\text{Cov}(X, Y) = \\mathbb{E}[XY] - \\mathbb{E}[X] \\mathbb{E}[Y]\\).\n\n\nDefinition 5.14 The correlation between \\(X\\) and \\(Y\\) is \\(\\text{Corr}(X, Y) = \\frac{\\text{Cov}(X, Y)}{\\sqrt{\\text{Var}(X) \\text{Var}(Y)}}\\).\n\n\nExample 5.7 Let \\(X, Y\\) be defined as in Example 5.6. Compute \\(\\text{Cov}(X, Y)\\).\nSolution.\nFirst compute\n\n\\(\\mathbb{E}[X] = 0 \\cdot (0.1 + 0.3) + 1 \\cdot (0.2 + 0.4) = 0.6\\),\n\\(\\mathbb{E}[Y] = 0 \\cdot (0.1 + 0.2) + 1 \\cdot (0.3 + 0.4) = 0.7\\), and\n\\(\\mathbb{E}[XY] = 0 \\cdot 0.1 + 0 \\cdot 0.3 + 1 \\cdot 0.2 + 1 \\cdot 0.4 = 0.6\\).\n\nThen \\(\\text{Cov}(X, Y) = 0.6 - (0.6)(0.7) = 0.6 - 0.42 = 0.18\\).",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Probability Theory</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/probability.html#additional-laws",
+    "href": "wk01/probability.html#additional-laws",
+    "title": "5  Probability Theory",
+    "section": "5.10 Additional Laws",
+    "text": "5.10 Additional Laws\n\nTheorem 5.20 (Law of the Unconscious Statistician) If \\(X\\) is a random variable and \\(g\\) is a function, then \\(\\mathbb{E}[g(X)] = \\sum_x g(x) p(x)\\) for discrete random variables and \\(\\mathbb{E}[g(X)] = \\int g(x) f(x)\\, dx\\) for continuous random variables.\n\n\nTheorem 5.21 (Law of Total Expectation) For another variable \\(Y\\), \\(\\mathbb{E}[X] = \\mathbb{E}[\\mathbb{E}[X \\mid Y]]\\).\n\n\nTheorem 5.22 (Law of Total Variance) \\[\n\\text{Var}(X) = \\mathbb{E}[\\text{Var}(X \\mid Y)] + \\text{Var}(\\mathbb{E}[X \\mid Y])\n\\]\n\n\nTheorem 5.23 (Change of Variables) Suppose \\(X\\) is a continuous variable with PDF \\(f_X(x)\\) and \\(Y = g(X)\\) is a strictly monotonic transformation. Then the PDF of \\(Y\\) is \\(f_Y(y) = f_X(g^{-1}(y)) \\cdot \\left| \\frac{d}{dy} g^{-1}(y) \\right|\\).\n\n\nExample 5.8 Let \\(X \\sim \\text{Exponential}(1)\\) and \\(Y = \\log(X)\\). Find the PDF of \\(Y\\).\nSolution.\nNotice that \\(g^{-1}(y) = e^y\\). Thus, \\(\\frac{d}{dy} g^{-1}(y) = e^y\\).\n\\(f_X(x) = e^{-x}\\).\nThen \\(f_Y(y) = f_X(e^y) \\cdot e^y = e^{-e^y} \\cdot e^y = e^y \\cdot e^{-e^y}\\).",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Probability Theory</span>"
+    ]
+  },
+  {
+    "objectID": "wk01/probability.html#normal-distribution-and-norm-in-r",
+    "href": "wk01/probability.html#normal-distribution-and-norm-in-r",
+    "title": "5  Probability Theory",
+    "section": "5.11 Normal Distribution and *norm() in R",
+    "text": "5.11 Normal Distribution and *norm() in R\nLet \\(X \\sim \\mathcal{N}(\\mu, \\sigma^2)\\). Then:\n\nDefinition 5.15 \\[\nf(x) = \\frac{1}{\\sqrt{2\\pi \\sigma^2}} \\exp\\left( -\\frac{(x - \\mu)^2}{2\\sigma^2} \\right)\n\\]\n\n\n\\(\\mathbb{E}[X] = \\mu\\)\n\\(\\text{Var}(X) = \\sigma^2\\)\n\n\n5.11.1 R Functions for Normal Distribution\n\n\n\nFunction\nDescription\n\n\n\n\ndnorm(x)\nPDF: \\(f(x)\\)\n\n\npnorm(x)\nCDF: \\(P(X \\le x)\\)\n\n\nqnorm(p)\nQuantile: inverse CDF\n\n\nrnorm(n)\nSimulate from \\(\\mathcal{N}(\\mu, \\sigma^2)\\)\n\n\n\n\nExample 5.9 Simulate 5 draws from \\(\\mathcal{N}(2, 1)\\):\n\nrnorm(5, mean = 2, sd = 1)\n\n[1] 1.961536 1.351848 2.608346 2.216705 2.561633\n\n\n\n\nExample 5.10 Compute \\(P(X \\le 1.96)\\) for \\(X \\sim \\mathcal{N}(0, 1)\\):\n\npnorm(1.96)\n\n[1] 0.9750021\n\n\nReturns approximately 0.975.",
+    "crumbs": [
+      "Week One",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Probability Theory</span>"
+    ]
+  },
+  {
+    "objectID": "wk02/01-maximum-likelihood.html",
+    "href": "wk02/01-maximum-likelihood.html",
+    "title": "6  Maximum Likelihood",
+    "section": "",
+    "text": "6.1 Example: Bernoulli Distribution\nThis week, I introduce our first “engine”: maximum likelihood. As a starting point, we use ML to estimate the parameters of Bernoulli, Poisson, and beta distributions (without covariates). Then I introduce the invariance property and show how we can use the invariance property to transform the estimated parameters into other quantities of interest. To evaluate the models, we use the predictive distribution.\nAs a running example, we use the toothpaste cap problem:\nHow can we do this in a principled way?\nIf we’re clever, we might immediately recognize that we can think of each toss as a sample from large population of sides, tops, and bottoms. Each toss is like a random sample from this large population. Then we know that the average of the sample is an unbiased estimator of the population mean. And this intuition works! As you might expect, the sample average is an unbiased estimator of the long-run chance of the cap landing on its top.\nBut not all problems are so easy. Suppose we create a histogram of our data and we notice several observations more than three standard deviations away from the mean. We might want to model these data with a Student’s t distribution. But how can we estimate the degrees-of-freedom parameter. It isn’t immediately clear how to estimate this parameter.\nFigure 6.1: A histogram with heavy tails.\nTo approach the toothpaste cap problem in a more principled way, we can use use a probability model by specifying a probability distribution for the data. Then we can use maximum likelihood to find an estimator for the parameters of that probability distribution.\nFor the toothpaste cap problem, we can model each toss as a Bernoulli trial. We think of each toss as a random variable \\(X\\) where \\(X \\sim \\text{Bernoulli}(\\pi)\\). If the cap lands on its top, we think of the outcome as 1. If not, as 0.\nSuppose we toss the cap \\(N\\) times and observe \\(k\\) tops. To find the ML estimator, we simply find the parameter that is most likely to generate these data. Suppose we observe \\(k = 25\\) successes (i.e., tops) in \\(N = 50\\) trials (i.e., tosses). It’s intuitive that these data would be relatively unlikely if \\(\\pi = 0.1\\) (i.e., the chance of a top is 10%) or if \\(\\pi = 0.1\\) (i.e., the chance of a top is 90%). However, these data are relatively more likely if the c\\(\\pi = 0.45\\) or \\(\\pi = 0.55\\). But what value of \\(\\pi\\) makes the data most likely? (You can probably guess, but let’s be formal!)\nWhat is the ML estimate \\(\\hat{\\pi}\\) of \\(\\pi\\)?\nAccording to the model \\(f(x_i; \\pi) = \\pi^{x_i} (1 - \\pi)^{(1 - x_i)}\\)—this is just the Bernoulli pmf. Because the samples are iid, we can find the joint distribution \\(f(x) = f(x_1) \\times ... \\times f(x_N) = \\prod_{i = 1}^N f(x_i)\\). This product includes several repetitions of \\(\\pi\\) and several repetitions of \\((1 - \\pi)\\). We include \\(k\\) \\(\\pi\\)s, because each of the \\(k\\) ones has probability \\(\\pi\\). Similarly, we include \\((N - k)\\) \\((1 - \\pi)\\)s, because each of the \\(N - k\\) zeros has probability \\(1 - \\pi\\)). This gives us \\(f(x; \\pi) = \\pi^{k} (1 - \\pi)^{(N - k)}\\). \\[\n\\text{the likelihood:  } f(x; \\pi) =  \\pi^{k} (1 - \\pi)^{(N - k)}, \\text{where } k = \\sum_{n = 1}^N x_n \\\\\n\\] All we have to do now is find the value of \\(\\pi\\) that maximizes this likelihood. This will be our ML estimator. But let’s proceed slowly.\nFirst, it’s a little strange to maximize \\(f(x; \\pi)\\) with respect to \\(\\pi\\). After all, the notation encourages us to think of \\(\\pi\\) as a fixed value and \\(x\\) as the variable. To make it clear that we’re now thinking of \\(\\pi\\) as the variable, let’s write \\(L(\\pi) = f(x; \\pi)\\).\n\\[\n\\text{the likelihood:  } L(\\pi) = \\pi^{k} (1 - \\pi)^{(N - k)}\\\\\n\\] Second, it turns out that products of are difficult to work with. First, calculus is easier sums than with products (we’re optimizing, which means derivatives are coming). Second, multiplying lots of numbers together can often mean very small or large numbers that are hard for computers to track. We’re interested in the maximum of the likelihood. However, notice that the value of \\(\\pi\\) that maximizes the likelihood also maximizes the log of that likelihood. Taking the log of the likelihood makes things much easier for us.\nThen, we take the log and simplify.\n\\[\n\\begin{align*}\n\\log L(\\pi) &= \\log\\!\\bigl[\\pi^k (1 - \\pi)^{N - k}\\bigr], \\\\[6pt]\n&= \\log\\bigl(\\pi^k\\bigr) + \\log\\Bigl[(1 - \\pi)^{N - k}\\Bigr], \\\\[6pt]\n&= k \\log(\\pi) + (N - k)\\log(1 - \\pi).\n\\end{align*}\n\\] This gives us the log-likelihood.\n\\[\n\\text{the log-likelihood:  } \\log L(\\pi) = k \\log (\\pi) + (N - k) \\log(1 - \\pi)\\\\\n\\] To find the ML estimator, we find \\(\\hat{\\pi}\\) that maximizes \\(\\log L(\\pi)\\).\nAs a concrete example, the plot below shows \\(\\log L(\\pi)\\) for \\(N = 150\\) and \\(k = 8\\).\nFigure 6.2: A plot of the log-likelihood function for \\(N = 150\\) and \\(k = 8\\).\nHowever, we only need this figure to develop our intuition because, for this Bernoulli model, the analytical optimum is easy.\nFirst, we can find the derivative of the log-likelihood with respect to \\(\\pi\\).\n\\[\n\\frac{d \\log L}{d\\hat{\\pi}} = k \\left( \\frac{1}{\\hat{\\pi}}\\right) + (N - k) \\left( \\frac{1}{1 - \\hat{\\pi}}\\right)(-1)\n\\]\nThen we can set \\(\\frac{d \\log L}{d\\hat{\\pi}} = 0\\) and \\(\\pi = \\hat{\\pi}\\).\n\\[\n\\begin{aligned}\nk \\left( \\frac{1}{\\hat{\\pi}}\\right) + (N - k) \\left( \\frac{1}{1 - \\hat{\\pi}}\\right)(-1) &= 0\\\\\n\\frac{k}{\\hat{\\pi}} - \\frac{N - k}{1 - \\hat{\\pi}} &= 0 \\\\\n\\frac{k}{\\hat{\\pi}} &= \\frac{N - k}{1 - \\hat{\\pi}} \\\\\nk(1 - \\hat{\\pi}) &= (N - k)\\hat{\\pi} \\\\\nk - k\\hat{\\pi} &= N\\hat{\\pi} - k\\hat{\\pi} \\\\\nk  &= N\\hat{\\pi} \\\\\n\\hat{\\pi} &= \\frac{k}{N}\\\\\n\\end{aligned}\n\\] Importantly, \\(k\\) is simply the number of successes. This mean that \\(\\frac{k}{N} = \\frac{\\sum_i^N x_i}{N} = \\text{avg}(x)\\). Thus, the ML estimator of \\(\\pi\\) is the average of the \\(N\\) Bernoulli trials, or, equivalently, the fraction of successes.\nThe collected data consist of 150 trials and 8 successes, so the ML estimate of \\(\\pi\\) is \\(\\frac{8}{150} \\approx 0.053\\).",
+    "crumbs": [
+      "Week Two",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Maximum Likelihood</span>"
+    ]
+  },
+  {
+    "objectID": "wk02/01-maximum-likelihood.html#example-bernoulli-distribution",
+    "href": "wk02/01-maximum-likelihood.html#example-bernoulli-distribution",
+    "title": "6  Maximum Likelihood",
+    "section": "",
+    "text": "We have a toothpaste cap–one with a wide bottom and a narrow top. We’re going to toss the toothpaste cap. It can either end up lying on its side, its (wide) bottom, or its (narrow) top. We want to estimate the probability of the toothpaste cap landing on its top.",
+    "crumbs": [
+      "Week Two",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Maximum Likelihood</span>"
+    ]
+  },
+  {
+    "objectID": "wk02/01-maximum-likelihood.html#principle-maximum-likelihood",
+    "href": "wk02/01-maximum-likelihood.html#principle-maximum-likelihood",
+    "title": "6  Maximum Likelihood",
+    "section": "6.2 Principle: Maximum Likelihood",
+    "text": "6.2 Principle: Maximum Likelihood\nSuppose we have a random sample from a distribution \\(f(x; \\theta)\\). We find the maximum likelihood (ML) estimator \\(\\hat{\\theta}\\) of \\(\\theta\\) by maximizing the likelihood of the observed data with respect to \\(\\theta\\).\nIn short, we take the likelihood of the data (given the model and a particular \\(\\theta\\)) and find the parameter \\(\\theta\\) that maximizes it.\nIn practice, to make the math and/or computation a bit easier, we manipulate the likelihood function in two ways:\n\nRelabel the likelihood function \\(f(x; \\theta) = L(\\theta)\\). This makes it clear that the parameter \\(\\theta\\) is now the varying parameter of interest.\nTake the log and work with \\(\\log L(\\theta)\\) rather than \\(L(\\theta)\\). Because \\(\\log()\\) is a monotonically increasing function, the \\(\\theta\\) that maximizes \\(L(\\theta)\\) also maximizes \\(\\log L(\\theta)\\). The log-likelihood is much simpler to work with.\n\n\nDefinition 6.1 (Maximum Likelihood (ML) Estimator) Suppose we have iid samples \\(x_1, x_2, ..., x_N\\) from pdf or pmf \\(f(x; \\theta)\\). Then the joint density/probability is \\(f(x; \\theta) = \\prod_{n = 1}^N f(x_n; \\theta)\\) and \\(\\log L(\\theta) = \\sum_{n = 1}^N \\log \\left[ f(x_n; \\theta) \\right]\\). The ML estimator \\(\\hat{\\theta}\\) of \\(\\theta\\) is \\(\\arg \\max \\log L(\\theta)\\).\n\nIn applied problems, we can occasionally find a nice analytical maximum. In most cases, though, we have a computer find the parameter that maximizes \\(\\log L\\).\nML estimators have nice properties. Here’s let’s consider just consistency.\n\nDefinition 6.2 (Consistent Estimator) Let \\(\\hat{\\theta}_n\\) be an estimator of \\(\\theta\\) based on a sample of size \\(n\\). Say that \\(\\hat{\\theta}_n\\) is a consistent estimator for \\(\\theta\\) if \\(\\lim_{n \\to \\infty} \\Pr \\left( |\\hat{\\theta}_n - \\theta| \\ge \\varepsilon \\right) = 0\\) for every \\(\\varepsilon &gt; 0\\).\n\n\nTheorem 6.1 (Consistency of ML Estimators) Suppose an ML estimator \\(\\hat{\\theta}\\) of \\(\\theta\\) as in Definition 6.1. Under certain regularity conditions,1 \\(\\hat{\\theta}\\) is a consistent estimator of \\(\\theta\\).\n1 Casella and Berger (2002, 516) write that “‘regularity conditions’ are typically very technical, rather boring, and usually satisfied in most reasonable problems.” However, they note that they are a “necessary evil.” The conditions below suffice for consistency.\n\nCondition 1 (Identifiable): For \\(\\theta \\neq \\theta'\\), \\(f(x; \\theta) \\neq f(x; \\theta')\\)\nCondition 2 (Common Support): The support of \\(f(x; \\theta)\\) does not change with \\(\\theta\\).\nCondition 3 (Differentiable): \\(f(x; \\theta)\\) is differentiable with respect to \\(\\theta\\).\nCondition 4 (Open Bounds): The parameter space of \\(\\theta\\) is an open interval \\((\\underline{\\theta}, \\overline{\\theta})\\) and \\(\\theta\\) lie in the interior such that \\(-\\infty \\leq \\underline{\\theta} &lt; \\theta &lt; \\overline{\\theta} \\leq \\infty\\).\n\nSee Casella and Berger (2002, 467–70, 516) and (Lehmann2004e?) a more detailed discussion.\nCasella, George, and Roger L. Berger. 2002. Statistical Inference. 2nd ed. Pacific Grove, CA: Duxbury.\n\nDefinition 6.2 and Theorem 6.1 mean that as the sample size grows to infinitely, an ML estimator \\(\\hat{\\theta}\\) falls arbitrarily close to \\(\\theta\\) with high probability. Less formally, consistency means that the estimator \\(\\hat{\\theta}\\) becomes increasingly concentrated around the true value \\(\\theta\\) as the samples size grows large. Figure 6.3 illustrates how an estimator might converge to the true value.2\n2 This definition of consistency is a “weak” version of consistency that describes an estimator that “converges in probability” to the true value. This is distinct from “converges almost surely,” which would mean that \\(\\Pr\\left( \\lim_{n \\to \\infty} \\hat{\\theta}_n = \\theta \\right) = 1\\). There is substantial theoretical distinction between these two forms of consistency, but little to no practical distinction.\n\n\n\n\n\n\nFigure 6.3: A figure illustrating a consistent estimator converging to the true value as the sample size increases.\n\n\n\n3 For example, most people convert coefficient from logistic regression models into substantively meaningful “quantities of interest.”\nNext, we have an incredibly important and useful result. Suppose we have ML estimator for the model parameter \\(\\theta\\), but we actually care about a transformation of that parameter.3 How can we find the ML estimator for the quantity of interest? It turns out that we can simply transform the ML estimates of the model parameters.\n\nTheorem 6.2 (Invariance Property of ML Estimators) Suppose an ML estimator \\(\\hat{\\theta}\\) of \\(\\theta\\) as in Definition 6.1 and a quantity of interest \\(\\tau = \\tau{\\theta}\\) for any function \\(\\tau\\). The ML estimate \\(\\hat{\\tau}\\) of \\(\\tau = \\tau(\\theta)\\) is \\(\\tau(\\hat{\\theta})\\).\n\nThis is an important result that underlies many of the subsequent recommendations and practices.",
+    "crumbs": [
+      "Week Two",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Maximum Likelihood</span>"
+    ]
+  },
+  {
+    "objectID": "wk02/01-maximum-likelihood.html#example-poisson-distribution",
+    "href": "wk02/01-maximum-likelihood.html#example-poisson-distribution",
+    "title": "6  Maximum Likelihood",
+    "section": "6.3 Example: Poisson Distribution",
+    "text": "6.3 Example: Poisson Distribution\nSuppose we collect \\(N\\) random samples \\(x = \\{x_1, x_2, ..., x_N\\}\\) and model each draw as a random variable \\(X \\sim \\text{Poisson}(\\lambda)\\). Find the ML estimator of \\(\\lambda\\).\n\\[\n\\begin{aligned}\n\\text{Poisson likelihood: } f(x; \\lambda) &= \\prod_{n = 1}^N \\frac{\\lambda^{x_n} e^{-\\lambda}}{x_n!} \\\\\nL(\\lambda) &= \\prod_{n = 1}^N \\frac{\\lambda^{x_n} e^{-\\lambda}}{x_n!} \\\\\n\\log L(\\lambda) &= \\sum_{n = 1}^N \\log \\left[ \\frac{\\lambda^{x_n} e^{-\\lambda}}{x_n!} \\right]\\\\\n&= \\sum_{n = 1}^N \\left[ x_n \\log \\lambda + (-\\lambda) \\log e - \\log x_n! \\right]\\\\\n&= \\log \\lambda \\left[ \\sum_{n = 1}^N x_n \\right]  -N\\lambda + \\sum_{n = 1}^N \\log (x_n!) \\\\\n\\end{aligned}\n\\]\nTo find the ML estimator, we find \\(\\hat{\\lambda}\\) that maximizes \\(\\log L\\). In this case, the analytical optimum is easy.\nFirst, find the derivative of the log-likelihod function with respect to the parameter \\(\\lambda\\).\n\\[\n\\frac{d \\log L}{d\\lambda} = \\frac{1}{\\lambda} \\left[ \\sum_{i = 1}^N x_i \\right] - N\n\\]\nThen set \\(\\frac{d \\log L}{d\\hat{\\lambda}}\\), \\(\\lambda = \\hat{\\lambda}\\), and solve for \\(\\hat{\\lambda}\\).\n\\[\n\\begin{aligned}\n\\frac{1}{\\hat{\\lambda}} \\left[ \\sum_{i = 1}^N x_i \\right] - N = 0 \\\\\n\\frac{1}{\\hat{\\lambda}} \\left[ \\sum_{i = 1}^N x_i \\right] - N \\\\\n\\frac{1}{\\hat{\\lambda}} \\left[ \\sum_{i = 1}^N x_i \\right] &= N \\\\\n\\left[ \\sum_{i = 1}^N x_i \\right] &= N \\hat{\\lambda} \\\\\n\\hat{\\lambda} &= \\frac{ \\sum_{i = 1}^N x_i }{N} = \\text{avg}(x)  \\\\\n\\end{aligned}\n\\] The ML estimator for the Poisson distribution is just the average of the samples.",
+    "crumbs": [
+      "Week Two",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Maximum Likelihood</span>"
+    ]
+  },
+  {
+    "objectID": "wk02/01-maximum-likelihood.html#example-normal-distribution",
+    "href": "wk02/01-maximum-likelihood.html#example-normal-distribution",
+    "title": "6  Maximum Likelihood",
+    "section": "6.4 Example: Normal Distribution",
+    "text": "6.4 Example: Normal Distribution\nThe normal distribution extends the Bernoulli and Poisson examples by adding multliple parameters.\nSuppose we collect \\(N\\) random samples \\(x = \\{x_1, x_2, ..., x_N\\}\\) and model each draw as a random variable \\(X \\sim \\mathcal{N}(\\mu, \\sigma^2)\\). Find the ML estimators of \\(\\mu\\) and \\(\\sigma^2\\).\n\\[\n\\begin{aligned}\n\\text{Normal likelihood: } f(x; \\mu, \\sigma^2) &= \\prod_{n = 1}^N \\frac{1}{\\sqrt{2\\pi\\sigma^2}} \\exp\\left( -\\frac{(x_n - \\mu)^2}{2\\sigma^2} \\right) \\\\\nL(\\mu, \\sigma^2) &= \\prod_{n = 1}^N \\frac{1}{\\sqrt{2\\pi\\sigma^2}} \\exp\\left( -\\frac{(x_n - \\mu)^2}{2\\sigma^2} \\right) \\\\\n\\log L(\\mu, \\sigma^2) &= \\sum_{n = 1}^N \\log \\left[ \\frac{1}{\\sqrt{2\\pi\\sigma^2}} \\exp\\left( -\\frac{(x_n - \\mu)^2}{2\\sigma^2} \\right) \\right] \\\\\n&= \\sum_{n = 1}^N \\left[ -\\frac{1}{2} \\log(2\\pi\\sigma^2) - \\frac{(x_n - \\mu)^2}{2\\sigma^2} \\right] \\\\\n&= -\\frac{N}{2} \\log(2\\pi\\sigma^2) - \\frac{1}{2\\sigma^2} \\sum_{n = 1}^N (x_n - \\mu)^2 \\\\\n\\end{aligned}\n\\]\nTo find the ML estimators, we find \\(\\hat{\\mu}\\) and \\(\\hat{\\sigma}^2\\) that maximize \\(\\log L\\). In this case, the analytical optima are straightforward.\nFirst, find the derivative of the log-likelihood function with respect to the parameter \\(\\mu\\).\n\\[\n\\frac{d \\log L}{d\\mu} = \\frac{1}{\\sigma^2} \\left[ \\sum_{i = 1}^N (x_i - \\mu) \\right]\n\\]\nNow take the derivative with respect to \\(\\sigma^2\\).\n\\[\n\\frac{d \\log L}{d\\sigma^2} = -\\frac{N}{2\\sigma^2} + \\frac{1}{2(\\sigma^2)^2} \\sum_{i = 1}^N (x_i - \\mu)^2\n\\]\nThen set \\(\\frac{d \\log L}{d\\mu} = 0\\), \\(\\frac{d \\log L}{d\\sigma^2} = 0\\), \\(\\sigma^2 = \\hat{\\sigma}^2\\), \\(\\mu = \\hat{\\mu}\\), and solve for \\(\\hat{\\mu}\\) and \\(\\hat{\\sigma}^2\\).\nFirst, solve for \\(\\hat{\\mu}\\).\n\\[\n\\begin{aligned}\n\\frac{1}{\\sigma}^2 \\left[ \\sum_{i = 1}^N (x_i - \\hat{\\mu}) \\right] &= 0 \\\\\n\\sum_{i = 1}^N (x_i - \\hat{\\mu}) &= 0 \\\\\nN \\hat{\\mu} &= \\sum_{i = 1}^N x_i \\\\\n\\hat{\\mu} &= \\frac{ \\sum_{i = 1}^N x_i }{N} = \\text{avg}(x) \\\\\n\\end{aligned}\n\\]\nNow solve for \\(\\hat{\\sigma}^2\\).\n\\[\n\\begin{aligned}\n-\\frac{N}{2\\hat{\\sigma}^2} + \\frac{1}{2(\\hat{\\sigma}^2)^2} \\sum_{i = 1}^N (x_i - \\hat{\\mu})^2 &= 0 \\\\\n-N \\hat{\\sigma}^2 + \\sum_{i = 1}^N (x_i - \\hat{\\mu})^2 &= 0 \\\\\n\\hat{\\sigma}^2 &= \\frac{ \\sum_{i = 1}^N (x_i - \\hat{\\mu})^2 }{N} \\\\\n\\end{aligned}\n\\]\nThe ML estimators for the parameters of the normal distribution are the sample average (i.e., \\(\\hat{\\mu} = \\text{avg}(x)\\)) and the MSE from the sample average (i.e., \\(\\hat{\\sigma}^2 = \\frac{ \\sum_{i = 1}^N (x_i - \\hat{\\mu})^2 }{N}\\)).4\n4 Notice that the ML estimate for the variance is difference from the classic estimate, which is \\[\n    \\hat{\\sigma}^2_{\\text{classic}} = \\frac{ \\sum_{i = 1}^N (x_i - \\hat{\\mu})^2 }{N - 1}.\n    \\] (Notice the \\(N - 1\\) in the denominator.)As an example, let’s model the WDI measure percentage change in GDP in 2022. We can load these data directly into R using the WDI() function in the WDI package.\n\n# load package\nlibrary(WDI)\n\n# get annual % gdp growth (annual %) for 2022\n# - note: \"NY.GDP.MKTP.KD.ZG\" is percentage gdp growth\n#         see https://data.worldbank.org/indicator/NY.GDP.MKTP.KD.ZG\ngdp_growth_2022 &lt;- WDI(indicator = \"NY.GDP.MKTP.KD.ZG\", \n                       start = 2022, \n                       end = 2022, \n                       extra = TRUE) %&gt;%\n  # data includes aggregates (e.g., European Union); filter these out\n  filter(region != \"Aggregates\") %&gt;%\n  glimpse()\n\nRows: 216\nColumns: 13\n$ country           &lt;chr&gt; \"Afghanistan\", \"Albania\", \"Algeria\", \"American Samoa…\n$ iso2c             &lt;chr&gt; \"AF\", \"AL\", \"DZ\", \"AS\", \"AD\", \"AO\", \"AG\", \"AR\", \"AM\"…\n$ iso3c             &lt;chr&gt; \"AFG\", \"ALB\", \"DZA\", \"ASM\", \"AND\", \"AGO\", \"ATG\", \"AR…\n$ year              &lt;int&gt; 2022, 2022, 2022, 2022, 2022, 2022, 2022, 2022, 2022…\n$ NY.GDP.MKTP.KD.ZG &lt;dbl&gt; -6.240172, 4.826696, 3.600000, 1.735016, 9.564612, 3…\n$ status            &lt;chr&gt; \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", \"\", …\n$ lastupdated       &lt;chr&gt; \"2025-07-01\", \"2025-07-01\", \"2025-07-01\", \"2025-07-0…\n$ region            &lt;chr&gt; \"South Asia\", \"Europe & Central Asia\", \"Middle East …\n$ capital           &lt;chr&gt; \"Kabul\", \"Tirane\", \"Algiers\", \"Pago Pago\", \"Andorra …\n$ longitude         &lt;chr&gt; \"69.1761\", \"19.8172\", \"3.05097\", \"-170.691\", \"1.5218…\n$ latitude          &lt;chr&gt; \"34.5228\", \"41.3317\", \"36.7397\", \"-14.2846\", \"42.507…\n$ income            &lt;chr&gt; \"Low income\", \"Upper middle income\", \"Upper middle i…\n$ lending           &lt;chr&gt; \"IDA\", \"IBRD\", \"IBRD\", \"Not classified\", \"Not classi…\n\n# plot histogram\nhist(gdp_growth_2022$NY.GDP.MKTP.KD.ZG)\n\n\n\n\n\n\n\n\n\n# ml estimate of mu\nmean(gdp_growth_2022$NY.GDP.MKTP.KD.ZG, na.rm = TRUE)\n\n[1] 4.478777\n\n# ml estimate of sigma^2\nx &lt;- na.omit(gdp_growth_2022$NY.GDP.MKTP.KD.ZG)\nsum((x - mean(x))^2)/length(x)\n\n[1] 45.93108\n\n# compare to classic, unbiased estimate that uses N - 1 in denominator\nvar(gdp_growth_2022$NY.GDP.MKTP.KD.ZG, na.rm = TRUE)\n\n[1] 46.15405",
+    "crumbs": [
+      "Week Two",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Maximum Likelihood</span>"
+    ]
+  },
+  {
+    "objectID": "wk02/01-maximum-likelihood.html#example-beta-distribution",
+    "href": "wk02/01-maximum-likelihood.html#example-beta-distribution",
+    "title": "6  Maximum Likelihood",
+    "section": "6.5 Example: Beta Distribution",
+    "text": "6.5 Example: Beta Distribution\nWith the beta distribution, we add another complication that typically occurs when using ML: an intractable log-likelihood.\nThe beta distribution is perhaps unfamiliar. However, it will become important to us, so it’s worth learning more about it now.\n\nIt has a support on the [0, 1] interval, meaning that samples from the beta distribution are values between zero and one.\nIt is a continuous distribution, meaning that it is defined with a pdf (rather than a pmf).\nIt has pdf \\(f(y_i; \\alpha, \\beta) = \\dfrac{y_i^{\\alpha - 1}(1 - y_i)^{\\beta - 1}}{B(\\alpha, \\beta)}\\), where \\(B(\\alpha, \\beta) = \\displaystyle \\int_0^1 t^{\\alpha - 1}(1 - t)^{\\beta - 1}dt\\).5\nThe \\(\\alpha\\) and \\(\\beta\\) don’t have a convenient interpretation. They are “shape” parameters. You can think of \\(\\alpha\\) as pushing the distribution to the right and \\(\\beta\\) as pushing the distribution to the left. Thus, when \\(\\alpha &gt; \\beta\\), the distribution seems pushed to the right (or skewed to the left). And when \\(\\alpha &lt; \\beta\\), the distribution seems pushed to the left (or skewed to the right). The code below plots the pdf for \\(\\alpha = 2\\) and \\(\\beta = 5\\).\n\n5 Wow that’s a lot of betas. We have three floating around: the beta distribution, the beta function \\(B(\\cdot)\\), and the beta parameter \\(\\beta\\).\n# parameters\nalpha &lt;- 2\nbeta &lt;- 5\n\n# plot\nggplot() +\n  stat_function(fun = dbeta, \n                args = list(shape1 = alpha, shape2 = beta)) + \n  xlim(0, 1)\n\n\n\n\n\n\n\n\nSuppose we collect \\(N\\) random samples \\(y = \\{y_1, y_2, ..., y_N\\}\\) and model each draw as a random variable \\(X \\sim \\text{beta}(\\alpha, \\beta)\\). Find the ML estimators of \\(\\alpha\\) and \\(\\beta\\).\nIn general, this is how we do ML:\nStep 1 Write down the likelihood function. Recall that we can obtain the joint density of \\(y_1\\) AND \\(y_2\\) AND … AND \\(y_n\\) by multiplying the probabilities of each (assuming independence).\n\\[\n\\begin{aligned}\nL(\\alpha, \\beta) = \\displaystyle\\prod_{i = 1}^n \\overbrace{f(y_i;\\alpha, \\beta)}^{\\text{density}} = \\displaystyle\\prod_{i = 1}^n \\dfrac{y_i^{\\alpha - 1}(1 - y_i)^{\\beta - 1}}{B(\\alpha, \\beta)}\n\\end{aligned}\n\\]\nWe see again, as will be usual, that we have a complicated product that makes things challenging. However, taking the log is helpful and standard.\nStep 2 Take the log and simplify.\n\\[\n\\begin{aligned}\nL(\\alpha, \\beta) &= \\displaystyle\\prod_{i = 1}^n \\dfrac{y_i^{\\alpha - 1}(1 - y_i)^{\\beta - 1}}{B(\\alpha, \\beta)}\\\\\n\\log L(\\alpha, \\beta) &= \\displaystyle\\sum_{i = 1}^n \\log \\dfrac{y_i^{\\alpha - 1}(1 - y_i)^{\\beta - 1}}{B(\\alpha, \\beta)}\\\\\n&= \\displaystyle\\sum_{i = 1}^n \\left[ \\log y_i^{\\alpha - 1} + \\log (1 - y_i)^{\\beta - 1} - \\log B(\\alpha, \\beta)\\right]\\\\\n&= \\displaystyle\\sum_{i = 1}^n \\left[ (\\alpha - 1)\\log y_i + (\\beta - 1)\\log (1 - y_i) - \\log B(\\alpha, \\beta)\\right]\\\\\n&= \\displaystyle\\sum_{i = 1}^n \\left[ (\\alpha - 1)\\log y_i + (\\beta - 1)\\log (1 - y_i)\\right] - n \\log B(\\alpha, \\beta)\\\\\n\\log L(\\alpha, \\beta) &= (\\alpha - 1) \\sum_{i = 1}^n \\log y_i + (\\beta - 1) \\sum_{i = 1}^n \\log (1 - y_i) - n \\log B(\\alpha, \\beta)\n\\end{aligned}\n\\] Step 3 Maximize.\nIf we wanted, we could work on this one analytically.\n\nTake the derivative w.r.t. \\(\\alpha\\).\nTake the derivative w.r.t. \\(\\beta\\).\nSet both equal to zero and solve. (Two equations and two unknowns.)\n\nBut the last term \\(B(\\alpha, \\beta) = \\int_0^1 t^{\\alpha - 1}(1 - t)^{\\beta - 1}dt\\) is tricky! In fact, there is no analytical solution. In the examples above (Bernoulli, Poisson, and normal), there were closed-form, analytical solution. But closed-form solutions are relatively rare. In this case, and many others, we’ll need to optimize numerically.\nTo perform the optimization, we need a data set. For now, let’s simulate a fake data set with known parameters\n\n# create a fake data set\nset.seed(123)\ny &lt;- rbeta(100, shape1 = 10, shape2 = 10)\n\n# print first few values\nhead(y)\n\n[1] 0.4287691 0.4709244 0.7053158 0.5088962 0.5163171 0.7270786\n\n# plot entire data set\nggplot(data = NULL, aes(x = y)) + \n  geom_histogram(bins = 30)\n\n\n\n\n\n\n\n\nWe can start by plotting the log-likelihood function. The function has two inputs (\\(\\alpha\\) and \\(\\beta\\)) and outputs a log-likelihood value. To understand how these two inputs relate to the output, we can use a contour plot.6 The plot below shows that the log-likelihood is maximized somewhere around \\(\\alpha = 12\\) and \\(\\beta = 12\\).\n6 A contour plot can visualize how a function (e.g., a log-likelihood function) changes across two parameters. Each curved line connects combinations of parameter values that produce the same value of the log-likelihood. The lines highlight regions where the log-likelihood is higher or lower (i.e., parameter combinations for which the observed data are more or less likely).\n# load packages\nlibrary(geomtextpath)\n\n# set parameters\nalpha &lt;- seq(1, 25, length.out = 100)\nbeta  &lt;- seq(1, 25, length.out = 100)\n\n# compute log-likelihood for each combination of parameters\ndata &lt;- crossing(alpha, beta) %&gt;%\n  mutate(log_lik = alpha*sum(log(y)) + beta*sum(log(1 - y)) - \n           length(y)*log(beta(alpha, beta)))\n\n# make contour plot with labelled contours\nggplot(data, aes(x = alpha, \n                 y = beta, \n                 z = log_lik)) +\n  geom_contour_filled(breaks = c(Inf, -55, -60, -70, -100, -200, -500, -Inf)) +\n  geom_labelcontour(breaks = c(Inf, -55, -60, -70, -100, -200, -500, -Inf), straight = TRUE) +\n  theme_classic() +\n  theme(legend.position = \"none\")\n\n\n\n\n\n\n\n\nBut we only need to plot the log-likelihood to help our intuition. It’s easy to give the log-likelihood to a hill-climbing algorithm and have it spit out the maximum.\nLet’s program the log-likelihood function in R to handle the optimization numerically.\n\n1ll_fn &lt;- function(theta, y) {\n2  alpha &lt;- theta[1]\n  beta &lt;- theta[2]\n  ll &lt;- alpha*sum(log(y)) + beta*sum(log(1 - y)) -\n           length(y)*log(beta(alpha, beta))\n3  return(ll)\n}\n\n\n1\n\nThe parameter vector must be the first argument to our log-likelihood function; all parameters must be included in this single argument. We also want our likelihood function to take a data set, so we include the numeric vector y.\n\n2\n\nInside the function, we split the parameter vector into different parts. (This will not always be helpful, but it seems helpful here.)\n\n3\n\nThe function returns the value (i.e., “height”) of the log-likelihood function. That is, the function takes a given set of parameters (and the data) and returns the log-likelihood for that set of parameters (and those data). See below for a different approach.\n\n\n\n\nThe computation of the log-likelihood is complicated. It’s difficult to derive, enter, and check—it’s easy to make a mistake and difficult to understand. Instead, we can use the dbeta() function with log = TRUE, which computes the log-likelihood for the individuals observations. We can simply sum up the dbeta(..., log = TRUE)s to obtain the log-likelihood. This is easier do implement and understand. dbeta(..., log = TRUE) is also built by professionals, so it’s probably more numerically accurate than our home-spun version.\n\nll_fn &lt;- function(theta, y) { \n  alpha &lt;- theta[1] \n  beta &lt;- theta[2] \n  ll &lt;- sum(dbeta(y, shape1 = alpha, shape2 = beta, log = TRUE))\n  return(ll)\n}\n\nNow let’s use optim() to do the maximization.\n\n1est &lt;- optim(par = c(2, 2),\n2             fn = ll_fn,\n3             y = y,\n4             control = list(fnscale = -1),\n5             method = \"Nelder-Mead\")\n\n\n1\n\nFirst, par is the initial value of the parameter that optim() inputs as the initial values for the first argment to the function it is trying to optimize. This must be the correct length (i.e., our log-likehood has two parameters here).\n\n2\n\nSecond, fn is the function we want optimized. In this case, we use ll_fn that we created above, which is the log-likelihood for the beta distribution.\n\n3\n\nThird, y = y is passed to ll_fn. This is important because ll_fn needs the data.\n\n4\n\nForth, fnscale = -1 tells optim() to maximize the log-likelihood rather than mimize the log-likelihood. By default, optim() is a minimizer. fnscale = -1 flips the log-likelihood over, so that optim() is now effectively a maximizer.\n\n5\n\nFifth, method = \"Nelder-Mead\" tells optim() to use the Nelder-Mead algorithm. Nelder-Mead is the default I use. Another good option is \"BFGS\", which uses the Broyden–Fletcher–Goldfarb–Shanno algorithm. BFGS works really well for well-behaved likelihoods; Nelder-Mead is more robust.\n\n\n\n\noptim() returns a list with several components.\n\nnames(est)\n\n[1] \"par\"         \"value\"       \"counts\"      \"convergence\" \"message\"    \n\n\nFor now, we want the following:\n\npar: contains the parameters that maximize the log-likelihood.\nconvergence: equals 0 if the algorithm successfully converged (see ?optim for other values).\n\n\nest$convergence\n\n[1] 0\n\nest$par\n\n[1] 11.98350 11.91888\n\n\nWe can also wrap the optim() in a function to make obtaining the estimates a little bit easier.\n\nest_beta &lt;- function(y) {\n  est &lt;- optim(par = c(2, 2), fn = ll_fn, y = y,\n               control = list(fnscale = -1),\n               method = \"BFGS\") # for &gt;1d problems\n  if (est$convergence != 0) print(\"Model did not converge!\")\n  res &lt;- list(est = est$par)\n  return(res)\n}\n\nml_est &lt;- est_beta(y)\nprint(ml_est, digits = 3)\n\n$est\n[1] 12.0 11.9\n\n\nThe beta distribution might be useful for modeling variables that lie between zero and one–proportions are a natural candidate. In baseball, a player’s batting average is the proportion of at-bats in which a player gets a hit. If estimate a beta model with batting averages from 2023 for players with at least 100 at-bats, we get \\(\\alpha \\approx 37\\) and \\(\\beta \\approx 115\\).\n\n# load packages\nlibrary(Lahman)  # data from Lahman's baseball database\n\n# create data frame with batting average\nbstats &lt;- battingStats() |&gt; \n  filter(yearID == 2023, AB &gt; 100) |&gt;  # data from 2023\n  filter(AB &gt;= 100) |&gt;  # players with at least 100 at-bats\n  select(player_id = playerID, batting_average = BA) |&gt;\n  arrange(-batting_average) |&gt;\n  na.omit() |&gt;\n  glimpse()\n\nRows: 457\nColumns: 2\n$ player_id       &lt;chr&gt; \"arraelu01\", \"acunaro01\", \"freemfr01\", \"diazya01\", \"se…\n$ batting_average &lt;dbl&gt; 0.354, 0.337, 0.331, 0.330, 0.327, 0.319, 0.316, 0.312…\n\n# plot histogram\nhist(bstats$batting_average)\n\n\n\n\n\n\n\n# estimate beta model\ntheta_hat &lt;- est_beta(bstats$batting_average)\ntheta_hat\n\n$est\n[1]  37.07655 114.92550",
+    "crumbs": [
+      "Week Two",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Maximum Likelihood</span>"
+    ]
+  },
+  {
+    "objectID": "wk02/01-maximum-likelihood.html#principle-method-of-moments",
+    "href": "wk02/01-maximum-likelihood.html#principle-method-of-moments",
+    "title": "6  Maximum Likelihood",
+    "section": "6.6 Principle: Method of Moments",
+    "text": "6.6 Principle: Method of Moments\nAfter seeing the idea of maximum likelihood, you might get the idea that ML is the only reasonable method to find point estimates. But it’s not! One competitor is called the method of moments. I’ll discuss it here briefly, only so you’re aware that ML isn’t the only approach. And closely related ideas you might see elsewhere are called generalized method of moments (GMM) and generalized estimating equations (GEE).\nSuppose a random variable \\(X\\). Then we refer to \\(E(X^k)\\) as the \\(k\\)-th moment of the distribution or population. Similarly, we refer to \\(\\text{avg}(x^k)\\) as the \\(k\\)-th sample moment.\nExample 1: The first moments are just \\(E(X)\\) and \\(\\text{avg}(x)\\), respectively.\nExample 2: recall that \\(V(X) = E \\left(X^2 \\right) - \\left[ E(X)\\right]^2\\). In example the variance of \\(X\\) is the difference between the second moment and the square of the first moment.\nTo use the method of moments, set the first \\(k\\) sample moments equal to the first \\(k\\) moments of \\(f\\) and relabel \\(\\theta_i\\) as \\(\\hat{\\theta}_i\\). Solve the system of equations for each \\(\\hat{\\theta}_i\\). This turns out to work pretty well!7\n7 Recall that the law of large numbers guarantees that \\(\\text{avg}(x) \\xrightarrow[]{p} E(X)\\). Thus, the first sample moment (the average) converges in probability to the first moment of \\(f\\) (the expected value or mean). By the law of the unconscious statistician, we can similarly guarantee that \\(\\text{avg}(x^k) \\xrightarrow[]{p} E(X^k)\\). Thus, the sample moments converge in distribution to moments of \\(f\\). Now suppose that \\(f\\) has parameters \\(\\theta_1, \\theta_2, ..., \\theta_k\\) so that \\(X \\sim f(\\theta_1, \\theta_2, ..., \\theta_k)\\). We know (or can solve) for the moments of \\(f\\) so that \\(E(X^1) = g_1(\\theta_1, \\theta_2, ..., \\theta_k)\\), \\(E(X^2) = g_2(\\theta_1, \\theta_2, ..., \\theta_k)\\), and so on.ML estimators have nicer properties. Perhaps most importantly, they are invariant to transformation.\nExample 3: For the exponential model, we have \\(E(y) = \\frac{1}{\\lambda}\\). Using the method of moments, we would set \\(\\text{avg}(y) = \\frac{1}{\\hat{\\lambda}}\\) and solve for \\(\\lambda\\).8 This gives us \\(\\hat{\\lambda} = \\frac{1}{\\text{avg}(y)}\\). In this case, ML and the method of moments produce the same estimate. This does not happen always.\n8 There’s only one parameter, so we just need one moment.Example 4: For the beta model, assume \\(X \\sim \\text{Beta}(\\alpha, \\beta)\\). The mean and variance are \\(E(X) = \\frac{\\alpha}{\\alpha + \\beta}\\) and \\(V(X) = \\frac{\\alpha \\beta}{(\\alpha + \\beta)^2 (\\alpha + \\beta + 1)}\\). Using the method of moments, we would set \\(\\text{avg}(x) = \\frac{\\alpha}{\\alpha + \\beta}\\) and \\(\\text{var}(x) = \\frac{\\alpha \\beta}{(\\alpha + \\beta)^2 (\\alpha + \\beta + 1)}\\). To make the math easy, let’s set \\(t = \\alpha + \\beta\\) so that \\(\\alpha = \\text{avg}(x) \\cdot t\\) and \\(\\beta = (1 - \\text{avg}(x)) \\cdot t\\). Substituting into the variance equation gives \\(\\text{var}(x) = \\frac{\\text{avg}(x)(1 - \\text{avg}(x))}{t + 1}\\). Solving for \\(t\\) gives \\(t = \\frac{\\text{avg}(x)(1 - \\text{avg}(x))}{\\text{var}(x)} - 1\\). Plugging back in, we get \\(\\hat{\\alpha} = \\text{avg}(x) \\left( \\frac{\\text{avg}(x)(1 - \\text{avg}(x))}{\\text{var}(x)} - 1 \\right)\\) and \\(\\hat{\\beta} = (1 - \\text{avg}(x)) \\left( \\frac{\\text{avg}(x)(1 - \\text{avg}(x))}{\\text{var}(x)} - 1 \\right)\\). We can compare the method of moments estimates for the beta distribution to the ML estimates we obtains above. They are similar, but not identical.\n\n# method of moments estimator for beta distribution\nest_beta_mm &lt;- function(y) {\n  avg_x &lt;- mean(y)\n  var_x &lt;- var(y)\n  t &lt;- (avg_x * (1 - avg_x)) / var_x - 1\n  alpha_hat &lt;- avg_x * t\n  beta_hat &lt;- (1 - avg_x) * t\n  res &lt;- list(est = c(alpha_hat, beta_hat))\n  return(res)\n}\n\n# estimate beta parameters using method of moments\ntheta_hat_mm &lt;- est_beta_mm(bstats$batting_average)\ntheta_hat_mm$est  # method of moments\n\n[1]  38.70942 119.95708\n\ntheta_hat$est  # ml (from above)\n\n[1]  37.07655 114.92550",
+    "crumbs": [
+      "Week Two",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Maximum Likelihood</span>"
+    ]
+  },
+  {
+    "objectID": "wk02/02-invariance-property.html",
+    "href": "wk02/02-invariance-property.html",
+    "title": "7  The Invariance Property",
+    "section": "",
+    "text": "7.1 Example: Bernoulli Odds\nWhen discussing the properties of an ML estimate \\(\\hat{\\theta}\\): we’ve mentioned two properties. First, \\(\\hat{\\theta}\\) is a consistent estimator. Second, Theorem 6.2 shows that we can transform \\(\\hat{\\theta}\\) to obtain an ML estimate of the transformation (i.e., \\(\\hat{\\tau} = \\tau{(\\hat{\\theta})}\\)). Let’s explore this invariance property a bit more.\nModel parameters sometimes have a nice interpretation. For example, the parameter \\(\\pi\\) in the Bernoulli model has a nice interpretation–it’s a probability or the expected fraction of 1s in the long-run. However, the model parameters might not always have nice interpretation. For example, the shape parameters \\(\\alpha\\) and \\(\\beta\\) of the beta distribution do not have a nice interpretation. Fortunately, it’s easy to transform the ML estimates of the model parameters into ML estimates of a quantity of interest.\nSuppose that we want an ML estimator of the odds of getting a top for the toothpaste cap problem. We already used ML to estimate the probability \\(\\pi\\) of getting a top and came up with \\(\\frac{8}{150} \\approx 0.053\\). We can directly transform a probability into odds using \\(\\text{odds} = \\frac{\\pi}{1 - \\pi}\\). This has a nice interpretation: odds = 2 means that a top is twice as likely as not; odds = 0.5 means that a top is half as likely as not.\nIn our case, we can plug our ML estimate of \\(\\pi\\) into the transformation to obtain the ML estimate of the odds. \\[\n\\begin{aligned}\n\\widehat{\\text{odds}} &= \\frac{\\hat{\\pi}}{1 - \\hat{\\pi}} \\\\\n& = \\frac{\\frac{8}{150}}{1 - \\frac{8}{150}} \\\\\n& = \\frac{\\frac{8}{150}}{\\frac{150}{150} - \\frac{8}{150}} \\\\\n& = \\frac{\\frac{8}{150}}{\\frac{142}{150}} \\\\\n& = \\frac{8}{142} \\\\\n& \\approx 0.056\n\\end{aligned}\n\\] This means that tops are about 0.06 times as likelihood as not-tops. Inverted, you’re about \\(\\frac{142}{8} \\approx 18\\) times more likely to not get a top than get a top.",
+    "crumbs": [
+      "Week Two",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>The Invariance Property</span>"
+    ]
+  },
+  {
+    "objectID": "wk02/02-invariance-property.html#example-poisson-sd",
+    "href": "wk02/02-invariance-property.html#example-poisson-sd",
+    "title": "7  The Invariance Property",
+    "section": "7.2 Example: Poisson SD",
+    "text": "7.2 Example: Poisson SD\nIn this example, we use real data from Holland (2015), who is interested in the number of enforcement operations across districts in three cities. See ?crdata::holland2015 for the details. We can model the number of enforcement operations in each city as a Poisson distribution and estimate \\(\\lambda\\) in each of the three cities. (We previously found that the sample mean is the ML estimator for the mean parameter \\(\\lambda\\) for the Poisson distribution.)\n\nHolland, Alisha C. 2015. “The Distributive Politics of Enforcement.” American Journal of Political Science 59 (2): 357–71. https://doi.org/10.1111/ajps.12125.\n\n# install package (once per computer)\n# remotes::install_github(\"carlislerainey/crdata\")\n\n# load holland's data (once per session)\nholland2015 &lt;- crdata::holland2015 |&gt;\n  glimpse()\n\nRows: 89\nColumns: 7\n$ city       &lt;chr&gt; \"santiago\", \"santiago\", \"santiago\", \"santiago\", \"santiago\",…\n$ district   &lt;chr&gt; \"Cerrillos\", \"Cerro Navia\", \"Conchali\", \"El Bosque\", \"Estac…\n$ operations &lt;dbl&gt; 0, 0, 0, 0, 12, 0, 0, 0, 1, 1, 0, 10, 1, 5, 0, 0, 0, 4, 4, …\n$ lower      &lt;dbl&gt; 52.2, 69.8, 54.8, 58.4, 43.6, 58.3, 41.0, 38.3, 36.7, 60.1,…\n$ vendors    &lt;dbl&gt; 0.50, 0.60, 5.00, 1.20, 1.00, 0.30, 0.05, 1.25, 2.21, 0.70,…\n$ budget     &lt;dbl&gt; 337.24, 188.87, 210.71, 153.76, 264.43, 430.42, 312.75, 255…\n$ population &lt;dbl&gt; 6.6160, 13.3943, 10.7246, 16.8302, 11.1702, 8.5761, 5.1277,…\n\n# compute ml estimate of poisson mean parameter lambda\nholland2015 |&gt;\n  group_by(city) |&gt;\n  summarize(lambda_hat = mean(operations))\n\n# A tibble: 3 × 2\n  city     lambda_hat\n  &lt;chr&gt;         &lt;dbl&gt;\n1 bogota         8.89\n2 lima          23.2 \n3 santiago       2.71\n\n\nThe parameter \\(\\lambda\\) is a nice, interpretable quantity—it’s a mean! But we might want also want the SD. For the Poisson distribution, the variance equals the mean, so \\(\\text{Var}(y) = \\text{E}(y) = \\lambda\\). Therefore, the SD is \\(\\sqrt{\\lambda}\\). We don’t need to do the hard work of finding a new ML estimator for the SD, we can just use \\(\\widehat{\\text{SD}} = \\sqrt{\\hat{\\lambda}}\\). This is the ML estimate of the SD of the data, and it carries all the properties of ML estimators.\n\n# compute compute ml estimate of lambda (mean) and sd\nholland2015 |&gt;\n  group_by(city) |&gt;\n  summarize(lambda_hat = mean(operations), \n            sd_hat = sqrt(lambda_hat))\n\n# A tibble: 3 × 3\n  city     lambda_hat sd_hat\n  &lt;chr&gt;         &lt;dbl&gt;  &lt;dbl&gt;\n1 bogota         8.89   2.98\n2 lima          23.2    4.82\n3 santiago       2.71   1.64\n\n\nWe’re using the invariance property to move from the mean to the SD by a simple transformation. Note that we can do this because the Poisson distribution assumes that the variance and SD are a function of the mean. We couldn’t similarly infer the variance from the mean in a normal model, for example. But we’re also assuming a Poisson distribution. A later exercise asks you if these estimates of the SD are close to the actual SD of the data.",
+    "crumbs": [
+      "Week Two",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>The Invariance Property</span>"
+    ]
+  },
+  {
+    "objectID": "wk02/02-invariance-property.html#example-beta-mean-and-variance",
+    "href": "wk02/02-invariance-property.html#example-beta-mean-and-variance",
+    "title": "7  The Invariance Property",
+    "section": "7.3 Example: Beta Mean and Variance",
+    "text": "7.3 Example: Beta Mean and Variance\nNow let’s see an example of the beta distribution \\(Y \\sim \\text{beta}(\\alpha, \\beta)\\). The beta distribution does not have parameters that are easily interpretable in terms of mean and variance. Instead, it has two “shape” parameters \\(\\alpha\\) and \\(\\beta\\) that are in tension—one pulls the distribution to the left and the other pulls the distribution to the right.\nFor an example, let’s return to the batting average data.\n\n# load packages\nlibrary(Lahman)  # data from Lahman's baseball database\n\n# create data frame with batting average\nbstats &lt;- battingStats() |&gt; \n  filter(yearID == 2023, AB &gt; 100) |&gt;  # data from 2023\n  filter(AB &gt;= 100) |&gt;  # players with at least 100 at-bats\n  select(player_id = playerID, batting_average = BA) |&gt;\n  arrange(-batting_average) |&gt;\n  na.omit() |&gt;\n  glimpse()\n\nRows: 457\nColumns: 2\n$ player_id       &lt;chr&gt; \"arraelu01\", \"acunaro01\", \"freemfr01\", \"diazya01\", \"se…\n$ batting_average &lt;dbl&gt; 0.354, 0.337, 0.331, 0.330, 0.327, 0.319, 0.316, 0.312…\n\n# create function to estimate beta parameters\nll_fn &lt;- function(theta, y) { \n  alpha &lt;- theta[1] \n  beta &lt;- theta[2] \n  ll &lt;- sum(dbeta(y, shape1 = alpha, shape2 = beta, log = TRUE))\n  return(ll)\n}\nest_beta &lt;- function(y) {\n  est &lt;- optim(par = c(2, 2), fn = ll_fn, y = y,\n               control = list(fnscale = -1),\n               method = \"BFGS\") # for &gt;1d problems\n  if (est$convergence != 0) print(\"Model did not converge!\")\n  res &lt;- list(est = est$par)\n  return(res)\n}\n\n# estimate beta model\ntheta_hat &lt;- est_beta(bstats$batting_average)\ntheta_hat$est\n\n[1]  37.07655 114.92550\n\n\nFor the beta distribution, the mean is given by \\(\\frac{\\alpha}{\\alpha + \\beta}\\) and the variance is given by \\(\\frac{\\alpha\\beta}{(\\alpha + \\beta)^2(\\alpha + \\beta + 1)}\\). (See Table A.1.)\nWe can use the invariance property to obtain ML estimates of the mean, variance, and SD using our ML estimates of \\(\\alpha\\) and \\(\\beta\\).\n\na &lt;- theta_hat$est[1]\nb &lt;- theta_hat$est[2]\n\na/(a + b)  # mean\n\n[1] 0.2439214\n\n(a * b)/((a + b)^2 * (a + b + 1))  # var\n\n[1] 0.001205368\n\nsqrt((a * b)/((a + b)^2 * (a + b + 1)))  # sd\n\n[1] 0.03471841\n\n\nIt’s worth noting that these correspond closely, but not exactly to the observed mean, variance, and SD.\n\nmean(bstats$batting_average)\n\n[1] 0.2439672\n\nvar(bstats$batting_average)\n\n[1] 0.001155203\n\nsd(bstats$batting_average)\n\n[1] 0.03398828",
+    "crumbs": [
+      "Week Two",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>The Invariance Property</span>"
+    ]
+  },
+  {
+    "objectID": "wk02/03-predictive-distribution.html",
+    "href": "wk02/03-predictive-distribution.html",
+    "title": "8  Predictive Distribution",
+    "section": "",
+    "text": "8.1 Example: Poisson Distribution\nIn Bayesian statistics, a popular tool for model evaluation is the posterior predictive distribution. But we might use an analogous approach for models fit with maximum likelihood.\nThe predictive distribution is just the distribution given the ML estimates. Using our notation above, the predictive distribution is \\(f(y; \\hat{\\theta})\\).\nWe’re going to use this predictive distribution to understand and evaluate our model.\nIn my view, the predictive distribution is the best way to (1) understand, (2) evaluate, and then (3) improve models.\nYou can use the predictive distribution as follows:\nThere are two reasons why an observed data set might not look like the distribution assumed by the model.\nWhen we compare the observed data with the predictive distribution, we are keeping both of these deviations in mind. We simulate several fake data sets to understand how the outcome might change from sample to sample if the assumed distrubtion were correct. The we compare the patterns across the simulated fake data sets to the observed data set: are the two easily distiguishable?\nEarlier, we fit a Poisson distribution to data from Holland (2015).\n# compute ml estimates of poisson parameter\nml_est &lt;- mean(y)\nprint(ml_est, digits = 3)\n\n[1] 23.2\n\n# simulate from predictive distribution\nn &lt;- length(y)\ny_pred &lt;- rpois(n, lambda = ml_est)\nprint(y_pred[1:10])\n\n [1] 24 28 24 31 17 23 19 29 16 25\n\nprint(y[1:10])\n\n [1]  7  0 20  1  1 50  3  0 36 32\nSimply printing a few results, we can immediately see a problem with data, when compared with the raw data\nTo see it even more clearly, we can create a histogram of the observed and simulated data.\n# load packages\nlibrary(patchwork)\n\n# make plot\ngg1 &lt;- ggplot() + geom_histogram(aes(x = y)) + xlim(min(y), max(y))\ngg2 &lt;- ggplot() + geom_histogram(aes(x = y_pred)) + xlim(min(y), max(y))\ngg1 / gg2 +  plot_layout(axes = \"collect\")  # stitch these together w/ patchwork\nWe can use plots of the ECDFs rather than histograms.\n# make plot\ngg1 &lt;- ggplot() + stat_ecdf(aes(x = y)) + xlim(min(y), max(y))\ngg2 &lt;- ggplot() + stat_ecdf(aes(x = y_pred)) + xlim(min(y), max(y))\ngg1 / gg2 +  plot_layout(axes = \"collect\")  # stitch these together w/ patchwork\nFor a more accurate and complete comparison, let’s simulate five fake data sets. By using five fake data sets, we’ll see clearly how much of the variation might be due to noise (across the five fake data sets) and how the observed data set differs from the model.\n# create observed data set\nobserved_data &lt;- tibble(operations = y, type = \"observed\") %&gt;%\n  glimpse()\n\nRows: 36\nColumns: 2\n$ operations &lt;dbl&gt; 7, 0, 20, 1, 1, 50, 3, 0, 36, 32, 22, 42, 50, 20, 44, 3, 0,…\n$ type       &lt;chr&gt; \"observed\", \"observed\", \"observed\", \"observed\", \"observed\",…\n\n# simulate five fake data sets\nsim_list &lt;- list()\nfor (i in 1:5) {\n  y_pred &lt;- rpois(n, lambda = ml_est)\n  sim_list[[i]] &lt;- tibble(operations = y_pred, \n                          type = paste0(\"simulated #\", i))\n}\n\n# combine the fake and observed data sets\ngg_data &lt;- bind_rows(sim_list) %&gt;%\n  bind_rows(observed_data) %&gt;%\n  glimpse()\n\nRows: 216\nColumns: 2\n$ operations &lt;dbl&gt; 22, 36, 23, 25, 34, 20, 17, 22, 20, 26, 22, 22, 22, 25, 20,…\n$ type       &lt;chr&gt; \"simulated #1\", \"simulated #1\", \"simulated #1\", \"simulated …\n\n# plot the observed and fake data sets\nggplot(gg_data, aes(x = operations)) + \n  geom_histogram() + \n  facet_wrap(vars(type))\n# make plots of ecdf\nggplot(gg_data, aes(x = operations)) + \n  stat_ecdf() + \n  facet_wrap(vars(type))",
+    "crumbs": [
+      "Week Two",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Predictive Distribution</span>"
+    ]
+  },
+  {
+    "objectID": "wk02/03-predictive-distribution.html#example-poisson-distribution",
+    "href": "wk02/03-predictive-distribution.html#example-poisson-distribution",
+    "title": "8  Predictive Distribution",
+    "section": "",
+    "text": "Holland, Alisha C. 2015. “The Distributive Politics of Enforcement.” American Journal of Political Science 59 (2): 357–71. https://doi.org/10.1111/ajps.12125.",
+    "crumbs": [
+      "Week Two",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Predictive Distribution</span>"
+    ]
+  },
+  {
+    "objectID": "wk02/03-predictive-distribution.html#example-beta-distribution",
+    "href": "wk02/03-predictive-distribution.html#example-beta-distribution",
+    "title": "8  Predictive Distribution",
+    "section": "8.2 Example: Beta Distribution",
+    "text": "8.2 Example: Beta Distribution\nNow let’s return to our beta model of batting averages from earlier.\nNow let’s simulate five fake data sets from the predictive distribution and compare that to the observed data. In this case, the beta model fits the data pretty well, so let’s add a pdf of the fitted model to the plots as well for even more precise comparisons of the real and fitted data.\n\n# create a dataframe of observed data\nobserved_data &lt;- bstats %&gt;%\n  mutate(type = \"observed\") %&gt;%\n  select(-player_id) %&gt;%  # variable not needed, makes things neater later\n  glimpse()\n\nRows: 457\nColumns: 2\n$ batting_average &lt;dbl&gt; 0.354, 0.337, 0.331, 0.330, 0.327, 0.319, 0.316, 0.312…\n$ type            &lt;chr&gt; \"observed\", \"observed\", \"observed\", \"observed\", \"obser…\n\n# simulate fake data sets\nn &lt;- nrow(bstats)\nsim_list &lt;- list()\nfor (i in 1:5) {\n  y_pred &lt;- rbeta(n, shape1 = theta_hat$est[1], shape2 = theta_hat$est[2])\n  sim_list[[i]] &lt;- tibble(batting_average = y_pred, \n                          type = paste0(\"simulated #\", i))\n}\n\n# combine the fake and observed data sets\ngg_data &lt;- bind_rows(sim_list) %&gt;%\n  bind_rows(observed_data) %&gt;%\n  glimpse()\n\nRows: 2,742\nColumns: 2\n$ batting_average &lt;dbl&gt; 0.2269692, 0.2329957, 0.2761385, 0.2627797, 0.2409961,…\n$ type            &lt;chr&gt; \"simulated #1\", \"simulated #1\", \"simulated #1\", \"simul…\n\n# plot histograms of real and fake data\nggplot(gg_data, aes(x = batting_average)) + \n  geom_histogram(aes(y = after_stat(density))) + \n  facet_wrap(vars(type)) + \n  stat_function(fun = dbeta, args = list(shape1 = theta_hat$est[1], \n                                         shape2 = theta_hat$est[2]), \n                color = \"red\")\n\n\n\n\n\n\n\n\nOn the whole, we see hear a close correspondence between the observed and simulated data. That suggests that our model is a good description of the data.\nIf we use the ECDFs rather than the histograms, we see a similarly well-fitting model.\n\n# plot histograms of real and fake data\nggplot(gg_data, aes(x = batting_average)) + \n  stat_ecdf() + \n  facet_wrap(vars(type)) + \n  stat_function(fun = pbeta, args = list(shape1 = theta_hat$est[1], \n                                         shape2 = theta_hat$est[2]), \n                color = \"red\")\n\n\n\n\n\n\n\n\nIt’s really hard to tell this apart!\nTo make the comparison even more refined, let’s put all the curves in the same panel.\n\n# separate the labels of the simulated data into two parts\ngg_data2 &lt;- gg_data |&gt;\n  separate(type, into = c(\"type\", \"version\")) |&gt;\n  glimpse()\n\nRows: 2,742\nColumns: 3\n$ batting_average &lt;dbl&gt; 0.2269692, 0.2329957, 0.2761385, 0.2627797, 0.2409961,…\n$ type            &lt;chr&gt; \"simulated\", \"simulated\", \"simulated\", \"simulated\", \"s…\n$ version         &lt;chr&gt; \"1\", \"1\", \"1\", \"1\", \"1\", \"1\", \"1\", \"1\", \"1\", \"1\", \"1\",…\n\n# plot histograms of real and fake data\nggplot(gg_data2, aes(x = batting_average, color = type, group = version)) + \n  stat_ecdf() \n\n\n\n\n\n\n\n\nIf we look really hard, we can start to see some small differences between these the observed data and the model, but the model is a really good one. With only two parameters, the beta distribution does an excellent job of recreating the distribution of the observed data.",
+    "crumbs": [
+      "Week Two",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Predictive Distribution</span>"
+    ]
+  },
+  {
+    "objectID": "appendicies/999-distributions.html",
+    "href": "appendicies/999-distributions.html",
+    "title": "Appendix A — Common Distribution",
+    "section": "",
+    "text": "A.1 Beta Distribution",
+    "crumbs": [
+      "Appendices",
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>Common Distribution</span>"
+    ]
+  },
+  {
+    "objectID": "appendicies/999-distributions.html#beta-distribution",
+    "href": "appendicies/999-distributions.html#beta-distribution",
+    "title": "Appendix A — Common Distribution",
+    "section": "",
+    "text": "Table A.1: Summary of the Beta distribution\n\n\n\n\n\n\n\n\n\nProperty\nDescription\n\n\n\n\nName\nBeta distribution\n\n\nNotation\n\\(\\text{Beta}(\\alpha, \\beta)\\)\n\n\nParameters\n\\(\\alpha &gt; 0\\): shape; \\(\\beta &gt; 0\\): shape\n\n\nSupport\n\\(x \\in (0, 1)\\)\n\n\nPDF\n\\(f(x) = \\dfrac{x^{\\alpha - 1} (1 - x)^{\\beta - 1}}{B(\\alpha, \\beta)}\\)\n\n\nCDF\n\\(F(x) = I_x(\\alpha, \\beta)\\), the regularized incomplete beta function\n\n\nMean\n\\(\\dfrac{\\alpha}{\\alpha + \\beta}\\)\n\n\nVariance\n\\(\\dfrac{\\alpha \\beta}{(\\alpha + \\beta)^2 (\\alpha + \\beta + 1)}\\)\n\n\nSpecial cases\n- \\(\\text{Beta}(1,1)\\): Uniform(0,1)  - \\(\\text{Beta}(\\alpha, 1)\\): Power function  - Conjugate prior for Bernoulli/Binomial likelihood  - General case of the Kumaraswamy distribution",
+    "crumbs": [
+      "Appendices",
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>Common Distribution</span>"
+    ]
+  },
+  {
+    "objectID": "appendicies/999-distributions.html#location-scale-t-distribution",
+    "href": "appendicies/999-distributions.html#location-scale-t-distribution",
+    "title": "Appendix A — Common Distribution",
+    "section": "A.2 Location-Scale t Distribution",
+    "text": "A.2 Location-Scale t Distribution\n\n\n\nTable A.2: Summary of the location-scale \\(t\\) distribution\n\n\n\n\n\n\n\n\n\nProperty\nDescription\n\n\n\n\nName\nLocation-scale \\(t\\) distribution\n\n\nNotation\n\\(t(\\mu, \\sigma, \\nu)\\)\n\n\nParameters\n\\(\\mu \\in \\mathbb{R}\\): location; \\(\\sigma &gt; 0\\): scale; \\(\\nu &gt; 0\\): degrees of freedom\n\n\nSupport\n\\(x \\in \\mathbb{R}\\)\n\n\nPDF\n\\(f(x) = \\dfrac{\\Gamma\\left(\\frac{\\nu+1}{2}\\right)}{\\Gamma\\left(\\frac{\\nu}{2}\\right)\\sqrt{\\nu\\pi}\\sigma} \\left[1 + \\dfrac{1}{\\nu} \\left(\\dfrac{x - \\mu}{\\sigma}\\right)^2\\right]^{-\\frac{\\nu+1}{2}}\\)\n\n\nCDF\n\\(F(x) = T_\\nu\\left(\\dfrac{x - \\mu}{\\sigma}\\right)\\), where \\(T_\\nu\\) is the CDF of the standard \\(t\\) distribution\n\n\nMean\n\\(\\mu\\) for \\(\\nu &gt; 1\\); undefined for \\(\\nu \\le 1\\)\n\n\nVariance\n\\(\\dfrac{\\nu \\sigma^2}{\\nu - 2}\\) for \\(\\nu &gt; 2\\); infinite for \\(1 &lt; \\nu \\le 2\\); undefined for \\(\\nu \\le 1\\)\n\n\nSpecial cases\n- \\(t(0,1,\\nu)\\): standard Student’s \\(t\\)  - \\(\\nu \\to \\infty\\): converges to \\(\\mathcal{N}(\\mu, \\sigma^2)\\)  - Heavy-tailed alternative to the normal distribution",
+    "crumbs": [
+      "Appendices",
+      "<span class='chapter-number'>A</span>  <span class='chapter-title'>Common Distribution</span>"
+    ]
+  }
+]

@@ -1,0 +1,633 @@
+# Derivatives
+
+## Definition
+
+First derivatives describe the **rate of change** of a function.
+
+::: {#def-derivative}
+The **derivative** of a function $f$ at a point $x$ is defined as $f'(x) = \frac{df}{dx} = \lim_{h \to 0} \frac{f(x + h) - f(x)}{h}$. If this limit exists, then $f$ is differentiable at $x$.
+:::
+
+::: {#exm-derivative1}
+Let $f(x) = x^2$. Use the definition to compute $f'(x)$.
+:::
+
+*Solution.* Use the definition of the derivative:
+$f'(x) = \lim_{h \to 0} \frac{f(x + h) - f(x)}{h}$.
+
+We have:
+- $f(x + h) = (x + h)^2 = x^2 + 2xh + h^2$
+- $f(x + h) - f(x) = x^2 + 2xh + h^2 - x^2 = 2xh + h^2$
+- $\frac{f(x + h) - f(x)}{h} = \frac{2xh + h^2}{h} = 2x + h$
+
+Taking the limit as $h \to 0$, we get $f'(x) = \lim_{h \to 0} (2x + h) = 2x$.
+
+## Physical Interpretation of Derivatives
+
+Suppose you're driving a car, and you know how far you've traveled at every point in time. This distance is given by the function $f(x)$, where $x$ is time and $f(x)$ is the distance you've traveled (say, in meters). 
+
+But if I ask you *how fast you are going at a specific point*, that's a different question. You're no longer asking about distance. Instead, you're asking about *rate of change*.
+
+Derivatives help us learn about rate of change from a function describing distance traveled.
+
+The derivative describes a quantity is changing at a given moment. If $f(x)$ is your position, then $f'(x)$ is your **velolcity**----how fast your position is changing. And $f''(x)$ is your **acceleration**---how fast your velocity is changing. This idea extends naturally to even higher-order changes, in the table below.
+
+| Order | Notation       | Name             | Interpretation                     | Units (if $x$ is time)       |
+|-------|----------------|------------------|------------------------------------|-------------------------------|
+| 0     | $f(x)$         | Position         | Where you are                      | Meters (m)                    |
+| 1     | $f'(x)$        | Velocity         | How fast you're moving             | Meters per second (m/s)       |
+| 2     | $f''(x)$       | Acceleration     | How fast your speed is changing    | Meters per second² (m/s²)     |
+| 3     | $f^{(3)}(x)$   | Jerk             | How fast your acceleration changes | Meters per second³ (m/s³)     |
+| 4     | $f^{(4)}(x)$   | Snap (Jounce)    | Rate of change of jerk             | Meters per second⁴ (m/s⁴)     |
+| 5     | $f^{(5)}(x)$   | Crackle          | Rarely used                        | Meters per second⁵ (m/s⁵)     |
+| 6     | $f^{(6)}(x)$   | Pop              | Even more rarely used              | Meters per second⁶ (m/s⁶)     |
+
+For example, when you are taking off in a jet, you might have felt your head pressed harder and harder into your headrest. This is because $f^{(3)}(x)$ (i.e., "jerk") is positive. The jet is accelerating at an increasing rate, or the jet's speed is increasing at an increasing rate. In a car, jerk is generally what makes aggressive driving feel uncomfortable. Accelerating at a constant rate (i.e., jerk equals zero) to the desired speed and then maintaining that speed (i.e., again, jerk equals zero) feels comfortable.
+
+The key idea is this: **derivatives measure how things change**. This concept is fundamental to both statistical theory and social science.
+
+---
+
+### Why this matters
+
+Many real-world questions are really about *change*:
+
+- **How fast is inflation rising?**
+- **At what point is profit maximized?**
+- **How steep is this hill at this point?**
+- **How quickly is a treatment effect decaying over time?**
+
+All of these questions require derivatives. And to understand them, you need to develop a feel for what a derivative *is*. That’s what we’ll do next.
+
+
+## Rules for Derivatives
+
+The rules below describe how differentiate common types of functions. Each rule can be derived from @def-derivative.
+
+### Constant Rule
+
+::: {#thm-const}
+## Constant Rule
+If $f(x) = a$ (a constant), then $f'(x) = 0$.
+:::
+
+::: {#exm-deriv1}
+Let $f(x) = 5$. Compute $f'(x)$.
+:::
+
+*Solution.* The derivative of a constant is zero: $f'(x) = 0$. Remember that a derivative is a rate of change. A constant function is not changing, so it makes sense that the derivative is zero.
+
+---
+
+### Power Rule
+
+::: {#thm-power}
+## Power Rule
+If $f(x) = x^n$, then $f'(x) = nx^{n-1}$.
+:::
+
+::: {.proof}
+
+This proof assumes that $n$ is a positive integer. However, @thm-power holds for all real numbers.
+
+Start with definition of the derivative from @def-derivative $f'(x) = \lim_{h \to 0} \frac{f(x + h) - f(x)}{h}$.
+
+Let $f(x) = x^n$. Then $f'(x) = \lim_{h \to 0} \frac{(x + h)^n - x^n}{h}$
+
+Expand $(x + h)^n$ using the binomial theorem so that 
+
+$$
+(x + h)^n = \sum_{k = 0}^n \binom{n}{k} x^{n - k} h^k = x^n + \binom{n}{1} x^{n - 1} h + \binom{n}{2} x^{n - 2} h^2 + \cdots + h^n.
+$$
+
+Subtract $x^n$ so that
+
+$$
+(x + h)^n - x^n = \binom{n}{1} x^{n - 1} h + \binom{n}{2} x^{n - 2} h^2 + \cdots + h^n.
+$$
+
+Divide by $h$ so that 
+
+$$
+\frac{(x + h)^n - x^n}{h} = \binom{n}{1} x^{n - 1} + \binom{n}{2} x^{n - 2} h + \cdots + h^{n - 1}.
+$$
+
+Take the limit as $h \to 0$ so that
+
+$$
+f'(x) = \lim_{h \to 0} \left[\binom{n}{1} x^{n - 1} + \binom{n}{2} x^{n - 2} h + \cdots + h^{n - 1} \right] = \binom{n}{1} x^{n - 1} = n x^{n - 1}
+$$
+:::
+
+
+
+
+::: {#exm-deriv2a}
+Let $f(x) = x^3$. Compute $f'(x)$.
+:::
+
+*Solution.* Using the power rule $f'(x) = 3x^2$.
+
+::: {#exm-deriv2b}
+Let $f(x) = x^5 - 2x^2 + 7$. Compute $f'(x)$.
+:::
+
+*Solution.* Notice that this function is a sum of three functions. Differentiate each term using the power rule, giving $f'(x) = 5x^4 - 4x + 0 = 5x^4 - 4x$. 
+
+---
+
+### Exponential Rule
+
+::: {#thm-exp}
+## Exponential Rule
+If $f(x) = e^x$, then $f'(x) = e^x$.
+:::
+
+
+### Logarithm Rule
+
+::: {#thm-log}
+## Logarithm Rule
+If $f(x) = \log(x)$, then $f'(x) = \frac{1}{x}$ for $x > 0$.
+:::
+
+### Sum Rule
+
+::: {#thm-sum}
+## Sum Rule
+If $f(x) = g(x) + h(x)$, then $f'(x) = g'(x) + h'(x)$.
+:::
+
+::: {#exm-deriv3}
+Let $f(x) = x^2 + \log(x)$. Compute $f'(x)$.
+:::
+
+*Solution.* Differentiate each term so that $f'(x) = 2x + \frac{1}{x}$.
+
+### Product Rule
+
+::: {#thm-product}
+## Product Rule
+If $f(x) = g(x) h(x)$, then $f'(x) = g'(x) h(x) + g(x) h'(x)$.
+:::
+
+::: {#exm-deriv4}
+Let $f(x) = x^2 \cdot \log(x)$. Compute $f'(x)$.
+:::
+
+*Solution.* Let $g(x) = x^2$ and $h(x) = \log(x)$. Then $g'(x) = 2x$ and $h'(x) = \frac{1}{x}$. Apply the product rule so that 
+
+$$
+f'(x) = 2x \cdot \log(x) + x^2 \cdot \frac{1}{x} = 2x \log(x) + x.
+$$
+
+### Quotient Rule
+
+::: {#thm-quotient}
+## Quotient Rule
+If $f(x) = \frac{g(x)}{h(x)}$, then $f'(x) = \frac{g'(x) h(x) - g(x) h'(x)}{[h(x)]^2}$.
+:::
+
+::: {#exm-deriv5}
+Let $f(x) = \frac{\log(x)}{x^2}$. Compute $f'(x)$.
+:::
+
+*Solution.* Let $g(x) = \log(x)$ and $h(x) = x^2$. Then $g'(x) = \frac{1}{x}$ and $h'(x) = 2x$. Apply the quotient rule so that
+
+$$
+f'(x) = \frac{(1/x) \cdot x^2 - \log(x) \cdot 2x}{x^4} = \frac{x - 2x \log(x)}{x^4} = \frac{1 - 2 \log(x)}{x^3}.
+$$
+
+### Chain Rule
+
+The chain rule is really important! We can think of many functions $f$ as a function of a function. In this case, This allows us to use the rules above, which apply to relatively simple functions, to much more complicated function.
+
+::: {#thm-chain}
+## Chain Rule
+If $f(x) = h(g(x))$, then $f'(x) = h'(g(x)) \cdot g'(x)$.
+:::
+
+::: {#exm-deriv6}
+Let $f(x) = \log(x^2 + 1)$. Compute $f'(x)$.
+:::
+
+*Solution.* We have $f(x) = \log(x^2 + 1)$ (complicated!). But let $g(x) = x^2 + 1$ (simple!) and $h(u) = \log(u)$ (simple!). Then $g'(x) = 2x$ and $h'(u) = \frac{1}{u}$. Then $f'(x) = \frac{1}{x^2 + 1} \cdot 2x = \frac{2x}{x^2 + 1}$.
+
+::: {#exm-deriv6b}
+Let $f(x) = \exp(x^2 + 3x)$. Compute $f'(x)$.
+:::
+
+*Solution.* We have $f(x) = \exp(x^2 + 3x)$ (complicated!). But let $g(x) = x^2 + 3x$ (simple!) and $h(u) = \exp(u)$ (simple!). Then $g'(x) = 2x + 3$ and $h'(u) = \exp(u)$. So $f'(x) = \exp(x^2 + 3x) \cdot (2x + 3)$.
+
+::: {#exm-deriv6c}
+Let $f(x) = x^2 \cdot \exp(x^2)$. Compute $f'(x)$.
+:::
+
+*Solution.* We have $f(x) = x^2 \cdot \exp(x^2)$. We can use the product rule. Breaking it into pieces, we have $g(x) = x^2$ (simple!) and $h(x) = \exp(x^2)$ (we can handle this with the chain rule). 
+
+Apply the **product rule**: 
+
+- $g'(x) = 2x$
+- To differentiate $h(x) = \exp(x^2)$, use the chain rule. Let $u(x) = x^2$ and $h(u) = \exp(u)$, so $h'(x) = \exp(x^2) \cdot 2x$.
+
+$$
+f'(x) = g'(x) \cdot h(x) + g(x) \cdot h'(x) = 2x \cdot \exp(x^2) + x^2 \cdot (2x \cdot \exp(x^2)) = 2x \exp(x^2) + 2x^3 \exp(x^2)
+$$
+
+You could factor if you wanted: $f'(x) = 2x \exp(x^2)(1 + x^2)$.
+
+
+## Mixed Examples
+
+These examples require two or more rules.
+
+::: {#exm-mixed1}
+Let $f(x) = x^2 \cdot \log(x^2 + 1)$. Compute $f'(x)$.
+:::
+
+*Solution.* This is a **product** of $x^2$ and $\log(x^2 + 1)$.
+
+Let $g(x) = x^2$ and $h(x) = \log(x^2 + 1)$.
+
+- $g'(x) = 2x$
+- $h'(x) = \frac{1}{x^2 + 1} \cdot 2x = \frac{2x}{x^2 + 1}$ by the chain rule
+
+Apply the product rule:
+
+$f'(x) = 2x \cdot \log(x^2 + 1) + x^2 \cdot \frac{2x}{x^2 + 1}$
+
+Simplify: $f'(x) = 2x \log(x^2 + 1) + \frac{2x^3}{x^2 + 1}$
+
+
+::: {#exm-mixed2}
+Let $f(x) = \frac{x^2}{\log(x)}$. Compute $f'(x)$.
+:::
+
+*Solution.* This is a **quotient** with $g(x) = x^2$, $g'(x) = 2x$, $h(x) = \log(x)$, $h'(x) = \frac{1}{x}$.
+
+Apply the quotient rule:
+
+$f'(x) = \frac{2x \cdot \log(x) - x^2 \cdot \frac{1}{x}}{(\log(x))^2}$
+
+Simplify numerator: $2x \log(x) - x$
+
+Final result: $f'(x) = \frac{2x \log(x) - x}{(\log(x))^2}$
+
+::: {#exm-mixed3}
+Let $f(x) = \log(e^{x^2})$. Compute $f'(x)$.
+:::
+
+*Solution.* Use the identity $\log(e^u) = u$:
+
+So $f(x) = x^2$, and $f'(x) = 2x$.
+
+Alternatively, apply the chain rule directly:
+
+Let $g(x) = e^{x^2}$, so $g'(x) = e^{x^2} \cdot 2x$
+
+Then $f(x) = \log(g(x))$, so $f'(x) = \frac{1}{g(x)} \cdot g'(x) = \frac{1}{e^{x^2}} \cdot (e^{x^2} \cdot 2x) = 2x$
+
+::: {#exm-mixed4}
+Let $f(x) = \exp(x) \cdot \log(x^2 + 1)$. Compute $f'(x)$.
+:::
+
+*Solution.* This is a **product** rule with a **chain** inside.
+
+Let $g(x) = \exp(x)$, $g'(x) = \exp(x)$
+
+Let $h(x) = \log(x^2 + 1)$, $h'(x) = \frac{2x}{x^2 + 1}$
+
+Apply product rule:
+
+$f'(x) = \exp(x) \cdot \log(x^2 + 1) + \exp(x) \cdot \frac{2x}{x^2 + 1}$
+
+::: {#exm-mixed5}
+Let $f(x) = \frac{x^3 \cdot \log(x)}{e^x}$. Compute $f'(x)$.
+:::
+
+*Solution.* This is a **quotient** with a **product in the numerator**.
+
+Let numerator $u(x) = x^3 \cdot \log(x)$ and denominator $v(x) = e^x$
+
+- $u'(x) = 3x^2 \cdot \log(x) + x^3 \cdot \frac{1}{x} = 3x^2 \log(x) + x^2$
+- $v'(x) = e^x$
+
+Apply the quotient rule:
+
+$f'(x) = \frac{u'(x) \cdot v(x) - u(x) \cdot v'(x)}{(e^x)^2}$
+
+Substitute:
+$f'(x) = \frac{[3x^2 \log(x) + x^2] \cdot e^x - x^3 \log(x) \cdot e^x}{e^{2x}}$
+
+Factor $e^x$ in the numerator:
+$f'(x) = \frac{e^x \cdot [3x^2 \log(x) + x^2 - x^3 \log(x)]}{e^{2x}} = \frac{3x^2 \log(x) + x^2 - x^3 \log(x)}{e^x}$
+
+## Higher-Order Derivatives
+
+Once we compute the first derivative $f'(x)$, we can keep differentiating.
+
+- The **second derivative** measures how the rate of change itself is changing — that is, the **curvature** of the function.
+- The **third derivative** measures how the curvature is changing.
+- This process can continue as long as the function is smooth enough.
+
+### Notation
+
+- $f'(x) = \frac{df}{dx}$: first derivative
+- $f''(x) = \frac{d^2f}{dx^2}$: second derivative
+- $f^{(3)}(x) = \frac{d^3f}{dx^3}$: third derivative
+- In general, $f^{(n)}(x)$ is the $n$th derivative of $f$
+
+### Examples
+
+::: {#exm-second1}
+Let $f(x) = x^3$. Compute the second and third derivatives.
+:::
+
+*Solution.* First derivative: $f'(x) = 3x^2$  
+Second derivative: $f''(x) = 6x$  
+Third derivative: $f^{(3)}(x) = 6$
+
+So $f^{(n)}(x) = 0$ for all $n \ge 4$.
+
+---
+
+::: {#exm-second2}
+Let $f(x) = x^2 \log(x)$. Compute the second derivative.
+:::
+
+*Solution.*  
+We already computed the first derivative:
+
+$f'(x) = 2x \log(x) + x$
+
+Differentiate again:
+
+- First term: $d/dx[2x \log(x)] = 2 \log(x) + 2$
+- Second term: $d/dx[x] = 1$
+
+So $f''(x) = 2 \log(x) + 2 + 1 = 2 \log(x) + 3$
+
+---
+
+Higher-order derivatives are especially useful in:
+
+- Optimization: Second derivatives help determine concavity and maxima/minima.
+- Taylor approximations: Higher-order derivatives appear in polynomial expansions.
+- Differential equations and modeling: Many physical laws involve second or third derivatives.
+
+
+## Derivatives for Multivariable Functions
+
+For functions of more than one variable, we still talk about rates of change — but now we consider how the function changes in **each direction**.
+
+Let $f(x_1, x_2, \dots, x_n)$ be a function of $n$ variables.
+
+### Gradient
+
+The **gradient** is the multivariable generalization of the first derivative. It tells us how $f$ changes with respect to each input variable.
+
+::: {#def-gradient}
+The **gradient** of $f$ is the vector of partial derivatives:
+
+$$
+\nabla f(x) = \left[
+\frac{\partial f}{\partial x_1},\ 
+\frac{\partial f}{\partial x_2},\ 
+\cdots,\ 
+\frac{\partial f}{\partial x_n}
+\right]
+$$
+
+It points in the direction of steepest ascent.
+:::
+
+#### Example
+
+Let $f(x, y) = x^2 + 3y$. Then:
+
+$$
+\nabla f(x, y) = \left[ \frac{\partial f}{\partial x}, \frac{\partial f}{\partial y} \right] = [2x,\ 3]
+$$
+
+At the point $(1, 2)$, the gradient is $[2,\ 3]$.
+
+---
+
+### Hessian
+
+The **Hessian** is the multivariable generalization of the second derivative. It contains all second partial derivatives and describes the **curvature** of the function.
+
+::: {#def-hessian}
+The **Hessian matrix** of $f$ is the $n \times n$ matrix of second-order partial derivatives:
+
+$$
+H_f(x) =
+\begin{bmatrix}
+\frac{\partial^2 f}{\partial x_1^2} & \frac{\partial^2 f}{\partial x_1 \partial x_2} & \cdots \\
+\frac{\partial^2 f}{\partial x_2 \partial x_1} & \frac{\partial^2 f}{\partial x_2^2} & \cdots \\
+\vdots & \vdots & \ddots
+\end{bmatrix}
+$$
+:::
+
+- The diagonal entries describe curvature in each direction.
+- The off-diagonal entries describe how changes in one variable affect curvature in another.
+
+#### Example
+
+Let $f(x, y) = x^2 y + y^3$. Then:
+
+- $\frac{\partial^2 f}{\partial x^2} = 2y$
+- $\frac{\partial^2 f}{\partial y^2} = 6y$
+- $\frac{\partial^2 f}{\partial x \partial y} = \frac{\partial^2 f}{\partial y \partial x} = 2x$
+
+So the Hessian is:
+
+$$
+H_f(x, y) =
+\begin{bmatrix}
+2y & 2x \\
+2x & 6y
+\end{bmatrix}
+$$
+
+---
+
+These ideas are especially important in:
+
+- **Optimization**: Gradient = direction to move; Hessian = curvature (convexity/concavity)
+- **Statistical modeling**: Maximum likelihood estimation uses gradients (score functions) and Hessians (information matrices)
+- **Machine learning**: Gradients are used in backpropagation and optimization algorithms.
+
+
+## Symbolic Differentiation in R
+
+You can compute derivatives symbolically in R using the `D()` function.
+
+The basic syntax is:
+
+```r
+D(expression, "variable")
+```
+
+This returns the symbolic derivative of an expression with respect to the named variable.
+
+::: {#exm-rsymbolic1}
+Differentiate $x^2$.
+:::
+
+*Solution.* Use `D()` with a formula input:
+
+```{r}
+D(expression(x^2), "x")
+```
+
+This returns:
+
+```
+2 * x
+```
+
+::: {#exm-rsymbolic2}
+Differentiate $x^2 \log(x)$ using the product rule.
+:::
+
+*Solution.* R handles this automatically:
+
+```{r}
+D(expression(x^2 * log(x)), "x")
+```
+
+Returns:
+
+```
+2 * x * log(x) + x
+```
+
+This matches the product rule: $f'(x) = 2x \log(x) + x$.
+
+::: {#exm-rsymbolic3}
+Differentiate $\frac{x^3}{\exp(x)}$.
+:::
+
+*Solution.* R will apply the quotient rule:
+
+```{r}
+D(expression(x^3 / exp(x)), "x")
+```
+
+Returns:
+
+```
+((3 * x^2 * exp(x)) - (x^3 * exp(x))) / exp(x)^2
+```
+
+This simplifies to the same expression obtained manually.
+
+---
+
+To simplify or evaluate expressions numerically, you can use `deriv()`, `eval()`, or symbolic math tools in packages like **Ryacas**, **caracas**, or **symengine**.
+
+## Numeric Differentiation in R
+
+When symbolic derivatives are unavailable, R can approximate first derivatives numerically using finite differences. The `numDeriv` package provides convenient tools.
+
+Install the package if needed:
+
+Then load it:
+
+```{r}
+library(numDeriv)
+```
+
+### First Derivative
+
+Use `grad()` to compute the approximate derivative of a single-variable function at a point.
+
+::: {#exm-rnumeric1}
+Let $f(x) = x^2 \log(x)$. Compute $f'(2)$ numerically.
+:::
+
+*Solution.* Define the function and apply `grad()`:
+
+```{r}
+f <- function(x) x^2 * log(x)
+grad(f, x = 2)
+```
+
+Returns:
+
+```
+[1] 4.772589
+```
+
+This matches the exact result: $f'(x) = 2x \log(x) + x$, so $f'(2) = 4 \log(2) + 2 \approx 4.7726$.
+
+---
+
+Numeric differentiation is useful when working with functions that are not easily expressed in closed form.
+
+## Comparing Derivatives: By Hand, Symbolic, and Numeric
+
+All three approaches — manual rules, symbolic differentiation, and numeric approximation — should yield consistent results.
+
+::: {#exm-compare1}
+Let $f(x) = x^2 \log(x)$. Compute $f'(2)$:
+- by hand using rules,
+- symbolically using `D()`,
+- numerically using `grad()`.
+:::
+
+*Solution.*
+
+### By Hand
+
+Use the product rule: $f(x) = x^2 \cdot \log(x)$
+
+- $f'(x) = 2x \log(x) + x$
+- So $f'(2) = 4 \log(2) + 2 \approx 4.7726$
+
+### Symbolic in R
+
+```{r}
+D(expression(x^2 * log(x)), "x")
+```
+
+Returns:
+
+```
+2 * x * log(x) + x
+```
+
+Same expression as the hand-calculated result.
+
+To evaluate at $x = 2$:
+
+```{r}
+eval(D(expression(x^2 * log(x)), "x"), list(x = 2))
+```
+
+Returns:
+
+```
+[1] 4.772589
+```
+
+### Numeric in R
+
+```{r}
+library(numDeriv)
+f <- function(x) x^2 * log(x)
+grad(f, x = 2)
+```
+
+Returns:
+
+```
+[1] 4.772589
+```
+
+### Conclusion
+
+All three methods give the same result:  
+$f'(2) = 4.772589$, verifying the equivalence of symbolic, numeric, and manual differentiation.

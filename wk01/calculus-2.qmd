@@ -1,0 +1,316 @@
+# Integration
+
+## Definition
+
+If derivatives describe the rate of change of a function, integrals do the opposite—they **accumulate** values over an interval.
+
+::: {#def-integral}
+The **definite integral** of a function $f(x)$ from $a$ to $b$ is defined as:
+
+$$
+\int_a^b f(x)\, dx = \lim_{n \to \infty} \sum_{i=1}^n f(x_i^*) \Delta x
+$$
+
+where the interval $[a, b]$ is divided into $n$ subintervals of width $\Delta x = \frac{b - a}{n}$ and $x_i^*$ is a sample point in the $i$th subinterval.
+:::
+
+This limit represents the total area under the curve $f(x)$ from $a$ to $b$.
+
+### Indefinite Integral
+
+An **indefinite integral** (or **antiderivative**) is a function whose derivative is the original function.
+
+::: {#def-antideriv}
+If $F'(x) = f(x)$, then $F(x)$ is an **antiderivative** of $f(x)$, and we write:
+
+$$
+\int f(x)\, dx = F(x) + C
+$$
+
+where $C$ is an arbitrary constant.
+:::
+
+---
+
+## Physical Interpretation of Integrals
+
+Suppose your car is moving at a velocity $f(x)$, where $x$ is time and $f(x)$ is in meters per second. Then:
+
+- $\int_a^b f(x)\, dx$ is the **total distance traveled** between time $x = a$ and $x = b$.
+
+In this way, **integration undoes differentiation**. If the derivative of position is velocity, then the integral of velocity is position.
+
+| Quantity     | Symbol            | Interpretation                        | Units (if $x$ is time)         |
+|--------------|-------------------|----------------------------------------|---------------------------------|
+| Velocity     | $f(x)$            | Rate of change of position             | Meters per second (m/s)         |
+| Position     | $\int f(x)\, dx$  | Total distance traveled (accumulated) | Meters (m)                      |
+
+The key idea is this: **integration accumulates change**. It’s the natural inverse of differentiation.
+
+---
+
+## Why This Matters
+
+Many real-world questions ask about **totals** or **areas**:
+
+- **How much profit was earned over the year?**
+- **What is the total rainfall over a week?**
+- **What’s the area under the likelihood curve?**
+- **How much change accumulates over time?**
+
+All of these questions require integration. Let’s build some fluency with it.
+
+---
+
+## Basic Rules of Integration
+
+### Constant Rule
+
+::: {#thm-int-const}
+## Constant Rule
+If $f(x) = a$, then:
+
+$$
+\int a\, dx = ax + C
+$$
+:::
+
+::: {#exm-int1}
+Compute $\int 5\, dx$.
+:::
+
+*Solution.* Use the constant rule: $\int 5\, dx = 5x + C$.
+
+---
+
+### Power Rule
+
+::: {#thm-int-power}
+## Power Rule
+If $f(x) = x^n$, then:
+
+$$
+\int x^n\, dx = \frac{x^{n + 1}}{n + 1} + C,\quad \text{for } n \ne -1
+$$
+:::
+
+::: {#exm-int2a}
+Compute $\int x^3\, dx$.
+:::
+
+*Solution.* Apply the power rule:
+
+$$
+\int x^3\, dx = \frac{x^4}{4} + C
+$$
+
+::: {#exm-int2b}
+Compute $\int x^5 - 2x^2 + 7\, dx$.
+:::
+
+*Solution.* Integrate each term using the power rule:
+
+$$
+\int x^5\, dx = \frac{x^6}{6},\quad
+\int -2x^2\, dx = -\frac{2x^3}{3},\quad
+\int 7\, dx = 7x
+$$
+
+So the full result is:
+
+$$
+\frac{x^6}{6} - \frac{2x^3}{3} + 7x + C
+$$
+
+---
+
+### Exponential Rule
+
+::: {#thm-int-exp}
+## Exponential Rule
+If $f(x) = e^x$, then:
+
+$$
+\int e^x\, dx = e^x + C
+$$
+:::
+
+---
+
+### Logarithm Rule
+
+::: {#thm-int-log}
+## Logarithm Rule
+If $f(x) = \frac{1}{x}$, then:
+
+$$
+\int \frac{1}{x}\, dx = \log|x| + C,\quad x \ne 0
+$$
+:::
+
+---
+
+### Sum Rule
+
+::: {#thm-int-sum}
+## Sum Rule
+If $f(x) = g(x) + h(x)$, then:
+
+$$
+\int f(x)\, dx = \int g(x)\, dx + \int h(x)\, dx
+$$
+:::
+
+::: {#exm-int3}
+Compute $\int (x^2 + \frac{1}{x})\, dx$.
+:::
+
+*Solution.* Apply the sum and power rules:
+
+$$
+\int x^2\, dx = \frac{x^3}{3},\quad
+\int \frac{1}{x}\, dx = \log|x|
+$$
+
+So:
+
+$$
+\int (x^2 + \frac{1}{x})\, dx = \frac{x^3}{3} + \log|x| + C
+$$
+
+---
+
+### Integration by Substitution (Chain Rule Reversed)
+
+Substitution allows us to integrate composite functions, reversing the chain rule.
+
+::: {#thm-int-sub}
+## Substitution Rule
+Let $u = g(x)$. Then:
+
+$$
+\int f(g(x)) g'(x)\, dx = \int f(u)\, du
+$$
+:::
+
+::: {#exm-int4}
+Compute $\int 2x \cdot \exp(x^2)\, dx$.
+:::
+
+*Solution.* Let $u = x^2$, so $du = 2x\, dx$. Then:
+
+$$
+\int 2x \cdot \exp(x^2)\, dx = \int \exp(u)\, du = \exp(u) + C = \exp(x^2) + C
+$$
+
+---
+
+### Integration by Parts (Product Rule Reversed)
+
+Sometimes, it helps to reverse the product rule.
+
+::: {#thm-int-parts}
+## Integration by Parts
+If $u = u(x)$ and $v = v(x)$, then:
+
+$$
+\int u\, dv = uv - \int v\, du
+$$
+:::
+
+::: {#exm-int5}
+Compute $\int x \cdot \log(x)\, dx$.
+:::
+
+*Solution.* Use integration by parts:
+
+Let $u = \log(x)$, so $du = \frac{1}{x} dx$  
+Let $dv = x\, dx$, so $v = \frac{x^2}{2}$
+
+Then:
+
+$$
+\int x \log(x)\, dx = \frac{x^2}{2} \log(x) - \int \frac{x^2}{2} \cdot \frac{1}{x}\, dx
+= \frac{x^2}{2} \log(x) - \int \frac{x}{2}\, dx
+= \frac{x^2}{2} \log(x) - \frac{x^2}{4} + C
+$$
+
+---
+
+## Definite Integrals
+
+If we want to compute the **total accumulated value** over a specific interval $[a, b]$, we use definite integrals.
+
+::: {#def-definite}
+The definite integral from $a$ to $b$ is:
+
+$$
+\int_a^b f(x)\, dx = F(b) - F(a)
+$$
+
+where $F(x)$ is any antiderivative of $f(x)$.
+:::
+
+::: {#exm-def1}
+Compute $\int_1^2 x^2\, dx$.
+:::
+
+*Solution.* Find the antiderivative: $F(x) = \frac{x^3}{3}$
+
+Evaluate:
+
+$$
+\int_1^2 x^2\, dx = \frac{2^3}{3} - \frac{1^3}{3} = \frac{8 - 1}{3} = \frac{7}{3}
+$$
+
+---
+
+## Integration in R
+
+R does not compute symbolic integrals with base functions, but numerical integration is straightforward using `integrate()`.
+
+::: {#exm-rint1}
+Compute $\int_1^2 x^2\, dx$ numerically.
+:::
+
+```{r}
+f <- function(x) x^2
+integrate(f, lower = 1, upper = 2)
+```
+
+Returns:
+
+```
+7/3 = 2.333...
+```
+
+::: {#exm-rint2}
+Compute $\int_0^1 x \log(x)\, dx$ numerically.
+:::
+
+```{r}
+f <- function(x) ifelse(x == 0, 0, x * log(x))
+integrate(f, 0, 1)
+```
+
+This returns approximately:
+
+```
+-0.25
+```
+
+---
+
+Numerical integration is useful for functions that have no closed-form antiderivative or are only defined computationally.
+
+---
+
+## Summary: Derivatives vs Integrals
+
+| Operation     | Symbol                      | Meaning                         |
+|---------------|-----------------------------|---------------------------------|
+| Derivative    | $f'(x)$ or $\frac{df}{dx}$  | Instantaneous rate of change    |
+| Integral      | $\int f(x)\, dx$            | Accumulated change (area under curve) |
+| Definite Int. | $\int_a^b f(x)\, dx$        | Total change from $x = a$ to $x = b$ |
+
+Together, derivatives and integrals are the fundamental tools of calculus. They describe change and accumulation—central ideas in modeling, statistics, economics, physics, and beyond.
