@@ -122,6 +122,15 @@ div.csl-indent {
     "search-label": "Search"
   }
 }</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-F57WQLHH67"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-F57WQLHH67', { 'anonymize_ip': true});
+</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -342,7 +351,7 @@ Holland, Alisha C. 2015. <span>“The Distributive Politics of Enforcement.”</
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>y_pred <span class="ot">&lt;-</span> <span class="fu">rpois</span>(n, <span class="at">lambda =</span> ml_est)</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(y_pred[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> [1] 22 22 27 16 21 24 30 25 15 25</code></pre>
+<pre><code> [1] 33 27 27 29 18 30 15 16 30 21</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(y[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -407,7 +416,7 @@ $ type       &lt;chr&gt; "observed", "observed", "observed", "observed", "observ
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 216
 Columns: 2
-$ operations &lt;dbl&gt; 17, 23, 27, 18, 30, 23, 21, 26, 22, 22, 25, 24, 23, 18, 19,…
+$ operations &lt;dbl&gt; 21, 24, 22, 22, 25, 20, 30, 27, 23, 18, 23, 32, 31, 21, 21,…
 $ type       &lt;chr&gt; "simulated #1", "simulated #1", "simulated #1", "simulated …</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot the observed and fake data sets</span></span>
@@ -468,7 +477,7 @@ $ type            &lt;chr&gt; "observed", "observed", "observed", "observed", "o
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 2,742
 Columns: 2
-$ batting_average &lt;dbl&gt; 0.2319739, 0.2919389, 0.2494256, 0.2562710, 0.2741193,…
+$ batting_average &lt;dbl&gt; 0.1817937, 0.2443664, 0.2311438, 0.2529022, 0.2552048,…
 $ type            &lt;chr&gt; "simulated #1", "simulated #1", "simulated #1", "simul…</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot histograms of real and fake data</span></span>
@@ -514,7 +523,7 @@ $ type            &lt;chr&gt; "simulated #1", "simulated #1", "simulated #1", "s
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 2,742
 Columns: 3
-$ batting_average &lt;dbl&gt; 0.2319739, 0.2919389, 0.2494256, 0.2562710, 0.2741193,…
+$ batting_average &lt;dbl&gt; 0.1817937, 0.2443664, 0.2311438, 0.2529022, 0.2552048,…
 $ type            &lt;chr&gt; "simulated", "simulated", "simulated", "simulated", "s…
 $ version         &lt;chr&gt; "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1",…</code></pre>
 </div>

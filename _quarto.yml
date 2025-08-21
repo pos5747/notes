@@ -13,6 +13,7 @@ book:
   title: "Modern Probability Modeling"
   subtitle: "A Tools Approach"
   author: "Carlisle Rainey"
+  google-analytics: "G-F57WQLHH67"
   chapters:
     - index.qmd
     - part: "Week Two"
