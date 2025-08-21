@@ -1,6 +1,6 @@
 project:
   type: book
-  output-dir: _book
+  output-dir: docs/
   
 freeze: auto  
 
@@ -45,7 +45,6 @@ format:
     css: _styles.css  
     citation-location: margin
     reference-location: margin
-    
 
 
 
