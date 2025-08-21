@@ -165,7 +165,7 @@ Suppose an ML estimator $\hat{\theta}$ of $\theta$ as in @def-mle. Under certain
     - Condition 3 (Differentiable): $f(x; \theta)$ is differentiable with respect to $\theta$.
     - Condition 4 (Open Bounds): The parameter space of $\theta$ is an open interval $(\underline{\theta}, \overline{\theta})$ and $\theta$ lie in the interior such that $-\infty \leq \underline{\theta} < \theta < \overline{\theta} \leq \infty$. 
     
-    See @Casella2002[pp. 467-470, 516] and @Lehmann2004e[pp. 451-462] a more detailed discussion.
+    See @Casella2002[pp. 467-470, 516] and @Lehmann2004[pp. 451-462] a more detailed discussion.
 
 @def-consistency and @thm-ml-consistency mean that as the sample size grows to infinitely, an ML estimator $\hat{\theta}$ falls arbitrarily close to $\theta$ with high probability. Less formally, consistency means that the estimator $\hat{\theta}$ becomes increasingly concentrated around the true value $\theta$ as the samples size grows large. @fig-illustrating-consistency illustrates how an estimator might converge to the true value.[^as]
 

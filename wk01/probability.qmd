@@ -490,19 +490,13 @@ Then $f_Y(y) = f_X(e^y) \cdot e^y = e^{-e^y} \cdot e^y = e^y \cdot e^{-e^y}$.
 
 ## Normal Distribution and `*norm()` in R
 
-Let $X \sim \mathcal{N}(\mu, \sigma^2)$. Then:
 
 ::: {#def-normal}
-$$
-f(x) = \frac{1}{\sqrt{2\pi \sigma^2}} \exp\left( -\frac{(x - \mu)^2}{2\sigma^2} \right)
-$$
+
+Let $X \sim \mathcal{N}(\mu, \sigma^2)$. Then $f(x) = \frac{1}{\sqrt{2\pi \sigma^2}} \exp\left( -\frac{(x - \mu)^2}{2\sigma^2} \right)$. For the normal distribution, $\mathbb{E}[X] = \mu$ and $\text{Var}(X) = \sigma^2$.
 :::
 
-- $\mathbb{E}[X] = \mu$
-- $\text{Var}(X) = \sigma^2$
-
-
-### R Functions for Normal Distribution
+We have several functions to work with the normal distribution in R.
 
 | Function    | Description                        |
 |-------------|------------------------------------|
@@ -513,20 +507,30 @@ $$
 
 
 ::: {#exm-rnorm1}
-Simulate 5 draws from $\mathcal{N}(2, 1)$:
+Simulate 5 draws from $\mathcal{N}(2, 1)$.
 
 ```{r}
 rnorm(5, mean = 2, sd = 1)
 ```
 :::
 
-::: {#exm-rnorm2}
-Compute $P(X \le 1.96)$ for $X \sim \mathcal{N}(0, 1)$:
+::: {#exm-pnorm}
+Compute $\Pr(X \le 1.96)$ for $X \sim \mathcal{N}(0, 1)$.
 
 ```{r}
 pnorm(1.96)
 ```
 
 Returns approximately `0.975`.
+:::
+
+::: {#exm-qnorm}
+Find the $x$ that gives $\Pr(X \le x) = 0.8$ for $X \sim \mathcal{N}(0, 1)$.
+
+```{r}
+qnorm(0.8)
+```
+
+Returns approximately `0.84`.
 :::
 

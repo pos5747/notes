@@ -15,14 +15,6 @@ book:
   author: "Carlisle Rainey"
   chapters:
     - index.qmd
-    - part: "Week One"
-      chapters: 
-      - wk01/01-frac-exp-log.qmd
-      - wk01/calculus-1.qmd
-      - wk01/calculus-2.qmd
-      - wk01/matrices.qmd
-      - wk01/probability.qmd
-      #- wk01/hypothesis-testing.qmd
     - part: "Week Two"
       chapters:
       - wk02/01-maximum-likelihood.qmd
@@ -36,6 +28,12 @@ book:
     #  - wk03/04-evaluating-cis.qmd
   appendices:
     - appendicies/999-distributions.qmd
+    - wk01/frac-exp-log.qmd
+    - wk01/calculus-1.qmd
+    - wk01/calculus-2.qmd
+    - wk01/matrices.qmd
+    - wk01/probability.qmd
+    #- wk01/hypothesis-testing.qmd
 
 bibliography: references.bib
 
