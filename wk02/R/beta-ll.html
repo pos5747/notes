@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<style>body{background-color:white;}</style>
+
+  <style>
+.hljs {
+  background: transparent;
+  color: black;
+}
+
+.hljs-comment,
+.hljs-quote,
+.hljs-variable {
+  color: #e41a1c;
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-built_in,
+.hljs-name,
+.hljs-tag {
+  color: #377eb8;
+}
+
+.hljs-string,
+.hljs-title,
+.hljs-section,
+.hljs-attribute,
+.hljs-literal,
+.hljs-template-tag,
+.hljs-template-variable,
+.hljs-type,
+.hljs-addition {
+  color: #4daf4a;
+}
+
+.hljs-deletion,
+.hljs-selector-attr,
+.hljs-selector-pseudo,
+.hljs-meta {
+  color: #377eb8;
+}
+
+.hljs-doctag {
+  color: #808080;
+}
+
+.hljs-attr {
+  color: #e41a1c;
+}
+
+.hljs-symbol,
+.hljs-bullet,
+.hljs-link {
+  color: #377eb8;
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: bold;
+}
+</style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+</head>
+<html>
+  <body>
+    <pre><code class="language-r"># manually typing log-likelihood
+ll_fn <- function(theta, y) { 
+  alpha <- theta[1] 
+  beta <- theta[2] 
+  ll <- alpha*sum(log(y)) + beta*sum(log(1 - y)) - 
+    length(y)*log(beta(alpha, beta)) 
+  return(ll) 
+}
+
+# using dbeta shortcut (good!)
+ll_fn <- function(theta, y) { 
+  alpha <- theta[1] 
+  beta <- theta[2] 
+  ll <- sum(dbeta(y, shape1 = alpha, shape2 = beta, log = TRUE))
+  return(ll)
+}
+
+# use optim()
+est <- optim(par = c(2, 2), 
+             fn = ll_fn, 
+             y = y, 
+             control = list(fnscale = -1), 
+             method = "Nelder-Mead") 
+
+# make function that fits beta model
+est_beta <- function(y) {
+  est <- optim(par = c(2, 2), fn = ll_fn, y = y,
+               control = list(fnscale = -1),
+               method = "BFGS") # for >1d problems
+  if (est$convergence != 0) print("Model did not converge!")
+  res <- list(est = est$par)
+  return(res)
+}
+
+# fit beta model
+ml_est <- est_beta(y)
+print(ml_est, digits = 3)</code></pre>
+  </body>
+</html>
+</html>

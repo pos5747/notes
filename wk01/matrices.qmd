@@ -127,7 +127,7 @@ A %*% B
 ::: {#exm-matrix9}
 Let $X$ be a $3 \times 2$ matrix and $\beta$ a $2 \times 1$ vector. Then $X\beta$ is a $3 \times 1$ vector. $X'X$ is $2 \times 2$ and symmetric.
 
-We have a couple of famililar matrix multiplications from linear regression. $X\beta$ is especially important to us!.
+We have a couple of familiar matrix multiplications from linear regression. $X\beta$ is especially important to us!.
 
 ```{r}
 X <- matrix(c(1, 1, 1, 2, 3, 4), nrow = 3)

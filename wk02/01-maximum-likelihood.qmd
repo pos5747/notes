@@ -104,7 +104,7 @@ However, we only need this figure to develop our intuition because, for this Ber
 First, we can find the derivative of the log-likelihood with respect to $\pi$.
 
 $$
-\frac{d \log L}{d\hat{\pi}} = k \left( \frac{1}{\hat{\pi}}\right) + (N - k) \left( \frac{1}{1 - \hat{\pi}}\right)(-1)
+\frac{d \log L}{d\hat{\pi}} = k \left( \frac{1}{\pi}\right) + (N - k) \left( \frac{1}{1 - \pi}\right)(-1)
 $$
 
 Then we can set $\frac{d \log L}{d\hat{\pi}} = 0$ and $\pi = \hat{\pi}$.
@@ -233,7 +233,7 @@ Next, we have an incredibly important and useful result. Suppose we have ML esti
 
 ## Invariance Property of ML Estimators
 
-Suppose an ML estimator $\hat{\theta}$ of $\theta$ as in @def-mle and a quantity of interest $\tau = \tau{\theta}$ for any function $\tau$. The ML estimate $\hat{\tau}$ of $\tau = \tau(\theta)$ is $\tau(\hat{\theta})$.
+Suppose an ML estimator $\hat{\theta}$ of $\theta$ as in @def-mle and a quantity of interest $\tau = \tau(\theta)$ for any function $\tau$. The ML estimate $\hat{\tau}$ of $\tau = \tau(\theta)$ is $\tau(\hat{\theta})$.
 :::
 
 This is an important result that underlies many of the subsequent recommendations and practices. 
