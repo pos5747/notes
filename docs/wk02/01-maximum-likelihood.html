@@ -351,8 +351,9 @@ Figure&nbsp;1.1: A histogram with heavy tails.
 <p>Suppose we toss the cap <span class="math inline">\(N\)</span> times and observe <span class="math inline">\(k\)</span> tops. To find the ML estimator, we simply find the parameter that is most likely to generate these data. Suppose we observe <span class="math inline">\(k = 25\)</span> successes (i.e., tops) in <span class="math inline">\(N = 50\)</span> trials (i.e., tosses). It’s intuitive that these data would be relatively unlikely if <span class="math inline">\(\pi = 0.1\)</span> (i.e., the chance of a top is 10%) or if <span class="math inline">\(\pi = 0.1\)</span> (i.e., the chance of a top is 90%). However, these data are relatively more likely if the c<span class="math inline">\(\pi = 0.45\)</span> or <span class="math inline">\(\pi = 0.55\)</span>. But what value of <span class="math inline">\(\pi\)</span> makes the data <em>most</em> likely? (You can probably guess, but let’s be formal!)</p>
 <p>What is the ML estimate <span class="math inline">\(\hat{\pi}\)</span> of <span class="math inline">\(\pi\)</span>?</p>
 <p>According to the model <span class="math inline">\(f(x_i; \pi) = \pi^{x_i} (1 - \pi)^{(1 - x_i)}\)</span>—this is just the Bernoulli pmf. Because the samples are iid, we can find the <em>joint</em> distribution <span class="math inline">\(f(x) = f(x_1) \times ... \times f(x_N) = \prod_{i = 1}^N f(x_i)\)</span>. This product includes several repetitions of <span class="math inline">\(\pi\)</span> and several repetitions of <span class="math inline">\((1 - \pi)\)</span>. We include <span class="math inline">\(k\)</span> <span class="math inline">\(\pi\)</span>s, because each of the <span class="math inline">\(k\)</span> ones has probability <span class="math inline">\(\pi\)</span>. Similarly, we include <span class="math inline">\((N - k)\)</span> <span class="math inline">\((1 - \pi)\)</span>s, because each of the <span class="math inline">\(N - k\)</span> zeros has probability <span class="math inline">\(1 - \pi\)</span>). This gives us <span class="math inline">\(f(x; \pi) = \pi^{k} (1 - \pi)^{(N - k)}\)</span>. <span class="math display">\[
-\text{the likelihood:  } f(x; \pi) =  \pi^{k} (1 - \pi)^{(N - k)}, \text{where } k = \sum_{n = 1}^N x_n \\
-\]</span> All we have to do now is find the value of <span class="math inline">\(\pi\)</span> that maximizes this likelihood. This will be our ML estimator. But let’s proceed slowly.</p>
+\text{the likelihood:  } f(x; \pi) =  \pi^{k} (1 - \pi)^{(N - k)}, \text{where } k = \sum_{i = 1}^N x_i \\
+\]</span></p>
+<p>All we have to do now is find the value of <span class="math inline">\(\pi\)</span> that maximizes this likelihood. This will be our ML estimator. But let’s proceed slowly.</p>
 <p>First, it’s a little strange to maximize <span class="math inline">\(f(x; \pi)\)</span> with respect to <span class="math inline">\(\pi\)</span>. After all, the notation encourages us to think of <span class="math inline">\(\pi\)</span> as a fixed value and <span class="math inline">\(x\)</span> as the variable. To make it clear that we’re now thinking of <span class="math inline">\(\pi\)</span> as the variable, let’s write <span class="math inline">\(L(\pi) = f(x; \pi)\)</span>.</p>
 <p><span class="math display">\[
 \text{the likelihood:  } L(\pi) = \pi^{k} (1 - \pi)^{(N - k)}\\
@@ -412,12 +413,12 @@ k  &amp;= N\hat{\pi} \\
 <li>Take the log and work with <span class="math inline">\(\log L(\theta)\)</span> rather than <span class="math inline">\(L(\theta)\)</span>. Because <span class="math inline">\(\log()\)</span> is a monotonically increasing function, the <span class="math inline">\(\theta\)</span> that maximizes <span class="math inline">\(L(\theta)\)</span> also maximizes <span class="math inline">\(\log L(\theta)\)</span>. The log-likelihood is much simpler to work with.</li>
 </ol>
 <div id="def-mle" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 1.1 (Maximum Likelihood (ML) Estimator)</strong></span> Suppose we have iid samples <span class="math inline">\(x_1, x_2, ..., x_N\)</span> from pdf or pmf <span class="math inline">\(f(x; \theta)\)</span>. Then the joint density/probability is <span class="math inline">\(f(x; \theta) = \prod_{n = 1}^N f(x_n; \theta)\)</span> and <span class="math inline">\(\log L(\theta) = \sum_{n = 1}^N \log \left[ f(x_n; \theta) \right]\)</span>. The ML estimator <span class="math inline">\(\hat{\theta}\)</span> of <span class="math inline">\(\theta\)</span> is <span class="math inline">\(\arg \max \log L(\theta)\)</span>.</p>
+<p><span class="theorem-title"><strong>Definition 1.1 (Maximum Likelihood (ML) Estimator)</strong></span> Suppose we have iid samples <span class="math inline">\(x_1, x_2, ..., x_N\)</span> from pdf or pmf <span class="math inline">\(f(x; \theta)\)</span>. Then the joint density/probability is <span class="math inline">\(f(x; \theta) = \prod_{i = 1}^N f(x_i; \theta)\)</span> and <span class="math inline">\(\log L(\theta) = \sum_{i = 1}^N \log \left[ f(x_i; \theta) \right]\)</span>. The ML estimator <span class="math inline">\(\hat{\theta}\)</span> of <span class="math inline">\(\theta\)</span> is <span class="math inline">\(\arg \max \log L(\theta)\)</span>.</p>
 </div>
 <p>In applied problems, we can occasionally find a nice analytical maximum. In most cases, though, we have a computer find the parameter that maximizes <span class="math inline">\(\log L\)</span>.</p>
 <p>ML estimators have nice properties. Here’s let’s consider just consistency.</p>
 <div id="def-consistency" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 1.2 (Consistent Estimator)</strong></span> Let <span class="math inline">\(\hat{\theta}_n\)</span> be an estimator of <span class="math inline">\(\theta\)</span> based on a sample of size <span class="math inline">\(n\)</span>. Say that <span class="math inline">\(\hat{\theta}_n\)</span> is a <strong>consistent</strong> estimator for <span class="math inline">\(\theta\)</span> if <span class="math inline">\(\lim_{n \to \infty} \Pr \left( |\hat{\theta}_n - \theta| \ge \varepsilon \right) = 0\)</span> for every <span class="math inline">\(\varepsilon &gt; 0\)</span>.</p>
+<p><span class="theorem-title"><strong>Definition 1.2 (Consistent Estimator)</strong></span> Let <span class="math inline">\(\hat{\theta}_N\)</span> be an estimator of <span class="math inline">\(\theta\)</span> based on a sample of size <span class="math inline">\(N\)</span>. Say that <span class="math inline">\(\hat{\theta}_N\)</span> is a <strong>consistent</strong> estimator for <span class="math inline">\(\theta\)</span> if <span class="math inline">\(\lim_{N \to \infty} \Pr \left( |\hat{\theta}_N - \theta| \ge \varepsilon \right) = 0\)</span> for every <span class="math inline">\(\varepsilon &gt; 0\)</span>.</p>
 </div>
 <div id="thm-ml-consistency" class="theorem page-columns page-full">
 <p><span class="theorem-title"><strong>Theorem 1.1 (Consistency of ML Estimators)</strong></span> Suppose an ML estimator <span class="math inline">\(\hat{\theta}\)</span> of <span class="math inline">\(\theta\)</span> as in <a href="#def-mle" class="quarto-xref">Definition&nbsp;<span>1.1</span></a>. Under certain regularity conditions,<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> <span class="math inline">\(\hat{\theta}\)</span> is a consistent estimator of <span class="math inline">\(\theta\)</span>.</p>
@@ -434,7 +435,7 @@ Casella, George, and Roger L. Berger. 2002. <em>Statistical Inference</em>. 2nd 
 Lehmann, Erich L. 2004. <em>Elements of Large Sample Theory</em>. New York: Springer.
 </div></div></div></div>
 <p><a href="#def-consistency" class="quarto-xref">Definition&nbsp;<span>1.2</span></a> and <a href="#thm-ml-consistency" class="quarto-xref">Theorem&nbsp;<span>1.1</span></a> mean that as the sample size grows to infinitely, an ML estimator <span class="math inline">\(\hat{\theta}\)</span> falls arbitrarily close to <span class="math inline">\(\theta\)</span> with high probability. Less formally, consistency means that the estimator <span class="math inline">\(\hat{\theta}\)</span> becomes increasingly concentrated around the true value <span class="math inline">\(\theta\)</span> as the samples size grows large. <a href="#fig-illustrating-consistency" class="quarto-xref">Figure&nbsp;<span>1.3</span></a> illustrates how an estimator might converge to the true value.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
-<div class="no-row-height column-margin column-container"><div id="fn2"><p><sup>2</sup>&nbsp;This definition of consistency is a “weak” version of consistency that describes an estimator that “converges in probability” to the true value. This is distinct from “converges almost surely,” which would mean that <span class="math inline">\(\Pr\left( \lim_{n \to \infty} \hat{\theta}_n = \theta \right) = 1\)</span>. There is substantial theoretical distinction between these two forms of consistency, but little to no practical distinction.</p></div><div class="">
+<div class="no-row-height column-margin column-container"><div id="fn2"><p><sup>2</sup>&nbsp;This definition of consistency is a “weak” version of consistency that describes an estimator that “converges in probability” to the true value. This is distinct from “converges almost surely,” which would mean that <span class="math inline">\(\Pr\left( \lim_{N \to \infty} \hat{\theta}_N = \theta \right) = 1\)</span>. There is substantial theoretical distinction between these two forms of consistency, but little to no practical distinction.</p></div><div class="">
 <div id="fig-illustrating-consistency" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-illustrating-consistency-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -457,11 +458,11 @@ Figure&nbsp;1.3: A figure illustrating a consistent estimator converging to the 
 <p>Suppose we collect <span class="math inline">\(N\)</span> random samples <span class="math inline">\(x = \{x_1, x_2, ..., x_N\}\)</span> and model each draw as a random variable <span class="math inline">\(X \sim \text{Poisson}(\lambda)\)</span>. Find the ML estimator of <span class="math inline">\(\lambda\)</span>.</p>
 <p><span class="math display">\[
 \begin{aligned}
-\text{Poisson likelihood: } f(x; \lambda) &amp;= \prod_{n = 1}^N \frac{\lambda^{x_n} e^{-\lambda}}{x_n!} \\
-L(\lambda) &amp;= \prod_{n = 1}^N \frac{\lambda^{x_n} e^{-\lambda}}{x_n!} \\
-\log L(\lambda) &amp;= \sum_{n = 1}^N \log \left[ \frac{\lambda^{x_n} e^{-\lambda}}{x_n!} \right]\\
-&amp;= \sum_{n = 1}^N \left[ x_n \log \lambda + (-\lambda) \log e - \log x_n! \right]\\
-&amp;= \log \lambda \left[ \sum_{n = 1}^N x_n \right]  -N\lambda + \sum_{n = 1}^N \log (x_n!) \\
+\text{Poisson likelihood: } f(x; \lambda) &amp;= \prod_{i = 1}^N \frac{\lambda^{x_i} e^{-\lambda}}{x_i!} \\
+L(\lambda) &amp;= \prod_{i = 1}^N \frac{\lambda^{x_i} e^{-\lambda}}{x_i!} \\
+\log L(\lambda) &amp;= \sum_{i = 1}^N \log \left[ \frac{\lambda^{x_i} e^{-\lambda}}{x_i!} \right]\\
+&amp;= \sum_{i = 1}^N \left[ x_i \log \lambda - \lambda - \log x_i! \right]\\
+&amp;= \log \lambda \left[ \sum_{i = 1}^N x_i \right]  -N\lambda - \sum_{i = 1}^N \log (x_i!) \\
 \end{aligned}
 \]</span></p>
 <p>To find the ML estimator, we find <span class="math inline">\(\hat{\lambda}\)</span> that maximizes <span class="math inline">\(\log L\)</span>. In this case, the analytical optimum is easy.</p>
@@ -486,11 +487,11 @@ L(\lambda) &amp;= \prod_{n = 1}^N \frac{\lambda^{x_n} e^{-\lambda}}{x_n!} \\
 <p>Suppose we collect <span class="math inline">\(N\)</span> random samples <span class="math inline">\(x = \{x_1, x_2, ..., x_N\}\)</span> and model each draw as a random variable <span class="math inline">\(X \sim \mathcal{N}(\mu, \sigma^2)\)</span>. Find the ML estimators of <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma^2\)</span>.</p>
 <p><span class="math display">\[
 \begin{aligned}
-\text{Normal likelihood: } f(x; \mu, \sigma^2) &amp;= \prod_{n = 1}^N \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left( -\frac{(x_n - \mu)^2}{2\sigma^2} \right) \\
-L(\mu, \sigma^2) &amp;= \prod_{n = 1}^N \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left( -\frac{(x_n - \mu)^2}{2\sigma^2} \right) \\
-\log L(\mu, \sigma^2) &amp;= \sum_{n = 1}^N \log \left[ \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left( -\frac{(x_n - \mu)^2}{2\sigma^2} \right) \right] \\
-&amp;= \sum_{n = 1}^N \left[ -\frac{1}{2} \log(2\pi\sigma^2) - \frac{(x_n - \mu)^2}{2\sigma^2} \right] \\
-&amp;= -\frac{N}{2} \log(2\pi\sigma^2) - \frac{1}{2\sigma^2} \sum_{n = 1}^N (x_n - \mu)^2 \\
+\text{Normal likelihood: } f(x; \mu, \sigma^2) &amp;= \prod_{i = 1}^N \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left( -\frac{(x_i - \mu)^2}{2\sigma^2} \right) \\
+L(\mu, \sigma^2) &amp;= \prod_{i = 1}^N \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left( -\frac{(x_i - \mu)^2}{2\sigma^2} \right) \\
+\log L(\mu, \sigma^2) &amp;= \sum_{i = 1}^N \log \left[ \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left( -\frac{(x_i - \mu)^2}{2\sigma^2} \right) \right] \\
+&amp;= \sum_{i = 1}^N \left[ -\frac{1}{2} \log(2\pi\sigma^2) - \frac{(x_i - \mu)^2}{2\sigma^2} \right] \\
+&amp;= -\frac{N}{2} \log(2\pi\sigma^2) - \frac{1}{2\sigma^2} \sum_{i = 1}^N (x_i - \mu)^2 \\
 \end{aligned}
 \]</span></p>
 <p>To find the ML estimators, we find <span class="math inline">\(\hat{\mu}\)</span> and <span class="math inline">\(\hat{\sigma}^2\)</span> that maximize <span class="math inline">\(\log L\)</span>. In this case, the analytical optima are straightforward.</p>
@@ -614,24 +615,25 @@ $ lending           &lt;chr&gt; "IDA", "IBRD", "IBRD", "Not classified", "Not cl
 </div></div></div>
 <p>Suppose we collect <span class="math inline">\(N\)</span> random samples <span class="math inline">\(y = \{y_1, y_2, ..., y_N\}\)</span> and model each draw as a random variable <span class="math inline">\(X \sim \text{beta}(\alpha, \beta)\)</span>. Find the ML estimators of <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span>.</p>
 <p>In general, this is how we do ML:</p>
-<p><strong>Step 1</strong> Write down the likelihood function. Recall that we can obtain the joint density of <span class="math inline">\(y_1\)</span> AND <span class="math inline">\(y_2\)</span> AND … AND <span class="math inline">\(y_n\)</span> by multiplying the probabilities of each (assuming independence).</p>
+<p><strong>Step 1</strong> Write down the likelihood function. Recall that we can obtain the joint density of <span class="math inline">\(y_1\)</span> AND <span class="math inline">\(y_2\)</span> AND … AND <span class="math inline">\(y_N\)</span> by multiplying the probabilities of each (assuming independence).</p>
 <p><span class="math display">\[
 \begin{aligned}
-L(\alpha, \beta) = \displaystyle\prod_{i = 1}^n \overbrace{f(y_i;\alpha, \beta)}^{\text{density}} = \displaystyle\prod_{i = 1}^n \dfrac{y_i^{\alpha - 1}(1 - y_i)^{\beta - 1}}{B(\alpha, \beta)}
+L(\alpha, \beta) = \displaystyle\prod_{i = 1}^N f(y_i;\alpha, \beta) = \displaystyle\prod_{i = 1}^N \dfrac{y_i^{\alpha - 1}(1 - y_i)^{\beta - 1}}{B(\alpha, \beta)}
 \end{aligned}
 \]</span></p>
 <p>We see again, as will be usual, that we have a complicated product that makes things challenging. However, taking the log is helpful and standard.</p>
 <p><strong>Step 2</strong> Take the log and simplify.</p>
 <p><span class="math display">\[
 \begin{aligned}
-L(\alpha, \beta) &amp;= \displaystyle\prod_{i = 1}^n \dfrac{y_i^{\alpha - 1}(1 - y_i)^{\beta - 1}}{B(\alpha, \beta)}\\
-\log L(\alpha, \beta) &amp;= \displaystyle\sum_{i = 1}^n \log \dfrac{y_i^{\alpha - 1}(1 - y_i)^{\beta - 1}}{B(\alpha, \beta)}\\
-&amp;= \displaystyle\sum_{i = 1}^n \left[ \log y_i^{\alpha - 1} + \log (1 - y_i)^{\beta - 1} - \log B(\alpha, \beta)\right]\\
-&amp;= \displaystyle\sum_{i = 1}^n \left[ (\alpha - 1)\log y_i + (\beta - 1)\log (1 - y_i) - \log B(\alpha, \beta)\right]\\
-&amp;= \displaystyle\sum_{i = 1}^n \left[ (\alpha - 1)\log y_i + (\beta - 1)\log (1 - y_i)\right] - n \log B(\alpha, \beta)\\
-\log L(\alpha, \beta) &amp;= (\alpha - 1) \sum_{i = 1}^n \log y_i + (\beta - 1) \sum_{i = 1}^n \log (1 - y_i) - n \log B(\alpha, \beta)
+L(\alpha, \beta) &amp;= \displaystyle\prod_{i = 1}^N \dfrac{y_i^{\alpha - 1}(1 - y_i)^{\beta - 1}}{B(\alpha, \beta)}\\
+\log L(\alpha, \beta) &amp;= \displaystyle\sum_{i = 1}^N \log \dfrac{y_i^{\alpha - 1}(1 - y_i)^{\beta - 1}}{B(\alpha, \beta)}\\
+&amp;= \displaystyle\sum_{i = 1}^N \left[ \log y_i^{\alpha - 1} + \log (1 - y_i)^{\beta - 1} - \log B(\alpha, \beta)\right]\\
+&amp;= \displaystyle\sum_{i = 1}^N \left[ (\alpha - 1)\log y_i + (\beta - 1)\log (1 - y_i) - \log B(\alpha, \beta)\right]\\
+&amp;= \displaystyle\sum_{i = 1}^N \left[ (\alpha - 1)\log y_i + (\beta - 1)\log (1 - y_i)\right] - N \log B(\alpha, \beta)\\
+\log L(\alpha, \beta) &amp;= (\alpha - 1) \sum_{i = 1}^N \log y_i + (\beta - 1) \sum_{i = 1}^N \log (1 - y_i) - N \log B(\alpha, \beta)
 \end{aligned}
-\]</span> <strong>Step 3</strong> Maximize.</p>
+\]</span></p>
+<p><strong>Step 3</strong> Maximize.</p>
 <p>If we wanted, we could work on this one analytically.</p>
 <ol type="1">
 <li>Take the derivative w.r.t. <span class="math inline">\(\alpha\)</span>.</li>

@@ -51,8 +51,9 @@ What is the ML estimate $\hat{\pi}$ of $\pi$?
 
 According to the model $f(x_i; \pi) = \pi^{x_i} (1 - \pi)^{(1 - x_i)}$---this is just the Bernoulli pmf. Because the samples are iid, we can find the *joint* distribution $f(x) = f(x_1) \times ... \times f(x_N) = \prod_{i = 1}^N f(x_i)$. This product includes several repetitions of $\pi$ and several repetitions of $(1 - \pi)$. We include $k$ $\pi$s, because each of the $k$ ones has probability $\pi$. Similarly, we include $(N - k)$ $(1 - \pi)$s, because each of the $N - k$ zeros has probability $1 - \pi$). This gives us $f(x; \pi) = \pi^{k} (1 - \pi)^{(N - k)}$.
 $$
-\text{the likelihood:  } f(x; \pi) =  \pi^{k} (1 - \pi)^{(N - k)}, \text{where } k = \sum_{n = 1}^N x_n \\
+\text{the likelihood:  } f(x; \pi) =  \pi^{k} (1 - \pi)^{(N - k)}, \text{where } k = \sum_{i = 1}^N x_i \\
 $$
+
 All we have to do now is find the value of $\pi$ that maximizes this likelihood. This will be our ML estimator. But let's proceed slowly.
 
 First, it's a little strange to maximize $f(x; \pi)$ with respect to $\pi$. After all, the notation encourages us to think of $\pi$ as a fixed value and $x$ as the variable. To make it clear that we're now thinking of $\pi$ as the variable, let's write $L(\pi) = f(x; \pi)$.
@@ -137,19 +138,20 @@ In practice, to make the math and/or computation a bit easier, we manipulate the
 
 ::: {#def-mle}
 ## Maximum Likelihood (ML) Estimator
-Suppose we have iid samples $x_1, x_2, ..., x_N$ from pdf or pmf $f(x; \theta)$. Then the joint density/probability is $f(x; \theta) = \prod_{n = 1}^N f(x_n; \theta)$ and $\log L(\theta) = \sum_{n = 1}^N \log \left[ f(x_n; \theta) \right]$. The ML estimator $\hat{\theta}$ of $\theta$ is $\arg \max \log L(\theta)$.
+Suppose we have iid samples $x_1, x_2, ..., x_N$ from pdf or pmf $f(x; \theta)$. Then the joint density/probability is $f(x; \theta) = \prod_{i = 1}^N f(x_i; \theta)$ and $\log L(\theta) = \sum_{i = 1}^N \log \left[ f(x_i; \theta) \right]$. The ML estimator $\hat{\theta}$ of $\theta$ is $\arg \max \log L(\theta)$.
 :::
+
 
 In applied problems, we can occasionally find a nice analytical maximum. In most cases, though, we have a computer find the parameter that maximizes $\log L$.
 
 ML estimators have nice properties. Here's let's consider just consistency.
 
 ::: {#def-consistency}
-
 ## Consistent Estimator
 
-Let $\hat{\theta}_n$ be an estimator of $\theta$ based on a sample of size $n$. Say that $\hat{\theta}_n$ is a **consistent** estimator for $\theta$ if $\lim_{n \to \infty} \Pr \left( |\hat{\theta}_n - \theta| \ge \varepsilon \right) = 0$ for every $\varepsilon > 0$.
+Let $\hat{\theta}_N$ be an estimator of $\theta$ based on a sample of size $N$. Say that $\hat{\theta}_N$ is a **consistent** estimator for $\theta$ if $\lim_{N \to \infty} \Pr \left( |\hat{\theta}_N - \theta| \ge \varepsilon \right) = 0$ for every $\varepsilon > 0$.
 :::
+
 
 ::: {#thm-ml-consistency}
 
@@ -169,7 +171,8 @@ Suppose an ML estimator $\hat{\theta}$ of $\theta$ as in @def-mle. Under certain
 
 @def-consistency and @thm-ml-consistency mean that as the sample size grows to infinitely, an ML estimator $\hat{\theta}$ falls arbitrarily close to $\theta$ with high probability. Less formally, consistency means that the estimator $\hat{\theta}$ becomes increasingly concentrated around the true value $\theta$ as the samples size grows large. @fig-illustrating-consistency illustrates how an estimator might converge to the true value.[^as]
 
-[^as]: This definition of consistency is a "weak" version of consistency that describes an estimator that "converges in probability" to the true value. This is distinct from "converges almost surely," which would mean that $\Pr\left( \lim_{n \to \infty} \hat{\theta}_n = \theta \right) = 1$. There is substantial theoretical distinction between these two forms of consistency, but little to no practical distinction.
+[^as]: This definition of consistency is a "weak" version of consistency that describes an estimator that "converges in probability" to the true value. This is distinct from "converges almost surely," which would mean that $\Pr\left( \lim_{N \to \infty} \hat{\theta}_N = \theta \right) = 1$. There is substantial theoretical distinction between these two forms of consistency, but little to no practical distinction.
+
 
 
 
@@ -244,13 +247,14 @@ Suppose we collect $N$ random samples $x = \{x_1, x_2, ..., x_N\}$ and model eac
 
 $$
 \begin{aligned}
-\text{Poisson likelihood: } f(x; \lambda) &= \prod_{n = 1}^N \frac{\lambda^{x_n} e^{-\lambda}}{x_n!} \\
-L(\lambda) &= \prod_{n = 1}^N \frac{\lambda^{x_n} e^{-\lambda}}{x_n!} \\
-\log L(\lambda) &= \sum_{n = 1}^N \log \left[ \frac{\lambda^{x_n} e^{-\lambda}}{x_n!} \right]\\
-&= \sum_{n = 1}^N \left[ x_n \log \lambda + (-\lambda) \log e - \log x_n! \right]\\
-&= \log \lambda \left[ \sum_{n = 1}^N x_n \right]  -N\lambda + \sum_{n = 1}^N \log (x_n!) \\
+\text{Poisson likelihood: } f(x; \lambda) &= \prod_{i = 1}^N \frac{\lambda^{x_i} e^{-\lambda}}{x_i!} \\
+L(\lambda) &= \prod_{i = 1}^N \frac{\lambda^{x_i} e^{-\lambda}}{x_i!} \\
+\log L(\lambda) &= \sum_{i = 1}^N \log \left[ \frac{\lambda^{x_i} e^{-\lambda}}{x_i!} \right]\\
+&= \sum_{i = 1}^N \left[ x_i \log \lambda - \lambda - \log x_i! \right]\\
+&= \log \lambda \left[ \sum_{i = 1}^N x_i \right]  -N\lambda - \sum_{i = 1}^N \log (x_i!) \\
 \end{aligned}
 $$
+
 
 To find the ML estimator, we find $\hat{\lambda}$ that maximizes $\log L$. In this case, the analytical optimum is easy.
 
@@ -259,6 +263,7 @@ First, find the derivative of the log-likelihod function with respect to the par
 $$
 \frac{d \log L}{d\lambda} = \frac{1}{\lambda} \left[ \sum_{i = 1}^N x_i \right] - N
 $$
+
 
 Then set $\frac{d \log L}{d\hat{\lambda}}$, $\lambda = \hat{\lambda}$, and solve for $\hat{\lambda}$.
 
@@ -281,13 +286,14 @@ Suppose we collect $N$ random samples $x = \{x_1, x_2, ..., x_N\}$ and model eac
 
 $$
 \begin{aligned}
-\text{Normal likelihood: } f(x; \mu, \sigma^2) &= \prod_{n = 1}^N \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left( -\frac{(x_n - \mu)^2}{2\sigma^2} \right) \\
-L(\mu, \sigma^2) &= \prod_{n = 1}^N \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left( -\frac{(x_n - \mu)^2}{2\sigma^2} \right) \\
-\log L(\mu, \sigma^2) &= \sum_{n = 1}^N \log \left[ \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left( -\frac{(x_n - \mu)^2}{2\sigma^2} \right) \right] \\
-&= \sum_{n = 1}^N \left[ -\frac{1}{2} \log(2\pi\sigma^2) - \frac{(x_n - \mu)^2}{2\sigma^2} \right] \\
-&= -\frac{N}{2} \log(2\pi\sigma^2) - \frac{1}{2\sigma^2} \sum_{n = 1}^N (x_n - \mu)^2 \\
+\text{Normal likelihood: } f(x; \mu, \sigma^2) &= \prod_{i = 1}^N \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left( -\frac{(x_i - \mu)^2}{2\sigma^2} \right) \\
+L(\mu, \sigma^2) &= \prod_{i = 1}^N \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left( -\frac{(x_i - \mu)^2}{2\sigma^2} \right) \\
+\log L(\mu, \sigma^2) &= \sum_{i = 1}^N \log \left[ \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left( -\frac{(x_i - \mu)^2}{2\sigma^2} \right) \right] \\
+&= \sum_{i = 1}^N \left[ -\frac{1}{2} \log(2\pi\sigma^2) - \frac{(x_i - \mu)^2}{2\sigma^2} \right] \\
+&= -\frac{N}{2} \log(2\pi\sigma^2) - \frac{1}{2\sigma^2} \sum_{i = 1}^N (x_i - \mu)^2 \\
 \end{aligned}
 $$
+
 
 To find the ML estimators, we find $\hat{\mu}$ and $\hat{\sigma}^2$ that maximize $\log L$. In this case, the analytical optima are straightforward.
 
@@ -297,11 +303,13 @@ $$
 \frac{d \log L}{d\mu} = \frac{1}{\sigma^2} \left[ \sum_{i = 1}^N (x_i - \mu) \right]
 $$
 
+
 Now take the derivative with respect to $\sigma^2$.
 
 $$
 \frac{d \log L}{d\sigma^2} = -\frac{N}{2\sigma^2} + \frac{1}{2(\sigma^2)^2} \sum_{i = 1}^N (x_i - \mu)^2
 $$
+
 
 Then set $\frac{d \log L}{d\mu} = 0$, $\frac{d \log L}{d\sigma^2} = 0$, $\sigma^2 = \hat{\sigma}^2$, $\mu = \hat{\mu}$, and solve for $\hat{\mu}$ and $\hat{\sigma}^2$.
 
@@ -396,13 +404,14 @@ Suppose we collect $N$ random samples $y = \{y_1, y_2, ..., y_N\}$ and model eac
 
 In general, this is how we do ML:
 
-**Step 1** Write down the likelihood function. Recall that we can obtain the joint density of $y_1$ AND $y_2$ AND ... AND $y_n$ by multiplying the probabilities of each (assuming independence).
+**Step 1** Write down the likelihood function. Recall that we can obtain the joint density of $y_1$ AND $y_2$ AND ... AND $y_N$ by multiplying the probabilities of each (assuming independence).
 
 $$
 \begin{aligned}
-L(\alpha, \beta) = \displaystyle\prod_{i = 1}^n \overbrace{f(y_i;\alpha, \beta)}^{\text{density}} = \displaystyle\prod_{i = 1}^n \dfrac{y_i^{\alpha - 1}(1 - y_i)^{\beta - 1}}{B(\alpha, \beta)}
+L(\alpha, \beta) = \displaystyle\prod_{i = 1}^N f(y_i;\alpha, \beta) = \displaystyle\prod_{i = 1}^N \dfrac{y_i^{\alpha - 1}(1 - y_i)^{\beta - 1}}{B(\alpha, \beta)}
 \end{aligned}
 $$
+
 
 We see again, as will be usual, that we have a complicated product that makes things challenging. However, taking the log is helpful and standard.
 
@@ -410,14 +419,15 @@ We see again, as will be usual, that we have a complicated product that makes th
 
 $$
 \begin{aligned}
-L(\alpha, \beta) &= \displaystyle\prod_{i = 1}^n \dfrac{y_i^{\alpha - 1}(1 - y_i)^{\beta - 1}}{B(\alpha, \beta)}\\
-\log L(\alpha, \beta) &= \displaystyle\sum_{i = 1}^n \log \dfrac{y_i^{\alpha - 1}(1 - y_i)^{\beta - 1}}{B(\alpha, \beta)}\\
-&= \displaystyle\sum_{i = 1}^n \left[ \log y_i^{\alpha - 1} + \log (1 - y_i)^{\beta - 1} - \log B(\alpha, \beta)\right]\\
-&= \displaystyle\sum_{i = 1}^n \left[ (\alpha - 1)\log y_i + (\beta - 1)\log (1 - y_i) - \log B(\alpha, \beta)\right]\\
-&= \displaystyle\sum_{i = 1}^n \left[ (\alpha - 1)\log y_i + (\beta - 1)\log (1 - y_i)\right] - n \log B(\alpha, \beta)\\
-\log L(\alpha, \beta) &= (\alpha - 1) \sum_{i = 1}^n \log y_i + (\beta - 1) \sum_{i = 1}^n \log (1 - y_i) - n \log B(\alpha, \beta)
+L(\alpha, \beta) &= \displaystyle\prod_{i = 1}^N \dfrac{y_i^{\alpha - 1}(1 - y_i)^{\beta - 1}}{B(\alpha, \beta)}\\
+\log L(\alpha, \beta) &= \displaystyle\sum_{i = 1}^N \log \dfrac{y_i^{\alpha - 1}(1 - y_i)^{\beta - 1}}{B(\alpha, \beta)}\\
+&= \displaystyle\sum_{i = 1}^N \left[ \log y_i^{\alpha - 1} + \log (1 - y_i)^{\beta - 1} - \log B(\alpha, \beta)\right]\\
+&= \displaystyle\sum_{i = 1}^N \left[ (\alpha - 1)\log y_i + (\beta - 1)\log (1 - y_i) - \log B(\alpha, \beta)\right]\\
+&= \displaystyle\sum_{i = 1}^N \left[ (\alpha - 1)\log y_i + (\beta - 1)\log (1 - y_i)\right] - N \log B(\alpha, \beta)\\
+\log L(\alpha, \beta) &= (\alpha - 1) \sum_{i = 1}^N \log y_i + (\beta - 1) \sum_{i = 1}^N \log (1 - y_i) - N \log B(\alpha, \beta)
 \end{aligned}
 $$
+
 **Step 3** Maximize.
 
 If we wanted, we could work on this one analytically.
