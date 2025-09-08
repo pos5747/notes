@@ -1,14 +1,14 @@
 
-# Fisher Information Matrix
-
-- [ ] switch plots to ggplot
-- [ ] experiment with {rayshader} to give the intuition of contour plots.
+---
+title: Fisher Information Matrix
+cache: true
+---
 
 ```{r include=FALSE}
 library(tidyverse)
 ```
 
-We can easily use the log-likelihood function to obtain point estimates. It turns out, though, that this same log-likelihood function contains information that we can use to estimate the *precision* of those estimates as well.
+We can easily use the log-likelihood function to obtain point estimates. It turns out, though, that the same log-likelihood function contains information that we can use to estimate the *precision* of those estimates as well.
 
 As an example, consider the following two log-likelihood functions:
 
@@ -36,70 +36,140 @@ gg_data <- bind_rows(
 )
 
 ggplot(gg_data, aes(x = mu, y = ll)) + 
-  geom_vline(xintercept = 2, color = scales::muted("red"), linetype = "dotted", size = 0.5) + 
+  geom_vline(xintercept = 2, color = scales::muted("red"), linetype = "dotted", linewidth = 0.5) + 
   geom_line() + 
   facet_wrap(vars(type)) + 
   labs(x = "Parameter",
        y = "Log-Likelihood") + 
-  theme_ipsum()
+  theme_ipsum(base_family = "Source Sans 3")
 ```
 
 Which of these two log-likelihood functions do you think provides a more *precise* estimate? 
 
-*Note: These likelihoods are from a normal model with unknown mean. I simulated 100 observations for $y_1$ and 300 observations for $y_2$. (I centered the data so the sample means both occurred exactly at two.*
+*Note: These likelihoods are from a normal model with unknown mean. I simulated 100 observations for $y_1$ and 300 observations for $y_2$. (I centered the data so the sample means both occurred exactly at 2).*
 
 **Key Idea**: We can use the curvature around the maximum likelihood estimate to get a sense of the uncertainty.
 
-What quantity tells us about the amount of curvature at the maximum? The second derivative. As the second derivative goes down, the curvature goes up. 
+What quantity tells us about the amount of curvature at the maximum? The second derivative. As the second derivative becomes more negative (its magnitude increases), the curvature goes up. 
 As the curvature goes up, the uncertainty goes down.
 
 ## Example: Stylized Normal
 
-In this example, we example curvature for a single-parameter model. 
+In this example, we examine curvature for a single-parameter model. 
 
 To develop our intuition about "curvature" and confidence intervals, I analyze the *Stylized Normal Model* ($\sigma = 1$). Here, we model the data as a normal distribution with $\mu$ unknown (and to be estimated), but $\sigma = 1$ (known; not estimated). That is, $y \sim N(\mu, 1)$.
 
 $$
 \begin{aligned}
-\log L(\mu) &= -\frac{n}{2\pi} - \frac{1}{2}\sum_{i = 1}^n (y_i - \mu)^2\\
-\dfrac{\partial \log L(\mu)}{\partial \mu} &= \sum_{i = 1}^n y_i - \mu n\\
-\dfrac{\partial^2 \log L(\mu)}{\partial^2 \mu} &=  - n
+\ell(\mu) &= -\tfrac{N}{2}\log(2\pi) - \tfrac{1}{2}\sum_{i = 1}^N (y_i - \mu)^2\\
+\dfrac{\partial \ell(\mu)}{\partial \mu} &= \sum_{i = 1}^N (y_i - \mu) = \sum y_i - N\mu\\
+\dfrac{\partial^2 \ell(\mu)}{\partial \mu^2} &=  - N
 \end{aligned}
 $$
 
 Facts:
 
-- As $n$ increases, $\frac{\partial^2 \log L(\mu | y)}{\partial^2 \mu}$ becomes more negative.
-- As $\frac{\partial^2 \log L(\mu | y)}{\partial^2 \mu}$ gets more negative, the curvature increases.
+- As $N$ increases, $\dfrac{\partial^2 \ell(\mu \mid y)}{\partial \mu^2}$ becomes more negative.
+- As the magnitude of $\dfrac{\partial^2 \ell(\mu \mid y)}{\partial \mu^2}$ increases, the curvature increases.
 - As the curvature increases, the uncertainty decreases.
 
-Wouldn't it be really nice if we could use $\frac{\partial^2 \log L(\mu)}{\partial^2 \mu}$ to estimate the standard error?
+Wouldn't it be really nice if we could use $\dfrac{\partial^2 \ell(\mu)}{\partial \mu^2}$ to estimate the standard error?
 
 It turns out that this quantity is a direct, almost magically intuitive estimator of the standard error.
 
-In the single parameter case, we have the following approximation.
+## Theory
+
+
+::: {#def-fisher-information}
+
+
+## Fisher Information
+
+For a model $f(y \mid \theta)$ with log-likelihood $\ell(\theta) = \sum_{i=1}^N \log f(y_i \mid \theta)$, the **expected information** is defined as $\mathcal I(\theta) = -\mathbb E_\theta\!\left[\nabla^2 \ell(\theta)\right]$.
+
+In practice, we often use the **observed information**, given by the negative Hessian of the log-likelihood at the ML estimate $\mathcal I_{\text{obs}}(\hat\theta) = -\nabla^2 \ell(\hat\theta)$.
+:::
+
+There's an important *theoretical distinction* between the expected and observed information. The *expected* Fisher information $\mathcal I(\theta) = \mathbb E_\theta[-\nabla^2 \ell(\theta)]$ is the *expected* curvature of the log-likelihood under the model. In contrast, the *observed* information $\mathcal I_{\text{obs}}(\hat\theta) = -\nabla^2 \ell(\hat\theta)$ uses the curvature at the ML estimate $\hat{\theta}$ from a particular sample. Under standard regularity conditions, both lead to the same large-sample variance: $\mathcal I_{\text{obs}}(\hat\theta) \overset{p}{\to} \mathcal I(\theta)$ and $\widehat{\operatorname{Var}}(\hat\theta) \approx \mathcal I_{\text{obs}}(\hat\theta)^{-1} \approx \mathcal I(\theta)^{-1}$. And in many examples, they are numerically identical. In some weird cases, the expected information is "more robust." In these notes, I use the observed information to make the curvature↔uncertainty link concrete and intuitive.
+
+::: {.aside}
+Recall that $\nabla$ denotes the gradient vector of first derivatives of the log-likelihood with respect to the parameters,  
+    $$
+    \nabla \ell(\theta) \;=\;
+    \begin{bmatrix}
+    \dfrac{\partial \ell}{\partial \theta_1} \\
+    \dfrac{\partial \ell}{\partial \theta_2} \\
+    \vdots \\
+    \dfrac{\partial \ell}{\partial \theta_k}
+    \end{bmatrix}.
+    $$  
+    The Hessian $\nabla^2$ is the square matrix of second derivatives,  
+    $$\small
+    \nabla^2 \ell(\theta) \;=\;
+    \begin{bmatrix}
+    \dfrac{\partial^2 \ell}{\partial \theta_1^2} &
+    \dfrac{\partial^2 \ell}{\partial \theta_1 \partial \theta_2} & \cdots & \dfrac{\partial^2 \ell}{\partial \theta_1 \partial \theta_k} \\
+    \dfrac{\partial^2 \ell}{\partial \theta_2 \partial \theta_1} &
+    \dfrac{\partial^2 \ell}{\partial \theta_2^2} & \cdots & \dfrac{\partial^2 \ell}{\partial \theta_2 \partial \theta_k} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    \dfrac{\partial^2 \ell}{\partial \theta_k \partial \theta_1} &
+    \dfrac{\partial^2 \ell}{\partial \theta_k \partial \theta_2} & \cdots & \dfrac{\partial^2 \ell}{\partial \theta_k^2}
+    \end{bmatrix}.
+    $$
+These gradient and Hessian objects are the matrix calculus tools needed to define Fisher information.
+:::
+
+
+
+::: {#thm-ml-asymp-normality}
+
+## Asymptotic Normality of ML Estimators
+
+Let $y_1,\dots,y_N$ be iid from a model $f(y \mid \theta)$ with true parameter $\theta$. Suppose the regularity conditions in @thm-ml-consistency hold and the Fisher information matrix $\mathcal I(\theta)$ is finite and positive definite. Then the maximum likelihood estimator $\hat\theta$ is asymptotically normal $\hat\theta \overset{a}{\sim} \mathcal N\big(\theta, \mathcal I(\theta)^{-1}\big)$.
+
+:::
+
+This is an important result, because it tells us the location (i.e., $\theta$), variability (i.e., $\mathcal I(\theta)^{-1}$), and shape (i.e., normal) of the sampling distribution asymptotically. These asymptotic results tend to be good approximations in practice. 
+
+::: {#thm-ml-asymp-variance}
+
+## Asymptotic Variance of ML Estimators
+
+Under the conditions of @thm-ml-asymp-normality, the covariance of the maximum likelihood estimator is well-approximated by the inverse Fisher information $ \operatorname{Var}(\hat\theta) \;\approx\; \mathcal I(\theta)^{-1}$.  
+
+In practice, we replace the unknown $\theta$ with the maximum likelihood estimate and use the observed information $\widehat{\operatorname{Var}}(\hat\theta) \;\approx\; \big[-\nabla^2 \ell(\hat\theta)\big]^{-1}$.  
+
+:::
+
+
+For a single parameter $\theta$, this reduces to $\widehat{\operatorname{Var}}(\hat\theta) \;\approx\; \left[\,-\,\dfrac{\partial^2 \ell(\theta)}{\partial \theta^2}\Bigg|_{\theta=\hat\theta}\right]^{-1}$.
+
+::: callout-note
+## Approximations via asymptotics
+
+We should be careful here. The results above are *asymptotic*. As the sample size grows, the variance of $\hat{\theta}$ eventually converges to $\left[\left. - \dfrac{\partial^2 \ell(\theta)}{\partial \theta^2}\right| _{\theta = \hat{\theta}}\right] ^{-1}$. However, "eventually gets close" does not imply "is close" for a finite sample size. However, we are usually safe to treat asymptotic results as good approximations.
+:::
+
+This means that we can estimate the SE as follows: 
+
+1. Find the second derivative (or Hessian if multiple parameters) of the log-likelihood. 
+1. Evaluate the second derivative at the maximum ($\theta = \hat{\theta}$).
+1. Find the inverse. (That's an estimate of the variance.) 
+1. Take the square root.
 
 $$
-\widehat{\text{var}}(\hat{\theta}) \approx \left[\left. - \frac{\partial^2 \log L(\theta)}{\partial^2 \theta}\right| _{\theta = \hat{\theta}}\right] ^{-1}
-$$
-
-I should be careful here. This is an asymptotic result. As the sample size grows, the variance of $\hat{\beta}$ gets closer and closer to $\left[\left. - \frac{\partial^2 \log L(\theta)}{\partial^2 \theta}\right| _{\theta = \hat{\theta}}\right] ^{-1}$. I'm interpreting this large sample result as a small sample approximation.
-
-This mean that we find the second derivative, evaluate it at the maximum ($\theta = \hat{\theta}$), and find the inverse ($-1$). That's an estimate of the variance. To convert it to a standard error, just take the square root.
-
-$$
-\widehat{\text{SE}}(\hat{\theta}) \approx \sqrt{\left[\left. - \frac{\partial^2 \log L(\theta)}{\partial^2 \theta}\right| _{\theta = \hat{\theta}}\right] ^{-1}}
+\widehat{\text{SE}}(\hat{\theta}) = \sqrt{\left[\left. - \dfrac{\partial^2 \ell(\theta)}{\partial \theta^2}\right| _{\theta = \hat{\theta}}\right] ^{-1}}
 $$
 
 If we continue the stylized normal example, we have the following.
 
 $$
 \begin{equation*}
-\dfrac{\partial^2 \log L(\mu | y)}{\partial^2 \mu} =  - n
+\dfrac{\partial^2 \ell(\mu \mid y)}{\partial \mu^2} =  - N
  ~{\color{purple}{\Longrightarrow}}~
-\left[\left. - \frac{\partial^2 \log L(\mu | y)}{\partial^2 \mu}\right| _{\mu = \hat{\mu}}\right] ^{-1} 
- = \dfrac{1}{n} 
-\approx \widehat{\text{var}}(\hat{\mu})
+\left[\left. - \dfrac{\partial^2 \ell(\mu \mid y)}{\partial \mu^2}\right| _{\mu = \hat{\mu}}\right] ^{-1} 
+ = \dfrac{1}{N} 
+\approx \widehat{\operatorname{Var}}(\hat{\mu})
 \end{equation*}
 $$
 
@@ -107,219 +177,532 @@ And then
 
 $$
 \begin{equation*}
-\widehat{\text{SE}}(\hat{\mu}) \approx \sqrt{\dfrac{1}{n}} 
+\widehat{\text{SE}}(\hat{\mu}) \approx \sqrt{\dfrac{1}{N}} 
 \end{equation*}
 $$
 
-Does this answer make sense? What is the classic standard error of the mean when taking a random sample from a population? Hint: It's $\text{SE}[\text{avg}(y)] \approx \sqrt{\dfrac{\text{population SD}}{n}}$. In this case, the "population SD" is $\sigma = 1$, as assumed by the *stylized* normal model.
+Does this answer make sense? What is the classic standard error of the mean when taking a random sample from a population? Hint: It's $\text{SE}[\operatorname{avg}(y)] = \sigma/\sqrt{N}$. In this case, the "population SD" is $\sigma = 1$, as assumed by the *stylized* normal model.
 
-## Curvature in a Multiple Dimmensions
+## Curvature in Multiple Dimensions
 
 To add multiple dimensions, let's consider the beta model. Our goal is to estimate $\alpha$ and $\beta$. The key is that we have *multiple* (i.e., two) parameters to estimate.
 
-It's a bit trickier to think about curvature in multiple dimensions.
+It's a bit trickier to think about curvature in multiple dimensions. Instead of a second derivative like we have in a single dimension, we have **Hessian** matrix in multiple dimensions.
 
-Here's what the log-likelihood function might look like for a give data set.
+Here's what the log-likelihood function might look like for a given data set. This is a raster and contour plot. The contour lines connect parameter combinations with the *same* log-likelihood. The color shows the log-likelihood — larger log-likelihoods are red and small log-likelihoods are blue.
+
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-# load packages
-library(plot3D)
+#| fig-width: 10
+#| fig-height: 7
+#| cache: true
 
-# log-likelihood for beta model
-ll.fn.beta <- function(theta, y) {
-  alpha <- theta[1] 
-  beta <- theta[2]
-  ll <- alpha*sum(log(y)) + beta*sum(log(1 - y)) - 
-    length(y)*log(beta(alpha, beta))
-  return(ll)
+
+library(tidyverse)
+library(plotly)
+library(rayshader)
+library(hrbrthemes)
+library(grid)  
+library(latex2exp)
+library(geomtextpath)
+
+library(showtext)
+font_add_google("Source Sans 3", family = "Source Sans 3")
+showtext_auto() 
+
+
+set.seed(1234)
+y <- rbeta(1000, shape1 = 10, shape2 = 10)
+
+
+compute_ll <- Vectorize(function(a, b) {
+    sum(dbeta(y, shape1 = a, shape2 = b, log = TRUE))
+  })
+alpha <- seq(0.1, 25, length.out = 250)
+beta  <- seq(0.1, 25, length.out = 250)
+data <- crossing(alpha, beta) %>%
+  mutate(log_lik = compute_ll(alpha, beta))
+
+contour_lines_at <- quantile(data$log_lik, probs = c(.99, 0.97, .9, .8, .6, .4))
+
+# find the max log-likelihood
+max_point <- data %>% 
+  slice_max(order_by = log_lik, n = 1)
+
+# add it to the ggplot
+p <- ggplot(data, aes(x = alpha, y = beta, z = log_lik)) + 
+  coord_fixed(ratio = 1) + 
+  geom_raster(aes(fill= log_lik)) + 
+  geom_contour(breaks = contour_lines_at, color = "grey30") + 
+  geom_point(data = max_point, aes(x = alpha, y = beta),
+             color = "black", size = 3, shape = 19) +
+  scale_fill_gradient2(high = "#e41a1c", low = "#377eb8", mid = "#f7f7f7", midpoint = -5000) +
+  theme_ipsum(base_family = "Source Sans 3") + 
+  theme(plot.background = element_rect(color = "white"),
+        axis.title.x = element_text(size = 20),
+        axis.title.y = element_text(size = 20, angle = 0)) + 
+  labs(x = expression(alpha), y = expression(beta),
+       fill = "Log L",
+       title = "Log-likelihood for beta model")
+
+p
+```
+
+To make more sense of this, here's a version you can rotate.
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+# --- build a rotatable 3D surface with matching colors & contour levels ----
+
+library(tidyverse)
+library(plotly)
+
+# reshape to a wide matrix for plotly::add_surface()
+Z <- data |>
+  dplyr::arrange(alpha, beta) |>
+  select(alpha, beta, log_lik) |>
+  tidyr::pivot_wider(names_from = beta, values_from = log_lik) |>
+  select(-alpha) |>
+  as.matrix()
+
+x <- alpha                      # x-grid
+y <- beta                       # y-grid
+zmin <- min(data$log_lik)
+zmax <- max(data$log_lik)
+zmid <- -5000                   # same midpoint as your ggplot scale
+
+# put the midpoint at the correct position in the colorscale (0..1)
+midpos <- (zmid - zmin) / (zmax - zmin)
+midpos <- min(max(midpos, 0), 1)  # clamp just in case
+
+# custom three-stop colorscale to match scale_fill_gradient2()
+cs <- list(
+  list(0,      "#377eb8"),   # low
+  list(midpos, "#f7f7f7"),   # mid
+  list(1,      "#e41a1c")    # high
+)
+
+fig3d <- plot_ly() |>
+  # surface with (approximate) on-surface contours for context while rotating
+  add_surface(
+    x = ~x,
+    y = ~y,
+    z = ~Z,
+    colorscale = cs,
+    cmin = zmin,
+    cmax = zmax,
+    showscale = TRUE,
+    contours = list(
+      z = list(
+        show = TRUE,
+        color = "rgba(60,60,60,0.6)",
+        highlightcolor = "rgba(60,60,60,0.9)",
+        project = list(z = TRUE),
+        start = min(contour_lines_at),
+        end   = max(contour_lines_at),
+        size  = (max(contour_lines_at) - min(contour_lines_at)) / max(1, length(contour_lines_at) - 1)
+      )
+    )
+  )
+
+# overlay exact contour levels on the XY plane (matching your ggplot lines)
+for (lev in contour_lines_at) {
+  fig3d <- fig3d |>
+    add_contour(
+      x = x, y = y, z = Z,
+      contours = list(
+        start = lev, end = lev, size = 1e-9,  # draw only this level
+        coloring = "lines", showlabels = FALSE
+      ),
+      line = list(color = "grey30", width = 1),
+      showscale = FALSE,
+      hoverinfo = "skip"
+    )
 }
 
-# function to estimate beta model
-est.beta <- function(y) {
-  est <- optim(par = c(1, 1), fn = ll.fn.beta, y = y,
-               control = list(fnscale = -1),
-               method = "Nelder-Mead") # for >1d problems
-  if (est$convergence != 0) print("Model did not converge!")
-  res <- list(est = est$par)
-  return(res)
-}
+# add the MLE point as a 3D marker
+fig3d <- fig3d |>
+  add_markers(
+    x = max_point$alpha,
+    y = max_point$beta,
+    z = max_point$log_lik,
+    marker = list(size = 4, color = "black", symbol = "circle"),
+    name = "MLE",
+    hovertemplate = "α=%{x:.3f}<br>β=%{y:.3f}<br>log L=%{z:.1f}<extra>MLE</extra>"
+  ) |>
+  layout(
+    title = list(text = "Log-likelihood for beta model"),
+    scene = list(
+      xaxis = list(title = "α"),
+      yaxis = list(title = "β"),
+      zaxis = list(title = "log L"),
+      aspectmode = "cube",
+      camera = list(eye = list(x = 1.5, y = 1.5, z = 0.8))
+    ),
+    font = list(family = "Source Sans 3")
+  )
 
-# 3d of beta ll
-y <- rbeta(1000, 1, 1)
-alpha <- seq(.1, 3, length.out = 25)
-beta <- seq(.1, 3, length.out = 25)
-ll <- matrix(NA, nrow = length(alpha), ncol = length(beta))
-for (i in 1:length(alpha)) {
-  for (j in 1:length(beta)) {
-    ll[i, j] <- ll.fn.beta(c(alpha[i], beta[j]), y)
-  }
-}
+fig3d
 
-par(mfrow = c(3, 3), mar = c(1,1,2,0), oma = c(0,0,0,0))
-phi <- c(0, 20, 40)
-theta <- c(0, 20, 40)
-for (i in 1:length(phi)) {
-  for (j in 1:length(theta)) {
-    persp(z = ll, x = alpha, y = beta,
-          xlab = "alpha",
-          ylab = "beta",
-          zlab = "log-likelihood",
-          phi = phi[i],
-          theta = theta[j])
-  }
-}
 ```
 
-To make more sense, of this 3D plot, let's look at the contour plot.
+The curvature around the maximum *vertically* tells us the variance in $\hat{\beta}$.
 
-```{r echo=FALSE, fig.height=3.5, fig.width=3.5}
-par(mfrow = c(1, 1), mar = c(5,4,1,1), oma = c(0,0,0,0))
-contour(z = ll, x = alpha, y = beta,
-              xlab = "alpha",
-              ylab = "beta",
-        lwd = 2)
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+#| fig-width: 10
+#| fig-height: 7
+#| cache: true
+
+# an annotated version for beta-hat
+y_range <- range(data$beta)
+seg_len <- diff(y_range) / 3
+y0 <- max_point$beta - seg_len / 2
+y1 <- max_point$beta + seg_len / 2
+y0 <- max(y0, y_range[1])  # clip to axis limits
+y1 <- min(y1, y_range[2])
+text_y <- (y0 + y1) / 2  # center of the arrow for placing the label
+x_offset <- 0.02 * diff(range(data$alpha)) # small x-offset so the text doesn't overlap the arrow
+
+p2 <- p +
+  annotate(
+    "segment",
+    x = max_point$alpha, xend = max_point$alpha,
+    y = y0, yend = y1,
+    colour = "black",
+    linewidth = 1.0,
+    arrow = arrow(ends = "both", type = "closed", length = unit(6, "pt"))
+  ) + 
+  annotate(
+    "label",
+    size = 3.0,
+    x = 10,
+    y = 10,
+    label = TeX(r'(The curvature around the maximum \textbf{vertically} tells us about the variance in $\hat{\beta}$.)'),
+    #angle = 90,                    # align with the vertical arrow
+    vjust = -1.5, 
+    hjust = 0.5,    
+    family = "Source Sans 3",    # Source Sans font
+    size = 4,                      # adjust to taste
+    colour = "black"
+  )
+
+p2
+
+
 ```
 
-The curvature around the maximum *vertically* tells use the variance in $\hat{\beta}$.
+The curvature around the maximum *horizontally* tells us the variance in $\hat{\alpha}$.
 
-```{r echo=FALSE, fig.height=3.5, fig.width=3.5}
-est <- est.beta(y)
-par(mfrow = c(1, 1), mar = c(5,4,1,1), oma = c(0,0,0,0))
-contour(z = ll, x = alpha, y = beta,
-        xlab = "alpha",
-        ylab = "beta",
-        lwd = 2)
-abline(v = est$est[1], col = "red", lwd = 3)
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+#| fig-width: 10
+#| fig-height: 7
+#| cache: true
+
+# an annotated version for alpha-hat
+x_range <- range(data$alpha)
+seg_len_x <- diff(x_range) / 3
+x0 <- max_point$alpha - seg_len_x / 2
+x1 <- max_point$alpha + seg_len_x / 2
+x0 <- max(x0, x_range[1])  # clip to axis limits
+x1 <- min(x1, x_range[2])
+text_x   <- (x0 + x1) / 2
+y_offset <- 0.02 * diff(range(data$beta))
+
+p3 <- p +
+  annotate(
+    "segment",
+    x = x0, xend = x1,
+    y = max_point$beta, yend = max_point$beta,
+    colour = "black",
+    linewidth = 1.0,
+    arrow = arrow(ends = "both", type = "closed", length = unit(6, "pt"))
+  ) +
+  annotate(
+    "label",
+    size = 3.0,
+    x = 10,
+    y = 10,
+    label = TeX(r'(The curvature around the maximum \textbf{horizontally} tells us about the variance in $\hat{\alpha}$.)'),
+    vjust = 1, hjust = 0.5,
+    family = "Source Sans 3",
+    size = 4,
+    colour = "black"
+  )
+
+p3
+
+
 ```
 
-The curvature around the maximum *horizontally* tells use the variance in $\hat{\alpha}$.
+But there's a third direction that's relevant here: the curvature *diagonally*. The diagonal curvature tells us the *covariance* of $\hat{\alpha}$ and $\hat{\beta}$. That is, if we *over*-estimate $\alpha$, how much do we tend to over-estimate (or under-estimate) $\beta$? (This reference line is illustrative; in practice, we read the covariance from the inverse information matrix.)
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+#| fig-width: 10
+#| fig-height: 7
+#| cache: true
 
 
-```{r echo=FALSE, fig.height=3.5, fig.width=3.5}
-par(mfrow = c(1, 1), mar = c(5,4,1,1), oma = c(0,0,0,0))
-contour(z = ll, x = alpha, y = beta,
-        xlab = "alpha",
-        ylab = "beta",
-        lwd = 2)
-abline(h = est$est[2], col = "red", lwd = 3)
+# an annotated version for diagonal
+diag_len <- 0.33 * min(diff(range(data$alpha)), diff(range(data$beta)))  # ~1/3 axis
+dx <- diag_len / 2
+dy <- diag_len / 2
+x0 <- max(max_point$alpha - dx, min(data$alpha))
+y0 <- max(max_point$beta  - dy, min(data$beta))
+x1 <- min(max_point$alpha + dx, max(data$alpha))
+y1 <- min(max_point$beta  + dy, max(data$beta))
+
+p4 <- p +
+  annotate(
+    "segment",
+    x = x0, y = y0, xend = x1, yend = y1,
+    colour = "black", linewidth = 1.0,
+    arrow = arrow(ends = "both", type = "closed", length = unit(6, "pt"))
+  ) +
+  annotate(
+    "label",
+    size = 3.0,
+    x = 10, y = 10,
+        vjust = 1, hjust = 0.5,
+    label = TeX(r"(The curvature \textbf{diagonally} tells us about the covariance between $\hat{\alpha}$ and $\hat{\beta}$)"),
+    family = "Source Sans 3", size = 4, colour = "black",
+  )
+
+p4
+
+
+
+
 ```
 
-But there's a third direction that's relevant here: the curvature *diagonally*. The diagonal curvature tells us the *covariance* of $\hat{\alpha}$ and $\hat{\beta}$. That is, if we *over*-estimate $\alpha$, how much do we tend to over-estimate (or under-estimate) $\beta$?
-
-```{r echo=FALSE, fig.height=3.5, fig.width=3.5}
-par(mfrow = c(1, 1), mar = c(5,4,1,1), oma = c(0,0,0,0))
-contour(z = ll, x = alpha, y = beta,
-        xlab = "alpha",
-        ylab = "beta",
-        lwd = 2)
-abline(a = est$est[2] - est$est[1], b = 1, col = "red", lwd = 3)
-```
-
-Rather than a single variance, we get a variance **matrix** (sometimes called the "covariance matrix" or the "variance-covariance matrix".
+Rather than a single variance, we get a variance **matrix** (sometimes called the "covariance matrix" or the "variance–covariance matrix"). The diagonal entries are variances; the off-diagonal entries are *covariances*.
 
 $$
 \begin{equation*}
-\widehat{\text{var}}(\hat{\theta})= \widehat{\text{cov}}(\hat{\theta}) \approx \left. \left[ 
+\widehat{\operatorname{Var}}(\hat{\theta})= \widehat{\text{Cov}}(\hat{\theta}) \approx \left. \left[ 
 \displaystyle \begin{matrix}
-- \frac{\partial^2 \log L(\theta| y)}{\partial^2 \theta_1} & - \frac{\partial^2 \log L(\theta| y)}{\partial \theta_1 \partial \theta_2}\\
-- \frac{\partial^2 \log L(\theta| y)}{\partial \theta_2 \partial \theta_1} & - \frac{\partial^2 \log L(\theta| y)}{\partial^2 \theta_2}\\
+- \dfrac{\partial^2 \ell(\theta\mid y)}{\partial \theta_1^2} & - \dfrac{\partial^2 \ell(\theta\mid y)}{\partial \theta_1 \partial \theta_2}\\
+- \dfrac{\partial^2 \ell(\theta\mid y)}{\partial \theta_2 \partial \theta_1} & - \dfrac{\partial^2 \ell(\theta\mid y)}{\partial \theta_2^2}\\
 \end{matrix}\right]^{-1} \right|_{\theta = \hat{\theta}}
 \end{equation*}
 $$
+
 The elements along the diagonal (in red) are the variances for each parameter, so the square root of the diagonal gives you the standard errors. This is exactly what we'd expect.
 
 $$
 \begin{equation*}
-\widehat{\text{var}}(\hat{\theta}) \approx \left. \left[ 
+\widehat{\operatorname{Var}}(\hat{\theta}) \approx \left. \left[ 
 \displaystyle \begin{matrix}
-\color{red}{- \frac{\partial^2 \log L(\theta| y)}{\partial^2 \theta_1}} & - \frac{\partial^2 \log L(\theta| y)}{\partial \theta_1 \partial \theta_2}\\
-- \frac{\partial^2 \log L(\theta| y)}{\partial \theta_2 \partial \theta_1} & \color{red}{- \frac{\partial^2 \log L(\theta| y)}{\partial^2 \theta_2}}\\
+\color{red}{- \dfrac{\partial^2 \ell(\theta\mid y)}{\partial \theta_1^2}} & - \dfrac{\partial^2 \ell(\theta\mid y)}{\partial \theta_1 \partial \theta_2}\\
+- \dfrac{\partial^2 \ell(\theta\mid y)}{\partial \theta_2 \partial \theta_1} & \color{red}{- \dfrac{\partial^2 \ell(\theta\mid y)}{\partial \theta_2^2}}\\
 \end{matrix}\right]^{-1} \right|_{\theta = \hat{\theta}}
 \end{equation*}
 $$
 
-The off-diagonal elements (in blue) are the covariances--they'll be really important to us later, but we don't have a direct use for them at the moment.
+The off-diagonal elements (in blue) are the covariances—they'll be really important to us later, but we don't have a direct use for them at the moment.
 
 $$
 \begin{equation*}
-\widehat{\text{var}}(\hat{\theta}) \approx \left. \left[ 
+\widehat{\operatorname{Var}}(\hat{\theta}) \approx \left. \left[ 
 \displaystyle \begin{matrix}
-- \frac{\partial^2 \log L(\theta| y)}{\partial^2 \theta_1} & \color{blue}{- \frac{\partial^2 \log L(\theta| y)}{\partial \theta_1 \partial \theta_2}}\\
-\color{blue}{- \frac{\partial^2 \log L(\theta| y)}{\partial \theta_2 \partial \theta_1}} & - \frac{\partial^2 \log L(\theta| y)}{\partial^2 \theta_2}\\
+- \dfrac{\partial^2 \ell(\theta\mid y)}{\partial \theta_1^2} & \color{blue}{- \dfrac{\partial^2 \ell(\theta\mid y)}{\partial \theta_1 \partial \theta_2}}\\
+\color{blue}{- \dfrac{\partial^2 \ell(\theta\mid y)}{\partial \theta_2 \partial \theta_1}} & - \dfrac{\partial^2 \ell(\theta\mid y)}{\partial \theta_2^2}\\
 \end{matrix}\right]^{-1} \right|_{\theta = \hat{\theta}}
 \end{equation*}
 $$
 
 ## More than Two Parameters
 
-But what about more than two parameters? It's exactly what you'd expect. We call this matrix of second-derivatives the "information matrix" $\mathcal{I}(\theta)$. When evaluated at the ML estimate, we call it the "observed information matrix" $\mathcal{I}(\hat{\theta})$.
+But what about more than two parameters? It's exactly what you'd expect.
+
 
 $$
 \begin{equation*}
 \begin{aligned}
-\widehat{\text{var}}(\hat{\theta}) &\approx \left. \left[ 
+\widehat{\operatorname{Var}}(\hat{\theta}) &\approx \left. \left[ 
 \displaystyle \begin{matrix}
-- \frac{\partial^2 \log L(\theta| y)}{\partial^2 \theta_1} & - \frac{\partial^2 \log L(\theta| y)}{\partial \theta_1 \partial \theta_2} & \ldots &- \frac{\partial^2 \log L(\theta| y)}{\partial \theta_1 \partial \theta_k}\\
-- \frac{\partial^2 \log L(\theta| y)}{\partial \theta_2 \partial \theta_1} & - \frac{\partial^2 \log L(\theta| y)}{\partial^2 \theta_2} & \ldots & - \frac{\partial^2 \log L(\theta| y)}{\partial \theta_2 \partial \theta_k}\\
+- \dfrac{\partial^2 \ell(\theta\mid y)}{\partial \theta_1^2} & - \dfrac{\partial^2 \ell(\theta\mid y)}{\partial \theta_1 \partial \theta_2} & \ldots &- \dfrac{\partial^2 \ell(\theta\mid y)}{\partial \theta_1 \partial \theta_k}\\
+- \dfrac{\partial^2 \ell(\theta\mid y)}{\partial \theta_2 \partial \theta_1} & - \dfrac{\partial^2 \ell(\theta\mid y)}{\partial \theta_2^2} & \ldots & - \dfrac{\partial^2 \ell(\theta\mid y)}{\partial \theta_2 \partial \theta_k}\\
 \vdots & \vdots & \ddots & \vdots \\
-- \frac{\partial^2 \log L(\theta| y)}{\partial \theta_k \partial \theta_1}     & - \frac{\partial^2 \log L(\theta| y)}{\partial \theta_k \partial \theta_2} & \ldots & - \frac{\partial^2 \log L(\theta| y)}{\partial^2 \theta_k}\\
+- \dfrac{\partial^2 \ell(\theta\mid y)}{\partial \theta_k \partial \theta_1}     & - \dfrac{\partial^2 \ell(\theta\mid y)}{\partial \theta_k \partial \theta_2} & \ldots & - \dfrac{\partial^2 \ell(\theta\mid y)}{\partial \theta_k^2}\\
 \end{matrix}\right]^{-1} \right|_{\theta = \hat{\theta}}\\
- & \approx \mathcal{I}(\theta)^{-1}|_{\theta = \hat{\theta}}\\
- &\approx \mathcal{I}(\hat{\theta})^{-1}
+ & \approx \mathcal{I}_{\text{obs}}(\theta)^{-1}\big|_{\theta = \hat{\theta}}\\
+ &\approx \mathcal{I}_{\text{obs}}(\hat{\theta})^{-1}
 \end{aligned}
 \end{equation*}
 $$
 
-## From Curvature to Confidence Intervals
+## From Curvature to Wald Confidence Intervals
 
-To convert this variance estimate into a confidence interval, we need the following large sample result. It turns out that, as the sample size grows large, the ML estimate converges to a normally distributed random variable with mean $theta_{true}$ and variance $\mathcal{I}(\theta_{true})^{-1}$.
+As the sample size grows large, the ML estimate converges to a normally distributed random variable with mean $\theta$ and variance $\mathcal{I}(\theta)^{-1}$.
 
-**CTK: Convert this key fact to a theorem.** Explain the regularity conditions.
+In practice, we'll take this to mean it's *approximately* normal, which justifies the usual Wald procedure of creating a 90% confidence interval by hopping 1.64 SEs to the left and right of the estimate.
 
-**key fact**: $\hat{\theta} \overset{a}{\sim} N\left[ \theta_{true}, \mathcal{I}(\theta_{true})^{-1}\right]$
-
-In practice, we'll take this to mean it's *approximately* normal.
+Recall that $\widehat{\text{SE}}(\hat{\theta}) = \sqrt{\left[\left. - \dfrac{\partial^2 \ell(\theta)}{\partial \theta^2}\right| _{\theta = \hat{\theta}}\right]^{-1}}$.
 
 $$
 \begin{align*}
- 90\%~\text{C.I.}  &\approx \hat{\theta} \pm 1.64\dfrac{1}{\sqrt{\mathcal{I}(\hat{\theta})}}\\
- 95\%~\text{C.I.}  &\approx \hat{\theta} \pm 1.96\dfrac{1}{\sqrt{\mathcal{I}(\hat{\theta})}}
+ 90\%~\text{C.I.}  &= \hat{\theta} \pm 1.64 \cdot \widehat{\text{SE}}(\hat{\theta})\\
+ 95\%~\text{C.I.}  &= \hat{\theta} \pm 1.96 \cdot \widehat{\text{SE}}(\hat{\theta})
 \end{align*}
 $$
 
-To work with these intervals, then, we just need the variance matrix $\widehat{\text{var}}(\hat{\theta}) = \mathcal{I}(\hat{\theta})^{-1}$. Much like we can access the ML estimates of the model coefficients $\hat{\beta}$ with `coef()`, we can access $\widehat{\text{var}}(\hat{\theta})$. 
+To work with these intervals, then, we just need the variance matrix $\widehat{\operatorname{Var}}(\hat{\theta}) = \mathcal{I}_{\text{obs}}(\hat{\theta})^{-1}$.
 
-**CTK: Update this model--we don't have covariates yet!**
+## Example: Exponential Model
 
-```{r message=FALSE, warning=FALSE}
-# load hks data
-hks <- crdata::hks2013 |>
+In this example, we compute the standard error for the rate parameter in the exponential model. The exponential pdf is $f(y_i \mid \lambda) = \lambda \exp(-\lambda y_i)$ for $y_i \ge 0$ and the ML estimate is $\hat{\lambda} = \dfrac{1}{\operatorname{avg}(y)}$ (from earlier).
+
+The log-likelihood is
+
+$$
+\begin{aligned}
+\ell(\lambda) 
+  &= \sum_{i=1}^N \log \left[ \lambda \exp(-\lambda y_i) \right]\\
+  &= \sum_{i=1}^N [\log \lambda - \lambda y_i]\\
+  &= N \log \lambda - \lambda \sum_{i=1}^N y_i.
+\end{aligned}
+$$
+
+The first derivative of the log-likelihood (called the "score function") is $\dfrac{\partial \ell(\lambda)}{\partial \lambda} = \dfrac{N}{\lambda} - \sum_{i=1}^N y_i$.
+
+The second derivative is $\dfrac{\partial^2 \ell(\lambda)}{\partial \lambda^2} = -\dfrac{N}{\lambda^2}$.
+
+Set the first derivative equal to zero to obtain the ML estimate $\hat{\lambda} = \dfrac{N}{\sum_{i=1}^N y_i} = \dfrac{1}{\operatorname{avg}(y)}$.
+
+Evaluate the second derivative at the maximum to get the observed information
+
+$$
+\mathcal I_{\text{obs}}(\hat{\lambda}) = \left.-\dfrac{\partial^2 \ell(\lambda)}{\partial \lambda^2}\right|_{\lambda = \hat{\lambda}}
+= \dfrac{N}{\hat{\lambda}^2}.
+$$
+
+Invert to estimate the variance $\widehat{\operatorname{Var}}(\hat{\lambda}) \approx \dfrac{\hat{\lambda}^2}{N}$. Take the square root to get the standard error $\widehat{\text{SE}}(\hat{\lambda}) \approx \dfrac{\hat{\lambda}}{\sqrt{N}}$.
+
+And just as before, we use these SE estimates to create confidence intervals.
+
+$$
+\begin{aligned}
+ 90\%~\text{C.I.} &= \hat{\lambda} \pm 1.64 \dfrac{\hat{\lambda}}{\sqrt{N}},\\
+ 95\%~\text{C.I.} &= \hat{\lambda} \pm 1.96 \dfrac{\hat{\lambda}}{\sqrt{N}}.
+\end{aligned}
+$$
+
+*Comment:* Notice how the curvature $(-N/\lambda^2)$ gets steeper as $N$ grows, which means the uncertainty in $\hat{\lambda}$ shrinks, exactly as we would expect.
+
+## Beta model and `optim()`
+
+Just like `optim()` can use a numerical hill-climbing algorithm to find and return the `par` that maximizes the `fun`, it can also use a numerical algorithm to find and return the `hessian`.
+
+### The logic of `optim()`'s `hessian`
+
+At the maximum likelihood estimate, the first derivative is zero. That means we are sitting right on top of the hill. At that precision point, the slope is flat. To find the Hessian, we need to know how *quickly* the slope changes as we move away from the maximum. That "rate of change of the slope" is exactly the second derivative. In multiple dimensions, we call this matrix of second derivatives the **Hessian**.  
+
+How does `optim()` find this Hessian? It does not derive it with calculus. Instead, it uses *numerical differences*. Starting at the maximum, the first derivative is zero. `optim()` nudges each parameter slightly up and down. After each nudge, it checks how the slope changes in response. The pattern of those changes (i.e., the changes in the slopes) is the Hessian. `optim()` is just poking the surface around the maximum and carefully watching how the flat spot bends.
+
+### Lahman's `batting_average` data
+
+To see this in action, we can use data on batting average in Major League Baseball that we saw in @sec-ml-ex-beta and @sec-predictive-distribution-ex-beta.
+
+
+```{r}
+#| label: fig-batting-avg
+#| fig-cap: "A histogram of batting average in Lahman's data. Data from 2023 onward; includes players with at least 100 at-bats."
+#| column: margin
+
+
+# load packages
+library(tidyverse)
+library(Lahman)  # data from Lahman's baseball database
+
+# create data frame with batting average
+bstats <- battingStats() |> 
+  filter(yearID == 2023) |>  # data from 2023
+  filter(AB >= 100) |>  # players with at least 100 at-bats
+  select(player_id = playerID, batting_average = BA) |>
+  arrange(-batting_average) |>
+  na.omit() |>
   glimpse()
 
-# fit poisson regression model
-f <- osvAll ~ troopLag + policeLag + militaryobserversLag + 
-  brv_AllLag + osvAllLagDum + incomp + epduration + 
-  lntpop
-fit <- glm(f, data = hks, family = poisson)
-
-# compute 90% confidence intervals
-beta_hat <- coef(fit)
-var_hat <- vcov(fit)
-se_hat <- sqrt(diag(var_hat))  # keep only the diagonal elements
-ci_lwr <- beta_hat - 1.64*se_hat
-ci_upr <- beta_hat + 1.64*se_hat
-
-# make a nice table
-tibble(`Variable` = names(beta_hat),
-       `Coefficient Estimate` = scales::number(beta_hat, 0.001),
-       `90% Confidence Interval` = paste0("[", scales::number(ci_lwr, 0.001), ",", scales::number(ci_upr, 0.001), "]")) %>%
-  kableExtra::kable(format = "markdown")
+# plot histogram
+hist(bstats$batting_average)
 ```
 
-Compare these confidence intervals to the parametric and nonparametric intervals from the previous section.
+### Computing `hessian` with `optim()`
 
-### Final Notes
+To model these data with a beta distribution and estimate the covariance matrix, we can modify the R code from before.
 
-- The Wald confidence interval does not easily extend to quantities of interest. It turns out that their is a way, called the "delta method." It's a bit tedious and not necessary since we have other methods. But I'll mention it here: "the delta method." King, Tomz, and Wittenberg (2001) give us an easy alternative to the delta method; we'll see their method in a couple of weeks.
-- If you use `optim()` to find the ML estimates, then you can have it return the observed information matrix $\mathcal{I}(\hat{\theta})$ to you by supplying the argument `hession = TRUE` to `optim()`. `optim()` returns a list; the component named `"hessian"` is the Hessian matrix. You simple need to find the inverse of the negative of the Hessian to obtain the estimated variance matrix. Something like `est <- optim(..., hessian = TRUE)` followed by `var_hat <- solve(-est$hessian)`.
+```{r}
+#| label: "make beta log-likelihood function w/ variance estimator"
+
+# log-likelihood function (using dbeta!)
+beta_ll_fn <- function(theta, y) { 
+  alpha <- theta[1] 
+  beta  <- theta[2] 
+  ll <- sum(dbeta(y, shape1 = alpha, shape2 = beta, log = TRUE))  # <1>
+  return(ll)
+}
+
+# function to fit beta model 
+est_beta <- function(y) {
+  # use optim; compute hessian
+  est <- optim(
+    par     = c(2, 2),  # decent starting values for the problem below
+    fn      = beta_ll_fn,
+    y       = y,
+    control = list(fnscale = -1),  # <2>
+    method  = "BFGS",
+    hessian = TRUE                  # <3>
+  ) 
+  
+  # compute an estimate of covariance matrix (slowly, this first time)
+  info_obs <- -est$hessian  # notice negative sign          # <4>
+  var_hat  <- solve(info_obs)      # <5>
+  
+  # check convergence; print warning if needed
+  if (est$convergence != 0) print("Model did not converge!")
+  
+  # return list of elements
+  res <- list(theta_hat = est$par, 
+              var_hat   = var_hat) # <6>
+  return(res)
+}
+```
+
+1. **Compute the log-likelihood.** `dbeta(..., log = TRUE)` returns $\log f(y_i \mid \alpha, \beta)$. Summing produces $\ell(\alpha,\beta) \;=\; \sum_{i=1}^N \log f(y_i \mid \alpha,\beta)$. We work with the log-likelihood because (1) logging turns numerically unstable products into stable sums and (2) the Hessian of the log-likelihood is useful for estimating the variance.  
+
+2. **Use `optim()` to maximize $\ell$.** `fnscale = -1` makes `optim()` minimize $-\ell(\theta)$, which is equivalent to maximizing $\ell(\theta)$. 
+
+3. **Ask for the Hessian.** `hessian = TRUE` tells `optim()` to compute a numeric Hessian at the maximum $\hat\theta = (\hat\alpha,\hat\beta)$ by nudging the function near the maximum and measuring how the slope changes in response to these small nudges. Conceptually, this captures the curvature of the log-likelihood surface at the peak. Computing this Hessian is computationally costly, so this argument defaults to `FALSE`. Here's an important detail: The Hessian returned is for `fn`; `fnscale` only changes the optimization target, not the reported Hessian. With `fnscale = -1`, `optim()` still returns the Hessian of `fn` (the log-likelihood), so the observed information is `-est$hessian`.
+
+4. **Compute the observed information at the ML estimate.** `est$hessian` is the Hessian of $-\ell$ at $\hat\theta$. $\texttt{info\_obs} = -\texttt{est\$hessian} = -\nabla^2 \ell(\hat\theta) = \mathcal I_{\text{obs}}(\hat\theta)$. This is the $2\times2$ matrix  
+
+$$
+\mathcal I_{\text{obs}}(\hat\theta) =
+   \begin{bmatrix}
+     -\dfrac{\partial^2 \ell}{\partial \alpha^2} & -\dfrac{\partial^2 \ell}{\partial \alpha\,\partial \beta}\\[6pt]
+     -\dfrac{\partial^2 \ell}{\partial \beta\,\partial \alpha} & -\dfrac{\partial^2 \ell}{\partial \beta^2}
+   \end{bmatrix}_{\theta=\hat\theta}.
+$$
+
+5. **Invert `hessian` to get variance.** Asymptotic theory tells us that $\widehat{\operatorname{Var}}(\hat\theta) \approx \mathcal I_{\text{obs}}(\hat\theta)^{-1}$. So `solve(info_obs)` returns the estimated covariance matrix for $(\hat\alpha,\hat\beta)$. The diagonal entries are $\widehat{\operatorname{Var}}(\hat\alpha)$ and $\widehat{\operatorname{Var}}(\hat\beta)$. The square roots are the standard errors. The off-diagonal entry is $\widehat{\text{Cov}}(\hat\alpha,\hat\beta)$.
+
+6. **Return `var_hat`.** We now have two items to `return()` after fitting the model. The parameter estimate vector `theta_hat` and the estimated covariance matrix `var_hat`.
+
+### Fitting the beta model
+
+We can now use our function to fit the model and print the parameter estimates and covariance matrix.
+
+```{r}
+#| label: "fit beta model to baseball data (w/ variance estimate)"
+
+# estimate beta model using the batting average data
+fit <- est_beta(bstats$batting_average)
+fit$theta_hat  # parameter estimates
+fit$var_hat  # covariance matrix estimates
+sqrt(diag(fit$var_hat))  # standard error estimates 
+fit$theta_hat[1] + 1.64*c(-1, 1)*sqrt(diag(fit$var_hat))[1] # 90% ci for alpha
+fit$theta_hat[2] + 1.64*c(-1, 1)*sqrt(diag(fit$var_hat))[2] # 90% ci for beta
+```
 

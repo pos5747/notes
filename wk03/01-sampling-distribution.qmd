@@ -10,9 +10,9 @@ What's the most important concept in statistical inference? It could be **the sa
 
 > The most important concept in statistical inference is the **sampling distribution**.
 
-To define a sampling distribution, you must imagine repeating a study over and over. If each study has a random component (perhaps random sampling or random assignment to treatment and control), then the estimate across studies will vary randomly. The distribution of the estimates across the studies is called the sampling distribution.
+To define a sampling distribution, you must imagine repeating a study over and over. If each study has a random component, then the estimate across studies will vary randomly. A "random component" might be: random sampling, random assignment to treatment and control, or an imagined stochastic component like "the errors are like draws from a normal distribution." The distribution of the estimates across the many imagined studies is called the sampling distribution.
 
-To build our intution, let's look at an example.
+To build our intuition, let's look at an example.
 
 ## Example: The Toothpaste Cap Problem
 
@@ -21,7 +21,7 @@ For a sample of 150 tosses, we recognize that the ML estimate $\hat{\pi} = \text
 Let's illustrate that with a simulation. For these simulations, I suppose that we toss the toothpaste cap 150 times and the chance of a top is 5%.
 
 ```{r}
-n_sims <- 10
+n_sims <- 10  # number of repeated studies
 ml_est <- numeric(n_sims)  # a container for the estimates
 for (i in 1:n_sims) {
   y <- rbinom(150, size = 1, prob = 0.05)  # chance of a top is 5%
@@ -36,13 +36,13 @@ If we repeat the simulations a large number of times, we can use a histogram to 
 
 ```{r fig.height=3, fig.width=4}
 n_sims <- 10000
-ml_est <- numeric(n_sims) 
+ml_est <- numeric(n_sims)  # container to store results
 for (i in 1:n_sims) {
   y <- rbinom(150, size = 1, prob = 0.05)
   ml_est[i] <- mean(y)
 }
 
-# create a histagram of the sampling distribution
+# create a histogram of the sampling distribution
 gg_data <- data.frame(ml_est = ml_est)
 ggplot(gg_data, aes(x = ml_est)) + 
   geom_histogram(
@@ -70,13 +70,13 @@ E(\hat{\pi})
 &= E\left( \frac{1}{150} \sum_{i=1}^{150} y_i \right) 
 && \text{definition of } \hat{\pi} \\
 &= \frac{1}{150} \sum_{i=1}^{150} E(y_i) 
-&& \text{linearity of expectations; } E(cX) = cE(X) \\
+&& \text{linearity of expectation; } E(cX) = cE(X) \\
 &= \frac{1}{150} \cdot 150 \cdot E(y_i) 
 && \text{each } y_i \text{ has same expectation because they are iid} \\
 &= E(y_i) 
 && \text{simplify constants; } \frac{1}{150} \cdot 150 = 1\\
 &= 0.05 
-&& y_i \sim \text{Bernoulli}(0.05)
+&& \text{each } y_i \text{ is a Bernoulli random variable with mean } \pi = 0.05
 \end{align*}
 $$
 
@@ -95,7 +95,8 @@ $$
 &= \frac{1}{150} \cdot \text{Var}(y_i) 
 && \text{simplify constants; } \frac{1}{150^2} \cdot 150 = \frac{1}{150} \\
 &= \frac{1}{150} \cdot 0.05 \cdot (1 - 0.05) 
-&& y_i \sim \text{Bernoulli}(0.05); \text{Var}(y_i) = \pi(1 - \pi) \text{ is a fact about Bernoulli random variables}\\
+&& \text{each } y_i \text{ is Bernoulli w/ variance } \pi(1 - \pi) = 0.05\cdot (1 - 0.05)\\
+
 &= \frac{0.05 \cdot 0.95}{150} 
 && \text{simplify product}
 \end{align*}
@@ -127,7 +128,10 @@ mean(ml_est)
 sd(ml_est)
 ```
 
-Lastly, we can approximate the shape of the sampling distribution. Since we are summing many (i.e., 150) iid random variables, the central limit theorem suggests that this histogram will be approximately normal.
+Lastly, we can approximate the shape of the sampling distribution. Since we are summing many (i.e., 150) iid random variables (i.e., Bernoulli trials), the central limit theorem[^central-limit-theorem] suggests that this histogram will be approximately normal.
+
+[^central-limit-theorem]: Suppose $y_1, y_2, \dots, y_N$ are iid random variables with finite mean $\mu$ and finite variance $\sigma^2$ Then, as $N \to \infty$, $\sqrt{N}\cdot \left[ \frac{ \operatorname{avg}(y_n) - \mu}{\sigma} \right]$ converges in distribution to the standard normal distribution, where . Said less formally, the distribution of the sample average approaches a normal distribution as the sample size grows large, regardless of the distribution of $y_i$ (but finite mean and variance are required).
+
 
 The figure below shows the sampling distribution.
 
@@ -147,21 +151,21 @@ ggplot(gg_data, aes(x = ml_est)) +
 
 As a second example, let's review the familiar normal model.
 
-Suppose we collect a sample of size $n$ from a normal distribution with unknown mean $\mu$ and unknown variance $\sigma^2$. We estimate the mean using the sample average so that $\hat{\mu} = \bar{y} = \frac{1}{n} \sum_{i=1}^n y_i$.[^01-sampling-distribution-2]
+Suppose we collect a sample of size $N$ from a normal distribution with unknown mean $\mu$ and unknown variance $\sigma^2$. We estimate the mean using the sample average so that $\hat{\mu} = \operatorname{avg}(y) = \frac{1}{n} \sum_{i=1}^N y_i$.[^01-sampling-distribution-2]
 
-[^01-sampling-distribution-2]: This is the ML estimator as well but it's also motivated in other ways.
+[^01-sampling-distribution-2]: This is the ML estimator as well! But it's also motivated in other (sometimes even better!) ways.
 
-As is well known, the expected value of $\hat{\mu}$ is $\mu$.
+As is well-known, the expected value of $\hat{\mu}$ is $\mu$.
 
 $$
 \small
 \begin{align*}
-E(\bar{y}) 
-&= E\left( \frac{1}{n} \sum_{i=1}^n y_i \right)
-&& \text{definition of } \bar{y} \\
-&= \frac{1}{n} \sum_{i=1}^n E(y_i) 
+E \left[ \operatorname{avg}(y) \right] 
+&= E\left( \frac{1}{N} \sum_{i=1}^N y_i \right)
+&& \text{definition of } \operatorname{avg}(y) \\
+&= \frac{1}{N} \sum_{i=1}^N E(y_i) 
 && \text{linearity of expectation} \\
-&= \frac{1}{n} \cdot n \cdot E(y_i) 
+&= \frac{1}{N} \cdot N \cdot E(y_i) 
 && y_i \text{ are iid} \\
 &= E(y_i) = \mu 
 && \text{simplify constants}
@@ -172,32 +176,28 @@ And the variance has a familiar form.
 
 $$
 \begin{align*}
-\text{Var}(\bar{y}) 
-&= \text{Var}\left( \frac{1}{n} \sum_{i=1}^n y_i \right)
-&& \text{definition of } \bar{y} \\
-&= \frac{1}{n^2} \sum_{i=1}^n \text{Var}(y_i)
+\text{Var}[\operatorname{avg}(y)]
+&= \text{Var}\left( \frac{1}{N} \sum_{i=1}^N y_i \right)
+&& \text{definition of } \operatorname{avg}(y) \\
+&= \frac{1}{N^2} \sum_{i=1}^N \text{Var}(y_i)
 && \text{variance of independent sum} \\
-&= \frac{1}{n^2} \cdot n \cdot \sigma^2 
-&& y_i \sim \text{Normal}(\mu, \sigma^2) \text{ and are iid} \\
-&= \frac{\sigma^2}{n} 
+&= \frac{1}{N^2} \cdot N \cdot \sigma^2 
+&& y_i \text{ are normal with variance } \sigma^2 \text{ and are iid} \\
+&= \frac{\sigma^2}{N} 
 && \text{simplify constants}
 \end{align*}
 $$
 
-The SD, then, is a familiar quantity $\frac{\sigma}{\sqrt{n}}$.
+The SD, then, is a familiar quantity $\frac{\sigma}{\sqrt{N}}$.
 
-Lastly, the standardized sample mean follows a $t$ distribution, so that $\frac{\bar{y} - \mu}{s / \sqrt{n}} \sim t_{n - 1}$.
-
-This result follows from (1) sampling from a normal distribution, (2) the independence of $\bar{y}$ and the sample variance under the normal model, and (3) the fact that the numerator is normal and the denominator (involving $s$) introduces a chi-squared component, resulting in a $t$ distribution.
-
-This sampling distribution is the foundation for the one-sample $t$-test.
+Lastly, the standardized sample mean follows a $t$ distribution, so that $\sqrt{N} \cdot \left[ \frac{\operatorname{avg}(y) - \mu}{\operatorname{SD}(y)} \right]$ follows a *t* distribution in $N - 1$ degrees of freedom. This sampling distribution is the foundation for the one-sample $t$-test.
 
 ## Bias
 
 But how do we use the sampling distribution? In two ways.
 
-1.  To evaluate estimators. We think that some sampling distributions are better than others.
-2.  To create hypothesis tests and confidence intervals.
+1.  *To evaluate estimators.* We think that the sampling distributions of some estimators are preferable to the sampling distributions of other estimators.
+2.  *To create hypothesis tests and confidence intervals.* We recognize that estimates are in fact *just* estimates, so our claims should reflect the uncertainty in those estimates.
 
 One way to evaluate estimators is to assess their bias.
 
@@ -209,7 +209,7 @@ One way to evaluate estimators is to assess their bias.
 -   The **bias** of $\hat{\theta}$ is $E(\hat{\theta}) - \theta$.
 :::
 
-We prefer unbiased to biased estimators and estimators with less bias to estimators with more bias.
+We tend to prefer unbiased to biased estimators and estimators with less bias to estimators with more bias.
 
 Importantly, **ML estimators are not necessarily unbiased**. Of the models we see in this course, *most* are biased.
 
@@ -294,8 +294,7 @@ Second, we can use the sampling distribution (or estimates of features of the sa
 
 For many problems, we know that we can create a 90% confidence interval for $\theta$ using $[\hat{\theta} - 1.64 \cdot \hat{\text{SE}}(\hat{\theta}), \hat{\theta} + 1.64 \cdot \hat{\text{SE}}(\hat{\theta})]$, where $\hat{\text{SE}}(\hat{\theta})$ is the *estimate* of the standard error of the sampling distribution.
 
-
-Similarly, we can compute the *p*-value for the test of the one-sided hypothesis that $\theta > 0$ using $\Phi\left( \frac{\hat{\theta}}{\hat{\text{SE}}(\hat{\theta})} \right)$, where $\Phi(\cdot)$ is the standard normal CDF.
+Similarly, we can compute the *p*-value for the test of the one-sided hypothesis that $\theta > 0$ using $1 - \Phi\left( \frac{\hat{\theta}}{\hat{\text{SE}}(\hat{\theta})} \right)$, where $\Phi(\cdot)$ is the standard normal CDF.
 
 ::: {#def-se}
 ## Standard Error (SE)
@@ -320,7 +319,7 @@ $$
 \end{align*}
 $$
 
-The standard error is the square root of the variance, so that $\text{SE}(\hat{\pi}) = \sqrt{ \frac{\pi(1 - \pi)}{n} }$.^[To obtain a commonly-used formula and preview a later result, we can plug-in the estimator $\hat{pi}$ into $\text{SE}(\hat{\pi}) = \sqrt{ \frac{\pi(1 - \pi)}{n} }$ to obtain an *estimate* of the SE, so that $\hat{\text{SE}}(\hat{\pi}) = \sqrt{ \frac{\hat{\pi}(1 - \hat{\pi})}{n} }$.]
+The standard error is the square root of the variance, so that $\text{SE}(\hat{\pi}) = \sqrt{ \frac{\pi(1 - \pi)}{n} }$.^[To obtain a commonly-used formula and preview a later result, we can plug in the estimator $\hat{\pi}$ into $\text{SE}(\hat{\pi}) = \sqrt{ \frac{\pi(1 - \pi)}{n} }$ to obtain an *estimate* of the SE, so that $\hat{\text{SE}}(\hat{\pi}) = \sqrt{ \frac{\hat{\pi}(1 - \hat{\pi})}{n} }$.]
 
 ### Example: Exponential Model
 

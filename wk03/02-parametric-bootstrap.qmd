@@ -1,37 +1,34 @@
+# Parametric Bootstrap
 
-## The Parametric Bootstrap
+The parametric bootstrap is a powerful, general tool to obtain confidence intervals for estimates from parametric models.
 
-The parametric bootstrap is a powerful, general tool to obtain confidence intervals for estimates from parametric models. 
+::: callout-note
+## Parametric bootstrap versus alternatives
 
-**Algorithm:** Parametric Bootstrap
-
-1. **Input:** Observed data $x_1, \dots, x_n$, a parametric model $F(\theta)$, an estimator $\hat{\theta}$, and a statistic of interest $T(x)$
-2. Compute $\hat{\theta}$ from the observed data.
-3. For $b = 1, \dots, B$:
-   1. Generate a bootstrap sample $x_1^{*(b)}, \dots, x_n^{*(b)} \sim F(\hat{\theta})$
-   2. Compute $T^{*(b)} = T(x^{*(b)})$
-4. Return the empirical distribution of $T^{*(1)}, \dots, T^{*(B)}$
-
-
-Importantly, we are going to lean *pretty heavily* on the assumption that we have a good model of the distribution of the data. (The predictive distribution below allows us to assess this.) There's also a ***non**parametric* bootstrap, which is much more popular. We consider that later in the semester.
-
-Suppose we have a sample $y$ from some known distribution $f(y; \theta)$ and use $y$ to estimate the model parameter(s) $\theta$ or some quantity of interest $\tau(\theta)$. Remember, we can use ML to estimate either.
-
-To compute a confidence interval, we can use a *parametric* bootstrap. To do implement the parametric bootstrap, do the following: 
-
-1. Approximate $f(y; \theta)$ with $\hat{f} = f(y; \hat{\theta})$. Simulate a new outcome $y^{\text{bs}}$ from the estimated distribution. 
-1. Re-compute the estimate of interest $\hat{\theta}^{\text{bs}}$ or $\hat{\tau}^{\text{bs}}$ using the bootstrapped outcome variable $y^{\text{bs}}$ rather than the observed outcome $y$.
-1. Repeat 1 and 2 many times (say 2,000) to obtain many bootstrapped estimates. To obtain the 95% confidence interval, take the 2.5th and 97.5th percentiles of the estimates. This is known as the percentile method.
-
-::: {.algorithm #alg-rejection}
-1. Input: ...
-2. Repeat: ...
+The parametric bootstrap is used less often than the *non*parametric bootstrap, because it relies heavily on the assumed parametric model. I focus on the parametric bootstrap here, because it builds excellent intuition for "what we're up to" when we are estimating standard errors.
 :::
 
+**Algorithm:** Parametric Bootstrap Estimator
 
-### Example: Toothpaste Cap Problm
+1.  **Input:** Observed data $x_1, x_2, \dots, x_n$, a parametric model $f(\theta)$, an estimator $\hat{\theta}$, and a quantity of interest $\hat{\tau} = \tau(\hat{\theta})$.[^02-parametric-bootstrap-1]
+2.  Compute $\hat{\theta}$ from the observed data.
+3.  For $b = 1, 2, \dots, B$:[^02-parametric-bootstrap-2]
+    1.  Generate a bootstrap sample $x_1^{*(b)}, x_2^{*(b)}, \dots, x_n^{*(b)} \sim f(\hat{\theta})$. That is, simulate a new data set from the fitted parametric model.[^02-parametric-bootstrap-3]
+    2.  Fit the model to the simulated data set $x_1^{*(b)}, x_2^{*(b)}, \dots, x_n^{*(b)}$ and compute $\hat{\theta}^{*(b)}$.
+    3.  Compute $\hat{\tau}^{*(b)} = \tau \left( \hat{\theta}^{*(b)}\right)$, which might be $\theta^{*(b)}$ itself if no transformation is needed.
+4.  Summarize the empirical distribution of $\hat{\tau}^{*(1)}, \hat{\tau}^{*(2)}, \dots, \hat{\tau}^{*(B)}$ using the SD to estimate the SE or 5th/95th percentiles to obtain a 90% confidence interval.
 
-The code below implements the parametric bootstrap for the toothpaste cap problem. For 2,000 iterations, it draws 150 observations from $Y \sim \text{Bernoulli}(\hat{\pi} = \frac{8}{150})$. For each iteration, it computes the ML estimate of $\pi$ for the bootstrapped data set. Then it computes the percentiles to obtain the confidence interval.
+[^02-parametric-bootstrap-1]: This works for *any* statistic that is a function of $x_1, \dots, x_n$, but we'll mainly use ML estimators and direct transformations of those.
+
+[^02-parametric-bootstrap-2]: We typically use $B = 2,000$ as a good starting point.
+
+[^02-parametric-bootstrap-3]: For example, if we use an exponential model and estimate the rate as $\hat{\lambda}$, then we would simulate each data set from an exponential distribution with parameter $\hat{\lambda}$. The first data set is $x_1^{*(1)}, \dots, x_n^{*(1)}$, the second data set is $x_1^{*(2)}, \dots, x_n^{*(2)}$, and so on. In R, that would be `rexp(N, rate = lambda_hat)`
+
+Importantly, we lean *heavily* on the assumption that we have a good model of the distribution of the data. (The predictive distribution allows us to assess this.) There's also a ***non**parametric* bootstrap, which is much more popular. We consider that later in the semester.
+
+## Example: Toothpaste Cap Problem
+
+The code below implements the parametric bootstrap for the toothpaste cap problem. For 2,000 iterations, it draws 150 observations from a Bernoulli distribution with $\hat{\pi} = \frac{8}{150}$. For each iteration, it computes the ML estimate of $\pi$ for the bootstrapped data set. Then it uses the SD of the bootstrap estimates to estimate the SE and computes the percentiles of the bootstrap estimates to obtain the confidence interval.
 
 ```{r}
 n_bs <- 2000
@@ -40,14 +37,17 @@ for (i in 1:n_bs) {
   bs_y <- rbinom(150, size = 1, prob = 8/150)
   bs_est[i] <- mean(bs_y)
 }
-print(quantile(bs_est, probs = c(0.025, 0.975)), digits = 2)  # 95% ci
+
+print(sd(bs_est), digits = 2)  # se estimate
+print(quantile(bs_est, probs = c(0.05, 0.95)), digits = 2)  # 90% ci
 ```
 
-We leave an evaluation of this confidence interval (i.e., Does it capture $\theta$ 95% of the time?) to later in the semester.
 
-### Example: Beta Distribution
+We leave an evaluation of this confidence interval (i.e., Does it capture $\theta$ 90% of the time?) to later.
 
-Now let's apply the parametric bootrap to a two-parameter model: the beta distribution.
+## Example: Beta Distribution
+
+Now let's apply the parametric bootstrap to a two-parameter model: the beta distribution.
 
 First, let's simulate a (fake) data set to use.
 
@@ -95,7 +95,7 @@ ci <- apply(bs_est, MARGIN = 2, quantile, probs = c(0.025, 0.975))
 print(ci, digits = 3)  # 95% ci
 ```
 
-If instead we cared about the mean of the beta distribution (which is $\frac{\alpha}{\alpha + \beta}$), we can use the parametric bootstrap to obtain a confidence interval for that quantity as well.
+If instead we cared about the mean of the beta distribution (which is $\frac{\alpha}{\alpha + \beta}$), we can use the parametric bootstrap to obtain a confidence interval for that quantity as well. Since we drew the fake data set from a beta distribution with $\alpha = 5$ and $\beta = 2$, the true mean is $\frac{\alpha}{\alpha + \beta} = \frac{5}{7} \approx 0.71$.
 
 ```{r}
 
@@ -110,7 +110,8 @@ for (i in 1:n_bs) {
   bs_beta <- bs_opt$par[2]
   bs_est[i] <- bs_alpha/(bs_alpha + bs_beta)
 }
-print(quantile(bs_est, probs = c(0.025, 0.975)), digits = 2)  # 95% ci
+print(quantile(bs_est, probs = c(0.05, 0.95)), digits = 2)  # 95% ci
+print(sd(bs_est), digits = 2)  # estimate of SE
 
 # true mean 
 print(alpha/(alpha + beta), digits = 2)

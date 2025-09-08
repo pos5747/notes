@@ -374,7 +374,7 @@ sum((x - mean(x))^2)/length(x)
 var(gdp_growth_2022$NY.GDP.MKTP.KD.ZG, na.rm = TRUE)
 ```
 
-## Example: Beta Distribution
+## Example: Beta Distribution {#sec-ml-ex-beta}
 
 With the beta distribution, we add another complication that typically occurs when using ML: **an intractable log-likelihood**.
 
@@ -560,7 +560,7 @@ ml_est <- est_beta(y)
 print(ml_est, digits = 3)
 ```
 
-The beta distribution might be useful for modeling variables that lie between zero and one--proportions are a natural candidate. In baseball, a player's batting average is the proportion of at-bats in which a player gets a hit. If estimate a beta model with batting averages from 2023 for players with at least 100 at-bats, we get $\alpha \approx 37$ and $\beta \approx 115$.
+The beta distribution might be useful for modeling variables that lie between zero and one--proportions are a natural candidate. In baseball, a player's batting average is the proportion of at-bats in which a player gets a hit.^[A **batting average** is how often a baseball player gets a *hit* when they have an official *at-bat*. A *hit* means the batter hits the ball and safely reaches at least first base. An *at-bat* is most plate appearances, but excludes outcomes like walks, hit by a pitch, or sacrifice plays. Formally, $\text{Batting Average} = \dfrac{\text{Number of Hits}}{\text{Number of At-Bats}}$. So a batting average of .300 means the player gets a hit in 30% of their official at-bats.] If we estimate a beta model with batting averages from 2023 for players with at least 100 at-bats, we get $\alpha \approx 37$ and $\beta \approx 115$.
 
 ```{r}
 #| fig-column: margin

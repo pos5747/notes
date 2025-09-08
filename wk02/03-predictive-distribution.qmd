@@ -107,9 +107,9 @@ ggplot(gg_data, aes(x = operations)) +
   facet_wrap(vars(type))
 ```
 
-## Example: Beta Distribution
+## Example: Beta Distribution {#sec-predictive-distribution-ex-beta}
 
-Now let's return to our beta model of batting averages from earlier.
+Now let's return to our beta model of batting averages from @sec-ml-ex-beta.
 
 ```{r include=FALSE}
 # load packages

@@ -1,0 +1,254 @@
+---
+title: "title"
+cache: false
+---
+
+## Beta Example: From $(\alpha, \beta)$ to $\mu$
+
+Suppose a beta model of a continuous variable $y$ that lies strictly between zero and one. We used `optim()` to find estimate the parameters and their variances. 
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+
+
+# log-likelihood function (using dbeta!)
+beta_ll_fn <- function(theta, y) { 
+  alpha <- theta[1] 
+  beta  <- theta[2] 
+  ll <- sum(dbeta(y, shape1 = alpha, shape2 = beta, log = TRUE))
+  return(ll)
+}
+
+# function to fit beta model 
+est_beta <- function(y) {
+  # use optim; compute hessian
+  est <- optim(
+    par     = c(2, 2),  # decent starting values for the problem below
+    fn      = beta_ll_fn,
+    y       = y,
+    control = list(fnscale = -1),  
+    method  = "BFGS",
+    hessian = TRUE            
+  ) 
+  
+  # compute an estimate of covariance matrix (slowly, this first time)
+  info_obs <- -est$hessian  # notice negative sign
+  var_hat  <- solve(info_obs) 
+  
+  # check convergence; print warning if needed
+  if (est$convergence != 0) print("Model did not converge!")
+  
+  # return list of elements
+  res <- list(theta_hat = est$par, 
+              var_hat   = var_hat) 
+  return(res)
+}
+
+# load packages
+library(tidyverse)
+library(Lahman)  # data from Lahman's baseball database
+
+# create data frame with batting average
+bstats <- battingStats() |> 
+  filter(yearID == 2023) |>  # data from 2023
+  filter(AB >= 100) |>  # players with at least 100 at-bats
+  select(player_id = playerID, batting_average = BA) |>
+  arrange(-batting_average) |>
+  na.omit() |>
+  glimpse()
+```
+
+
+```{r}
+# estimate beta model using the batting average data
+fit <- est_beta(bstats$batting_average)
+fit$theta_hat  # parameter estimates
+fit$var_hat  # covariance matrix estimates
+```
+
+But the $\alpha$ and $\beta$ parameters are not easy to interpret. Suppose we want the mean $\mu = \dfrac{\alpha}{\alpha + \beta}$. We can use the invariance property.
+
+```{r}
+# while it's not as descriptive, the formulas for the mean
+#   and variance as a function of alpha and beta are quite 
+#   long, so I use a and b for compactness rather than the
+#   more descriptive a_hat or alpha_hat variants.
+a <- fit$theta_hat[1]  # alpha_hat
+b <- fit$theta_hat[2] # beta_hat
+
+# mu_hat via invariance property
+mu_hat <- a/(a + b)  
+mu_hat
+```
+
+But we also might like to estimate the SE for $\hat\mu$. We can do this with the delta method. Recall that the delta method is $\widehat{\text{var}}[\tau(\hat{\theta})] \approx \nabla \tau(\hat{\theta})^\top \cdot \widehat{\text{var}}(\hat{\theta}) \cdot \nabla \tau(\hat{\theta})$. This has two parts: the covariance matrix $\widehat{\text{var}}(\hat{\theta})$ and gradient $\nabla \tau(\hat{\theta})$.
+
+### The covariance matrix $\widehat{\text{var}}(\hat{\theta})$
+
+In this case, $\widehat{\text{var}}(\hat{\theta}) =\widehat{\text{var}}(\hat{\alpha}, \hat{\beta})$ is computed by our `est_beta()` function numerically, so this part is ready to go
+
+```{r}
+fit$var_hat
+```
+
+### The gradient $\nabla \tau(\hat{\theta})$
+
+The gradient of $\mu = \tau(\alpha, \beta) = \frac{\alpha}{\alpha + \beta}$ is:
+
+$$
+\nabla \tau(\alpha,\beta) =
+\begin{bmatrix}
+\dfrac{\partial \tau}{\partial \alpha}\\[6pt]
+\dfrac{\partial \tau}{\partial \beta}
+\end{bmatrix}
+=
+\begin{bmatrix}
+\dfrac{\beta}{(\alpha+\beta)^2}\\[6pt]
+-\dfrac{\alpha}{(\alpha+\beta)^2}
+\end{bmatrix}
+$$
+
+Plugging in $\hat\alpha$ and $\hat\beta$, we have 
+
+$$
+\nabla \tau(\hat\alpha, \hat\beta) =\begin{bmatrix}\dfrac{\hat\beta}{(\hat\alpha+\hat\beta)^2}\\-\dfrac{\hat\alpha}{(\hat\alpha+\hat\beta)^2}\end{bmatrix} = \begin{bmatrix}\dfrac{114.93}{(37.08+114.93)^2}\\[6pt]-\dfrac{37.08}{(37.08+114.93)^2}\end{bmatrix} = \begin{bmatrix} 0.0050 \\ -0.0016\end{bmatrix}
+$$
+
+### The matrix algebra
+
+#### Using R
+
+This is a simple calculation with R.
+
+```{r}
+# create gradient using a and b from above
+grad <- c(b/(a + b)^2, 
+          -a/(a + b)^2)
+var_hat_mu <- grad %*% fit$var_hat %*% grad
+var_hat_mu
+
+se_hat_mu <- sqrt(var_hat_mu)
+se_hat_mu
+```
+
+*Note:* R treats the two-element numeric vector as a 2x1 matrix or 1x2 matrix as necessary to make the matrix multiplication conformable. This avoids the need to explicitly transpose. We could also make `grad` a 2x1 column matrix and explicity transpose if we wanted.
+
+```{r}
+grad <- matrix(c(b/(a + b)^2, -a/(a + b)^2), 
+               nrow = 2)
+grad
+
+var_hat_mu <- t(grad) %*% fit$var_hat %*% grad
+var_hat_mu
+```
+
+#### "By hand"
+
+To remind us what R is doing with `t(grad) %*% fit$var_hat %*% grad`, here is what the matrix multiplication looks like "by hand."
+
+$$
+\begin{aligned}
+\widehat{\mathrm{Var}}(\widehat{\mu})
+&\approx
+\overbrace{\begin{bmatrix} 0.0050 & -0.0016 \end{bmatrix}}^{\nabla\tau(\hat\alpha,\hat\beta)^{\!\top}}
+\Biggl(
+\underbrace{\begin{bmatrix} 5.96 & 18.41\\[2pt] 18.41 & 57.84 \end{bmatrix}}_{\widehat{\mathrm{Var}}(\hat\alpha,\hat\beta)}
+\underbrace{\begin{bmatrix} 0.0050\\[2pt] -0.0016 \end{bmatrix}}_{\nabla\tau(\hat\alpha,\hat\beta)}
+\Biggr)
+&& \text{plug in values} \\[10pt]
+&=
+\overbrace{\begin{bmatrix} 0.0050 & -0.0016 \end{bmatrix}}^{\nabla\tau^{\!\top}}
+\begin{bmatrix}
+5.96(0.0050) + 18.41(-0.0016)\\[2pt]
+18.41(0.0050) + 57.84(-0.0016)
+\end{bmatrix}
+&& \text{multiply RHS;  (2 x 2) x (2 x 1)} \\[10pt]
+&=
+\overbrace{\begin{bmatrix} 0.0050 & -0.0016 \end{bmatrix}}^{\nabla\tau^{\!\top}}
+\begin{bmatrix}
+0.00037\\[2pt]
+-0.0010
+\end{bmatrix}
+&& \text{simplify} \\[10pt]
+&=
+0.0050\cdot 0.00037 \;+\; (-0.0016)\cdot(-0.0010)
+&& \text{multiply; (1 x 2) x (2 x 1)} \\[6pt]
+&\approx
+0.0000019 \;+\; 0.0000016
+&& \text{simplify} \\[6pt]
+&=
+0.0000026
+&& \text{simplify}
+\end{aligned}
+$$
+
+
+We can compare this to the classical mean and SE estimate. The classical and  beta model estimate and SE are very similar, but not identical.
+
+```{r}
+# classical mean
+mean(bstats$batting_average)
+
+# classical SE
+sd(bstats$batting_average)/sqrt(length(bstats$batting_average))
+```
+
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+library(tinytable)
+options(tinytable_html_mathjax = TRUE)
+
+fmt_mean <- function(x) sprintf("%.5f", x)
+fmt_se   <- function(x) sprintf("%.6f", x)
+
+tbl <- data.frame(
+  Model = c("Classical", "Beta model"),
+  `How mean and SE are estimated` = c(
+    "$\\hat\\mu = \\operatorname{avg}(y)$. $\\widehat{\\text{SE}} = \\frac{\\operatorname{SD}(y)}{\\sqrt{N}}$.",
+    "Estimate $\\hat\\alpha$ and $\\hat\\beta$ with ML. Estimate variance of $\\hat\\alpha$ and $\\hat\\beta$ with information matrix. Estimate $\\hat\\mu$ with invariance property. Estimate SE using delta method."
+  ),
+  Mean = c(fmt_mean(mean(bstats$batting_average)), fmt_mean(mu_hat)),
+  SE   = c(fmt_se(sd(bstats$batting_average)/sqrt(length(bstats$batting_average))),    fmt_se(se_hat_mu)),
+  check.names = FALSE
+)
+
+tt(tbl) 
+
+```
+
+### Numerical gradient
+
+For cases where the gradient of $\tau(\theta)$ is complex, we can compute a numerical gradient. Again, the algorithm finds the gradient by nudging $\alpha$ and $\beta$ and checking the change in $\tau$.
+
+```{r}
+#| message: false
+#| warning: false
+
+library(numDeriv)   # for numerical gradients
+
+# create the function tau
+tau_fn <- function(theta) {  
+  a <- theta[1]
+  b <- theta[2]
+  a / (a + b)
+}
+
+# compute the gradient of tau
+grad <- grad(func = tau_fn, x = fit$theta_hat)
+
+# delta method
+var_hat_mu <- grad %*% fit$var_hat %*% grad  # R transposes grad as needed
+var_hat_mu
+
+# sqrt of variance to find SE
+se_hat_mu <- sqrt(var_hat_mu) 
+se_hat_mu
+```
+
+

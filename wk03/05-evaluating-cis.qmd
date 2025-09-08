@@ -1,0 +1,79 @@
+## Evaluating Confidence Intervals
+
+```{r include=FALSE}
+library(tidyverse)
+```
+
+How do we know if a particular interval estimator works well? 
+
+We evaluate confidence intervals in terms of their **coverage**: a $100(1 - \alpha)\%$ confidence interval should capture the parameter $100(1 - \alpha)\%$ of the time under repeated sampling. That is, if we imagine repeating the study over and over (in the usual frequentist sense), then $100(1 - \alpha)\%$ of the confidence intervals contain the true parameter.
+
+Most of the interval estimators we use have asymptotic guarantees about coverage (i.e., the coverage approaches $100(1 - \alpha)\%$ as the sample size grows large). However, we might want to use simulations to (1) confirm these results, (2) check the coverage for small samples, or (3) check the coverage when assumptions do not hold.
+
+We can use a Monte Carlo simulation to assess the coverage of an interval estimator using the following steps. For a large number of repetitions, do the following:
+
+1. Simulate a data set with a known parameter $\theta$.^[The randomness might come from random sampling from a population where $\theta$ is a feature of the population (e.g., population mean), random assignment to treatment where $\theta$ is the ATE, or from a parametric probability model where $\theta$ is the parameter(s) of the distribution. In this class, we're focused on parametric probability models.]
+1. Compute the confidence interval.
+1. Check whether the confidence interval contains the true value or not. Store this result.
+
+After simulating a large number of studies, compute the percent of repetitions that captured the true parameter.
+
+## A Simple Example
+
+As an example, let's consider the usual 90% confidence interval for the mean: 90% CI = $[\text{avg}(y) - 1.64 \times \hat{\text{SE}}, \text{avg}(y) + 1.64 \times \hat{\text{SE}}]$, where $\hat{\text{SE}} = \frac{\text{SD}(y)}{\sqrt{N}}$. We learned in an earlier class that for iid $y$, this interval should capture the population average in about 90% of repeated trials.
+
+Let's let the unknown distribution be Poisson with $\lambda = 10$. The mean here is $E(Y) = \lambda = 10$. Now let's use a Monte Carlo simulation to evaluate this particular interval. For this study, let's use a small sample size of 15 observations.
+
+```{r, cache = TRUE}
+# number of MC simulations (i.e., repeated trials)
+n_mc_sims <- 10000
+
+# containers for lower and upper bounds of 90% cis
+lwr <- numeric(n_mc_sims)
+upr <- numeric(n_mc_sims)
+
+# mc simulations
+for (i in 1:n_mc_sims) {
+  y <- rpois(15, lambda = 10)
+  se_hat <- sd(y)/sqrt(length(y))
+  lwr[i] <- mean(y) - 1.64*se_hat
+  upr[i] <- mean(y) + 1.64*se_hat
+}
+
+# combine results into a data frame
+mc_sims <- tibble(iteration = 1:n_mc_sims,
+                  lwr, upr) %>%
+  mutate(captured = lwr < 10 & upr > 10)
+
+# compute the proportion of simulations that capture the parameter
+mean(mc_sims$captured)
+```
+
+This simulation demonstrates that this simple interval captures the parameter $\lambda = 10$ in about 90% of repeated samples. This interval is *slightly* too narrow. A $t$-interval tends to work better here due to the small sample size. 
+
+The simulation below shows that this *t*-based interval has better coverage (i.e., closer to 90%).
+
+```{r, cache = TRUE}
+# number of MC simulations (i.e., repeated trials)
+n_mc_sims <- 10000
+
+# contains for lower and upper bounds of 90% cis
+lwr <- numeric(n_mc_sims)
+upr <- numeric(n_mc_sims)
+
+# mc simulations
+for (i in 1:n_mc_sims) {
+  y <- rpois(15, lambda = 10)  # draw from Poisson, just to pick one option of many
+  se_hat <- sd(y)/sqrt(length(y))
+  lwr[i] <- mean(y) - qt(.95, df = length(y) - 1)*se_hat
+  upr[i] <- mean(y) + qt(.95, df = length(y) - 1)*se_hat
+}
+
+# combine results into a data frame
+mc_sims <- tibble(iteration = 1:n_mc_sims,
+                  lwr, upr) %>%
+  mutate(captured = lwr < 10 & upr > 10)
+
+# compute the proportion of simulations that capture the parameter
+mean(mc_sims$captured)
+```

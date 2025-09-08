@@ -7,6 +7,7 @@ freeze: auto
 execute:
   warning: false
   message: false
+  cache: true
 
 
 book:
@@ -16,17 +17,18 @@ book:
   google-analytics: "G-ZV1MJ9E632"
   chapters:
     - index.qmd
-    - part: "Week Two"
+    - part: "Week 2"
       chapters:
       - wk02/01-maximum-likelihood.qmd
       - wk02/02-invariance-property.qmd
       - wk02/03-predictive-distribution.qmd
-    #- part: "Week 3"
-    #  chapters: 
-    #  - wk03/01-sampling-distribution.qmd
-    #  - wk03/02-parametric-bootstrap.qmd
-    #  - wk03/03-fisher-information-matrix.qmd
-    #  - wk03/04-evaluating-cis.qmd
+    - part: "Week 3"
+      chapters: 
+      - wk03/01-sampling-distribution.qmd
+      - wk03/02-parametric-bootstrap.qmd
+      - wk03/03-fisher-information-matrix.qmd
+      - wk03/04-delta-method.qmd
+      - wk03/05-evaluating-cis.qmd
   appendices:
     - appendicies/999-distributions.qmd
     - wk01/frac-exp-log.qmd
