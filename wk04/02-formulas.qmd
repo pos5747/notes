@@ -1,0 +1,433 @@
+# Formulas
+
+```{r include=FALSE}
+library(tidyverse)
+```
+
+## Basics of Formulas
+
+How can we construct a design matrix in R? R has *formulas* to make this easy. See `?formula` for details.
+
+As a working example, suppose a normal linear model
+$$
+\mu_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2}.
+$$
+
+We use formulas to specify the columns of the design matrix in the normal linear model. 
+
+A formula has a LHS (left-hand side) and a RHS separated by a `~`. The LHS indicates the outcome and the RHS indicates the predictors. The RHS determines the columns of the linear predictor. The operator `+` adds predictors. By default, an intercept (a column of 1's) is included. 
+
+For the linear regression above, we would use the formula `y ~ x1 + x2`
+
+### `model.matrix()` examples
+
+Throughout these examples, I use the `penguins` data set from the {palmerpenguins} R package. For more, see `?palmerpenguins::penguins` or the [website for the package](https://allisonhorst.github.io/palmerpenguins/).
+
+```{r}
+# load packages 
+library(modelsummary)
+library(palmerpenguins) # example data
+
+# quick look
+glimpse(penguins)
+
+# penguins has missing values, let's remove those rows for these examples.
+penguins <- na.omit(penguins)
+```
+
+#### Single numeric variable
+
+For a linear regression model with a single predictor, we can use the formula below to construct the design matrix. Notice that the LHS is empty. The LHS is irrelevant for the design matrix, so I leave it empty in these examples.
+
+```{r}
+f <- ~ flipper_length_mm
+```
+
+To construct the design matrix `X`, we can use the `model.matrix()` function. We give `model.matrix()` a formula and a data set. It uses the RHS of the formula to construct the design matrix using the variables in the data set.
+
+```{r}
+X <- model.matrix(f, data = penguins)
+```
+
+We can use the `head()` function to inspect the first six rows of the design matrix.
+
+```{r}
+head(X)
+```
+
+#### Two numeric variables
+
+We can add a second predictor and we get the expected design matrix.
+
+```{r}
+f <- ~ flipper_length_mm + body_mass_g
+X <- model.matrix(f, data = penguins)
+head(X)
+```
+
+#### Removing the intercept
+
+An intercept (or column of ones) is added to the design matrix by default. You can remove the intercetp by adding `-1` or `+ 0` to the formula. 
+
+```{r}
+f <- ~ -1 + flipper_length_mm + body_mass_g
+X <- model.matrix(f, data = penguins)
+head(X)
+```
+
+### `lm()` examples
+
+To see formulas from more familiar perspective, let's also use `lm()` to fit several linear models. We're using the `penguins` data with `bill_length_mm` as the outcome
+
+```{r}
+fit1 <- lm(bill_length_mm ~ flipper_length_mm, data = penguins)
+fit2 <- lm(bill_length_mm ~ body_mass_g, data = penguins)
+fit3 <- lm(bill_length_mm ~ flipper_length_mm + body_mass_g, data = penguins)
+fit4 <- lm(bill_length_mm ~ flipper_length_mm - 1, data = penguins)
+
+modelsummary(list(fit1, fit2, fit3, fit4), gof_map = NA)
+```
+
+## Factors
+
+The examples above show numerical variables. But formulas also handle factors. Factors are automatically expanded into indicator variables in the design matrix. By default, R uses *treatment coding*: one category is the baseline (reference) and the others are coded as 0/1 indicators.^[This is the standard approach in political science, but there are other ways. R also supports other contrast codings, such as `contr.sum` or `contr.helmert`. These can be useful to make regression tables informative about specific hypotheses, but they are not commonly used and won't be familiar to your readers.]
+
+### `model.matrix()` examples
+
+#### A single factor variable
+
+The `penguins` data set contains a factor variable `species`.
+
+```{r}
+levels(penguins$species)
+```
+
+A formula with `species` on the right-hand side makes a design matrix with two an intercept and two indicators. One indicator variable is for Chinstrap penguins; the other is for Gentoo penguins. Adelie penguins are the reference (i.e., left-out) category. 
+
+The coefficients for `speciesChinstrap` and `speciesGentoo` are the changes in $\mu_i$ for Chinstrap and Gentoo penguins relative to Adelie penguins, respectively.
+
+```{r}
+f <- ~ species
+X <- model.matrix(f, data = penguins)
+head(X)
+```
+
+We can change the reference category from Adelie with the `relevel()` function. The below makes Gentoo the reference category.
+
+```{r}
+penguins$species <- relevel(penguins$species, "Gentoo")
+f <- ~ species
+X <- model.matrix(f, data = penguins)
+head(X)
+```
+
+Now the coefficients for `speciesAdelie` and `speciesChinstrap` are the changes in $\mu_i$ for Adelie and Chinstrap penguins relative to Gentoo penguins, respectively.
+
+#### A factor and numeric variable
+
+We can include factors and continuous predictors together. For example, we combine `species` with `flipper_length_mm`.
+
+```{r}
+f <- ~ species + flipper_length_mm
+X <- model.matrix(f, data = penguins)
+head(X)
+```
+
+The resulting design matrix includes columns for the intercept, the dummy variables for `species`, and the continuous predictor. The coefficients on the indicators have the same interpretation variables represent differences between species, but now "holding flipper length constant."
+
+### `lm()` examples
+
+As familiar examples, here are a few `lm()` fits with factors `species` and `island` as predictors of `bill_length_mm`.
+
+```{r}
+# one factor
+fit1 <- lm(bill_length_mm ~ species, data = penguins)
+
+# two factors
+fit2 <- lm(bill_length_mm ~ species + island, data = penguins)
+
+# one factor, one numeric
+fit3 <- lm(bill_length_mm ~ species + flipper_length_mm, data = penguins)
+
+# one factor, two numeric
+fit4 <- lm(bill_length_mm ~ species + flipper_length_mm + body_mass_g, data = penguins)
+
+modelsummary(list(fit1, fit2, fit3, fit4), gof_map = NA)
+```
+## Polynomials
+
+Sometimes the we suspect the effect of a variable on the outcome is not linear. To allow nonlinear effects, we can include polynomial terms of the predictor in the design matrix. For example, we can use the quadratic model
+
+$$
+\mu_i = \beta_0 + \beta_1 x_i + \beta_2 x_i^2.
+$$
+
+Here the effect of $x_i$ depends on its value---$\frac{d \mu_i}{d x_i} = \beta_1 + 2\beta_2 x_i$. We can build the design matrix easily with formulas and the `poly()` function.
+
+### Orthogonal and raw polynomials
+
+The function `poly()` creates polynomial terms. By default, it produces *orthogonal polynomials*, which are linear combinations of $x, x^2, x^3, ...$, that are uncorrelated.[^poly-footnote] If we set `raw = TRUE`, `poly()` returns the raw powers of $x$ (i.e, $x = 3$ becomes $x^2 = 9$). The raw powers are easier to interpret directly when they appear in regression tables but can sometimes cause problems for computation.
+
+**Recommendation:** I recommend using `raw = TRUE` if you are reporting results in a regression table, unless these cause numerical problems. However, it usually doesn't matter. First, we *usually* process our results in a way that means our interpretation is the same with `raw = FALSE` and `raw = TRUE`. Second, numerical routines are really good, so `raw = FALSE` doesn't usually lead to problems.
+
+[^poly-footnote]: These uncorrelated variables are created using the Gram–Schmidt process. Orthogonal polynomials are helpful because they reduce multicollinearity. Less multicollinearly makes numerical optimization routines (e.g., Newton–Raphson) more robust and MCMC samplers mix more efficiently. Raw powers can lead to high multicollinearity and cause problems for our computational procedures. However, these transformed variables do not have the same interpretation.  
+
+### `model.matrix()` examples
+
+Let's look at orthogonal and raw polynomials using `flipper_length_mm`.
+
+```{r}
+# orthogonal
+f <- ~ poly(flipper_length_mm, 2)
+X <- model.matrix(f, data = penguins)
+head(X)
+
+# raw
+f <- ~ poly(flipper_length_mm, 2, raw = TRUE)
+X <- model.matrix(f, data = penguins)
+head(X)
+```
+
+With orthogonal polynomials, the columns are not $x$ and $x^2$ but to uncorrelated combinations of them. With raw polynomials, the columns are $x$ and $x^2$ exactly. 
+
+Here's an example of a 4th-order polynomial.
+
+```{r}
+# raw
+f <- ~ poly(flipper_length_mm, 4, raw = TRUE)
+X <- model.matrix(f, data = penguins)
+head(X)
+```
+
+### `lm()` examples
+
+As familiar examples, here are a few models with factors `species` and `island` as predictors of `bill_length_mm`.
+
+As familiar examples, here are a few `lm()` fits with both orthogonal and raw polynomials.
+
+```{r}
+fit1 <- lm(bill_length_mm ~ poly(flipper_length_mm, 2), data = penguins)
+fit2 <- lm(bill_length_mm ~ poly(flipper_length_mm, 3), data = penguins)
+fit3 <- lm(bill_length_mm ~ poly(flipper_length_mm, 2, raw = TRUE), data = penguins)
+fit4 <- lm(bill_length_mm ~ poly(flipper_length_mm, 3, raw = TRUE), data = penguins)
+
+modelsummary(list(fit1, fit2, fit3, fit4), gof_map = NA)
+```
+
+Note that while the raw and orthogonal polynomial terms have different coefficients, they produce the exact same estimates of $\mu$. And they produce the exact same estimates of $d \mu / d x_i$, though we have to transform the estimates to get $x_i$ back to its original scale (R can do this for us).
+
+## Interactions
+
+We can also use formulas to create interactions [@Brambor2006]. In scalar form, we typically use the specification
+$$
+\mu_i =\; \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \beta_3 x_{i1}x_{i2}
+$$
+to model interactions so that the effect of $x_{i1}$ depends on $x_{i2}$ (and vice versa).  
+
+R provides three operators for interactions: 
+
+- `:` includes only the product of two variables.  
+- `*` expands to the main effects and their interaction.  
+- `^` expands to all interactions up to a given order.  
+
+### `model.matrix()` examples
+
+#### Two numeric variables
+
+First, consider two numeric predictors.
+
+```{r}
+f <- ~ flipper_length_mm * body_mass_g
+X <- model.matrix(f, data = penguins)
+head(X)
+```
+
+This creates columns for `flipper_length_mm`, `body_mass_g`, and their product. The coefficient on the product term shows how the slope of one variable depends on the other.  
+
+We wouldn't (usually) want to do this, but we can also include only the product, leaving out main effects.
+
+```{r}
+f <- ~ flipper_length_mm:body_mass_g
+X <- model.matrix(f, data = penguins)
+head(X)
+```
+
+Or we could include only one of the main effects.
+
+```{r}
+f <- ~ flipper_length_mm + flipper_length_mm:body_mass_g
+X <- model.matrix(f, data = penguins)
+head(X)
+```
+
+#### Numeric and factor variable
+
+We can also interact factor and numeric variables. For example, we can interact `flipper_length_mm` with `species`.
+
+```{r}
+levels(penguins$species)
+
+f <- ~ flipper_length_mm * species
+X <- model.matrix(f, data = penguins)
+head(X)
+```
+
+Here the design matrix allows separate slopes for each species. The dummy variables for `species` adjust the intercepts, and the product terms adjust the slopes.  
+
+#### Two factor variables
+
+Finally, we can interact two factors, such as `species` and `island`.
+
+```{r}
+levels(penguins$species)
+levels(penguins$island)
+
+f <- ~ species * island
+X <- model.matrix(f, data = penguins)
+head(X)
+```
+
+This creates dummy variables for both main effects and for combinations of levels across the two factors.  
+
+Remember: When the models get complicated, you can take a first derivative to understand the meaning of the coefficients. For example, the effect of `speciesChinstrap` is $\beta_2 + \beta_6 \texttt{islandDream} + \beta_8 \texttt{islandTorgerson}$. This means that the effect is $\beta_2$ for penguins on Biscoe (the reference island), $\beta_2 + \beta_6$ for penguins on Dream, and $\beta_2 + \beta_8$ for penguins on Torgerson.
+
+### `lm()` examples
+
+As familiar examples, here are a few `lm()` fits with interactions predicting `bill_length_mm`.
+
+```{r}
+# numeric × numeric
+fit1 <- lm(bill_length_mm ~ flipper_length_mm * body_mass_g, data = penguins)
+
+# numeric × factor
+fit2 <- lm(bill_length_mm ~ flipper_length_mm * species, data = penguins)
+
+# factor × factor
+fit3 <- lm(bill_length_mm ~ species * island, data = penguins)
+
+# richer example
+fit4 <- lm(bill_length_mm ~ (flipper_length_mm + body_mass_g + bill_depth_mm)^2, data = penguins)
+
+modelsummary(list(fit1, fit2, fit3, fit4), gof_map = NA)
+```
+
+## Transformations
+
+Transformations change how predictors enter the design matrix. In general, we can write
+$$
+\mu_i = \beta_0 + \beta_1 g(x_i),
+$$
+where $g(\cdot)$ is a transformation such as $\log$, $\sqrt{\cdot}$, or squaring. Transformations can linearize nonlinear relationships, stabilize variance, or change interpretation.
+
+### Transformations that don't conflict with formula operators
+
+Some functions can be applied directly in a formula. For example, we can use the log or square-root functions.
+
+The log is especially common. For the model
+$$
+\mu_i = \beta_0 + \beta_1 \log(x_i),
+$$
+the marginal effect is $\tfrac{d\mu_i}{dx_i} = \tfrac{\beta_1}{x_i}$, which decreases in magnitude as $x_i$ grows.
+
+```{r}
+f <- ~ log(flipper_length_mm)
+X <- model.matrix(f, data = penguins)
+head(X)
+```
+
+The square root can also be used directly. For the model
+$$
+\mu_i = \beta_0 + \beta_1 \sqrt{x_i},
+$$
+the marginal effect is $\tfrac{d\mu_i}{dx_i} = \tfrac{\beta_1}{2\sqrt{x_i}}$.
+
+```{r}
+f <- ~ sqrt(flipper_length_mm)
+X <- model.matrix(f, data = penguins)
+head(X)
+```
+
+### Transformations that require `I()`
+
+Importantly, though, some symbols in formulas have special meaning. In formulas, `+` adds predictors, `-` removes predictors, `^` expands interactions up to a certain order, and `:` forms interactions. 
+
+If we want arithmetic version instead of the formula-operator version, we must wrap the expression in `I()`.
+
+For example, to include a quadratic term, we write
+
+```{r}
+f <- ~ I(flipper_length_mm^2)
+X <- model.matrix(f, data = penguins)
+head(X)
+
+f <- ~ flipper_length_mm + I(flipper_length_mm^2)
+X <- model.matrix(f, data = penguins)
+head(X)
+```
+
+::: callout-warning
+
+If not wrapped in `I()`, then `flipper_length_mm^2` means "all second-order interactions of these variables and their main effects." In this case, it's the single variable `flipper_length_mm`. **This is a pretty confusing result!**
+
+```{r}
+f <- ~ flipper_length_mm^2
+X <- model.matrix(f, data = penguins)
+head(X)
+```
+:::
+
+The `I()` function can also force R to treat sums and differences literally. For example, the formula below creates one coefficient for the sum of flipper length and body mass.
+
+```{r}
+f <- ~ I(flipper_length_mm + body_mass_g)
+X <- model.matrix(f, data = penguins)
+head(X)
+```
+
+
+We can include multiple transformations at once.
+
+```{r}
+f <- ~ log(flipper_length_mm) + I(flipper_length_mm^2) + sqrt(body_mass_g)
+X <- model.matrix(f, data = penguins)
+head(X)
+```
+
+### `lm()` examples
+
+As familiar examples, here are a few `lm()` fits with transformations of predictors.
+
+```{r}
+fit1 <- lm(bill_length_mm ~ log(flipper_length_mm), data = penguins)
+fit2 <- lm(bill_length_mm ~ I(flipper_length_mm^2), data = penguins)
+fit3 <- lm(bill_length_mm ~ sqrt(flipper_length_mm), data = penguins)
+fit4 <- lm(bill_length_mm ~ log(flipper_length_mm) + I(flipper_length_mm^2) + sqrt(body_mass_g), data = penguins)
+
+modelsummary(list(fit1, fit2, fit3, fit4), gof_map = NA)
+```
+
+## Updating Formulas
+
+Sometimes we want to adjust an existing formula instead of rewriting it from scratch. The function `update()` makes this easy. It is especially useful when experimenting *changes* to a baseline specification.
+
+For example, suppose we start with a model of `bill_length_mm` on `flipper_length_mm`.
+
+```{r}
+f <- bill_length_mm ~ flipper_length_mm
+fit1 <- lm(f, data = penguins)
+```
+
+We can use `update()` to add or remove predictors. The special symbol `.` means "keep everything else."
+
+```{r}
+# add body_mass_g
+fit2 <- update(fit1, . ~ . + body_mass_g)
+
+# remove flipper_length_mm
+fit3 <- update(fit1, . ~ . - flipper_length_mm)
+
+modelsummary(list(fit1, fit2, fit3), gof_map = NA)
+```
+
+
+

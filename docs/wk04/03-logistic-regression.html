@@ -1,0 +1,1430 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.42">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>11&nbsp; Logistic Regression – Modern Probability Modeling</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../wk04/04-big-four.html" rel="next">
+<link href="../wk04/02-formulas.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-2db5a64a0f9238d29502e24e892d8c52.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-ZV1MJ9E632"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-ZV1MJ9E632', { 'anonymize_ip': true});
+</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../_styles.css">
+</head>
+
+<body class="nav-sidebar floating slimcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../wk04/01-design-matrix.html">Week 4</a></li><li class="breadcrumb-item"><a href="../wk04/03-logistic-regression.html"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Logistic Regression</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Modern Probability Modeling</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 2</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk02/01-maximum-likelihood.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Maximum Likelihood</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk02/02-invariance-property.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">The Invariance Property</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk02/03-predictive-distribution.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Predictive Distribution</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 3</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk03/01-sampling-distribution.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Sampling Distribution</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk03/02-parametric-bootstrap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Parametric Bootstrap</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk03/03-fisher-information-matrix.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Fisher Information Matrix</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk03/04-delta-method.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Delta Method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk03/05-evaluating-cis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Evaluating Confidence Intervals</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 4</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk04/01-design-matrix.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Design Matrix</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk04/02-formulas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Formulas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk04/03-logistic-regression.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Logistic Regression</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk04/04-big-four.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Big Four Models</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../appendicies/999-distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Common Distributions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk01/frac-exp-log.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Fractions, Exponents, and Logarithms</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk01/calculus-1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Derivatives</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk01/calculus-2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">D</span>&nbsp; <span class="chapter-title">Integration</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk01/matrices.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">E</span>&nbsp; <span class="chapter-title">Matrices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk01/probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">F</span>&nbsp; <span class="chapter-title">Probability Theory</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk04/05-glm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">G</span>&nbsp; <span class="chapter-title">GLMs</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#the-linear-probability-model" id="toc-the-linear-probability-model" class="nav-link active" data-scroll-target="#the-linear-probability-model"><span class="header-section-number">11.0.1</span> The Linear Probability Model</a></li>
+  <li><a href="#turnout-data-set" id="toc-turnout-data-set" class="nav-link" data-scroll-target="#turnout-data-set"><span class="header-section-number">11.1</span> <code>turnout</code> data set</a>
+  <ul class="collapse">
+  <li><a href="#the-logit-model" id="toc-the-logit-model" class="nav-link" data-scroll-target="#the-logit-model"><span class="header-section-number">11.1.1</span> The Logit Model</a></li>
+  <li><a href="#fitting-with-optim" id="toc-fitting-with-optim" class="nav-link" data-scroll-target="#fitting-with-optim"><span class="header-section-number">11.1.2</span> Fitting with `optim()</a></li>
+  </ul></li>
+  <li><a href="#interpretation" id="toc-interpretation" class="nav-link" data-scroll-target="#interpretation"><span class="header-section-number">11.2</span> Interpretation</a>
+  <ul class="collapse">
+  <li><a href="#effects-are-not-constant" id="toc-effects-are-not-constant" class="nav-link" data-scroll-target="#effects-are-not-constant"><span class="header-section-number">11.2.1</span> Effects are not constant</a></li>
+  <li><a href="#two-quantities-of-interest" id="toc-two-quantities-of-interest" class="nav-link" data-scroll-target="#two-quantities-of-interest"><span class="header-section-number">11.2.2</span> Two Quantities of Interest</a></li>
+  <li><a href="#fitting-with-glm" id="toc-fitting-with-glm" class="nav-link" data-scroll-target="#fitting-with-glm"><span class="header-section-number">11.2.3</span> Fitting with <code>glm()</code></a></li>
+  </ul></li>
+  <li><a href="#the-scobit-data" id="toc-the-scobit-data" class="nav-link" data-scroll-target="#the-scobit-data"><span class="header-section-number">11.3</span> The Scobit Data</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../wk04/01-design-matrix.html">Week 4</a></li><li class="breadcrumb-item"><a href="../wk04/03-logistic-regression.html"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Logistic Regression</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Logistic Regression</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>In the case of the normal model, we used <span class="math inline">\(y_i \sim N(\mu_i, \sigma^2)\)</span>, where <span class="math inline">\(\mu_i = X_i\beta\)</span>. The normal model does a great job with roughly continuous outcomes like ENEP.</p>
+<p>But sometimes we care about <strong>binary outcomes</strong>.</p>
+<ul>
+<li>Binary outcomes are categorical outcome variables with exactly two categories, such as whether or not someone voted, whether two countries are at war, and so on.</li>
+<li>In mathematical theory, it’s helpful to code the binary variables as <span class="math inline">\(y_i \in \{0, 1\}\)</span>, with one representing “an event” and zero representing “a non-event.” In R, it’s probably better to have proper factors and labels, though the 0/1 coding is common and works well.</li>
+<li>In generic language, we’ll say that <span class="math inline">\(y_i = 1\)</span> means that “an event has occurred” and <span class="math inline">\(y_i = 0\)</span> means that “an event has not occurred.”</li>
+<li>This allows us to talk about the “probability of an event” (e.g., the probability of war, etc)</li>
+</ul>
+<section id="the-linear-probability-model" class="level3 page-columns page-full" data-number="11.0.1">
+<h3 data-number="11.0.1" class="anchored" data-anchor-id="the-linear-probability-model"><span class="header-section-number">11.0.1</span> The Linear Probability Model</h3>
+<p>The normal model cannot describe a binary outcome well, becasue it doesn’t make much conceptual sense to model 0s and 1s as following a normal distribution. That said, we can use the linear model (i.e., OLS) with binary outcome variables.</p>
+<ul>
+<li>Recall that we the linear model is represented by the equation <span class="math inline">\(E(y_i) = X_i\beta\)</span>.</li>
+<li>It is important to note that a probability is just a particular kind of expected value—a probability is an expected value of a binary variable.</li>
+<li>Since <span class="math inline">\(y_i\)</span> is binary, the <span class="math inline">\(E(y_i) = \Pr(y_i = 1) = \Pr(y_i)\)</span>, giving us <span class="math inline">\(\Pr(y_i) = X_i\beta\)</span>.</li>
+</ul>
+<p>The LPM has two advantages:</p>
+<ol type="1">
+<li>It’s is <em>very</em> easy to estimate (i.e., OLS; <span class="math inline">\(\hat{\beta} = (X'X)^{-1}X'y\)</span>).</li>
+<li>It is easy to interpret (i.e., a one unit change in <span class="math inline">\(x_j\)</span> leads to a <span class="math inline">\(\hat{\beta_j}\)</span> unit increase in <span class="math inline">\(\Pr(y)\)</span>).</li>
+</ol>
+<p>The LPM has several disadvantages:</p>
+<ol type="1">
+<li><strong>Unbounded Predictions</strong> Because the potential values for the explanatory variables are unbounded, you can obtain predicted probabilities above one and below zero. Of course, these predictions make no sense.</li>
+<li><strong>Conditional Heteroskedasticity</strong> The normal-linear model assumes a constant variance <span class="math inline">\(\sigma^2\)</span>. However, it is impossible to have homoskedastic residuals of a binary outcome if the probability of an event varies. Specifically, if <span class="math inline">\(y_i\)</span> is binary, then <span class="math inline">\(\text{Var}(y_i) = \Pr(y_i)[1 - \Pr(y_i)]\)</span>, which, for the LPM, equals <span class="math inline">\(X_i\beta(1 - X_i\beta)\)</span>. (Non-zero coefficients imply heteroskedasticity.)</li>
+<li><strong>Non-Normal Errors</strong> Normal errors implies that the residuals can take on any value along the real line, with values closer to zero being more likely and errors outside three standard deviations being quite unlikely. However, if <span class="math inline">\(y_i\)</span> is binary, then the residual can take on only two values: <span class="math inline">\(-Pr(y_i)\)</span> or <span class="math inline">\(1 - Pr(y_i)\)</span>.</li>
+<li><strong>Functional Form</strong> Theoretically, you’d probably expect explanatory variables to have smaller effects as <span class="math inline">\(Pr(y_i)\)</span> approaches zero or one (called “compression,” see <span class="citation" data-cites="Berry2010">Berry, DeMeritt, and Esarey (<a href="#ref-Berry2010" role="doc-biblioref">2010</a>)</span> and <span class="citation" data-cites="Rainey2015">Rainey (<a href="#ref-Rainey2015" role="doc-biblioref">2015</a>)</span>). The LPM assumes that the effects are constant.</li>
+</ol>
+<div class="no-row-height column-margin column-container"><div id="ref-Rainey2015" class="csl-entry" role="listitem">
+Rainey, Carlisle. 2015. <span>“Compression and Conditional Effects: A Product Term Is Essential When Using Logistic Regression to Test for Interaction.”</span> <em>Political Science Research and Methods</em> 4 (3): 621–39. <a href="https://doi.org/10.1017/psrm.2015.59">https://doi.org/10.1017/psrm.2015.59</a>.
+</div></div></section>
+<section id="turnout-data-set" class="level2 page-columns page-full" data-number="11.1">
+<h2 data-number="11.1" class="anchored" data-anchor-id="turnout-data-set"><span class="header-section-number">11.1</span> <code>turnout</code> data set</h2>
+<p>As an intial simple example, let’s use the <code>turnout</code> data set from the old {Zelig} package. {Zelig} has been replaced with {clarify}, but thankful jrnold saved Zelig’s example data in the package <a href="https://github.com/jrnold/ZeligData">{ZeligData}</a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install jrnold's package from github</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"jrnold/ZeligData"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># load only the turnout data frame</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>turnout <span class="ot">&lt;-</span> ZeligData<span class="sc">::</span>turnout  <span class="co"># see ?ZeligData::turnout for details</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(turnout)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 2,000
+Columns: 5
+$ race    &lt;fct&gt; white, white, white, white, white, white, white, white, white,…
+$ age     &lt;int&gt; 60, 51, 24, 38, 25, 67, 40, 56, 32, 75, 46, 52, 22, 60, 24, 30…
+$ educate &lt;dbl&gt; 14, 10, 12, 8, 12, 12, 12, 10, 12, 16, 15, 12, 12, 12, 14, 10,…
+$ income  &lt;dbl&gt; 3.3458, 1.8561, 0.6304, 3.4183, 2.7852, 2.3866, 4.2857, 9.3205…
+$ vote    &lt;int&gt; 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1,…</code></pre>
+</div>
+</div>
+<p>We can fit use use least squares to fit a linear probability model to these data, treating the binary 0/1 <code>vote</code> variable as numeric.</p>
+<p>Because we now have a response <code>y</code> and a design matrix <code>X</code> we have to be a little careful that the handling of <code>y</code> and <code>X</code> are consistent (e.g., dropping rows with missing data). Using <code>model.frame()</code> <em>before</em> using <code>model.matrix()</code> is the proper way to do this. The canonical pipeline is to feed the formula and the data frame through <code>model.frame()</code> → <code>model.matrix()</code> → <code>model.response()</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit linear probability model</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> vote <span class="sc">~</span> age <span class="sc">+</span> educate <span class="sc">+</span> income <span class="sc">+</span> race</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># make X and y</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>mf <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(f, <span class="at">data =</span> turnout)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(f, <span class="at">data =</span> mf)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">model.response</span>(mf)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># ols, (X'X)^{-1}X'y</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>beta_hat <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">t</span>(X)<span class="sc">%*%</span>X)<span class="sc">%*%</span><span class="fu">t</span>(X)<span class="sc">%*%</span>y</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>beta_hat</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                   [,1]
+(Intercept) 0.053049343
+age         0.004399049
+educate     0.028949444
+income      0.022116248
+racewhite   0.068393114</code></pre>
+</div>
+</div>
+
+<div class="no-row-height column-margin column-container"><div class="margin-aside">
+<p>Or we can use <code>lm()</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(f, <span class="at">data =</span> turnout)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>arm<span class="sc">::</span><span class="fu">display</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>lm(formula = f, data = turnout)
+            coef.est coef.se
+(Intercept) 0.05     0.05   
+age         0.00     0.00   
+educate     0.03     0.00   
+income      0.02     0.00   
+racewhite   0.07     0.03   
+---
+n = 2000, k = 5
+residual sd = 0.41, R-Squared = 0.11</code></pre>
+</div>
+</div>
+</div></div><p>We have modeled <span class="math inline">\(\pi = X\beta\)</span>, so we can compute <span class="math inline">\(\hat{\pi} = X\hat{\beta}\)</span>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># mu-hat</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>pi_hat <span class="ot">&lt;-</span> X<span class="sc">%*%</span>beta_hat</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This gives us some “unusual” probabilities.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(pi_hat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       V1        
+ Min.   :0.2594  
+ 1st Qu.:0.6521  
+ Median :0.7378  
+ Mean   :0.7460  
+ 3rd Qu.:0.8318  
+ Max.   :1.2297  </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x =</span> pi_hat))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03-logistic-regression_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="the-logit-model" class="level3 page-columns page-full" data-number="11.1.1">
+<h3 data-number="11.1.1" class="anchored" data-anchor-id="the-logit-model"><span class="header-section-number">11.1.1</span> The Logit Model</h3>
+<p>As an initial effort to handle the “non-normal” distribution of the data, we might then use the Bernoulli model <span class="math inline">\(y_i \sim \text{Bernoulli}(\pi_i)\)</span>, where <span class="math inline">\(\pi_i = X_i\beta\)</span>.</p>
+<p>However, <span class="math inline">\(\pi_i = X_i\beta\)</span> has a <em>big</em> problem: <span class="math inline">\(X_i\beta\)</span> might be less than zero or greater than one. This renders the approach unworkable.</p>
+<p>To suitably link the bounded parameter <span class="math inline">\(\pi_i\)</span> and with the unbounded linear predictor <span class="math inline">\(X_i\beta\)</span>, we use the “inverse link function.” The inverse link function wraps around the linear predictor and forces its values into the desired domain.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;Many of the “disadvantages” of the LPM above follow from the fact that the linear predictor <span class="math inline">\(\mu = X\beta\)</span> is unbounded. For the normal model, the inverse link function is <strong>not necessary</strong> because the parameter of interest <span class="math inline">\(\mu\)</span> is unbounded and maps to the entire real line. But for other models, the key parameter has a restricted domain. In the case of the Bernoulli distribution, <span class="math inline">\(\pi_i \in [0, 1] \subset \mathbb{R}\)</span>.</p></div><div id="fn2"><p><sup>2</sup>&nbsp;This is not the only choice. Probit models, for example, use the standard normal cdf for the inverse link function.</p></div><div id="fn3"><p><sup>3</sup>&nbsp;It’s also the cdf of the standard logistic distribution.</p></div><div id="fn4"><p><sup>4</sup>&nbsp;We could equivalently talk about “link functions” rather than “<em>inverse</em> link functions.” The link function would expand the bounded parameter to the entire real line; the <em>inverse</em> link function compresses the unbounded <span class="math inline">\(X_i \beta\)</span> into the parameter’s bounds.</p></div></div><p>For the Bernoulli distribution, we might use the inverse link function <span class="math inline">\(g^{-1}(x) = \frac{e^x}{1 + e^x}\)</span>.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> This is called the “inverse logit” and it has an “S”-shape.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> It’s job is to map <span class="math inline">\(X\beta\)</span> into <span class="math inline">\([0, 1]\)</span>.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
+<p>We can plot the inverse logit to see how it works.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>inv_logit <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  (<span class="fu">exp</span>(x))<span class="sc">/</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(x))</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="sc">-</span><span class="dv">10</span>, <span class="dv">10</span>) <span class="sc">+</span> </span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> inv_logit) <span class="sc">+</span> </span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"← unbounded linear predictor →"</span>,</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"probability bounded between 0 and 1"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03-logistic-regression_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="384"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Hint: The inverse-logit function is the cdf of the standard logistic distribution, so you can just use <code>plogis()</code> in R, rather than hard-coding the <code>inv_logit()</code> function I create above.</p>
+<p>We can write the model this way.</p>
+<p><span class="math display">\[
+y_i \sim \text{Bernoulli}(\pi_i)\text{, where } \pi_i = \text{logit}^{-1}(X_i\beta).
+\]</span></p>
+<p>This is logistic regression or the logit model. We can fit this model using maximum likelihood.</p>
+</section>
+<section id="fitting-with-optim" class="level3 page-columns page-full" data-number="11.1.2">
+<h3 data-number="11.1.2" class="anchored" data-anchor-id="fitting-with-optim"><span class="header-section-number">11.1.2</span> Fitting with `optim()</h3>
+<p>To develop the log-likelihood of the logit model, we start with the Bernoulli likelihood from before.</p>
+<p><span class="math display">\[
+f(y; \beta) = L(\beta) = \prod_{i = 1}^{N}\pi_i^{y_i} (1 - \pi_i)^{(1 - y_i)}\text{, where } \pi_i = \text{logit}^{-1}(X_i\beta)
+\]</span> Taking the log, we have</p>
+<p><span class="math display">\[
+\log L(\beta) = \sum_{i = 1}^{N} y_i \log \pi_i +  \sum_{i = 1}^{N}(1 - y_i) \log(1 - \pi_i)\text{, where } \pi_i = \text{logit}^{-1}(X_i\beta)
+\]</span></p>
+<p>We can program this into R for use in <code>optim()</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>logit_ll <span class="ot">&lt;-</span> <span class="cf">function</span>(beta, y, X) {</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  linpred <span class="ot">&lt;-</span> X<span class="sc">%*%</span>beta  </span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">&lt;-</span> <span class="fu">plogis</span>(linpred) <span class="co"># pi is special in R, so I use p</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  ll <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">dbinom</span>(y, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> p, <span class="at">log =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(ll)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The tricky part about using <code>optim()</code> here is not the log-likelihood function, but setting up <code>X</code> and <code>y</code>. The code below creates the outcome vector <span class="math inline">\(y\)</span> and the matrix <span class="math inline">\(X\)</span> of explanatory variables (with a leading columns of 1s).</p>
+<p>We already made <code>X</code> and <code>y</code> above, so we can use <code>optim()</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>par_start <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">ncol</span>(X))</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>opt <span class="ot">&lt;-</span> <span class="fu">optim</span>(par_start, </span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">fn =</span> logit_ll, </span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">y =</span> y, </span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">X =</span> X, <span class="co"># ← covariates! 🎉</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">method =</span> <span class="st">"BFGS"</span>,</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">control =</span> <span class="fu">list</span>(<span class="at">fnscale =</span> <span class="sc">-</span><span class="dv">1</span>))</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>opt<span class="sc">$</span>par</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -3.03729123  0.02838767  0.17575513  0.17712903  0.25058596</code></pre>
+</div>
+</div>
+
+<div class="no-row-height column-margin column-container"><div class="margin-aside">
+<p>Be skeptical of your code! Here’s the proper way to fit a logit model using <code>glm()</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(f, <span class="at">family =</span> binomial, <span class="at">data =</span> turnout)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>arm<span class="sc">::</span><span class="fu">display</span>(fit, <span class="at">digits =</span> <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>glm(formula = f, family = binomial, data = turnout)
+            coef.est coef.se
+(Intercept) -3.0343   0.3260
+age          0.0284   0.0035
+educate      0.1756   0.0203
+income       0.1771   0.0272
+racewhite    0.2508   0.1465
+---
+  n = 2000, k = 5
+  residual deviance = 2024.0, null deviance = 2266.7 (difference = 242.8)</code></pre>
+</div>
+</div>
+</div></div><p>We can write a nice function that takes a formula and a data frame.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># make function that fits beta model</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>est_logit <span class="ot">&lt;-</span> <span class="cf">function</span>(f, data) {</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># make X and y</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  mf <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(f, <span class="at">data =</span> data)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(f, <span class="at">data =</span> mf)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> <span class="fu">model.response</span>(mf)</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># create starting values</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>  par_start <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">ncol</span>(X))</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># run optim()</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>  est <span class="ot">&lt;-</span> <span class="fu">optim</span>(par_start, </span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>               <span class="at">fn =</span> logit_ll, </span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>               <span class="at">y =</span> y,</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>               <span class="at">X =</span> X,</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>               <span class="at">hessian =</span> <span class="cn">TRUE</span>, <span class="co"># for SEs!</span></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>               <span class="at">control =</span> <span class="fu">list</span>(<span class="at">fnscale =</span> <span class="sc">-</span><span class="dv">1</span>),</span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>               <span class="at">method =</span> <span class="st">"BFGS"</span>) </span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>  <span class="co"># check convergence; print warning if not</span></span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (est<span class="sc">$</span>convergence <span class="sc">!=</span> <span class="dv">0</span>) <span class="fu">print</span>(<span class="st">"Model did not converge!"</span>)</span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>  <span class="co"># create list of objects to return</span></span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>  res <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">beta_hat =</span> est<span class="sc">$</span>par,</span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>              <span class="at">var_hat =</span> <span class="fu">solve</span>(<span class="sc">-</span>est<span class="sc">$</span>hessian))</span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a>  <span class="co"># return the list</span></span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(res)</span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a><span class="co"># fit logit model</span></span>
+<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> vote <span class="sc">~</span> age <span class="sc">+</span> educate <span class="sc">+</span> income <span class="sc">+</span> race</span>
+<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">est_logit</span>(f, <span class="at">data =</span> turnout)</span>
+<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit, <span class="at">digits =</span> <span class="dv">2</span>)  <span class="co"># print estimates w/ reasonable digits</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$beta_hat
+[1] -3.037  0.028  0.176  0.177  0.251
+
+$var_hat
+         [,1]     [,2]     [,3]     [,4]     [,5]
+[1,]  0.10622 -8.2e-04 -5.1e-03 -4.2e-04 -1.0e-02
+[2,] -0.00082  1.2e-05  2.9e-05  7.3e-06 -5.5e-05
+[3,] -0.00514  2.9e-05  4.1e-04 -1.6e-04 -3.2e-04
+[4,] -0.00042  7.3e-06 -1.6e-04  7.4e-04 -4.9e-04
+[5,] -0.01016 -5.5e-05 -3.2e-04 -4.9e-04  2.1e-02</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="interpretation" class="level2 page-columns page-full" data-number="11.2">
+<h2 data-number="11.2" class="anchored" data-anchor-id="interpretation"><span class="header-section-number">11.2</span> Interpretation</h2>
+<p>But the inverse link function makes our life considerably more complicated. In the linear model, the effect of a one-unit change in <span class="math inline">\(x_j\)</span> was simply <span class="math inline">\(\beta_j\)</span>. <em>This is no longer the case.</em></p>
+<section id="effects-are-not-constant" class="level3 page-columns page-full" data-number="11.2.1">
+<h3 data-number="11.2.1" class="anchored" data-anchor-id="effects-are-not-constant"><span class="header-section-number">11.2.1</span> Effects are not constant</h3>
+<p>To see how the inverse link function changes things, we can take the first derivative of <span class="math inline">\(\pi\)</span> with respect to <span class="math inline">\(\x_1\)</span>.</p>
+<p>Recall that <span class="math inline">\(\pi_i = \mathrm{logit}^{-1}(X_i\beta)\)</span>. To keep this derivative simple, we’ll break it into three parts: (i) first, find <span class="math inline">\(\frac{\partial \pi_i}{\partial \eta_i}\)</span>, then find <span class="math inline">\(\frac{\partial \eta_i}{\partial x_{i1}}\)</span>, and then use the chain rule <span class="math inline">\(\frac{\partial \pi_i}{\partial x_{i1}} = \frac{\partial \pi_i}{\partial \eta_i}\cdot \frac{\partial \eta_i}{\partial x_{i1}}\)</span>.</p>
+<p><strong>Step 1:</strong> <span class="math inline">\(\frac{\partial \pi_i}{\partial \eta_i}\)</span></p>
+<p><span class="math display">\[
+\begin{aligned}
+\pi_i
+  &amp;= \frac{e^{\eta_i}}{1 + e^{\eta_i}}
+  &amp;\qquad&amp; \text{definition of inverse logit} \\[6pt]
+\frac{\partial \pi_i}{\partial \eta_i}
+  &amp;= \frac{(1+e^{\eta_i})\,e^{\eta_i} - e^{\eta_i}\,e^{\eta_i}}{(1+e^{\eta_i})^2}
+  &amp;\qquad&amp; \text{quotient rule} \\[6pt]
+  &amp;= \frac{e^{\eta_i}}{1+e^{\eta_i}}\left(1 - \frac{e^{\eta_i}}{1+e^{\eta_i}}\right)
+  &amp;\qquad&amp; \text{factor out \(e^{\eta_i}/(1+e^{\eta_i})\)} \\[6pt]
+  &amp;= \pi_i\,(1-\pi_i)
+  &amp;\qquad&amp; \text{substitute \(\pi_i = \frac{e^{\eta_i}}{1+e^{\eta_i}}\)} \\[10pt]
+  \end{aligned}
+\]</span><br>
+</p>
+<p><strong>Step 2:</strong> <span class="math inline">\(\frac{\partial \eta_i}{\partial x_{i1}}\)</span></p>
+<p><span class="math display">\[
+\begin{aligned}
+\frac{\partial \eta_i}{\partial x_{i1}}
+  &amp;= \beta_1
+  &amp;\qquad&amp; \text{since }\eta_i=\sum_{j} x_{ij}\beta_j \\[10pt]
+\end{aligned}
+\]</span></p>
+<p><strong>Step 3:</strong> Chain rule</p>
+<p><span class="math display">\[
+\begin{aligned}
+\frac{\partial \pi_i}{\partial x_{i1}}
+  &amp;= \frac{\partial \pi_i}{\partial \eta_i}\cdot \frac{\partial \eta_i}{\partial x_{i1}}
+   \;=\; \pi_i(1-\pi_i)\,\beta_1 = \left[ \text{logit}^{-1}(X_i\beta) \right] \cdot \left[1 - \text{logit}^{-1}(X_i\beta) \right] \cdot \beta_1
+\end{aligned}
+\]</span></p>
+<p>The marginal effect of <span class="math inline">\(x_{i1}\)</span> on the probability of an event is <strong>not constant</strong>. It depends on the value of <span class="math inline">\(x_1\)</span> *and all the other <span class="math inline">\(x\)</span>s*!</p>
+<p>To see this clearly, we can assume the logit model <span class="math inline">\(\Pr(y) = \operatorname{logit}^{-1}(-4 + x_1 + x_2)\)</span> and plot <span class="math inline">\(\Pr(y)\)</span> as <span class="math inline">\(x_1\)</span> varies for different values of <span class="math inline">\(x_2\)</span>. Notice that the marginal effect <span class="math inline">\(\frac{\partial \Pr(y)}{\partial x_1}\)</span> varies *depending on the value of <span class="math inline">\(x_2\)</span>. Remember, there are no product terms in this model. However, the effect of the variables are interactive, at least on <span class="math inline">\(\Pr(y)\)</span>.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>This figure is a variant Panel A of Figure 2 on p.&nbsp;252 of <span class="citation" data-cites="Berry2010">Berry, DeMeritt, and Esarey (<a href="#ref-Berry2010" role="doc-biblioref">2010</a>)</span>.</p>
+<p><img src="images/clipboard-1632969731.png" class="img-fluid" style="width:90.0%"></p>
+</div></div><div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="03-logistic-regression_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="720"></p>
+<figcaption>This figure illustrates that interaction arises even when the model has no product term. The model is <span class="math inline">\(\Pr(y) = \operatorname{logit}^{-1}(-4 + x_1 + x_2)\)</span> with no <span class="math inline">\(x_1x_2\)</span> term. Each curve plots <span class="math inline">\(\Pr(y)\)</span> as a function of <span class="math inline">\(x_1\)</span> for three fixed values of <span class="math inline">\(x_2 \in \{0,1,2\}\)</span>. Because the inverse-logit link compresses probabilities toward 0 and 1, the marginal effect of <span class="math inline">\(x_1\)</span> on <span class="math inline">\(\Pr(y)\)</span>, <span class="math inline">\(\frac{\partial \Pr(y)}{\partial x_1} = \Pr(y)\bigl(1-\Pr(y)\bigr)\)</span>, depends on the value of <span class="math inline">\(x_2\)</span>. Points and labels indicate selected derivatives. For example, at <span class="math inline">\(x_1 \approx 4.51\)</span> the marginal effect is <span class="math inline">\(\partial \Pr(y)/\partial x_1 \approx .234\)</span> when <span class="math inline">\(x_2=0\)</span> and <span class="math inline">\(\approx .070\)</span> when <span class="math inline">\(x_2=2\)</span>.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="two-quantities-of-interest" class="level3 page-columns page-full" data-number="11.2.2">
+<h3 data-number="11.2.2" class="anchored" data-anchor-id="two-quantities-of-interest"><span class="header-section-number">11.2.2</span> Two Quantities of Interest</h3>
+<p>Given that the coefficients are directly interpretable, we can focus on other, simpler quantities of interest.</p>
+<p>We have to core quantities of interest:</p>
+<ol type="1">
+<li><strong>expected value</strong> <span class="math inline">\(E(y \mid X_c)\)</span>. The expected value of the outcome <span class="math inline">\(y\)</span> given a particular, <strong>c</strong>hosen covariate <span class="math inline">\(X_c\)</span>. Here, <span class="math inline">\(X_c\)</span> is a <span class="math inline">\(1 \times (k + 1)\)</span> row matrix that contains particular values for <span class="math inline">\(x_1, x_2, ..., x_k\)</span>.</li>
+<li><strong>first difference</strong> <span class="math inline">\(E(y \mid X_{hi}) - E(y \mid X_{lo})\)</span>. The first difference is the difference between two expected values. First, we find an expected value of the outcome <span class="math inline">\(y\)</span> given a particular covariates <span class="math inline">\(X_{lo}\)</span>, where one covariate is set to a “low” value of interest. Second, we find an expected value given covariates <span class="math inline">\(X_{hi}\)</span>, where that same covariate is changed to a “high” value of interest and the others are left unchanged.</li>
+</ol>
+<p>As possible, I borrow my language around “quantities of interest”, including “expected values” and “first differences” from <span class="citation" data-cites="King2000">King, Tomz, and Wittenberg (<a href="#ref-King2000" role="doc-biblioref">2000</a>)</span>, which has been hugely influential in political science.</p>
+<div class="no-row-height column-margin column-container"><div id="ref-King2000" class="csl-entry" role="listitem">
+King, Gary, Michael Tomz, and Jason Wittenberg. 2000. <span>“Making the Most of Statistical Analyses: Improving Interpretation and Presentation.”</span> <em>American Journal of Political Science</em> 44: 341–55. <a href="http://gking.harvard.edu/files/abs/making-abs.shtml">http://gking.harvard.edu/files/abs/making-abs.shtml</a>.
+</div></div><section id="expected-value-for-a-typical-case" class="level4" data-number="11.2.2.1">
+<h4 data-number="11.2.2.1" class="anchored" data-anchor-id="expected-value-for-a-typical-case"><span class="header-section-number">11.2.2.1</span> Expected value for a typical case</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create chosen values for X</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co"># note: naming columns helps a bit later</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>X_c <span class="ot">&lt;-</span> <span class="fu">cbind</span>(</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"constant"</span> <span class="ot">=</span> <span class="dv">1</span>, <span class="co"># intercept</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"age"</span>      <span class="ot">=</span> <span class="fu">median</span>(turnout<span class="sc">$</span>age), </span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"educate"</span>  <span class="ot">=</span> <span class="fu">median</span>(turnout<span class="sc">$</span>educate),</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"income"</span>   <span class="ot">=</span> <span class="fu">median</span>(turnout<span class="sc">$</span>income),</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"white"</span>    <span class="ot">=</span> <span class="dv">1</span> <span class="co"># white indicators = 1 </span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>ev_fn <span class="ot">&lt;-</span> <span class="cf">function</span>(beta, X) {</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plogis</span>(X<span class="sc">%*%</span>beta)</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a><span class="co"># invariance property</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>ev_hat <span class="ot">&lt;-</span> <span class="fu">ev_fn</span>(fit<span class="sc">$</span>beta_hat, X_c)</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a><span class="co"># delta method</span></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(numDeriv)  <span class="co"># for grad</span></span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>grad <span class="ot">&lt;-</span> <span class="fu">grad</span>(</span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">func =</span> ev_fn, <span class="co"># what function are we taking the derivative of?</span></span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> fit<span class="sc">$</span>beta_hat, <span class="co"># what variable(s) are we taking the derivative w.r.t.?</span></span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">X =</span> X_c)  <span class="co"># what other values are needed?</span></span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>se_ev_hat <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(grad <span class="sc">%*%</span> fit<span class="sc">$</span>var_hat <span class="sc">%*%</span> grad)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="expected-value-for-many-cases" class="level4 page-columns page-full" data-number="11.2.2.2">
+<h4 data-number="11.2.2.2" class="anchored" data-anchor-id="expected-value-for-many-cases"><span class="header-section-number">11.2.2.2</span> Expected value for many cases</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># - use ev_fn() from above</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co"># create chosen values for X</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>X_c <span class="ot">&lt;-</span> <span class="fu">cbind</span>(</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"constant"</span> <span class="ot">=</span> <span class="dv">1</span>, <span class="co"># intercept</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"age"</span>      <span class="ot">=</span> <span class="fu">min</span>(turnout<span class="sc">$</span>age)<span class="sc">:</span><span class="fu">max</span>(turnout<span class="sc">$</span>age), </span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"educate"</span>  <span class="ot">=</span> <span class="fu">median</span>(turnout<span class="sc">$</span>educate),</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"income"</span>   <span class="ot">=</span> <span class="fu">median</span>(turnout<span class="sc">$</span>income),</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"white"</span>    <span class="ot">=</span> <span class="dv">1</span> <span class="co"># white indicators = 1 </span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="co"># containers for estimated quantities of interest and ses</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>ev_hat <span class="ot">&lt;-</span> <span class="fu">numeric</span>(<span class="fu">nrow</span>(X_c))</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>se_ev_hat <span class="ot">&lt;-</span> <span class="fu">numeric</span>(<span class="fu">nrow</span>(X_c))</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a><span class="co"># loop over each row of X_c and compute qi and se</span></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(X_c)) {</span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># for the ith row of X...</span></span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># invariance property</span></span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>  ev_hat[i] <span class="ot">&lt;-</span> <span class="fu">ev_fn</span>(fit<span class="sc">$</span>beta_hat, X_c[i, ])</span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># delta method</span></span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>  grad <span class="ot">&lt;-</span> <span class="fu">grad</span>(</span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">func =</span> ev_fn, <span class="co"># what function are we taking the derivative of?</span></span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> fit<span class="sc">$</span>beta_hat, <span class="co"># what variable(s) are we taking the derivative w.r.t.?</span></span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">X =</span> X_c[i, ])  <span class="co"># what other values are needed?</span></span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>  se_ev_hat[i] <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(grad <span class="sc">%*%</span> fit<span class="sc">$</span>var_hat <span class="sc">%*%</span> grad)</span>
+<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a><span class="co"># put X_c, qi estimates, and se estimates in data frame</span></span>
+<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a>qi <span class="ot">&lt;-</span> <span class="fu">cbind</span>(X_c, ev_hat, se_ev_hat) <span class="sc">|&gt;</span></span>
+<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>() <span class="sc">|&gt;</span></span>
+<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 79
+Columns: 7
+$ constant  &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, …
+$ age       &lt;dbl&gt; 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, …
+$ educate   &lt;dbl&gt; 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, …
+$ income    &lt;dbl&gt; 3.3508, 3.3508, 3.3508, 3.3508, 3.3508, 3.3508, 3.3508, 3.35…
+$ white     &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, …
+$ ev_hat    &lt;dbl&gt; 0.5983202, 0.6051232, 0.6118858, 0.6186055, 0.6252802, 0.631…
+$ se_ev_hat &lt;dbl&gt; 0.02562903, 0.02480870, 0.02399725, 0.02319621, 0.02240713, …</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(qi, <span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> ev_hat, </span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">ymin =</span> ev_hat <span class="sc">-</span> <span class="fl">1.64</span><span class="sc">*</span>se_ev_hat, </span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">ymax =</span> ev_hat <span class="sc">+</span> <span class="fl">1.64</span><span class="sc">*</span>se_ev_hat)) <span class="sc">+</span> </span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>() <span class="sc">+</span> </span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03-logistic-regression_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+
+<div class="no-row-height column-margin column-container"><div class="margin-aside">
+<p>Compare this to {marginaleffects}.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit model</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>glm_fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(f, <span class="at">data =</span> turnout, <span class="at">family =</span> binomial)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co"># use marginaleffects to do transformation and delta method</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(marginaleffects)</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>me_qi <span class="ot">&lt;-</span> <span class="fu">predictions</span>(glm_fit, </span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>                     <span class="at">newdata =</span> <span class="fu">datagrid</span>(</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>                       <span class="at">age =</span> \(x) <span class="fu">seq</span>(<span class="fu">min</span>(x), <span class="fu">max</span>(x)),  <span class="co"># set age using fn defined with \() syntax</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>                       <span class="at">educate  =</span> median,  <span class="co"># set educate to sample median</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>                       <span class="at">income =</span> median,  <span class="co"># set income to sample median</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>                       <span class="at">race =</span> <span class="st">"white"</span>  <span class="co"># set race to white</span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>                     ),</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>                     <span class="at">conf_level =</span> <span class="fl">0.90</span>)</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a><span class="co"># plot</span></span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(me_qi, <span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> estimate, </span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>               <span class="at">ymin =</span> conf.low, </span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>               <span class="at">ymax =</span> conf.high)) <span class="sc">+</span> </span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>() <span class="sc">+</span> </span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03-logistic-regression_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div></div></section>
+<section id="first-difference" class="level4" data-number="11.2.2.3">
+<h4 data-number="11.2.2.3" class="anchored" data-anchor-id="first-difference"><span class="header-section-number">11.2.2.3</span> First difference</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># make X_lo</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>X_lo <span class="ot">&lt;-</span> <span class="fu">cbind</span>(</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"constant"</span> <span class="ot">=</span> <span class="dv">1</span>, <span class="co"># intercept</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"age"</span>      <span class="ot">=</span> <span class="fu">quantile</span>(turnout<span class="sc">$</span>age, <span class="at">probs =</span> <span class="fl">0.25</span>), <span class="co"># 31 years old; 25th percentile</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"educate"</span>  <span class="ot">=</span> <span class="fu">median</span>(turnout<span class="sc">$</span>educate),</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"income"</span>   <span class="ot">=</span> <span class="fu">median</span>(turnout<span class="sc">$</span>income),</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"white"</span>    <span class="ot">=</span> <span class="dv">1</span> <span class="co"># white indicators = 1 </span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="co"># make X_hi by modifying the relevant value of X_lo</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>X_hi <span class="ot">&lt;-</span> X_lo</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>X_hi[, <span class="st">"age"</span>] <span class="ot">&lt;-</span> <span class="fu">quantile</span>(turnout<span class="sc">$</span>age, <span class="at">probs =</span> <span class="fl">0.75</span>) <span class="co"># 59 years old; 75th percentile</span></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a><span class="co"># function to compute first difference</span></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>fd_fn <span class="ot">&lt;-</span> <span class="cf">function</span>(beta, hi, lo) {</span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plogis</span>(hi<span class="sc">%*%</span>beta) <span class="sc">-</span> <span class="fu">plogis</span>(lo<span class="sc">%*%</span>beta)</span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a><span class="co"># invariance property</span></span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>fd_hat <span class="ot">&lt;-</span> <span class="fu">fd_fn</span>(fit<span class="sc">$</span>beta_hat, X_hi, X_lo)</span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a><span class="co"># delta method</span></span>
+<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a>grad <span class="ot">&lt;-</span> <span class="fu">grad</span>(</span>
+<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">func =</span> fd_fn, </span>
+<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> fit<span class="sc">$</span>beta_hat, </span>
+<span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">hi =</span> X_hi,</span>
+<span id="cb24-27"><a href="#cb24-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">lo =</span> X_lo)  </span>
+<span id="cb24-28"><a href="#cb24-28" aria-hidden="true" tabindex="-1"></a>se_fd_hat <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(grad <span class="sc">%*%</span> fit<span class="sc">$</span>var_hat <span class="sc">%*%</span> grad)</span>
+<span id="cb24-29"><a href="#cb24-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-30"><a href="#cb24-30" aria-hidden="true" tabindex="-1"></a><span class="co"># estimated fd</span></span>
+<span id="cb24-31"><a href="#cb24-31" aria-hidden="true" tabindex="-1"></a>fd_hat</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         [,1]
+25% 0.1416257</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># estimated se</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>se_fd_hat</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          [,1]
+[1,] 0.0170934</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 90% ci</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>fd_hat <span class="sc">-</span> <span class="fl">1.64</span><span class="sc">*</span>se_fd_hat  <span class="co"># lower</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         [,1]
+25% 0.1135925</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>fd_hat <span class="sc">+</span> <span class="fl">1.64</span><span class="sc">*</span>se_fd_hat  <span class="co"># upper</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         [,1]
+25% 0.1696588</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The language around quantities of interest is inconsistent. Scholars use different terms to mean the same concept and the same terms to mean different concepts. A prime example is “marginal effect.” Some scholars use “marginal effect” to mean the discrete effect <span class="math inline">\(E(y \mid X_{hi}) - E(y \mid X_{lo})\)</span>–what I call a “first difference” above. Other scholars use “marginal effect” to mean the <em>instantaneous</em> effect <span class="math inline">\(\frac{\partial E(y \mid X_c)}{\partial x_j}\)</span>. Given this inconsistency, it’s best to <em>read carefully</em> what other authors mean and <em>write explicitly</em> what you mean.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="fitting-with-glm" class="level3 page-columns page-full" data-number="11.2.3">
+<h3 data-number="11.2.3" class="anchored" data-anchor-id="fitting-with-glm"><span class="header-section-number">11.2.3</span> Fitting with <code>glm()</code></h3>
+<p>Rather than use <code>optim()</code> we can fit the logit model with <code>glm()</code> by supplying the argument <code>family = binomial</code>.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn5"><p><sup>5</sup>&nbsp;The Bernoulli distribution that we used to motivate the logit model is a special case of the binomial distribution. Unless we specify otherwise, <code>family = binomial</code> uses the Bernoulli.</p></div></div><div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> vote <span class="sc">~</span> age <span class="sc">+</span> educate <span class="sc">+</span> income <span class="sc">+</span> race</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(f, <span class="at">data =</span> turnout, <span class="at">family =</span> binomial)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We’ll later see how to use {marginal effects} to compute quantities of interest. But for now, realize that we can find the coefficient estimates with <code>coef()</code> and the estimated covariance matrix with <code>vcov()</code>. We can use these to manually obtain estimates of quantities of interest and their standard errors without marginal effects.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>beta_hat <span class="ot">&lt;-</span> <span class="fu">coef</span>(fit)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>v_hat <span class="ot">&lt;-</span> <span class="fu">vcov</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Software to automatically handle computations is <em>really</em> valuable. When users write their own code to handle basic, common calculations (e.g., using <code>optim()</code> to fit a logit model), they run a huge risk of introducing errors. Well-tested, widely-used software written by actual programmers has far fewer bugs that single-use code written by substantive researchers. That said, it is really easy to <em>misunderstand</em> what “easy-to-use” software is actually doing. For example, documentation uses the term “marginal effect” inconsistently. And model fitting functions sometimes use unexpected parameterizations. Without paying careful attention, it’s easy to incorrectly use well-tested software. When you are first learning a software package, it’s important to check that you are computing what you think you are computing (e.g., a rate, not a mean; a instantaneous effect, not a discrete effect).</p>
+</div>
+</div>
+</section>
+</section>
+<section id="the-scobit-data" class="level2 page-columns page-full" data-number="11.3">
+<h2 data-number="11.3" class="anchored" data-anchor-id="the-scobit-data"><span class="header-section-number">11.3</span> The Scobit Data</h2>
+<p>Let’s fit the normal model to data from <span class="citation" data-cites="WolfingerRosenstone1980">Wolfinger and Rosenstone (<a href="#ref-WolfingerRosenstone1980" role="doc-biblioref">1980</a>)</span>, <span class="citation" data-cites="Nagler1994">Nagler (<a href="#ref-Nagler1994" role="doc-biblioref">1994</a>)</span>, and <span class="citation" data-cites="Berry2010">Berry, DeMeritt, and Esarey (<a href="#ref-Berry2010" role="doc-biblioref">2010</a>)</span>.</p>
+<div class="no-row-height column-margin column-container"><div id="ref-WolfingerRosenstone1980" class="csl-entry" role="listitem">
+Wolfinger, Raymond E., and Steven J. Rosenstone. 1980. <em>Who Votes?</em> New Haven, CT: Yale University Press.
+</div><div id="ref-Nagler1994" class="csl-entry" role="listitem">
+Nagler, Jonathan. 1994. <span>“Scobit: An Alternative Estimator to Logit and Probit.”</span> <em>American Journal of Political Science</em> 38 (1): 230–55.
+</div><div id="ref-Berry2010" class="csl-entry" role="listitem">
+Berry, William D., Jacqueline H. R. DeMeritt, and Justin Esarey. 2010. <span>“Testing for Interaction in Binary Logit and Probit Models: Is a Product Term Essential?”</span> <em>American Journal of Political Science</em> 54 (1): 248–66. <a href="https://doi.org/10.1111/j.1540-5907.2009.00429.x">https://doi.org/10.1111/j.1540-5907.2009.00429.x</a>.
+</div></div><div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># # load scobit data</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="co"># scobit &lt;- haven::read_dta("data/scobit.dta") %&gt;%</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   filter(newvote != -1) %&gt;%  # weird -1s in data; unsure if sufficient</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   glimpse()</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="co"># # fit linear probability model</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="co"># f &lt;- newvote ~ poly(neweduc, 2, raw = TRUE) + closing + poly(age, 2, raw = TRUE) + south + gov</span></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a><span class="co"># fit &lt;- lm(f, data = scobit)</span></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a><span class="co"># # simulate from predictive distribution</span></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a><span class="co"># mu_hat &lt;- predict(fit)  # the linear predictor for each row of data frame</span></span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a><span class="co"># sigma_hat &lt;- sqrt(sum(residuals(fit)^2))</span></span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a><span class="co"># y_tilde &lt;- rnorm(nrow(scobit), mu_hat, sigma_hat)</span></span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a><span class="co"># # plot simulated against observed values</span></span>
+<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a><span class="co"># par(mfrow = c(1, 2))</span></span>
+<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a><span class="co"># hist(scobit$newvote)</span></span>
+<span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a><span class="co"># hist(y_tilde)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
+
+
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../wk04/02-formulas.html" class="pagination-link" aria-label="Formulas">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Formulas</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../wk04/04-big-four.html" class="pagination-link" aria-label="Big Four Models">
+        <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Big Four Models</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

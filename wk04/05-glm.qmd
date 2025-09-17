@@ -1,0 +1,77 @@
+# GLMs
+
+```{r include=FALSE}
+library(tidyverse)
+```
+
+This is a course on probability models. A commonly referenced subset of these models are referred to as generalized linear models or GLMs. Because GLMs are commonly referenced, it's worth understanding the theory. But for our purposes, there isn't a practical difference between probability models that are GLMs and probabilities models that are not GLMs.
+
+In fact, some use the term "GLM" to mean probability models broadly, not just those models covered in the theory below.\
+
+![](images/clipboard-1034886583.png){width=50%}
+\
+![](images/clipboard-579218103.png){width=50%}
+
+@mccullagh1989 gave us the initial theory of the GLM. They show how many probability models fall into a single unified framework that they called *generalized linear models* (GLMs). The theory is really beautiful, simple, and powerful. @gill2019 offers a good introduction for political scientists.
+
+A GLM has three components:
+
+1.  **Random component.** $y_i$ follows a distribution in the exponential family.
+1.  **Systematic component.** Linear predictor $\eta_i = X_i\beta$.
+1.  **Link function.** Monotone map $g(\mu_i) = \eta_i$ with $\mu_i = \mathbb{E}(Y_i)$.
+
+## Exponential families
+
+A density/pmf is in the **exponential family** if it can be written 
+
+$$
+f(y\mid \theta,\phi)
+=\exp\!\left\{\frac{y\theta - b(\theta)}{a(\phi)} + c(y,\phi)\right\}.
+$$
+
+-   $\theta$: canonical parameter
+-   $\phi$: dispersion parameter
+-   $\mu = \mathbb{E}(Y) = b'(\theta)$
+-   $\operatorname{Var}(Y) = b''(\theta)\,a(\phi)$
+
+If we choose $g(\mu)$ so that the linear predictor $X_i \beta$ equals the canonical parameter $\eta_i$, then we say that $g(\cdot)$ is the *canonical link.* Canonical links simplify the score equations and IRWLS weights, but are not required in practice.
+
+
+### Core examples
+
+**Logistic regression.** $Y_i \sim \operatorname{Bernoulli}(\pi_i)$ with canonical link $g(\pi_i)=\log\!\dfrac{\pi_i}{1-\pi_i}=X_i\beta$.
+
+**Poisson regression (counts).** $Y_i \sim \operatorname{Poisson}(\lambda_i)$ with canonical link $g(\lambda_i)=\log\lambda_i=X_i\beta$.
+
+### Negative binomial edge case
+
+With fixed dispersion $\kappa$, an exponential-family form exists. In practice $\kappa$ is estimated, so NB is "GLM-like" but not strictly a GLM.
+
+### Common GLMs (canonical forms)
+
+| Family | Outcome type | Canonical link $g(\mu)$ | Variance function $V(\mu)$ |
+|:---------------|:---------------|:-----------------------|:----------------|
+| Normal | Continuous | Identity $\mu$ | $1$ |
+| Bernoulli | Binary | Logit $\log\!\dfrac{\mu}{1-\mu}$ | $\mu(1-\mu)$ |
+| Poisson | Counts | Log $\log \mu$ | $\mu$ |
+| Gamma | Positive continuous | Inverse $1/\mu$ | $\mu^2$ |
+
+## Estimation: IRLS 
+
+GLMs are estimated by **maximum likelihood**. It turns out that iteratively reweighted least squares (IRLS) is an exceptionally robust numerical algorithm to find the ML estimates (and their variance estimates) for GLMs.
+
+-   Working response: $z_i = \eta_i + (y_i-\mu_i)\dfrac{d\eta_i}{d\mu_i}$.\
+-   Weights: $w_i = \dfrac{1}{\phi}\left(\dfrac{d\mu_i}{d\eta_i}\right)^2 \big/ V(\mu_i)$.\
+-   Update: $\hat\beta \leftarrow (X^\top W X)^{-1} X^\top W z$. 
+
+Repeat until convergence.
+
+This algorithm is historically important, but happens "behind the scenes" in modern computation. It's more conceptually useful to imagine a generic gradient ascent algorithm applied to directly to the multidimensional log-likelihood.
+
+## Expected Fisher information
+
+At the MLE, $\mathcal{I}(\beta) = \tfrac{1}{\phi} X^\top W X$. This looks very similar to the weighted cross-product matrix used in the IRLS updating step. There's a connection here. IRLS arises from applying Newton–Raphson to the gradient of the log-likelihood, and the Hessian of the log-likelihood (whose expectation is the Fisher information) uses the same $W$ matrix. 
+
+As an interesting result, the weights $W$ indicate both the direction of the iterative updates and the curvature of the likelihood surface. When the algorithm has converged, the final $X^\top W X$ approximates the covariance matrix for $\hat\beta$.
+
+

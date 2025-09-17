@@ -1,0 +1,2625 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.42">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>10&nbsp; Formulas – Modern Probability Modeling</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../wk04/03-logistic-regression.html" rel="next">
+<link href="../wk04/01-design-matrix.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-2db5a64a0f9238d29502e24e892d8c52.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-ZV1MJ9E632"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-ZV1MJ9E632', { 'anonymize_ip': true});
+</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../_styles.css">
+</head>
+
+<body class="nav-sidebar floating slimcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../wk04/01-design-matrix.html">Week 4</a></li><li class="breadcrumb-item"><a href="../wk04/02-formulas.html"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Formulas</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Modern Probability Modeling</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 2</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk02/01-maximum-likelihood.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Maximum Likelihood</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk02/02-invariance-property.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">The Invariance Property</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk02/03-predictive-distribution.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Predictive Distribution</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 3</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk03/01-sampling-distribution.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Sampling Distribution</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk03/02-parametric-bootstrap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Parametric Bootstrap</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk03/03-fisher-information-matrix.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Fisher Information Matrix</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk03/04-delta-method.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Delta Method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk03/05-evaluating-cis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Evaluating Confidence Intervals</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 4</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk04/01-design-matrix.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Design Matrix</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk04/02-formulas.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Formulas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk04/03-logistic-regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Logistic Regression</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk04/04-big-four.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Big Four Models</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../appendicies/999-distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Common Distributions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk01/frac-exp-log.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Fractions, Exponents, and Logarithms</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk01/calculus-1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Derivatives</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk01/calculus-2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">D</span>&nbsp; <span class="chapter-title">Integration</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk01/matrices.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">E</span>&nbsp; <span class="chapter-title">Matrices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk01/probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">F</span>&nbsp; <span class="chapter-title">Probability Theory</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk04/05-glm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">G</span>&nbsp; <span class="chapter-title">GLMs</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#basics-of-formulas" id="toc-basics-of-formulas" class="nav-link active" data-scroll-target="#basics-of-formulas"><span class="header-section-number">10.1</span> Basics of Formulas</a>
+  <ul class="collapse">
+  <li><a href="#model.matrix-examples" id="toc-model.matrix-examples" class="nav-link" data-scroll-target="#model.matrix-examples"><span class="header-section-number">10.1.1</span> <code>model.matrix()</code> examples</a></li>
+  <li><a href="#lm-examples" id="toc-lm-examples" class="nav-link" data-scroll-target="#lm-examples"><span class="header-section-number">10.1.2</span> <code>lm()</code> examples</a></li>
+  </ul></li>
+  <li><a href="#factors" id="toc-factors" class="nav-link" data-scroll-target="#factors"><span class="header-section-number">10.2</span> Factors</a>
+  <ul class="collapse">
+  <li><a href="#model.matrix-examples-1" id="toc-model.matrix-examples-1" class="nav-link" data-scroll-target="#model.matrix-examples-1"><span class="header-section-number">10.2.1</span> <code>model.matrix()</code> examples</a></li>
+  <li><a href="#lm-examples-1" id="toc-lm-examples-1" class="nav-link" data-scroll-target="#lm-examples-1"><span class="header-section-number">10.2.2</span> <code>lm()</code> examples</a></li>
+  </ul></li>
+  <li><a href="#polynomials" id="toc-polynomials" class="nav-link" data-scroll-target="#polynomials"><span class="header-section-number">10.3</span> Polynomials</a>
+  <ul class="collapse">
+  <li><a href="#orthogonal-and-raw-polynomials" id="toc-orthogonal-and-raw-polynomials" class="nav-link" data-scroll-target="#orthogonal-and-raw-polynomials"><span class="header-section-number">10.3.1</span> Orthogonal and raw polynomials</a></li>
+  <li><a href="#model.matrix-examples-2" id="toc-model.matrix-examples-2" class="nav-link" data-scroll-target="#model.matrix-examples-2"><span class="header-section-number">10.3.2</span> <code>model.matrix()</code> examples</a></li>
+  <li><a href="#lm-examples-2" id="toc-lm-examples-2" class="nav-link" data-scroll-target="#lm-examples-2"><span class="header-section-number">10.3.3</span> <code>lm()</code> examples</a></li>
+  </ul></li>
+  <li><a href="#interactions" id="toc-interactions" class="nav-link" data-scroll-target="#interactions"><span class="header-section-number">10.4</span> Interactions</a>
+  <ul class="collapse">
+  <li><a href="#model.matrix-examples-3" id="toc-model.matrix-examples-3" class="nav-link" data-scroll-target="#model.matrix-examples-3"><span class="header-section-number">10.4.1</span> <code>model.matrix()</code> examples</a></li>
+  <li><a href="#lm-examples-3" id="toc-lm-examples-3" class="nav-link" data-scroll-target="#lm-examples-3"><span class="header-section-number">10.4.2</span> <code>lm()</code> examples</a></li>
+  </ul></li>
+  <li><a href="#transformations" id="toc-transformations" class="nav-link" data-scroll-target="#transformations"><span class="header-section-number">10.5</span> Transformations</a>
+  <ul class="collapse">
+  <li><a href="#transformations-that-dont-conflict-with-formula-operators" id="toc-transformations-that-dont-conflict-with-formula-operators" class="nav-link" data-scroll-target="#transformations-that-dont-conflict-with-formula-operators"><span class="header-section-number">10.5.1</span> Transformations that don’t conflict with formula operators</a></li>
+  <li><a href="#transformations-that-require-i" id="toc-transformations-that-require-i" class="nav-link" data-scroll-target="#transformations-that-require-i"><span class="header-section-number">10.5.2</span> Transformations that require <code>I()</code></a></li>
+  <li><a href="#lm-examples-4" id="toc-lm-examples-4" class="nav-link" data-scroll-target="#lm-examples-4"><span class="header-section-number">10.5.3</span> <code>lm()</code> examples</a></li>
+  </ul></li>
+  <li><a href="#updating-formulas" id="toc-updating-formulas" class="nav-link" data-scroll-target="#updating-formulas"><span class="header-section-number">10.6</span> Updating Formulas</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../wk04/01-design-matrix.html">Week 4</a></li><li class="breadcrumb-item"><a href="../wk04/02-formulas.html"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Formulas</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Formulas</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="basics-of-formulas" class="level2" data-number="10.1">
+<h2 data-number="10.1" class="anchored" data-anchor-id="basics-of-formulas"><span class="header-section-number">10.1</span> Basics of Formulas</h2>
+<p>How can we construct a design matrix in R? R has <em>formulas</em> to make this easy. See <code>?formula</code> for details.</p>
+<p>As a working example, suppose a normal linear model <span class="math display">\[
+\mu_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2}.
+\]</span></p>
+<p>We use formulas to specify the columns of the design matrix in the normal linear model.</p>
+<p>A formula has a LHS (left-hand side) and a RHS separated by a <code>~</code>. The LHS indicates the outcome and the RHS indicates the predictors. The RHS determines the columns of the linear predictor. The operator <code>+</code> adds predictors. By default, an intercept (a column of 1’s) is included.</p>
+<p>For the linear regression above, we would use the formula <code>y ~ x1 + x2</code></p>
+<section id="model.matrix-examples" class="level3" data-number="10.1.1">
+<h3 data-number="10.1.1" class="anchored" data-anchor-id="model.matrix-examples"><span class="header-section-number">10.1.1</span> <code>model.matrix()</code> examples</h3>
+<p>Throughout these examples, I use the <code>penguins</code> data set from the {palmerpenguins} R package. For more, see <code>?palmerpenguins::penguins</code> or the <a href="https://allisonhorst.github.io/palmerpenguins/">website for the package</a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load packages </span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(modelsummary)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(palmerpenguins) <span class="co"># example data</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># quick look</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(penguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 344
+Columns: 8
+$ species           &lt;fct&gt; Adelie, Adelie, Adelie, Adelie, Adelie, Adelie, Adel…
+$ island            &lt;fct&gt; Torgersen, Torgersen, Torgersen, Torgersen, Torgerse…
+$ bill_length_mm    &lt;dbl&gt; 39.1, 39.5, 40.3, NA, 36.7, 39.3, 38.9, 39.2, 34.1, …
+$ bill_depth_mm     &lt;dbl&gt; 18.7, 17.4, 18.0, NA, 19.3, 20.6, 17.8, 19.6, 18.1, …
+$ flipper_length_mm &lt;int&gt; 181, 186, 195, NA, 193, 190, 181, 195, 193, 190, 186…
+$ body_mass_g       &lt;int&gt; 3750, 3800, 3250, NA, 3450, 3650, 3625, 4675, 3475, …
+$ sex               &lt;fct&gt; male, female, female, NA, female, male, female, male…
+$ year              &lt;int&gt; 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007…</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># penguins has missing values, let's remove those rows for these examples.</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>penguins <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(penguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="single-numeric-variable" class="level4" data-number="10.1.1.1">
+<h4 data-number="10.1.1.1" class="anchored" data-anchor-id="single-numeric-variable"><span class="header-section-number">10.1.1.1</span> Single numeric variable</h4>
+<p>For a linear regression model with a single predictor, we can use the formula below to construct the design matrix. Notice that the LHS is empty. The LHS is irrelevant for the design matrix, so I leave it empty in these examples.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="er">~</span> flipper_length_mm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>To construct the design matrix <code>X</code>, we can use the <code>model.matrix()</code> function. We give <code>model.matrix()</code> a formula and a data set. It uses the RHS of the formula to construct the design matrix using the variables in the data set.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(f, <span class="at">data =</span> penguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can use the <code>head()</code> function to inspect the first six rows of the design matrix.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(X)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  (Intercept) flipper_length_mm
+1           1               181
+2           1               186
+3           1               195
+4           1               193
+5           1               190
+6           1               181</code></pre>
+</div>
+</div>
+</section>
+<section id="two-numeric-variables" class="level4" data-number="10.1.1.2">
+<h4 data-number="10.1.1.2" class="anchored" data-anchor-id="two-numeric-variables"><span class="header-section-number">10.1.1.2</span> Two numeric variables</h4>
+<p>We can add a second predictor and we get the expected design matrix.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="er">~</span> flipper_length_mm <span class="sc">+</span> body_mass_g</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(f, <span class="at">data =</span> penguins)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(X)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  (Intercept) flipper_length_mm body_mass_g
+1           1               181        3750
+2           1               186        3800
+3           1               195        3250
+4           1               193        3450
+5           1               190        3650
+6           1               181        3625</code></pre>
+</div>
+</div>
+</section>
+<section id="removing-the-intercept" class="level4" data-number="10.1.1.3">
+<h4 data-number="10.1.1.3" class="anchored" data-anchor-id="removing-the-intercept"><span class="header-section-number">10.1.1.3</span> Removing the intercept</h4>
+<p>An intercept (or column of ones) is added to the design matrix by default. You can remove the intercetp by adding <code>-1</code> or <code>+ 0</code> to the formula.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="er">~</span> <span class="sc">-</span><span class="dv">1</span> <span class="sc">+</span> flipper_length_mm <span class="sc">+</span> body_mass_g</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(f, <span class="at">data =</span> penguins)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(X)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  flipper_length_mm body_mass_g
+1               181        3750
+2               186        3800
+3               195        3250
+4               193        3450
+5               190        3650
+6               181        3625</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="lm-examples" class="level3" data-number="10.1.2">
+<h3 data-number="10.1.2" class="anchored" data-anchor-id="lm-examples"><span class="header-section-number">10.1.2</span> <code>lm()</code> examples</h3>
+<p>To see formulas from more familiar perspective, let’s also use <code>lm()</code> to fit several linear models. We’re using the <code>penguins</code> data with <code>bill_length_mm</code> as the outcome</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>fit1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(bill_length_mm <span class="sc">~</span> flipper_length_mm, <span class="at">data =</span> penguins)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>fit2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(bill_length_mm <span class="sc">~</span> body_mass_g, <span class="at">data =</span> penguins)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>fit3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(bill_length_mm <span class="sc">~</span> flipper_length_mm <span class="sc">+</span> body_mass_g, <span class="at">data =</span> penguins)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>fit4 <span class="ot">&lt;-</span> <span class="fu">lm</span>(bill_length_mm <span class="sc">~</span> flipper_length_mm <span class="sc">-</span> <span class="dv">1</span>, <span class="at">data =</span> penguins)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="fu">modelsummary</span>(<span class="fu">list</span>(fit1, fit2, fit3, fit4), <span class="at">gof_map =</span> <span class="cn">NA</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<!-- preamble start -->
+
+    <script>
+
+      function styleCell_y186ydcmfs2xi0rxdsvy(i, j, css_id) {
+          var table = document.getElementById("tinytable_y186ydcmfs2xi0rxdsvy");
+          var cell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
+          if (cell) {
+              console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
+              cell.classList.add(css_id);
+          } else {
+              console.warn(`Cell at (${i}, ${j}) not found.`);
+          }
+      }
+      function spanCell_y186ydcmfs2xi0rxdsvy(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_y186ydcmfs2xi0rxdsvy");
+        const targetCell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
+        if (!targetCell) {
+          console.warn(`Cell at (${i}, ${j}) not found.`);
+        }
+
+        // Get all cells that need to be removed
+        const cellsToRemove = [];
+        for (let r = 0; r < rowspan; r++) {
+          for (let c = 0; c < colspan; c++) {
+            if (r === 0 && c === 0) continue; // Skip the target cell
+            const cell = table.querySelector(`[data-row="${i + r}"][data-col="${j + c}"]`);
+            if (cell) {
+              cellsToRemove.push(cell);
+            }
+          }
+        }
+
+        // Remove all cells
+        cellsToRemove.forEach(cell => cell.remove());
+
+        // Set rowspan and colspan of the target cell if it exists
+        if (targetCell) {
+          targetCell.rowSpan = rowspan;
+          targetCell.colSpan = colspan;
+        }
+      }
+      // tinytable span after
+      window.addEventListener('load', function () {
+          var cellsToStyle = [
+            // tinytable style arrays after
+          { positions: [ { i: '6', j: 3 }, { i: '6', j: 2 }, { i: '6', j: 1 }, { i: '6', j: 4 },  ], css_id: 'tinytable_css_rbd33each8s08wz9yj92',}, 
+          { positions: [ { i: '4', j: 1 }, { i: '1', j: 1 }, { i: '2', j: 1 }, { i: '3', j: 1 }, { i: '1', j: 2 }, { i: '5', j: 1 }, { i: '3', j: 2 }, { i: '4', j: 2 }, { i: '5', j: 2 }, { i: '2', j: 2 }, { i: '4', j: 3 }, { i: '1', j: 3 }, { i: '2', j: 3 }, { i: '3', j: 3 }, { i: '1', j: 4 }, { i: '5', j: 3 }, { i: '3', j: 4 }, { i: '4', j: 4 }, { i: '5', j: 4 }, { i: '2', j: 4 },  ], css_id: 'tinytable_css_sb5th05bueteesjyjdpa',}, 
+          { positions: [ { i: '0', j: 1 }, { i: '0', j: 4 }, { i: '0', j: 3 }, { i: '0', j: 2 },  ], css_id: 'tinytable_css_cdrhwdgk5lycsgtyvmwo',}, 
+          { positions: [ { i: '6', j: 0 },  ], css_id: 'tinytable_css_j93z6ygbppcqs3802j7i',}, 
+          { positions: [ { i: '1', j: 0 }, { i: '2', j: 0 }, { i: '3', j: 0 }, { i: '4', j: 0 }, { i: '5', j: 0 },  ], css_id: 'tinytable_css_87ony0ywjuvxdaoevxte',}, 
+          { positions: [ { i: '0', j: 0 },  ], css_id: 'tinytable_css_6ss63upi1nr1zykn0h1g',}, 
+          ];
+
+          // Loop over the arrays to style the cells
+          cellsToStyle.forEach(function (group) {
+              group.positions.forEach(function (cell) {
+                  styleCell_y186ydcmfs2xi0rxdsvy(cell.i, cell.j, group.css_id);
+              });
+          });
+      });
+    </script>
+
+    <style>
+      /* tinytable css entries after */
+      .table td.tinytable_css_rbd33each8s08wz9yj92, .table th.tinytable_css_rbd33each8s08wz9yj92 { text-align: center; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_sb5th05bueteesjyjdpa, .table th.tinytable_css_sb5th05bueteesjyjdpa { text-align: center; }
+      .table td.tinytable_css_cdrhwdgk5lycsgtyvmwo, .table th.tinytable_css_cdrhwdgk5lycsgtyvmwo { text-align: center; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_j93z6ygbppcqs3802j7i, .table th.tinytable_css_j93z6ygbppcqs3802j7i { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_87ony0ywjuvxdaoevxte, .table th.tinytable_css_87ony0ywjuvxdaoevxte { text-align: left; }
+      .table td.tinytable_css_6ss63upi1nr1zykn0h1g, .table th.tinytable_css_6ss63upi1nr1zykn0h1g { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+    </style>
+    <div class="container">
+      <table class="table table-borderless" id="tinytable_y186ydcmfs2xi0rxdsvy" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+        <thead>
+        
+              <tr>
+                <th scope="col" data-row="0" data-col="0"> </th>
+                <th scope="col" data-row="0" data-col="1">(1)</th>
+                <th scope="col" data-row="0" data-col="2">(2)</th>
+                <th scope="col" data-row="0" data-col="3">(3)</th>
+                <th scope="col" data-row="0" data-col="4">(4)</th>
+              </tr>
+        </thead>
+        
+        <tbody>
+                <tr>
+                  <td data-row="1" data-col="0">(Intercept)</td>
+                  <td data-row="1" data-col="1">-7.219</td>
+                  <td data-row="1" data-col="2">27.151</td>
+                  <td data-row="1" data-col="3">-3.981</td>
+                  <td data-row="1" data-col="4"></td>
+                </tr>
+                <tr>
+                  <td data-row="2" data-col="0"></td>
+                  <td data-row="2" data-col="1">(3.272)</td>
+                  <td data-row="2" data-col="2">(1.292)</td>
+                  <td data-row="2" data-col="3">(4.722)</td>
+                  <td data-row="2" data-col="4"></td>
+                </tr>
+                <tr>
+                  <td data-row="3" data-col="0">flipper_length_mm</td>
+                  <td data-row="3" data-col="1">0.255</td>
+                  <td data-row="3" data-col="2"></td>
+                  <td data-row="3" data-col="3">0.227</td>
+                  <td data-row="3" data-col="4">0.219</td>
+                </tr>
+                <tr>
+                  <td data-row="4" data-col="0"></td>
+                  <td data-row="4" data-col="1">(0.016)</td>
+                  <td data-row="4" data-col="2"></td>
+                  <td data-row="4" data-col="3">(0.033)</td>
+                  <td data-row="4" data-col="4">(0.001)</td>
+                </tr>
+                <tr>
+                  <td data-row="5" data-col="0">body_mass_g</td>
+                  <td data-row="5" data-col="1"></td>
+                  <td data-row="5" data-col="2">0.004</td>
+                  <td data-row="5" data-col="3">0.001</td>
+                  <td data-row="5" data-col="4"></td>
+                </tr>
+                <tr>
+                  <td data-row="6" data-col="0"></td>
+                  <td data-row="6" data-col="1"></td>
+                  <td data-row="6" data-col="2">(0.000)</td>
+                  <td data-row="6" data-col="3">(0.001)</td>
+                  <td data-row="6" data-col="4"></td>
+                </tr>
+        </tbody>
+      </table>
+    </div>
+<!-- hack to avoid NA insertion in last line -->
+</div>
+</div>
+</section>
+</section>
+<section id="factors" class="level2 page-columns page-full" data-number="10.2">
+<h2 data-number="10.2" class="anchored" data-anchor-id="factors"><span class="header-section-number">10.2</span> Factors</h2>
+<p>The examples above show numerical variables. But formulas also handle factors. Factors are automatically expanded into indicator variables in the design matrix. By default, R uses <em>treatment coding</em>: one category is the baseline (reference) and the others are coded as 0/1 indicators.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;This is the standard approach in political science, but there are other ways. R also supports other contrast codings, such as <code>contr.sum</code> or <code>contr.helmert</code>. These can be useful to make regression tables informative about specific hypotheses, but they are not commonly used and won’t be familiar to your readers.</p></div></div><section id="model.matrix-examples-1" class="level3" data-number="10.2.1">
+<h3 data-number="10.2.1" class="anchored" data-anchor-id="model.matrix-examples-1"><span class="header-section-number">10.2.1</span> <code>model.matrix()</code> examples</h3>
+<section id="a-single-factor-variable" class="level4" data-number="10.2.1.1">
+<h4 data-number="10.2.1.1" class="anchored" data-anchor-id="a-single-factor-variable"><span class="header-section-number">10.2.1.1</span> A single factor variable</h4>
+<p>The <code>penguins</code> data set contains a factor variable <code>species</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(penguins<span class="sc">$</span>species)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Adelie"    "Chinstrap" "Gentoo"   </code></pre>
+</div>
+</div>
+<p>A formula with <code>species</code> on the right-hand side makes a design matrix with two an intercept and two indicators. One indicator variable is for Chinstrap penguins; the other is for Gentoo penguins. Adelie penguins are the reference (i.e., left-out) category.</p>
+<p>The coefficients for <code>speciesChinstrap</code> and <code>speciesGentoo</code> are the changes in <span class="math inline">\(\mu_i\)</span> for Chinstrap and Gentoo penguins relative to Adelie penguins, respectively.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="er">~</span> species</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(f, <span class="at">data =</span> penguins)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(X)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  (Intercept) speciesChinstrap speciesGentoo
+1           1                0             0
+2           1                0             0
+3           1                0             0
+4           1                0             0
+5           1                0             0
+6           1                0             0</code></pre>
+</div>
+</div>
+<p>We can change the reference category from Adelie with the <code>relevel()</code> function. The below makes Gentoo the reference category.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>penguins<span class="sc">$</span>species <span class="ot">&lt;-</span> <span class="fu">relevel</span>(penguins<span class="sc">$</span>species, <span class="st">"Gentoo"</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="er">~</span> species</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(f, <span class="at">data =</span> penguins)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(X)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  (Intercept) speciesAdelie speciesChinstrap
+1           1             1                0
+2           1             1                0
+3           1             1                0
+4           1             1                0
+5           1             1                0
+6           1             1                0</code></pre>
+</div>
+</div>
+<p>Now the coefficients for <code>speciesAdelie</code> and <code>speciesChinstrap</code> are the changes in <span class="math inline">\(\mu_i\)</span> for Adelie and Chinstrap penguins relative to Gentoo penguins, respectively.</p>
+</section>
+<section id="a-factor-and-numeric-variable" class="level4" data-number="10.2.1.2">
+<h4 data-number="10.2.1.2" class="anchored" data-anchor-id="a-factor-and-numeric-variable"><span class="header-section-number">10.2.1.2</span> A factor and numeric variable</h4>
+<p>We can include factors and continuous predictors together. For example, we combine <code>species</code> with <code>flipper_length_mm</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="er">~</span> species <span class="sc">+</span> flipper_length_mm</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(f, <span class="at">data =</span> penguins)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(X)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  (Intercept) speciesAdelie speciesChinstrap flipper_length_mm
+1           1             1                0               181
+2           1             1                0               186
+3           1             1                0               195
+4           1             1                0               193
+5           1             1                0               190
+6           1             1                0               181</code></pre>
+</div>
+</div>
+<p>The resulting design matrix includes columns for the intercept, the dummy variables for <code>species</code>, and the continuous predictor. The coefficients on the indicators have the same interpretation variables represent differences between species, but now “holding flipper length constant.”</p>
+</section>
+</section>
+<section id="lm-examples-1" class="level3" data-number="10.2.2">
+<h3 data-number="10.2.2" class="anchored" data-anchor-id="lm-examples-1"><span class="header-section-number">10.2.2</span> <code>lm()</code> examples</h3>
+<p>As familiar examples, here are a few <code>lm()</code> fits with factors <code>species</code> and <code>island</code> as predictors of <code>bill_length_mm</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># one factor</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>fit1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(bill_length_mm <span class="sc">~</span> species, <span class="at">data =</span> penguins)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co"># two factors</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>fit2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(bill_length_mm <span class="sc">~</span> species <span class="sc">+</span> island, <span class="at">data =</span> penguins)</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="co"># one factor, one numeric</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>fit3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(bill_length_mm <span class="sc">~</span> species <span class="sc">+</span> flipper_length_mm, <span class="at">data =</span> penguins)</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="co"># one factor, two numeric</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>fit4 <span class="ot">&lt;-</span> <span class="fu">lm</span>(bill_length_mm <span class="sc">~</span> species <span class="sc">+</span> flipper_length_mm <span class="sc">+</span> body_mass_g, <span class="at">data =</span> penguins)</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a><span class="fu">modelsummary</span>(<span class="fu">list</span>(fit1, fit2, fit3, fit4), <span class="at">gof_map =</span> <span class="cn">NA</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<!-- preamble start -->
+
+    <script>
+
+      function styleCell_98ha30h5r0fca2sek6f2(i, j, css_id) {
+          var table = document.getElementById("tinytable_98ha30h5r0fca2sek6f2");
+          var cell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
+          if (cell) {
+              console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
+              cell.classList.add(css_id);
+          } else {
+              console.warn(`Cell at (${i}, ${j}) not found.`);
+          }
+      }
+      function spanCell_98ha30h5r0fca2sek6f2(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_98ha30h5r0fca2sek6f2");
+        const targetCell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
+        if (!targetCell) {
+          console.warn(`Cell at (${i}, ${j}) not found.`);
+        }
+
+        // Get all cells that need to be removed
+        const cellsToRemove = [];
+        for (let r = 0; r < rowspan; r++) {
+          for (let c = 0; c < colspan; c++) {
+            if (r === 0 && c === 0) continue; // Skip the target cell
+            const cell = table.querySelector(`[data-row="${i + r}"][data-col="${j + c}"]`);
+            if (cell) {
+              cellsToRemove.push(cell);
+            }
+          }
+        }
+
+        // Remove all cells
+        cellsToRemove.forEach(cell => cell.remove());
+
+        // Set rowspan and colspan of the target cell if it exists
+        if (targetCell) {
+          targetCell.rowSpan = rowspan;
+          targetCell.colSpan = colspan;
+        }
+      }
+      // tinytable span after
+      window.addEventListener('load', function () {
+          var cellsToStyle = [
+            // tinytable style arrays after
+          { positions: [ { i: '14', j: 1 }, { i: '14', j: 2 }, { i: '14', j: 3 }, { i: '14', j: 4 },  ], css_id: 'tinytable_css_d48pps02avws3za7ryla',}, 
+          { positions: [ { i: '1', j: 1 }, { i: '3', j: 1 }, { i: '5', j: 1 }, { i: '7', j: 1 }, { i: '8', j: 1 }, { i: '9', j: 1 }, { i: '10', j: 1 }, { i: '11', j: 1 }, { i: '12', j: 1 }, { i: '13', j: 1 }, { i: '12', j: 2 }, { i: '2', j: 1 }, { i: '1', j: 2 }, { i: '4', j: 1 }, { i: '3', j: 2 }, { i: '6', j: 1 }, { i: '5', j: 2 }, { i: '6', j: 2 }, { i: '7', j: 2 }, { i: '8', j: 2 }, { i: '9', j: 2 }, { i: '10', j: 2 }, { i: '11', j: 2 }, { i: '10', j: 3 }, { i: '13', j: 2 }, { i: '12', j: 3 }, { i: '2', j: 2 }, { i: '1', j: 3 }, { i: '4', j: 2 }, { i: '3', j: 3 }, { i: '4', j: 3 }, { i: '5', j: 3 }, { i: '6', j: 3 }, { i: '7', j: 3 }, { i: '8', j: 3 }, { i: '9', j: 3 }, { i: '8', j: 4 }, { i: '11', j: 3 }, { i: '10', j: 4 }, { i: '13', j: 3 }, { i: '12', j: 4 }, { i: '2', j: 3 }, { i: '1', j: 4 }, { i: '2', j: 4 }, { i: '3', j: 4 }, { i: '4', j: 4 }, { i: '5', j: 4 }, { i: '6', j: 4 }, { i: '7', j: 4 }, { i: '9', j: 4 }, { i: '11', j: 4 }, { i: '13', j: 4 },  ], css_id: 'tinytable_css_sjl4nun9in7mj5rrgt27',}, 
+          { positions: [ { i: '0', j: 1 }, { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 },  ], css_id: 'tinytable_css_5qsollvhdpqb8fv3lmgc',}, 
+          { positions: [ { i: '14', j: 0 },  ], css_id: 'tinytable_css_uzesvz2qtham88urk4kw',}, 
+          { positions: [ { i: '1', j: 0 }, { i: '2', j: 0 }, { i: '3', j: 0 }, { i: '4', j: 0 }, { i: '5', j: 0 }, { i: '6', j: 0 }, { i: '7', j: 0 }, { i: '8', j: 0 }, { i: '9', j: 0 }, { i: '10', j: 0 }, { i: '11', j: 0 }, { i: '12', j: 0 }, { i: '13', j: 0 },  ], css_id: 'tinytable_css_8b7o4xk07313c4qkoodi',}, 
+          { positions: [ { i: '0', j: 0 },  ], css_id: 'tinytable_css_1lj8gv8k8us8lgs0b6n9',}, 
+          ];
+
+          // Loop over the arrays to style the cells
+          cellsToStyle.forEach(function (group) {
+              group.positions.forEach(function (cell) {
+                  styleCell_98ha30h5r0fca2sek6f2(cell.i, cell.j, group.css_id);
+              });
+          });
+      });
+    </script>
+
+    <style>
+      /* tinytable css entries after */
+      .table td.tinytable_css_d48pps02avws3za7ryla, .table th.tinytable_css_d48pps02avws3za7ryla { text-align: center; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_sjl4nun9in7mj5rrgt27, .table th.tinytable_css_sjl4nun9in7mj5rrgt27 { text-align: center; }
+      .table td.tinytable_css_5qsollvhdpqb8fv3lmgc, .table th.tinytable_css_5qsollvhdpqb8fv3lmgc { text-align: center; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_uzesvz2qtham88urk4kw, .table th.tinytable_css_uzesvz2qtham88urk4kw { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_8b7o4xk07313c4qkoodi, .table th.tinytable_css_8b7o4xk07313c4qkoodi { text-align: left; }
+      .table td.tinytable_css_1lj8gv8k8us8lgs0b6n9, .table th.tinytable_css_1lj8gv8k8us8lgs0b6n9 { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+    </style>
+    <div class="container">
+      <table class="table table-borderless" id="tinytable_98ha30h5r0fca2sek6f2" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+        <thead>
+        
+              <tr>
+                <th scope="col" data-row="0" data-col="0"> </th>
+                <th scope="col" data-row="0" data-col="1">(1)</th>
+                <th scope="col" data-row="0" data-col="2">(2)</th>
+                <th scope="col" data-row="0" data-col="3">(3)</th>
+                <th scope="col" data-row="0" data-col="4">(4)</th>
+              </tr>
+        </thead>
+        
+        <tbody>
+                <tr>
+                  <td data-row="1" data-col="0">(Intercept)</td>
+                  <td data-row="1" data-col="1">47.568</td>
+                  <td data-row="1" data-col="2">47.568</td>
+                  <td data-row="1" data-col="3">0.369</td>
+                  <td data-row="1" data-col="4">11.223</td>
+                </tr>
+                <tr>
+                  <td data-row="2" data-col="0"></td>
+                  <td data-row="2" data-col="1">(0.272)</td>
+                  <td data-row="2" data-col="2">(0.273)</td>
+                  <td data-row="2" data-col="3">(4.661)</td>
+                  <td data-row="2" data-col="4">(4.436)</td>
+                </tr>
+                <tr>
+                  <td data-row="3" data-col="0">speciesAdelie</td>
+                  <td data-row="3" data-col="1">-8.744</td>
+                  <td data-row="3" data-col="2">-8.593</td>
+                  <td data-row="3" data-col="3">-2.849</td>
+                  <td data-row="3" data-col="4">-2.021</td>
+                </tr>
+                <tr>
+                  <td data-row="4" data-col="0"></td>
+                  <td data-row="4" data-col="1">(0.367)</td>
+                  <td data-row="4" data-col="2">(0.525)</td>
+                  <td data-row="4" data-col="3">(0.664)</td>
+                  <td data-row="4" data-col="4">(0.612)</td>
+                </tr>
+                <tr>
+                  <td data-row="5" data-col="0">speciesChinstrap</td>
+                  <td data-row="5" data-col="1">1.266</td>
+                  <td data-row="5" data-col="2">1.721</td>
+                  <td data-row="5" data-col="3">5.918</td>
+                  <td data-row="5" data-col="4">7.344</td>
+                </tr>
+                <tr>
+                  <td data-row="6" data-col="0"></td>
+                  <td data-row="6" data-col="1">(0.452)</td>
+                  <td data-row="6" data-col="2">(0.753)</td>
+                  <td data-row="6" data-col="3">(0.605)</td>
+                  <td data-row="6" data-col="4">(0.577)</td>
+                </tr>
+                <tr>
+                  <td data-row="7" data-col="0">islandDream</td>
+                  <td data-row="7" data-col="1"></td>
+                  <td data-row="7" data-col="2">-0.455</td>
+                  <td data-row="7" data-col="3"></td>
+                  <td data-row="7" data-col="4"></td>
+                </tr>
+                <tr>
+                  <td data-row="8" data-col="0"></td>
+                  <td data-row="8" data-col="1"></td>
+                  <td data-row="8" data-col="2">(0.602)</td>
+                  <td data-row="8" data-col="3"></td>
+                  <td data-row="8" data-col="4"></td>
+                </tr>
+                <tr>
+                  <td data-row="9" data-col="0">islandTorgersen</td>
+                  <td data-row="9" data-col="1"></td>
+                  <td data-row="9" data-col="2">0.063</td>
+                  <td data-row="9" data-col="3"></td>
+                  <td data-row="9" data-col="4"></td>
+                </tr>
+                <tr>
+                  <td data-row="10" data-col="0"></td>
+                  <td data-row="10" data-col="1"></td>
+                  <td data-row="10" data-col="2">(0.624)</td>
+                  <td data-row="10" data-col="3"></td>
+                  <td data-row="10" data-col="4"></td>
+                </tr>
+                <tr>
+                  <td data-row="11" data-col="0">flipper_length_mm</td>
+                  <td data-row="11" data-col="1"></td>
+                  <td data-row="11" data-col="2"></td>
+                  <td data-row="11" data-col="3">0.217</td>
+                  <td data-row="11" data-col="4">0.099</td>
+                </tr>
+                <tr>
+                  <td data-row="12" data-col="0"></td>
+                  <td data-row="12" data-col="1"></td>
+                  <td data-row="12" data-col="2"></td>
+                  <td data-row="12" data-col="3">(0.021)</td>
+                  <td data-row="12" data-col="4">(0.024)</td>
+                </tr>
+                <tr>
+                  <td data-row="13" data-col="0">body_mass_g</td>
+                  <td data-row="13" data-col="1"></td>
+                  <td data-row="13" data-col="2"></td>
+                  <td data-row="13" data-col="3"></td>
+                  <td data-row="13" data-col="4">0.003</td>
+                </tr>
+                <tr>
+                  <td data-row="14" data-col="0"></td>
+                  <td data-row="14" data-col="1"></td>
+                  <td data-row="14" data-col="2"></td>
+                  <td data-row="14" data-col="3"></td>
+                  <td data-row="14" data-col="4">(0.000)</td>
+                </tr>
+        </tbody>
+      </table>
+    </div>
+<!-- hack to avoid NA insertion in last line -->
+</div>
+</div>
+</section>
+</section>
+<section id="polynomials" class="level2 page-columns page-full" data-number="10.3">
+<h2 data-number="10.3" class="anchored" data-anchor-id="polynomials"><span class="header-section-number">10.3</span> Polynomials</h2>
+<p>Sometimes the we suspect the effect of a variable on the outcome is not linear. To allow nonlinear effects, we can include polynomial terms of the predictor in the design matrix. For example, we can use the quadratic model</p>
+<p><span class="math display">\[
+\mu_i = \beta_0 + \beta_1 x_i + \beta_2 x_i^2.
+\]</span></p>
+<p>Here the effect of <span class="math inline">\(x_i\)</span> depends on its value—<span class="math inline">\(\frac{d \mu_i}{d x_i} = \beta_1 + 2\beta_2 x_i\)</span>. We can build the design matrix easily with formulas and the <code>poly()</code> function.</p>
+<section id="orthogonal-and-raw-polynomials" class="level3 page-columns page-full" data-number="10.3.1">
+<h3 data-number="10.3.1" class="anchored" data-anchor-id="orthogonal-and-raw-polynomials"><span class="header-section-number">10.3.1</span> Orthogonal and raw polynomials</h3>
+<p>The function <code>poly()</code> creates polynomial terms. By default, it produces <em>orthogonal polynomials</em>, which are linear combinations of <span class="math inline">\(x, x^2, x^3, ...\)</span>, that are uncorrelated.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> If we set <code>raw = TRUE</code>, <code>poly()</code> returns the raw powers of <span class="math inline">\(x\)</span> (i.e, <span class="math inline">\(x = 3\)</span> becomes <span class="math inline">\(x^2 = 9\)</span>). The raw powers are easier to interpret directly when they appear in regression tables but can sometimes cause problems for computation.</p>
+<div class="no-row-height column-margin column-container"><div id="fn2"><p><sup>2</sup>&nbsp;These uncorrelated variables are created using the Gram–Schmidt process. Orthogonal polynomials are helpful because they reduce multicollinearity. Less multicollinearly makes numerical optimization routines (e.g., Newton–Raphson) more robust and MCMC samplers mix more efficiently. Raw powers can lead to high multicollinearity and cause problems for our computational procedures. However, these transformed variables do not have the same interpretation.</p></div></div><p><strong>Recommendation:</strong> I recommend using <code>raw = TRUE</code> if you are reporting results in a regression table, unless these cause numerical problems. However, it usually doesn’t matter. First, we <em>usually</em> process our results in a way that means our interpretation is the same with <code>raw = FALSE</code> and <code>raw = TRUE</code>. Second, numerical routines are really good, so <code>raw = FALSE</code> doesn’t usually lead to problems.</p>
+</section>
+<section id="model.matrix-examples-2" class="level3" data-number="10.3.2">
+<h3 data-number="10.3.2" class="anchored" data-anchor-id="model.matrix-examples-2"><span class="header-section-number">10.3.2</span> <code>model.matrix()</code> examples</h3>
+<p>Let’s look at orthogonal and raw polynomials using <code>flipper_length_mm</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># orthogonal</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="er">~</span> <span class="fu">poly</span>(flipper_length_mm, <span class="dv">2</span>)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(f, <span class="at">data =</span> penguins)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(X)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  (Intercept) poly(flipper_length_mm, 2)1 poly(flipper_length_mm, 2)2
+1           1                 -0.07818550                 0.089041829
+2           1                 -0.05860679                 0.030341919
+3           1                 -0.02336511                -0.038291958
+4           1                 -0.03119659                -0.027153981
+5           1                 -0.04294382                -0.006039163
+6           1                 -0.07818550                 0.089041829</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># raw</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="er">~</span> <span class="fu">poly</span>(flipper_length_mm, <span class="dv">2</span>, <span class="at">raw =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(f, <span class="at">data =</span> penguins)</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(X)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  (Intercept) poly(flipper_length_mm, 2, raw = TRUE)1
+1           1                                     181
+2           1                                     186
+3           1                                     195
+4           1                                     193
+5           1                                     190
+6           1                                     181
+  poly(flipper_length_mm, 2, raw = TRUE)2
+1                                   32761
+2                                   34596
+3                                   38025
+4                                   37249
+5                                   36100
+6                                   32761</code></pre>
+</div>
+</div>
+<p>With orthogonal polynomials, the columns are not <span class="math inline">\(x\)</span> and <span class="math inline">\(x^2\)</span> but to uncorrelated combinations of them. With raw polynomials, the columns are <span class="math inline">\(x\)</span> and <span class="math inline">\(x^2\)</span> exactly.</p>
+<p>Here’s an example of a 4th-order polynomial.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># raw</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="er">~</span> <span class="fu">poly</span>(flipper_length_mm, <span class="dv">4</span>, <span class="at">raw =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(f, <span class="at">data =</span> penguins)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(X)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  (Intercept) poly(flipper_length_mm, 4, raw = TRUE)1
+1           1                                     181
+2           1                                     186
+3           1                                     195
+4           1                                     193
+5           1                                     190
+6           1                                     181
+  poly(flipper_length_mm, 4, raw = TRUE)2
+1                                   32761
+2                                   34596
+3                                   38025
+4                                   37249
+5                                   36100
+6                                   32761
+  poly(flipper_length_mm, 4, raw = TRUE)3
+1                                 5929741
+2                                 6434856
+3                                 7414875
+4                                 7189057
+5                                 6859000
+6                                 5929741
+  poly(flipper_length_mm, 4, raw = TRUE)4
+1                              1073283121
+2                              1196883216
+3                              1445900625
+4                              1387488001
+5                              1303210000
+6                              1073283121</code></pre>
+</div>
+</div>
+</section>
+<section id="lm-examples-2" class="level3" data-number="10.3.3">
+<h3 data-number="10.3.3" class="anchored" data-anchor-id="lm-examples-2"><span class="header-section-number">10.3.3</span> <code>lm()</code> examples</h3>
+<p>As familiar examples, here are a few models with factors <code>species</code> and <code>island</code> as predictors of <code>bill_length_mm</code>.</p>
+<p>As familiar examples, here are a few <code>lm()</code> fits with both orthogonal and raw polynomials.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>fit1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(bill_length_mm <span class="sc">~</span> <span class="fu">poly</span>(flipper_length_mm, <span class="dv">2</span>), <span class="at">data =</span> penguins)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>fit2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(bill_length_mm <span class="sc">~</span> <span class="fu">poly</span>(flipper_length_mm, <span class="dv">3</span>), <span class="at">data =</span> penguins)</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>fit3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(bill_length_mm <span class="sc">~</span> <span class="fu">poly</span>(flipper_length_mm, <span class="dv">2</span>, <span class="at">raw =</span> <span class="cn">TRUE</span>), <span class="at">data =</span> penguins)</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>fit4 <span class="ot">&lt;-</span> <span class="fu">lm</span>(bill_length_mm <span class="sc">~</span> <span class="fu">poly</span>(flipper_length_mm, <span class="dv">3</span>, <span class="at">raw =</span> <span class="cn">TRUE</span>), <span class="at">data =</span> penguins)</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="fu">modelsummary</span>(<span class="fu">list</span>(fit1, fit2, fit3, fit4), <span class="at">gof_map =</span> <span class="cn">NA</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<!-- preamble start -->
+
+    <script>
+
+      function styleCell_4jry9oyqp9oq2rdlq3bk(i, j, css_id) {
+          var table = document.getElementById("tinytable_4jry9oyqp9oq2rdlq3bk");
+          var cell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
+          if (cell) {
+              console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
+              cell.classList.add(css_id);
+          } else {
+              console.warn(`Cell at (${i}, ${j}) not found.`);
+          }
+      }
+      function spanCell_4jry9oyqp9oq2rdlq3bk(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_4jry9oyqp9oq2rdlq3bk");
+        const targetCell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
+        if (!targetCell) {
+          console.warn(`Cell at (${i}, ${j}) not found.`);
+        }
+
+        // Get all cells that need to be removed
+        const cellsToRemove = [];
+        for (let r = 0; r < rowspan; r++) {
+          for (let c = 0; c < colspan; c++) {
+            if (r === 0 && c === 0) continue; // Skip the target cell
+            const cell = table.querySelector(`[data-row="${i + r}"][data-col="${j + c}"]`);
+            if (cell) {
+              cellsToRemove.push(cell);
+            }
+          }
+        }
+
+        // Remove all cells
+        cellsToRemove.forEach(cell => cell.remove());
+
+        // Set rowspan and colspan of the target cell if it exists
+        if (targetCell) {
+          targetCell.rowSpan = rowspan;
+          targetCell.colSpan = colspan;
+        }
+      }
+      // tinytable span after
+      window.addEventListener('load', function () {
+          var cellsToStyle = [
+            // tinytable style arrays after
+          { positions: [ { i: '22', j: 1 }, { i: '22', j: 2 }, { i: '22', j: 3 }, { i: '22', j: 4 },  ], css_id: 'tinytable_css_js9qadbpz86fqsonnoji',}, 
+          { positions: [ { i: '1', j: 1 }, { i: '5', j: 1 }, { i: '2', j: 1 }, { i: '3', j: 1 }, { i: '8', j: 1 }, { i: '9', j: 1 }, { i: '6', j: 1 }, { i: '11', j: 1 }, { i: '12', j: 1 }, { i: '13', j: 1 }, { i: '14', j: 1 }, { i: '15', j: 1 }, { i: '16', j: 1 }, { i: '4', j: 1 }, { i: '18', j: 1 }, { i: '19', j: 1 }, { i: '7', j: 1 }, { i: '21', j: 1 }, { i: '12', j: 2 }, { i: '10', j: 1 }, { i: '1', j: 2 }, { i: '2', j: 2 }, { i: '3', j: 2 }, { i: '4', j: 2 }, { i: '5', j: 2 }, { i: '6', j: 2 }, { i: '17', j: 1 }, { i: '8', j: 2 }, { i: '9', j: 2 }, { i: '20', j: 1 }, { i: '11', j: 2 }, { i: '2', j: 3 }, { i: '13', j: 2 }, { i: '14', j: 2 }, { i: '15', j: 2 }, { i: '16', j: 2 }, { i: '17', j: 2 }, { i: '18', j: 2 }, { i: '19', j: 2 }, { i: '7', j: 2 }, { i: '21', j: 2 }, { i: '12', j: 3 }, { i: '10', j: 2 }, { i: '1', j: 3 }, { i: '15', j: 3 }, { i: '3', j: 3 }, { i: '4', j: 3 }, { i: '5', j: 3 }, { i: '6', j: 3 }, { i: '7', j: 3 }, { i: '8', j: 3 }, { i: '9', j: 3 }, { i: '20', j: 2 }, { i: '11', j: 3 }, { i: '2', j: 4 }, { i: '13', j: 3 }, { i: '14', j: 3 }, { i: '5', j: 4 }, { i: '16', j: 3 }, { i: '17', j: 3 }, { i: '18', j: 3 }, { i: '19', j: 3 }, { i: '20', j: 3 }, { i: '21', j: 3 }, { i: '12', j: 4 }, { i: '10', j: 3 }, { i: '1', j: 4 }, { i: '15', j: 4 }, { i: '3', j: 4 }, { i: '4', j: 4 }, { i: '18', j: 4 }, { i: '6', j: 4 }, { i: '7', j: 4 }, { i: '8', j: 4 }, { i: '9', j: 4 }, { i: '10', j: 4 }, { i: '11', j: 4 }, { i: '16', j: 4 }, { i: '13', j: 4 }, { i: '14', j: 4 }, { i: '19', j: 4 }, { i: '20', j: 4 }, { i: '17', j: 4 }, { i: '21', j: 4 },  ], css_id: 'tinytable_css_fhgbnn07v5p8fqosuxhn',}, 
+          { positions: [ { i: '0', j: 1 }, { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 },  ], css_id: 'tinytable_css_zr10mlf48t0tcuvd35fl',}, 
+          { positions: [ { i: '22', j: 0 },  ], css_id: 'tinytable_css_bqn7oaatu0uotzjtrrd4',}, 
+          { positions: [ { i: '1', j: 0 }, { i: '2', j: 0 }, { i: '3', j: 0 }, { i: '4', j: 0 }, { i: '5', j: 0 }, { i: '6', j: 0 }, { i: '7', j: 0 }, { i: '8', j: 0 }, { i: '9', j: 0 }, { i: '10', j: 0 }, { i: '11', j: 0 }, { i: '12', j: 0 }, { i: '13', j: 0 }, { i: '14', j: 0 }, { i: '15', j: 0 }, { i: '16', j: 0 }, { i: '17', j: 0 }, { i: '18', j: 0 }, { i: '19', j: 0 }, { i: '20', j: 0 }, { i: '21', j: 0 },  ], css_id: 'tinytable_css_6zwkeaf0azx6f9eabgte',}, 
+          { positions: [ { i: '0', j: 0 },  ], css_id: 'tinytable_css_71zx89lpendxlfceyxj5',}, 
+          ];
+
+          // Loop over the arrays to style the cells
+          cellsToStyle.forEach(function (group) {
+              group.positions.forEach(function (cell) {
+                  styleCell_4jry9oyqp9oq2rdlq3bk(cell.i, cell.j, group.css_id);
+              });
+          });
+      });
+    </script>
+
+    <style>
+      /* tinytable css entries after */
+      .table td.tinytable_css_js9qadbpz86fqsonnoji, .table th.tinytable_css_js9qadbpz86fqsonnoji { text-align: center; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_fhgbnn07v5p8fqosuxhn, .table th.tinytable_css_fhgbnn07v5p8fqosuxhn { text-align: center; }
+      .table td.tinytable_css_zr10mlf48t0tcuvd35fl, .table th.tinytable_css_zr10mlf48t0tcuvd35fl { text-align: center; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_bqn7oaatu0uotzjtrrd4, .table th.tinytable_css_bqn7oaatu0uotzjtrrd4 { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_6zwkeaf0azx6f9eabgte, .table th.tinytable_css_6zwkeaf0azx6f9eabgte { text-align: left; }
+      .table td.tinytable_css_71zx89lpendxlfceyxj5, .table th.tinytable_css_71zx89lpendxlfceyxj5 { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+    </style>
+    <div class="container">
+      <table class="table table-borderless" id="tinytable_4jry9oyqp9oq2rdlq3bk" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+        <thead>
+        
+              <tr>
+                <th scope="col" data-row="0" data-col="0"> </th>
+                <th scope="col" data-row="0" data-col="1">(1)</th>
+                <th scope="col" data-row="0" data-col="2">(2)</th>
+                <th scope="col" data-row="0" data-col="3">(3)</th>
+                <th scope="col" data-row="0" data-col="4">(4)</th>
+              </tr>
+        </thead>
+        
+        <tbody>
+                <tr>
+                  <td data-row="1" data-col="0">(Intercept)</td>
+                  <td data-row="1" data-col="1">43.993</td>
+                  <td data-row="1" data-col="2">43.993</td>
+                  <td data-row="1" data-col="3">-46.928</td>
+                  <td data-row="1" data-col="4">-182.782</td>
+                </tr>
+                <tr>
+                  <td data-row="2" data-col="0"></td>
+                  <td data-row="2" data-col="1">(0.227)</td>
+                  <td data-row="2" data-col="2">(0.228)</td>
+                  <td data-row="2" data-col="3">(50.349)</td>
+                  <td data-row="2" data-col="4">(613.541)</td>
+                </tr>
+                <tr>
+                  <td data-row="3" data-col="0">poly(flipper_length_mm, 2)1</td>
+                  <td data-row="3" data-col="1">65.077</td>
+                  <td data-row="3" data-col="2"></td>
+                  <td data-row="3" data-col="3"></td>
+                  <td data-row="3" data-col="4"></td>
+                </tr>
+                <tr>
+                  <td data-row="4" data-col="0"></td>
+                  <td data-row="4" data-col="1">(4.150)</td>
+                  <td data-row="4" data-col="2"></td>
+                  <td data-row="4" data-col="3"></td>
+                  <td data-row="4" data-col="4"></td>
+                </tr>
+                <tr>
+                  <td data-row="5" data-col="0">poly(flipper_length_mm, 2)2</td>
+                  <td data-row="5" data-col="1">-3.280</td>
+                  <td data-row="5" data-col="2"></td>
+                  <td data-row="5" data-col="3"></td>
+                  <td data-row="5" data-col="4"></td>
+                </tr>
+                <tr>
+                  <td data-row="6" data-col="0"></td>
+                  <td data-row="6" data-col="1">(4.150)</td>
+                  <td data-row="6" data-col="2"></td>
+                  <td data-row="6" data-col="3"></td>
+                  <td data-row="6" data-col="4"></td>
+                </tr>
+                <tr>
+                  <td data-row="7" data-col="0">poly(flipper_length_mm, 3)1</td>
+                  <td data-row="7" data-col="1"></td>
+                  <td data-row="7" data-col="2">65.077</td>
+                  <td data-row="7" data-col="3"></td>
+                  <td data-row="7" data-col="4"></td>
+                </tr>
+                <tr>
+                  <td data-row="8" data-col="0"></td>
+                  <td data-row="8" data-col="1"></td>
+                  <td data-row="8" data-col="2">(4.156)</td>
+                  <td data-row="8" data-col="3"></td>
+                  <td data-row="8" data-col="4"></td>
+                </tr>
+                <tr>
+                  <td data-row="9" data-col="0">poly(flipper_length_mm, 3)2</td>
+                  <td data-row="9" data-col="1"></td>
+                  <td data-row="9" data-col="2">-3.280</td>
+                  <td data-row="9" data-col="3"></td>
+                  <td data-row="9" data-col="4"></td>
+                </tr>
+                <tr>
+                  <td data-row="10" data-col="0"></td>
+                  <td data-row="10" data-col="1"></td>
+                  <td data-row="10" data-col="2">(4.156)</td>
+                  <td data-row="10" data-col="3"></td>
+                  <td data-row="10" data-col="4"></td>
+                </tr>
+                <tr>
+                  <td data-row="11" data-col="0">poly(flipper_length_mm, 3)3</td>
+                  <td data-row="11" data-col="1"></td>
+                  <td data-row="11" data-col="2">0.923</td>
+                  <td data-row="11" data-col="3"></td>
+                  <td data-row="11" data-col="4"></td>
+                </tr>
+                <tr>
+                  <td data-row="12" data-col="0"></td>
+                  <td data-row="12" data-col="1"></td>
+                  <td data-row="12" data-col="2">(4.156)</td>
+                  <td data-row="12" data-col="3"></td>
+                  <td data-row="12" data-col="4"></td>
+                </tr>
+                <tr>
+                  <td data-row="13" data-col="0">poly(flipper_length_mm, 2, raw = TRUE)1</td>
+                  <td data-row="13" data-col="1"></td>
+                  <td data-row="13" data-col="2"></td>
+                  <td data-row="13" data-col="3">0.647</td>
+                  <td data-row="13" data-col="4"></td>
+                </tr>
+                <tr>
+                  <td data-row="14" data-col="0"></td>
+                  <td data-row="14" data-col="1"></td>
+                  <td data-row="14" data-col="2"></td>
+                  <td data-row="14" data-col="3">(0.497)</td>
+                  <td data-row="14" data-col="4"></td>
+                </tr>
+                <tr>
+                  <td data-row="15" data-col="0">poly(flipper_length_mm, 2, raw = TRUE)2</td>
+                  <td data-row="15" data-col="1"></td>
+                  <td data-row="15" data-col="2"></td>
+                  <td data-row="15" data-col="3">-0.001</td>
+                  <td data-row="15" data-col="4"></td>
+                </tr>
+                <tr>
+                  <td data-row="16" data-col="0"></td>
+                  <td data-row="16" data-col="1"></td>
+                  <td data-row="16" data-col="2"></td>
+                  <td data-row="16" data-col="3">(0.001)</td>
+                  <td data-row="16" data-col="4"></td>
+                </tr>
+                <tr>
+                  <td data-row="17" data-col="0">poly(flipper_length_mm, 3, raw = TRUE)1</td>
+                  <td data-row="17" data-col="1"></td>
+                  <td data-row="17" data-col="2"></td>
+                  <td data-row="17" data-col="3"></td>
+                  <td data-row="17" data-col="4">2.665</td>
+                </tr>
+                <tr>
+                  <td data-row="18" data-col="0"></td>
+                  <td data-row="18" data-col="1"></td>
+                  <td data-row="18" data-col="2"></td>
+                  <td data-row="18" data-col="3"></td>
+                  <td data-row="18" data-col="4">(9.097)</td>
+                </tr>
+                <tr>
+                  <td data-row="19" data-col="0">poly(flipper_length_mm, 3, raw = TRUE)2</td>
+                  <td data-row="19" data-col="1"></td>
+                  <td data-row="19" data-col="2"></td>
+                  <td data-row="19" data-col="3"></td>
+                  <td data-row="19" data-col="4">-0.011</td>
+                </tr>
+                <tr>
+                  <td data-row="20" data-col="0"></td>
+                  <td data-row="20" data-col="1"></td>
+                  <td data-row="20" data-col="2"></td>
+                  <td data-row="20" data-col="3"></td>
+                  <td data-row="20" data-col="4">(0.045)</td>
+                </tr>
+                <tr>
+                  <td data-row="21" data-col="0">poly(flipper_length_mm, 3, raw = TRUE)3</td>
+                  <td data-row="21" data-col="1"></td>
+                  <td data-row="21" data-col="2"></td>
+                  <td data-row="21" data-col="3"></td>
+                  <td data-row="21" data-col="4">0.000</td>
+                </tr>
+                <tr>
+                  <td data-row="22" data-col="0"></td>
+                  <td data-row="22" data-col="1"></td>
+                  <td data-row="22" data-col="2"></td>
+                  <td data-row="22" data-col="3"></td>
+                  <td data-row="22" data-col="4">(0.000)</td>
+                </tr>
+        </tbody>
+      </table>
+    </div>
+<!-- hack to avoid NA insertion in last line -->
+</div>
+</div>
+<p>Note that while the raw and orthogonal polynomial terms have different coefficients, they produce the exact same estimates of <span class="math inline">\(\mu\)</span>. And they produce the exact same estimates of <span class="math inline">\(d \mu / d x_i\)</span>, though we have to transform the estimates to get <span class="math inline">\(x_i\)</span> back to its original scale (R can do this for us).</p>
+</section>
+</section>
+<section id="interactions" class="level2 page-columns page-full" data-number="10.4">
+<h2 data-number="10.4" class="anchored" data-anchor-id="interactions"><span class="header-section-number">10.4</span> Interactions</h2>
+<p>We can also use formulas to create interactions <span class="citation" data-cites="Brambor2006">(<a href="#ref-Brambor2006" role="doc-biblioref">Brambor, Clark, and Golder 2006</a>)</span>. In scalar form, we typically use the specification <span class="math display">\[
+\mu_i =\; \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \beta_3 x_{i1}x_{i2}
+\]</span> to model interactions so that the effect of <span class="math inline">\(x_{i1}\)</span> depends on <span class="math inline">\(x_{i2}\)</span> (and vice versa).</p>
+<div class="no-row-height column-margin column-container"><div id="ref-Brambor2006" class="csl-entry" role="listitem">
+Brambor, Thomas, William Roberts Clark, and Matt Golder. 2006. <span>“Understanding Interaction Models: Improving Empirical Analyses.”</span> <em>Political Analysis</em> 14 (1): 63–82. <a href="https://doi.org/10.1093/pan/mpi014">https://doi.org/10.1093/pan/mpi014</a>.
+</div></div><p>R provides three operators for interactions:</p>
+<ul>
+<li><code>:</code> includes only the product of two variables.<br>
+</li>
+<li><code>*</code> expands to the main effects and their interaction.<br>
+</li>
+<li><code>^</code> expands to all interactions up to a given order.</li>
+</ul>
+<section id="model.matrix-examples-3" class="level3" data-number="10.4.1">
+<h3 data-number="10.4.1" class="anchored" data-anchor-id="model.matrix-examples-3"><span class="header-section-number">10.4.1</span> <code>model.matrix()</code> examples</h3>
+<section id="two-numeric-variables-1" class="level4" data-number="10.4.1.1">
+<h4 data-number="10.4.1.1" class="anchored" data-anchor-id="two-numeric-variables-1"><span class="header-section-number">10.4.1.1</span> Two numeric variables</h4>
+<p>First, consider two numeric predictors.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="er">~</span> flipper_length_mm <span class="sc">*</span> body_mass_g</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(f, <span class="at">data =</span> penguins)</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(X)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  (Intercept) flipper_length_mm body_mass_g flipper_length_mm:body_mass_g
+1           1               181        3750                        678750
+2           1               186        3800                        706800
+3           1               195        3250                        633750
+4           1               193        3450                        665850
+5           1               190        3650                        693500
+6           1               181        3625                        656125</code></pre>
+</div>
+</div>
+<p>This creates columns for <code>flipper_length_mm</code>, <code>body_mass_g</code>, and their product. The coefficient on the product term shows how the slope of one variable depends on the other.</p>
+<p>We wouldn’t (usually) want to do this, but we can also include only the product, leaving out main effects.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="er">~</span> flipper_length_mm<span class="sc">:</span>body_mass_g</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(f, <span class="at">data =</span> penguins)</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(X)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  (Intercept) flipper_length_mm:body_mass_g
+1           1                        678750
+2           1                        706800
+3           1                        633750
+4           1                        665850
+5           1                        693500
+6           1                        656125</code></pre>
+</div>
+</div>
+<p>Or we could include only one of the main effects.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="er">~</span> flipper_length_mm <span class="sc">+</span> flipper_length_mm<span class="sc">:</span>body_mass_g</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(f, <span class="at">data =</span> penguins)</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(X)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  (Intercept) flipper_length_mm flipper_length_mm:body_mass_g
+1           1               181                        678750
+2           1               186                        706800
+3           1               195                        633750
+4           1               193                        665850
+5           1               190                        693500
+6           1               181                        656125</code></pre>
+</div>
+</div>
+</section>
+<section id="numeric-and-factor-variable" class="level4" data-number="10.4.1.2">
+<h4 data-number="10.4.1.2" class="anchored" data-anchor-id="numeric-and-factor-variable"><span class="header-section-number">10.4.1.2</span> Numeric and factor variable</h4>
+<p>We can also interact factor and numeric variables. For example, we can interact <code>flipper_length_mm</code> with <code>species</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(penguins<span class="sc">$</span>species)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Gentoo"    "Adelie"    "Chinstrap"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="er">~</span> flipper_length_mm <span class="sc">*</span> species</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(f, <span class="at">data =</span> penguins)</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(X)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  (Intercept) flipper_length_mm speciesAdelie speciesChinstrap
+1           1               181             1                0
+2           1               186             1                0
+3           1               195             1                0
+4           1               193             1                0
+5           1               190             1                0
+6           1               181             1                0
+  flipper_length_mm:speciesAdelie flipper_length_mm:speciesChinstrap
+1                             181                                  0
+2                             186                                  0
+3                             195                                  0
+4                             193                                  0
+5                             190                                  0
+6                             181                                  0</code></pre>
+</div>
+</div>
+<p>Here the design matrix allows separate slopes for each species. The dummy variables for <code>species</code> adjust the intercepts, and the product terms adjust the slopes.</p>
+</section>
+<section id="two-factor-variables" class="level4" data-number="10.4.1.3">
+<h4 data-number="10.4.1.3" class="anchored" data-anchor-id="two-factor-variables"><span class="header-section-number">10.4.1.3</span> Two factor variables</h4>
+<p>Finally, we can interact two factors, such as <code>species</code> and <code>island</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(penguins<span class="sc">$</span>species)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Gentoo"    "Adelie"    "Chinstrap"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(penguins<span class="sc">$</span>island)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Biscoe"    "Dream"     "Torgersen"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="er">~</span> species <span class="sc">*</span> island</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(f, <span class="at">data =</span> penguins)</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(X)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  (Intercept) speciesAdelie speciesChinstrap islandDream islandTorgersen
+1           1             1                0           0               1
+2           1             1                0           0               1
+3           1             1                0           0               1
+4           1             1                0           0               1
+5           1             1                0           0               1
+6           1             1                0           0               1
+  speciesAdelie:islandDream speciesChinstrap:islandDream
+1                         0                            0
+2                         0                            0
+3                         0                            0
+4                         0                            0
+5                         0                            0
+6                         0                            0
+  speciesAdelie:islandTorgersen speciesChinstrap:islandTorgersen
+1                             1                                0
+2                             1                                0
+3                             1                                0
+4                             1                                0
+5                             1                                0
+6                             1                                0</code></pre>
+</div>
+</div>
+<p>This creates dummy variables for both main effects and for combinations of levels across the two factors.</p>
+<p>Remember: When the models get complicated, you can take a first derivative to understand the meaning of the coefficients. For example, the effect of <code>speciesChinstrap</code> is <span class="math inline">\(\beta_2 + \beta_6 \texttt{islandDream} + \beta_8 \texttt{islandTorgerson}\)</span>. This means that the effect is <span class="math inline">\(\beta_2\)</span> for penguins on Biscoe (the reference island), <span class="math inline">\(\beta_2 + \beta_6\)</span> for penguins on Dream, and <span class="math inline">\(\beta_2 + \beta_8\)</span> for penguins on Torgerson.</p>
+</section>
+</section>
+<section id="lm-examples-3" class="level3" data-number="10.4.2">
+<h3 data-number="10.4.2" class="anchored" data-anchor-id="lm-examples-3"><span class="header-section-number">10.4.2</span> <code>lm()</code> examples</h3>
+<p>As familiar examples, here are a few <code>lm()</code> fits with interactions predicting <code>bill_length_mm</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># numeric × numeric</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>fit1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(bill_length_mm <span class="sc">~</span> flipper_length_mm <span class="sc">*</span> body_mass_g, <span class="at">data =</span> penguins)</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a><span class="co"># numeric × factor</span></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>fit2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(bill_length_mm <span class="sc">~</span> flipper_length_mm <span class="sc">*</span> species, <span class="at">data =</span> penguins)</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a><span class="co"># factor × factor</span></span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>fit3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(bill_length_mm <span class="sc">~</span> species <span class="sc">*</span> island, <span class="at">data =</span> penguins)</span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a><span class="co"># richer example</span></span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a>fit4 <span class="ot">&lt;-</span> <span class="fu">lm</span>(bill_length_mm <span class="sc">~</span> (flipper_length_mm <span class="sc">+</span> body_mass_g <span class="sc">+</span> bill_depth_mm)<span class="sc">^</span><span class="dv">2</span>, <span class="at">data =</span> penguins)</span>
+<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a><span class="fu">modelsummary</span>(<span class="fu">list</span>(fit1, fit2, fit3, fit4), <span class="at">gof_map =</span> <span class="cn">NA</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<!-- preamble start -->
+
+    <script>
+
+      function styleCell_udvthnvcvjhn71qe1bvf(i, j, css_id) {
+          var table = document.getElementById("tinytable_udvthnvcvjhn71qe1bvf");
+          var cell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
+          if (cell) {
+              console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
+              cell.classList.add(css_id);
+          } else {
+              console.warn(`Cell at (${i}, ${j}) not found.`);
+          }
+      }
+      function spanCell_udvthnvcvjhn71qe1bvf(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_udvthnvcvjhn71qe1bvf");
+        const targetCell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
+        if (!targetCell) {
+          console.warn(`Cell at (${i}, ${j}) not found.`);
+        }
+
+        // Get all cells that need to be removed
+        const cellsToRemove = [];
+        for (let r = 0; r < rowspan; r++) {
+          for (let c = 0; c < colspan; c++) {
+            if (r === 0 && c === 0) continue; // Skip the target cell
+            const cell = table.querySelector(`[data-row="${i + r}"][data-col="${j + c}"]`);
+            if (cell) {
+              cellsToRemove.push(cell);
+            }
+          }
+        }
+
+        // Remove all cells
+        cellsToRemove.forEach(cell => cell.remove());
+
+        // Set rowspan and colspan of the target cell if it exists
+        if (targetCell) {
+          targetCell.rowSpan = rowspan;
+          targetCell.colSpan = colspan;
+        }
+      }
+      // tinytable span after
+      window.addEventListener('load', function () {
+          var cellsToStyle = [
+            // tinytable style arrays after
+          { positions: [ { i: '26', j: 3 }, { i: '26', j: 2 }, { i: '26', j: 1 }, { i: '26', j: 4 },  ], css_id: 'tinytable_css_ro0pjj1ahv0ag41qlm3o',}, 
+          { positions: [ { i: '4', j: 1 }, { i: '5', j: 1 }, { i: '2', j: 1 }, { i: '3', j: 1 }, { i: '8', j: 1 }, { i: '9', j: 1 }, { i: '6', j: 1 }, { i: '7', j: 1 }, { i: '12', j: 1 }, { i: '13', j: 1 }, { i: '10', j: 1 }, { i: '11', j: 1 }, { i: '16', j: 1 }, { i: '17', j: 1 }, { i: '18', j: 1 }, { i: '15', j: 1 }, { i: '20', j: 1 }, { i: '21', j: 1 }, { i: '22', j: 1 }, { i: '19', j: 1 }, { i: '24', j: 1 }, { i: '25', j: 1 }, { i: '12', j: 3 }, { i: '23', j: 1 }, { i: '1', j: 2 }, { i: '2', j: 2 }, { i: '3', j: 2 }, { i: '4', j: 2 }, { i: '5', j: 2 }, { i: '6', j: 2 }, { i: '7', j: 2 }, { i: '8', j: 2 }, { i: '9', j: 2 }, { i: '10', j: 2 }, { i: '11', j: 2 }, { i: '12', j: 2 }, { i: '13', j: 2 }, { i: '1', j: 1 }, { i: '15', j: 2 }, { i: '16', j: 2 }, { i: '17', j: 2 }, { i: '18', j: 2 }, { i: '19', j: 2 }, { i: '20', j: 2 }, { i: '21', j: 2 }, { i: '22', j: 2 }, { i: '23', j: 2 }, { i: '24', j: 2 }, { i: '25', j: 2 }, { i: '12', j: 4 }, { i: '14', j: 1 }, { i: '1', j: 3 }, { i: '2', j: 3 }, { i: '3', j: 3 }, { i: '4', j: 3 }, { i: '5', j: 3 }, { i: '6', j: 3 }, { i: '7', j: 3 }, { i: '8', j: 3 }, { i: '9', j: 3 }, { i: '10', j: 3 }, { i: '11', j: 3 }, { i: '25', j: 4 }, { i: '13', j: 3 }, { i: '14', j: 3 }, { i: '15', j: 3 }, { i: '16', j: 3 }, { i: '17', j: 3 }, { i: '18', j: 3 }, { i: '19', j: 3 }, { i: '20', j: 3 }, { i: '21', j: 3 }, { i: '22', j: 3 }, { i: '23', j: 3 }, { i: '24', j: 3 }, { i: '25', j: 3 }, { i: '3', j: 4 }, { i: '14', j: 2 }, { i: '1', j: 4 }, { i: '2', j: 4 }, { i: '7', j: 4 }, { i: '4', j: 4 }, { i: '5', j: 4 }, { i: '6', j: 4 }, { i: '11', j: 4 }, { i: '8', j: 4 }, { i: '9', j: 4 }, { i: '10', j: 4 }, { i: '15', j: 4 }, { i: '16', j: 4 }, { i: '13', j: 4 }, { i: '14', j: 4 }, { i: '19', j: 4 }, { i: '20', j: 4 }, { i: '17', j: 4 }, { i: '18', j: 4 }, { i: '23', j: 4 }, { i: '24', j: 4 }, { i: '21', j: 4 }, { i: '22', j: 4 },  ], css_id: 'tinytable_css_j3mi4j94lwaxd324tddh',}, 
+          { positions: [ { i: '0', j: 1 }, { i: '0', j: 4 }, { i: '0', j: 3 }, { i: '0', j: 2 },  ], css_id: 'tinytable_css_cerlo4ds1tea83v4uncg',}, 
+          { positions: [ { i: '26', j: 0 },  ], css_id: 'tinytable_css_mw46rw0bdx1d5gnuizac',}, 
+          { positions: [ { i: '1', j: 0 }, { i: '2', j: 0 }, { i: '3', j: 0 }, { i: '4', j: 0 }, { i: '5', j: 0 }, { i: '6', j: 0 }, { i: '7', j: 0 }, { i: '8', j: 0 }, { i: '9', j: 0 }, { i: '10', j: 0 }, { i: '11', j: 0 }, { i: '12', j: 0 }, { i: '13', j: 0 }, { i: '14', j: 0 }, { i: '15', j: 0 }, { i: '16', j: 0 }, { i: '17', j: 0 }, { i: '18', j: 0 }, { i: '19', j: 0 }, { i: '20', j: 0 }, { i: '21', j: 0 }, { i: '22', j: 0 }, { i: '23', j: 0 }, { i: '24', j: 0 }, { i: '25', j: 0 },  ], css_id: 'tinytable_css_5sabqk19rtnl59gdngxx',}, 
+          { positions: [ { i: '0', j: 0 },  ], css_id: 'tinytable_css_f3j5q0x64sbzh5shfrlg',}, 
+          ];
+
+          // Loop over the arrays to style the cells
+          cellsToStyle.forEach(function (group) {
+              group.positions.forEach(function (cell) {
+                  styleCell_udvthnvcvjhn71qe1bvf(cell.i, cell.j, group.css_id);
+              });
+          });
+      });
+    </script>
+
+    <style>
+      /* tinytable css entries after */
+      .table td.tinytable_css_ro0pjj1ahv0ag41qlm3o, .table th.tinytable_css_ro0pjj1ahv0ag41qlm3o { text-align: center; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_j3mi4j94lwaxd324tddh, .table th.tinytable_css_j3mi4j94lwaxd324tddh { text-align: center; }
+      .table td.tinytable_css_cerlo4ds1tea83v4uncg, .table th.tinytable_css_cerlo4ds1tea83v4uncg { text-align: center; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_mw46rw0bdx1d5gnuizac, .table th.tinytable_css_mw46rw0bdx1d5gnuizac { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_5sabqk19rtnl59gdngxx, .table th.tinytable_css_5sabqk19rtnl59gdngxx { text-align: left; }
+      .table td.tinytable_css_f3j5q0x64sbzh5shfrlg, .table th.tinytable_css_f3j5q0x64sbzh5shfrlg { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+    </style>
+    <div class="container">
+      <table class="table table-borderless" id="tinytable_udvthnvcvjhn71qe1bvf" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+        <thead>
+        
+              <tr>
+                <th scope="col" data-row="0" data-col="0"> </th>
+                <th scope="col" data-row="0" data-col="1">(1)</th>
+                <th scope="col" data-row="0" data-col="2">(2)</th>
+                <th scope="col" data-row="0" data-col="3">(3)</th>
+                <th scope="col" data-row="0" data-col="4">(4)</th>
+              </tr>
+        </thead>
+        
+        <tbody>
+                <tr>
+                  <td data-row="1" data-col="0">(Intercept)</td>
+                  <td data-row="1" data-col="1">-26.752</td>
+                  <td data-row="1" data-col="2">-20.488</td>
+                  <td data-row="1" data-col="3">47.568</td>
+                  <td data-row="1" data-col="4">139.367</td>
+                </tr>
+                <tr>
+                  <td data-row="2" data-col="0"></td>
+                  <td data-row="2" data-col="1">(21.149)</td>
+                  <td data-row="2" data-col="2">(7.757)</td>
+                  <td data-row="2" data-col="3">(0.273)</td>
+                  <td data-row="2" data-col="4">(59.166)</td>
+                </tr>
+                <tr>
+                  <td data-row="3" data-col="0">flipper_length_mm</td>
+                  <td data-row="3" data-col="1">0.339</td>
+                  <td data-row="3" data-col="2">0.313</td>
+                  <td data-row="3" data-col="3"></td>
+                  <td data-row="3" data-col="4">-0.902</td>
+                </tr>
+                <tr>
+                  <td data-row="4" data-col="0"></td>
+                  <td data-row="4" data-col="1">(0.107)</td>
+                  <td data-row="4" data-col="2">(0.036)</td>
+                  <td data-row="4" data-col="3"></td>
+                  <td data-row="4" data-col="4">(0.343)</td>
+                </tr>
+                <tr>
+                  <td data-row="5" data-col="0">body_mass_g</td>
+                  <td data-row="5" data-col="1">0.006</td>
+                  <td data-row="5" data-col="2"></td>
+                  <td data-row="5" data-col="3"></td>
+                  <td data-row="5" data-col="4">0.025</td>
+                </tr>
+                <tr>
+                  <td data-row="6" data-col="0"></td>
+                  <td data-row="6" data-col="1">(0.005)</td>
+                  <td data-row="6" data-col="2"></td>
+                  <td data-row="6" data-col="3"></td>
+                  <td data-row="6" data-col="4">(0.008)</td>
+                </tr>
+                <tr>
+                  <td data-row="7" data-col="0">flipper_length_mm × body_mass_g</td>
+                  <td data-row="7" data-col="1">-0.000</td>
+                  <td data-row="7" data-col="2"></td>
+                  <td data-row="7" data-col="3"></td>
+                  <td data-row="7" data-col="4">-0.000</td>
+                </tr>
+                <tr>
+                  <td data-row="8" data-col="0"></td>
+                  <td data-row="8" data-col="1">(0.000)</td>
+                  <td data-row="8" data-col="2"></td>
+                  <td data-row="8" data-col="3"></td>
+                  <td data-row="8" data-col="4">(0.000)</td>
+                </tr>
+                <tr>
+                  <td data-row="9" data-col="0">speciesAdelie</td>
+                  <td data-row="9" data-col="1"></td>
+                  <td data-row="9" data-col="2">33.524</td>
+                  <td data-row="9" data-col="3">-8.593</td>
+                  <td data-row="9" data-col="4"></td>
+                </tr>
+                <tr>
+                  <td data-row="10" data-col="0"></td>
+                  <td data-row="10" data-col="1"></td>
+                  <td data-row="10" data-col="2">(9.920)</td>
+                  <td data-row="10" data-col="3">(0.525)</td>
+                  <td data-row="10" data-col="4"></td>
+                </tr>
+                <tr>
+                  <td data-row="11" data-col="0">speciesChinstrap</td>
+                  <td data-row="11" data-col="1"></td>
+                  <td data-row="11" data-col="2">26.081</td>
+                  <td data-row="11" data-col="3">1.721</td>
+                  <td data-row="11" data-col="4"></td>
+                </tr>
+                <tr>
+                  <td data-row="12" data-col="0"></td>
+                  <td data-row="12" data-col="1"></td>
+                  <td data-row="12" data-col="2">(11.559)</td>
+                  <td data-row="12" data-col="3">(0.753)</td>
+                  <td data-row="12" data-col="4"></td>
+                </tr>
+                <tr>
+                  <td data-row="13" data-col="0">flipper_length_mm × speciesAdelie</td>
+                  <td data-row="13" data-col="1"></td>
+                  <td data-row="13" data-col="2">-0.178</td>
+                  <td data-row="13" data-col="3"></td>
+                  <td data-row="13" data-col="4"></td>
+                </tr>
+                <tr>
+                  <td data-row="14" data-col="0"></td>
+                  <td data-row="14" data-col="1"></td>
+                  <td data-row="14" data-col="2">(0.048)</td>
+                  <td data-row="14" data-col="3"></td>
+                  <td data-row="14" data-col="4"></td>
+                </tr>
+                <tr>
+                  <td data-row="15" data-col="0">flipper_length_mm × speciesChinstrap</td>
+                  <td data-row="15" data-col="1"></td>
+                  <td data-row="15" data-col="2">-0.092</td>
+                  <td data-row="15" data-col="3"></td>
+                  <td data-row="15" data-col="4"></td>
+                </tr>
+                <tr>
+                  <td data-row="16" data-col="0"></td>
+                  <td data-row="16" data-col="1"></td>
+                  <td data-row="16" data-col="2">(0.056)</td>
+                  <td data-row="16" data-col="3"></td>
+                  <td data-row="16" data-col="4"></td>
+                </tr>
+                <tr>
+                  <td data-row="17" data-col="0">islandDream</td>
+                  <td data-row="17" data-col="1"></td>
+                  <td data-row="17" data-col="2"></td>
+                  <td data-row="17" data-col="3">-0.455</td>
+                  <td data-row="17" data-col="4"></td>
+                </tr>
+                <tr>
+                  <td data-row="18" data-col="0"></td>
+                  <td data-row="18" data-col="1"></td>
+                  <td data-row="18" data-col="2"></td>
+                  <td data-row="18" data-col="3">(0.602)</td>
+                  <td data-row="18" data-col="4"></td>
+                </tr>
+                <tr>
+                  <td data-row="19" data-col="0">islandTorgersen</td>
+                  <td data-row="19" data-col="1"></td>
+                  <td data-row="19" data-col="2"></td>
+                  <td data-row="19" data-col="3">0.063</td>
+                  <td data-row="19" data-col="4"></td>
+                </tr>
+                <tr>
+                  <td data-row="20" data-col="0"></td>
+                  <td data-row="20" data-col="1"></td>
+                  <td data-row="20" data-col="2"></td>
+                  <td data-row="20" data-col="3">(0.624)</td>
+                  <td data-row="20" data-col="4"></td>
+                </tr>
+                <tr>
+                  <td data-row="21" data-col="0">bill_depth_mm</td>
+                  <td data-row="21" data-col="1"></td>
+                  <td data-row="21" data-col="2"></td>
+                  <td data-row="21" data-col="3"></td>
+                  <td data-row="21" data-col="4">-10.376</td>
+                </tr>
+                <tr>
+                  <td data-row="22" data-col="0"></td>
+                  <td data-row="22" data-col="1"></td>
+                  <td data-row="22" data-col="2"></td>
+                  <td data-row="22" data-col="3"></td>
+                  <td data-row="22" data-col="4">(3.328)</td>
+                </tr>
+                <tr>
+                  <td data-row="23" data-col="0">flipper_length_mm × bill_depth_mm</td>
+                  <td data-row="23" data-col="1"></td>
+                  <td data-row="23" data-col="2"></td>
+                  <td data-row="23" data-col="3"></td>
+                  <td data-row="23" data-col="4">0.075</td>
+                </tr>
+                <tr>
+                  <td data-row="24" data-col="0"></td>
+                  <td data-row="24" data-col="1"></td>
+                  <td data-row="24" data-col="2"></td>
+                  <td data-row="24" data-col="3"></td>
+                  <td data-row="24" data-col="4">(0.020)</td>
+                </tr>
+                <tr>
+                  <td data-row="25" data-col="0">body_mass_g × bill_depth_mm</td>
+                  <td data-row="25" data-col="1"></td>
+                  <td data-row="25" data-col="2"></td>
+                  <td data-row="25" data-col="3"></td>
+                  <td data-row="25" data-col="4">-0.001</td>
+                </tr>
+                <tr>
+                  <td data-row="26" data-col="0"></td>
+                  <td data-row="26" data-col="1"></td>
+                  <td data-row="26" data-col="2"></td>
+                  <td data-row="26" data-col="3"></td>
+                  <td data-row="26" data-col="4">(0.000)</td>
+                </tr>
+        </tbody>
+      </table>
+    </div>
+<!-- hack to avoid NA insertion in last line -->
+</div>
+</div>
+</section>
+</section>
+<section id="transformations" class="level2" data-number="10.5">
+<h2 data-number="10.5" class="anchored" data-anchor-id="transformations"><span class="header-section-number">10.5</span> Transformations</h2>
+<p>Transformations change how predictors enter the design matrix. In general, we can write <span class="math display">\[
+\mu_i = \beta_0 + \beta_1 g(x_i),
+\]</span> where <span class="math inline">\(g(\cdot)\)</span> is a transformation such as <span class="math inline">\(\log\)</span>, <span class="math inline">\(\sqrt{\cdot}\)</span>, or squaring. Transformations can linearize nonlinear relationships, stabilize variance, or change interpretation.</p>
+<section id="transformations-that-dont-conflict-with-formula-operators" class="level3" data-number="10.5.1">
+<h3 data-number="10.5.1" class="anchored" data-anchor-id="transformations-that-dont-conflict-with-formula-operators"><span class="header-section-number">10.5.1</span> Transformations that don’t conflict with formula operators</h3>
+<p>Some functions can be applied directly in a formula. For example, we can use the log or square-root functions.</p>
+<p>The log is especially common. For the model <span class="math display">\[
+\mu_i = \beta_0 + \beta_1 \log(x_i),
+\]</span> the marginal effect is <span class="math inline">\(\tfrac{d\mu_i}{dx_i} = \tfrac{\beta_1}{x_i}\)</span>, which decreases in magnitude as <span class="math inline">\(x_i\)</span> grows.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="er">~</span> <span class="fu">log</span>(flipper_length_mm)</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(f, <span class="at">data =</span> penguins)</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(X)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  (Intercept) log(flipper_length_mm)
+1           1               5.198497
+2           1               5.225747
+3           1               5.273000
+4           1               5.262690
+5           1               5.247024
+6           1               5.198497</code></pre>
+</div>
+</div>
+<p>The square root can also be used directly. For the model <span class="math display">\[
+\mu_i = \beta_0 + \beta_1 \sqrt{x_i},
+\]</span> the marginal effect is <span class="math inline">\(\tfrac{d\mu_i}{dx_i} = \tfrac{\beta_1}{2\sqrt{x_i}}\)</span>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="er">~</span> <span class="fu">sqrt</span>(flipper_length_mm)</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(f, <span class="at">data =</span> penguins)</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(X)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  (Intercept) sqrt(flipper_length_mm)
+1           1                13.45362
+2           1                13.63818
+3           1                13.96424
+4           1                13.89244
+5           1                13.78405
+6           1                13.45362</code></pre>
+</div>
+</div>
+</section>
+<section id="transformations-that-require-i" class="level3" data-number="10.5.2">
+<h3 data-number="10.5.2" class="anchored" data-anchor-id="transformations-that-require-i"><span class="header-section-number">10.5.2</span> Transformations that require <code>I()</code></h3>
+<p>Importantly, though, some symbols in formulas have special meaning. In formulas, <code>+</code> adds predictors, <code>-</code> removes predictors, <code>^</code> expands interactions up to a certain order, and <code>:</code> forms interactions.</p>
+<p>If we want arithmetic version instead of the formula-operator version, we must wrap the expression in <code>I()</code>.</p>
+<p>For example, to include a quadratic term, we write</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="er">~</span> <span class="fu">I</span>(flipper_length_mm<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(f, <span class="at">data =</span> penguins)</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(X)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  (Intercept) I(flipper_length_mm^2)
+1           1                  32761
+2           1                  34596
+3           1                  38025
+4           1                  37249
+5           1                  36100
+6           1                  32761</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="er">~</span> flipper_length_mm <span class="sc">+</span> <span class="fu">I</span>(flipper_length_mm<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(f, <span class="at">data =</span> penguins)</span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(X)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  (Intercept) flipper_length_mm I(flipper_length_mm^2)
+1           1               181                  32761
+2           1               186                  34596
+3           1               195                  38025
+4           1               193                  37249
+5           1               190                  36100
+6           1               181                  32761</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If not wrapped in <code>I()</code>, then <code>flipper_length_mm^2</code> means “all second-order interactions of these variables and their main effects.” In this case, it’s the single variable <code>flipper_length_mm</code>. <strong>This is a pretty confusing result!</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="er">~</span> flipper_length_mm<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(f, <span class="at">data =</span> penguins)</span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(X)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  (Intercept) flipper_length_mm
+1           1               181
+2           1               186
+3           1               195
+4           1               193
+5           1               190
+6           1               181</code></pre>
+</div>
+</div>
+</div>
+</div>
+<p>The <code>I()</code> function can also force R to treat sums and differences literally. For example, the formula below creates one coefficient for the sum of flipper length and body mass.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="er">~</span> <span class="fu">I</span>(flipper_length_mm <span class="sc">+</span> body_mass_g)</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(f, <span class="at">data =</span> penguins)</span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(X)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  (Intercept) I(flipper_length_mm + body_mass_g)
+1           1                               3931
+2           1                               3986
+3           1                               3445
+4           1                               3643
+5           1                               3840
+6           1                               3806</code></pre>
+</div>
+</div>
+<p>We can include multiple transformations at once.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="er">~</span> <span class="fu">log</span>(flipper_length_mm) <span class="sc">+</span> <span class="fu">I</span>(flipper_length_mm<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">sqrt</span>(body_mass_g)</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(f, <span class="at">data =</span> penguins)</span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(X)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  (Intercept) log(flipper_length_mm) I(flipper_length_mm^2) sqrt(body_mass_g)
+1           1               5.198497                  32761          61.23724
+2           1               5.225747                  34596          61.64414
+3           1               5.273000                  38025          57.00877
+4           1               5.262690                  37249          58.73670
+5           1               5.247024                  36100          60.41523
+6           1               5.198497                  32761          60.20797</code></pre>
+</div>
+</div>
+</section>
+<section id="lm-examples-4" class="level3" data-number="10.5.3">
+<h3 data-number="10.5.3" class="anchored" data-anchor-id="lm-examples-4"><span class="header-section-number">10.5.3</span> <code>lm()</code> examples</h3>
+<p>As familiar examples, here are a few <code>lm()</code> fits with transformations of predictors.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>fit1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(bill_length_mm <span class="sc">~</span> <span class="fu">log</span>(flipper_length_mm), <span class="at">data =</span> penguins)</span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>fit2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(bill_length_mm <span class="sc">~</span> <span class="fu">I</span>(flipper_length_mm<span class="sc">^</span><span class="dv">2</span>), <span class="at">data =</span> penguins)</span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>fit3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(bill_length_mm <span class="sc">~</span> <span class="fu">sqrt</span>(flipper_length_mm), <span class="at">data =</span> penguins)</span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>fit4 <span class="ot">&lt;-</span> <span class="fu">lm</span>(bill_length_mm <span class="sc">~</span> <span class="fu">log</span>(flipper_length_mm) <span class="sc">+</span> <span class="fu">I</span>(flipper_length_mm<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">sqrt</span>(body_mass_g), <span class="at">data =</span> penguins)</span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a><span class="fu">modelsummary</span>(<span class="fu">list</span>(fit1, fit2, fit3, fit4), <span class="at">gof_map =</span> <span class="cn">NA</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<!-- preamble start -->
+
+    <script>
+
+      function styleCell_6qiki27jyj2r70m37zea(i, j, css_id) {
+          var table = document.getElementById("tinytable_6qiki27jyj2r70m37zea");
+          var cell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
+          if (cell) {
+              console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
+              cell.classList.add(css_id);
+          } else {
+              console.warn(`Cell at (${i}, ${j}) not found.`);
+          }
+      }
+      function spanCell_6qiki27jyj2r70m37zea(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_6qiki27jyj2r70m37zea");
+        const targetCell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
+        if (!targetCell) {
+          console.warn(`Cell at (${i}, ${j}) not found.`);
+        }
+
+        // Get all cells that need to be removed
+        const cellsToRemove = [];
+        for (let r = 0; r < rowspan; r++) {
+          for (let c = 0; c < colspan; c++) {
+            if (r === 0 && c === 0) continue; // Skip the target cell
+            const cell = table.querySelector(`[data-row="${i + r}"][data-col="${j + c}"]`);
+            if (cell) {
+              cellsToRemove.push(cell);
+            }
+          }
+        }
+
+        // Remove all cells
+        cellsToRemove.forEach(cell => cell.remove());
+
+        // Set rowspan and colspan of the target cell if it exists
+        if (targetCell) {
+          targetCell.rowSpan = rowspan;
+          targetCell.colSpan = colspan;
+        }
+      }
+      // tinytable span after
+      window.addEventListener('load', function () {
+          var cellsToStyle = [
+            // tinytable style arrays after
+          { positions: [ { i: '10', j: 3 }, { i: '10', j: 1 }, { i: '10', j: 2 }, { i: '10', j: 4 },  ], css_id: 'tinytable_css_fp4gf2utbec9cgllvcco',}, 
+          { positions: [ { i: '2', j: 1 }, { i: '4', j: 1 }, { i: '1', j: 1 }, { i: '6', j: 1 }, { i: '8', j: 1 }, { i: '5', j: 1 }, { i: '1', j: 3 }, { i: '3', j: 1 }, { i: '1', j: 2 }, { i: '2', j: 2 }, { i: '3', j: 2 }, { i: '4', j: 2 }, { i: '5', j: 2 }, { i: '6', j: 2 }, { i: '7', j: 2 }, { i: '8', j: 2 }, { i: '7', j: 1 }, { i: '1', j: 4 }, { i: '9', j: 1 }, { i: '3', j: 4 }, { i: '2', j: 3 }, { i: '3', j: 3 }, { i: '4', j: 3 }, { i: '5', j: 3 }, { i: '6', j: 3 }, { i: '7', j: 3 }, { i: '8', j: 3 }, { i: '9', j: 3 }, { i: '7', j: 4 }, { i: '9', j: 2 }, { i: '5', j: 4 }, { i: '2', j: 4 }, { i: '4', j: 4 }, { i: '9', j: 4 }, { i: '6', j: 4 }, { i: '8', j: 4 },  ], css_id: 'tinytable_css_ubd2xl639gp7gw53irnj',}, 
+          { positions: [ { i: '0', j: 1 }, { i: '0', j: 3 }, { i: '0', j: 4 }, { i: '0', j: 2 },  ], css_id: 'tinytable_css_24b4kgyfn2uk53n8d5hb',}, 
+          { positions: [ { i: '10', j: 0 },  ], css_id: 'tinytable_css_ptiglv76ltwh72ibz1sd',}, 
+          { positions: [ { i: '1', j: 0 }, { i: '2', j: 0 }, { i: '3', j: 0 }, { i: '4', j: 0 }, { i: '5', j: 0 }, { i: '6', j: 0 }, { i: '7', j: 0 }, { i: '8', j: 0 }, { i: '9', j: 0 },  ], css_id: 'tinytable_css_aj4vpkfa3qgk8g9n3rhy',}, 
+          { positions: [ { i: '0', j: 0 },  ], css_id: 'tinytable_css_thxm3z02to0y0jugrld7',}, 
+          ];
+
+          // Loop over the arrays to style the cells
+          cellsToStyle.forEach(function (group) {
+              group.positions.forEach(function (cell) {
+                  styleCell_6qiki27jyj2r70m37zea(cell.i, cell.j, group.css_id);
+              });
+          });
+      });
+    </script>
+
+    <style>
+      /* tinytable css entries after */
+      .table td.tinytable_css_fp4gf2utbec9cgllvcco, .table th.tinytable_css_fp4gf2utbec9cgllvcco { text-align: center; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_ubd2xl639gp7gw53irnj, .table th.tinytable_css_ubd2xl639gp7gw53irnj { text-align: center; }
+      .table td.tinytable_css_24b4kgyfn2uk53n8d5hb, .table th.tinytable_css_24b4kgyfn2uk53n8d5hb { text-align: center; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_ptiglv76ltwh72ibz1sd, .table th.tinytable_css_ptiglv76ltwh72ibz1sd { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_aj4vpkfa3qgk8g9n3rhy, .table th.tinytable_css_aj4vpkfa3qgk8g9n3rhy { text-align: left; }
+      .table td.tinytable_css_thxm3z02to0y0jugrld7, .table th.tinytable_css_thxm3z02to0y0jugrld7 { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+    </style>
+    <div class="container">
+      <table class="table table-borderless" id="tinytable_6qiki27jyj2r70m37zea" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+        <thead>
+        
+              <tr>
+                <th scope="col" data-row="0" data-col="0"> </th>
+                <th scope="col" data-row="0" data-col="1">(1)</th>
+                <th scope="col" data-row="0" data-col="2">(2)</th>
+                <th scope="col" data-row="0" data-col="3">(3)</th>
+                <th scope="col" data-row="0" data-col="4">(4)</th>
+              </tr>
+        </thead>
+        
+        <tbody>
+                <tr>
+                  <td data-row="1" data-col="0">(Intercept)</td>
+                  <td data-row="1" data-col="1">-230.169</td>
+                  <td data-row="1" data-col="2">18.649</td>
+                  <td data-row="1" data-col="3">-58.945</td>
+                  <td data-row="1" data-col="4">-345.868</td>
+                </tr>
+                <tr>
+                  <td data-row="2" data-col="0"></td>
+                  <td data-row="2" data-col="1">(17.441)</td>
+                  <td data-row="2" data-col="2">(1.637)</td>
+                  <td data-row="2" data-col="3">(6.556)</td>
+                  <td data-row="2" data-col="4">(244.273)</td>
+                </tr>
+                <tr>
+                  <td data-row="3" data-col="0">log(flipper_length_mm)</td>
+                  <td data-row="3" data-col="1">51.721</td>
+                  <td data-row="3" data-col="2"></td>
+                  <td data-row="3" data-col="3"></td>
+                  <td data-row="3" data-col="4">75.246</td>
+                </tr>
+                <tr>
+                  <td data-row="4" data-col="0"></td>
+                  <td data-row="4" data-col="1">(3.290)</td>
+                  <td data-row="4" data-col="2"></td>
+                  <td data-row="4" data-col="3"></td>
+                  <td data-row="4" data-col="4">(50.714)</td>
+                </tr>
+                <tr>
+                  <td data-row="5" data-col="0">I(flipper_length_mm^2)</td>
+                  <td data-row="5" data-col="1"></td>
+                  <td data-row="5" data-col="2">0.001</td>
+                  <td data-row="5" data-col="3"></td>
+                  <td data-row="5" data-col="4">-0.000</td>
+                </tr>
+                <tr>
+                  <td data-row="6" data-col="0"></td>
+                  <td data-row="6" data-col="1"></td>
+                  <td data-row="6" data-col="2">(0.000)</td>
+                  <td data-row="6" data-col="3"></td>
+                  <td data-row="6" data-col="4">(0.001)</td>
+                </tr>
+                <tr>
+                  <td data-row="7" data-col="0">sqrt(flipper_length_mm)</td>
+                  <td data-row="7" data-col="1"></td>
+                  <td data-row="7" data-col="2"></td>
+                  <td data-row="7" data-col="3">7.266</td>
+                  <td data-row="7" data-col="4"></td>
+                </tr>
+                <tr>
+                  <td data-row="8" data-col="0"></td>
+                  <td data-row="8" data-col="1"></td>
+                  <td data-row="8" data-col="2"></td>
+                  <td data-row="8" data-col="3">(0.462)</td>
+                  <td data-row="8" data-col="4"></td>
+                </tr>
+                <tr>
+                  <td data-row="9" data-col="0">sqrt(body_mass_g)</td>
+                  <td data-row="9" data-col="1"></td>
+                  <td data-row="9" data-col="2"></td>
+                  <td data-row="9" data-col="3"></td>
+                  <td data-row="9" data-col="4">0.097</td>
+                </tr>
+                <tr>
+                  <td data-row="10" data-col="0"></td>
+                  <td data-row="10" data-col="1"></td>
+                  <td data-row="10" data-col="2"></td>
+                  <td data-row="10" data-col="3"></td>
+                  <td data-row="10" data-col="4">(0.077)</td>
+                </tr>
+        </tbody>
+      </table>
+    </div>
+<!-- hack to avoid NA insertion in last line -->
+</div>
+</div>
+</section>
+</section>
+<section id="updating-formulas" class="level2" data-number="10.6">
+<h2 data-number="10.6" class="anchored" data-anchor-id="updating-formulas"><span class="header-section-number">10.6</span> Updating Formulas</h2>
+<p>Sometimes we want to adjust an existing formula instead of rewriting it from scratch. The function <code>update()</code> makes this easy. It is especially useful when experimenting <em>changes</em> to a baseline specification.</p>
+<p>For example, suppose we start with a model of <code>bill_length_mm</code> on <code>flipper_length_mm</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> bill_length_mm <span class="sc">~</span> flipper_length_mm</span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>fit1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(f, <span class="at">data =</span> penguins)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can use <code>update()</code> to add or remove predictors. The special symbol <code>.</code> means “keep everything else.”</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="co"># add body_mass_g</span></span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>fit2 <span class="ot">&lt;-</span> <span class="fu">update</span>(fit1, . <span class="sc">~</span> . <span class="sc">+</span> body_mass_g)</span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a><span class="co"># remove flipper_length_mm</span></span>
+<span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a>fit3 <span class="ot">&lt;-</span> <span class="fu">update</span>(fit1, . <span class="sc">~</span> . <span class="sc">-</span> flipper_length_mm)</span>
+<span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-7"><a href="#cb62-7" aria-hidden="true" tabindex="-1"></a><span class="fu">modelsummary</span>(<span class="fu">list</span>(fit1, fit2, fit3), <span class="at">gof_map =</span> <span class="cn">NA</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<!-- preamble start -->
+
+    <script>
+
+      function styleCell_q92oiqgxfzt6ms91t939(i, j, css_id) {
+          var table = document.getElementById("tinytable_q92oiqgxfzt6ms91t939");
+          var cell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
+          if (cell) {
+              console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
+              cell.classList.add(css_id);
+          } else {
+              console.warn(`Cell at (${i}, ${j}) not found.`);
+          }
+      }
+      function spanCell_q92oiqgxfzt6ms91t939(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_q92oiqgxfzt6ms91t939");
+        const targetCell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
+        if (!targetCell) {
+          console.warn(`Cell at (${i}, ${j}) not found.`);
+        }
+
+        // Get all cells that need to be removed
+        const cellsToRemove = [];
+        for (let r = 0; r < rowspan; r++) {
+          for (let c = 0; c < colspan; c++) {
+            if (r === 0 && c === 0) continue; // Skip the target cell
+            const cell = table.querySelector(`[data-row="${i + r}"][data-col="${j + c}"]`);
+            if (cell) {
+              cellsToRemove.push(cell);
+            }
+          }
+        }
+
+        // Remove all cells
+        cellsToRemove.forEach(cell => cell.remove());
+
+        // Set rowspan and colspan of the target cell if it exists
+        if (targetCell) {
+          targetCell.rowSpan = rowspan;
+          targetCell.colSpan = colspan;
+        }
+      }
+      // tinytable span after
+      window.addEventListener('load', function () {
+          var cellsToStyle = [
+            // tinytable style arrays after
+          { positions: [ { i: '6', j: 2 }, { i: '6', j: 1 }, { i: '6', j: 3 },  ], css_id: 'tinytable_css_1thowzoxea23s2ocxybm',}, 
+          { positions: [ { i: '1', j: 1 }, { i: '4', j: 1 }, { i: '5', j: 1 }, { i: '2', j: 1 }, { i: '3', j: 1 }, { i: '1', j: 2 }, { i: '2', j: 2 }, { i: '3', j: 2 }, { i: '4', j: 2 }, { i: '5', j: 2 }, { i: '3', j: 3 }, { i: '4', j: 3 }, { i: '1', j: 3 }, { i: '2', j: 3 }, { i: '5', j: 3 },  ], css_id: 'tinytable_css_3d3yvp5xdzaro5hq405e',}, 
+          { positions: [ { i: '0', j: 1 }, { i: '0', j: 3 }, { i: '0', j: 2 },  ], css_id: 'tinytable_css_8d2hnggbn3mb80unjn58',}, 
+          { positions: [ { i: '6', j: 0 },  ], css_id: 'tinytable_css_baph5ldiskjkbbceqg8i',}, 
+          { positions: [ { i: '1', j: 0 }, { i: '2', j: 0 }, { i: '3', j: 0 }, { i: '4', j: 0 }, { i: '5', j: 0 },  ], css_id: 'tinytable_css_ovx86flqu8ymb2kflw7y',}, 
+          { positions: [ { i: '0', j: 0 },  ], css_id: 'tinytable_css_vc5b9u0aoo27w3vi9equ',}, 
+          ];
+
+          // Loop over the arrays to style the cells
+          cellsToStyle.forEach(function (group) {
+              group.positions.forEach(function (cell) {
+                  styleCell_q92oiqgxfzt6ms91t939(cell.i, cell.j, group.css_id);
+              });
+          });
+      });
+    </script>
+
+    <style>
+      /* tinytable css entries after */
+      .table td.tinytable_css_1thowzoxea23s2ocxybm, .table th.tinytable_css_1thowzoxea23s2ocxybm { text-align: center; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_3d3yvp5xdzaro5hq405e, .table th.tinytable_css_3d3yvp5xdzaro5hq405e { text-align: center; }
+      .table td.tinytable_css_8d2hnggbn3mb80unjn58, .table th.tinytable_css_8d2hnggbn3mb80unjn58 { text-align: center; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_baph5ldiskjkbbceqg8i, .table th.tinytable_css_baph5ldiskjkbbceqg8i { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_ovx86flqu8ymb2kflw7y, .table th.tinytable_css_ovx86flqu8ymb2kflw7y { text-align: left; }
+      .table td.tinytable_css_vc5b9u0aoo27w3vi9equ, .table th.tinytable_css_vc5b9u0aoo27w3vi9equ { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+    </style>
+    <div class="container">
+      <table class="table table-borderless" id="tinytable_q92oiqgxfzt6ms91t939" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+        <thead>
+        
+              <tr>
+                <th scope="col" data-row="0" data-col="0"> </th>
+                <th scope="col" data-row="0" data-col="1">(1)</th>
+                <th scope="col" data-row="0" data-col="2">(2)</th>
+                <th scope="col" data-row="0" data-col="3">(3)</th>
+              </tr>
+        </thead>
+        
+        <tbody>
+                <tr>
+                  <td data-row="1" data-col="0">(Intercept)</td>
+                  <td data-row="1" data-col="1">-7.219</td>
+                  <td data-row="1" data-col="2">-3.981</td>
+                  <td data-row="1" data-col="3">43.993</td>
+                </tr>
+                <tr>
+                  <td data-row="2" data-col="0"></td>
+                  <td data-row="2" data-col="1">(3.272)</td>
+                  <td data-row="2" data-col="2">(4.722)</td>
+                  <td data-row="2" data-col="3">(0.300)</td>
+                </tr>
+                <tr>
+                  <td data-row="3" data-col="0">flipper_length_mm</td>
+                  <td data-row="3" data-col="1">0.255</td>
+                  <td data-row="3" data-col="2">0.227</td>
+                  <td data-row="3" data-col="3"></td>
+                </tr>
+                <tr>
+                  <td data-row="4" data-col="0"></td>
+                  <td data-row="4" data-col="1">(0.016)</td>
+                  <td data-row="4" data-col="2">(0.033)</td>
+                  <td data-row="4" data-col="3"></td>
+                </tr>
+                <tr>
+                  <td data-row="5" data-col="0">body_mass_g</td>
+                  <td data-row="5" data-col="1"></td>
+                  <td data-row="5" data-col="2">0.001</td>
+                  <td data-row="5" data-col="3"></td>
+                </tr>
+                <tr>
+                  <td data-row="6" data-col="0"></td>
+                  <td data-row="6" data-col="1"></td>
+                  <td data-row="6" data-col="2">(0.001)</td>
+                  <td data-row="6" data-col="3"></td>
+                </tr>
+        </tbody>
+      </table>
+    </div>
+<!-- hack to avoid NA insertion in last line -->
+</div>
+</div>
+
+
+
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../wk04/01-design-matrix.html" class="pagination-link" aria-label="Design Matrix">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Design Matrix</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../wk04/03-logistic-regression.html" class="pagination-link" aria-label="Logistic Regression">
+        <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Logistic Regression</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

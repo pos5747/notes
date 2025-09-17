@@ -1,0 +1,88 @@
+# Big Four Models
+
+```{r include=FALSE}
+library(tidyverse)
+```
+
+We can extend the ideas from the last chapter on logistic regression to a larger class of probability models. 
+
+1. Choose a distribution.
+1. Choose the parameters to model as functions of covariates and those to model as fixed. Typically, this is a parameter that largely determines the location of the distribution, but we can also model the dispersion or multiple parameters at once.
+1. Choose an inverse link function that maps the unbounded linear predictor $X_i \beta \in \mathbb R$ onto the parameter space of the modeled parameters.
+1. Fit the model using maximum likelihood. Use Fisher information to estimate the variance. Use invariance property and delta method to obtain quantities of interest and estimate their variance.
+
+## Summary of the big four models
+
+### Normal Linear
+
+| Component        | Expression                                                                 |
+|------------------|-----------------------------------------------------------------------------|
+| Outcome          | Continuous                                                                 |
+| Model            | $y_i \sim \mathcal{N}(\mu_i, \sigma^2)$, where $\mu_i = X_i \beta$         |
+| Expected value   | $\hat{\mu} = X_c \hat{\beta}$ for chosen row $X_c$                         |
+| First difference | $\hat{\Delta} = \hat{\mu}_{hi} - \hat{\mu}_{lo} = X_{hi} \hat{\beta} - X_{lo} \hat{\beta}$ for chosen rows $X_{hi}$ and $X_{lo}$ |
+| Function     | `lm()` or `glm(..., family = guassian)`                  |
+| Parameterization notes | Parameterized as expected |
+
+| Alternatives     | $t$ regression                   |
+
+
+
+### Logit
+
+| Component        | Expression                                                                 |
+|------------------|-----------------------------------------------------------------------------|
+| Outcome          | Binary                                                                      |
+| Model            | $y_i \sim \text{Bernoulli}(\pi_i)$, where $\pi_i = \text{logit}^{-1}(X_i \beta)$   |
+| Expected value   | $\hat{\mu} = \hat{\pi} = \text{logit}^{-1}(X_c \hat{\beta})$  |
+| First difference | $\hat{\Delta} = \hat{\pi}_{hi} - \hat{\pi}_{lo} = \text{logit}^{-1}(X_{hi} \hat{\beta}) - \text{logit}^{-1}(X_{lo} \hat{\beta})$ |
+| Function     | `glm(..., family = binomial)`                  |
+| Parameterization notes | Parameterized as expected |
+| Alternatives     | Probit                                                                      |
+
+
+### Negative Binomial
+
+| Component        | Expression                                                                 |
+|------------------|-----------------------------------------------------------------------------|
+| Outcome          | Count (non-negative integers)            |
+| Model            | $y_i \sim \text{NegBin}(\mu_i, \theta)$, with $\log \mu_i = X_i \beta$ and $\operatorname{Var}(y_i) = \mu_i + \mu_i^2/\theta$ |
+| Expected value   | $\hat{\mu} = \exp(X_c \hat{\beta})$                                         |
+| First difference | $\hat{\Delta} = \hat{\mu}_{hi} - \hat{\mu}_{lo} = \exp(X_{hi} \hat{\beta}) - \exp(X_{lo} \hat{\beta})$ |
+| Function         | `MASS::glm.nb()` for fitting models; `dnbinom()` for densities                               |
+| Parameterization notes | Uses the mean–dispersion form: regression is parameterized in terms of the mean $\mu_i$ with log link. The dispersion parameter $\theta$ (`size` in R) controls overdispersion. In `dnbinom()` you can use either `(size, prob)` or `(size, mu)`; `glm.nb()` uses the mean–dispersion form $(\mu_i, \theta)$. |
+| Alternatives     | Poisson regression (but variance equals mean), zero-inflated variants                                |
+
+
+### Weibull
+
+It's harder to choose a *default* model for duration data. We've got lots of common options and folks tend to use a semiparametric approach for these data. But to pick a decent default (for both data analysis and an example to learn from), the Weibull model is a good choice.
+
+| Component        | Expression                                                                 |
+|------------------|-----------------------------------------------------------------------------|
+| Outcome          | Survival or duration time (positive continuous)                             |
+| Model            | $y_i \sim \text{Weibull}(\lambda_i, k)$, with scale parameter $\lambda_i = \exp(X_i \beta)$ and shape parameter $k$ (constant across units) |
+| Expected value   | $\hat{\mu} = \hat{\lambda} \, \Gamma(1 + 1/k)$ for chosen row $X_c$ <br> *(the Gamma function $\Gamma(\cdot)$ adjusts the mean away from the scale $\lambda$ depending on shape $k$)* |
+| First difference | $\hat{\Delta} = \hat{\mu}_{hi} - \hat{\mu}_{lo} = \hat{\lambda}_{hi}\,\Gamma(1+1/k) - \hat{\lambda}_{lo}\,\Gamma(1+1/k)$ |
+| Function         | `survreg(..., dist = "weibull")` in **survival** package for fitting models; `dweibull()` for densities; note differences in parameterization, though.                   |
+| Parameterization notes | The base R density function `dweibull(x, shape, scale)` uses the standard shape–scale parameterization. However, `survreg()` uses parameterization in terms of $\lambda$ and $\sigma$, where `shape` $= \frac{1}{\sigma}$ and  `scale` = $\exp(X_i \beta)$ The two forms are equivalent after reparameterization. To clarify, the log-likelihood used by `survreg()` is below.
+| Alternatives     | Exponential (special case of Weibull with $k = 1$); log-normal; gamma, generalized gamma, gompertz, semiparametric Cox proportional hazards          |
+
+```{r}
+weibull_ll <- function(theta, y, X) {
+  # extract parameters for ease of reading
+  beta <- theta[1:ncol(X)]  # coefs are first ncol(X) values of theta
+  sigma <- theta[ncol(X) + 1]  # sigma is the last value, after coefs
+  
+  # linear predictor
+  eta <- X %*% beta
+  # transform parameters
+  k <- 1 / sigma               # Weibull shape
+  lambda <- exp(eta)           # Weibull scal
+
+  ll <- sum(dweibull(y, shape = k, scale = lambda, log = TRUE))
+  return(ll)
+}
+```
+
+

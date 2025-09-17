@@ -29,6 +29,12 @@ book:
       - wk03/03-fisher-information-matrix.qmd
       - wk03/04-delta-method.qmd
       - wk03/05-evaluating-cis.qmd
+    - part: "Week 4"
+      chapters:
+      - wk04/01-design-matrix.qmd
+      - wk04/02-formulas.qmd
+      - wk04/03-logistic-regression.qmd
+      - wk04/04-big-four.qmd
   appendices:
     - appendicies/999-distributions.qmd
     - wk01/frac-exp-log.qmd
@@ -36,6 +42,7 @@ book:
     - wk01/calculus-2.qmd
     - wk01/matrices.qmd
     - wk01/probability.qmd
+    - wk04/05-glm.qmd
     #- wk01/hypothesis-testing.qmd
 
 bibliography: references.bib
