@@ -35,6 +35,11 @@ book:
       - wk04/02-formulas.qmd
       - wk04/03-logistic-regression.qmd
       - wk04/04-big-four.qmd
+    - part: "Week 5"
+      chapters:
+      - wk05/01-marginaleffects.qmd
+      - wk05/02-ic.qmd
+      - wk05/03-zero-inflation.qmd
   appendices:
     - appendicies/999-distributions.qmd
     - wk01/frac-exp-log.qmd

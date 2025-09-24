@@ -1,0 +1,273 @@
+
+# Duration Models
+
+```{r}
+#| message: false
+#| warning: false
+
+# generally useful packages
+library(tidyverse)
+library(marginaleffects)
+library(modelsummary)
+```
+
+In political science, it's common to model *duration* outcomes. We'll use two standard examples:
+
+1. `time` in the `cancer` data set (see `?survival::cancer`). This is the patient's survival time in days.
+1. `duration` in the `coalition` data set (see`?ZeligData::coalition`). This is the government duration in months.
+
+
+## Exponential Model
+
+
+```{r}
+canc <- survival::cancer |>
+  mutate(sex = case_when(sex == 1 ~ "Male",
+                         sex == 2 ~ "Female"))
+
+glimpse(canc)
+```
+
+To fit the exponential regression model to the `cancer` data, we can use the `survreg()` function in the {survival} package.
+
+```{r}
+library(survival)
+```
+
+For the `survreg()` function, we need to wrap the outcome in the `Surv()` function. This is unusual, but the reason will become clear in a bit.
+
+```{r}
+fit_exp <- survreg(Surv(time) ~ age + sex + ph.karno, data = canc, 
+                   dist = "exp")
+```  
+
+We can print a table of coeffcients.
+
+```{r}
+modelsummary(fit_exp)
+```
+### QIs
+
+We can use {marginaleffects} to compute the expected values for every row in the dataset.
+
+```{r}
+#| fig-asp: 0.5
+p <- predictions(fit_exp) |>
+  glimpse()
+
+ggplot(p, aes(x = ph.karno, y = estimate)) + 
+  geom_point()
+```
+
+We can also compute the change in the duration as `ph.karno` changes from the 25th percentile to the 75th percentile.
+
+
+```{r}
+summary(canc$ph.karno)
+```
+
+
+```{r}
+avg_comparisons(fit_exp, 
+            variables = list(ph.karno = c(75, 90)))
+```
+Or we could compute the lift!
+
+```{r}
+avg_comparisons(fit_exp, 
+            variables = list(ph.karno = c(75, 90)), 
+            comparison = "lift")
+```
+**Two Problems**
+
+1. First, we have **censoring.** If someone is still alive at the end of our study, they didn't live X days, they lived *longer than* X days.
+2. Second, maybe the exponential distribution isn't the best match to the data... are there others?
+
+### Censoring
+
+It seems like the data collection for the `cancer` study lasted about 1,000 days. 
+
+- If patients were still alive at the end of the study, then `time` was recorded as the number of days they survived *so far* and `status` was coded as 1. 
+- If patients died during the study, then `time` was recorded as the number of days they survived and `status` was coded as 2. 
+
+#### Usual Likelihood
+
+Let's let $y_i = t_i$ for this type of data, since we think of the outcome as the *time* something lasts.
+
+$$
+t_i \sim \text{exponential}(\mu_i)
+$$
+
+$$
+\mu_i = \exp(X_i\beta)
+$$
+
+Note different parameterizations of the exponential distribution.
+
+- using the mean: $f(x; \mu) = \frac{1}{\mu} e^{-\frac{x}{\mu}}$
+- using the rate: $f(x; \lambda) = \lambda e^{-\lambda x}$
+
+
+- Exponential model with mean $\mu_i$:  $y_i \sim \text{exponential}(\mu_i)$
+- Mean as a function of covariates: $\mu_i = \exp(X_i\beta)$
+- PDF:  $f(y_i; \mu_i) = \frac{1}{\mu_i} e^{-\frac{y_i}{\mu_i}}, \quad y_i \geq 0$
+
+Likelihood for $N$ obs.: $L(\beta; t) = \prod_{i=1}^N f(t_i; \mu_i)$
+
+We could also write as
+
+$$
+L(\beta; t) = \prod_{i=1}^N \frac{1}{\exp(X_i\beta)} e^{-\frac{t_i}{\exp(X_i\beta)}}.
+$$
+
+Then the log-likelihood function is given by 
+$$
+\log L(\beta; t) = \log \left( \prod_{i=1}^N \frac{1}{\exp(X_i\beta)} e^{-\frac{t_i}{\exp(X_i\beta)}} \right).
+$$
+
+$$
+ \log L(\beta; t) = \sum_{i=1}^N \log \left( \frac{1}{\exp(X_i\beta)} \right) + \sum_{i=1}^N \log \left( e^{-\frac{t_i}{\exp(X_i\beta)}} \right)
+$$
+ 
+$$
+\log L(\beta; t) = -\sum_{i=1}^N X_i\beta - \sum_{i=1}^N \frac{t_i}{\exp(X_i\beta)}
+$$
+
+But importantly, this likelihood is **wrong** for censored observations.
+
+#### Adjusting for Censoring
+
+The **survivor function**, $S(t)$, is defined as the probability of an event not occurring by time $t$ (or occurring *after* time $t$). 
+
+For the exponential distribution, the survivor function is
+
+$$
+S(t) = \int_{t}^\infty f(t) dt= \int_{t}^\infty \frac{1}{\mu_i} e^{-\frac{t}{\mu}} dt =  e^{-\frac{1}{\mu} t}
+$$
+Given data with uncensored *and* right-censored observations:
+
+- Uncensored: $\frac{1}{\mu_i} e^{-\frac{1}{\mu_i} t_i}$ for each observation at $t_i$
+- Right-censored: $e^{-\frac{1}{\mu_i} t_i^*}$ for each censored observation at $t_i^*$
+
+Then we have the likelihood accounting for censoring
+
+$$
+L = \prod_{\text{uncensored } i} \overbrace{\left( \frac{1}{\mu_i} e^{-\frac{1}{\mu_i} t_i} \right)}^{\text{density}} \times \prod_{\text{right-censored } j} \overbrace{\left( e^{-\frac{1}{\mu_i} t_j^*} \right)}^{\text{probability}}
+$$
+
+Taking the log, we have 
+
+$$
+\log L = \sum_{\text{uncensored } i} \left( \log \frac{1}{\mu_i} - \frac{1}{\mu_i} t_i \right) + \sum_{\text{right-censored } j} \left( -\frac{1}{\mu_i} t_j^* \right)
+$$
+
+Then we can substitute $\mu_i = \exp(X_i \beta)$ and be on our way as usual.
+
+Censoring is very common in duration models, so the `survreg()` function can easily accomodate censored observations. You simply supply a variable indicating censoring as the second argument to `Surv()`. 
+
+Notice that `status` is coded as 1/2 rather than the usual 0/1. It's worth highlighting this note from `?Surv`.
+
+> The use of 1/2 coding for status is an interesting historical artifact. For data contained on punch cards, IBM 360 Fortran treated blank as a zero, which led to a policy within the Mayo Clinic section of Biostatistics to never use "0" as a data value since one could not distinguish it from a missing value. Policy became habit, as is often the case, and the use of 1/2 coding for alive/dead endured long after the demise of the punch cards that had sired the practice. At the time Surv was written many Mayo data sets still used this obsolete convention, e.g., the lung data set found in the package.
+
+```{r}
+fit_exp_cens <- survreg(Surv(time, status) ~ age + sex + ph.karno, data = canc, 
+                   dist = "exp")
+```
+
+We can compute our average first difference for a new model that accounts for censoring.
+
+```{r}
+avg_comparisons(fit_exp_cens, 
+            variables = list(pat.karno = c(75, 90)))
+```
+
+We can compare the coefficient estimates from the two models. 
+
+```{r}
+modelsummary(list("Without Censoring" = fit_exp, 
+                  "With Censoring" = fit_exp_cens))
+```
+
+
+And we can compute the average first difference for both models
+
+```{r}
+models <- list(exp = fit_exp,
+               exp_cens = fit_exp_cens)
+
+results <- map_dfr(models,
+  ~ avg_comparisons(.x, variables = list(ph.karno = c(75, 90))),
+  .id = "model")
+
+results
+
+```
+
+## Understanding the Choice of Distribution
+
+- Like with any probability model, we need to choose a distribution for our outcome variable $t_i$ (usually $y_i$).
+- We've been using exponential.
+
+We have three quantities that describe the distribution
+
+- hazard function: $h(t) = \frac{f(t)}{S(t)} = \frac{f(t)}{1 - \int_{0}^{t} f(u) \, du}$
+- cumulative hazard function: $H(t) = -\log(S(t)) = -\log\left(1 - \int_{0}^{t} f(u) \, du\right)$
+- survivor function: $S(t) = 1 - F(t) = 1 - \int_{0}^{t} f(u) \, du$
+- original density: $f(t) = h(t)S(t)$
+
+
+### More Distributions
+
+```{r}
+# Exponential
+fit_exp <- survreg(Surv(time, status) ~ age + sex + ph.karno, 
+                       data = canc, 
+                       dist = "exp")
+
+# Log-Normal
+fit_ln <- survreg(Surv(time, status) ~ age + sex + ph.karno, 
+                      data = canc, 
+                      dist = "lognormal")
+
+# Weibull
+fit_wei <- survreg(Surv(time, status) ~ age + sex + ph.karno, 
+                       data = canc, 
+                       dist = "weibull")
+
+# Rayleigh
+fit_ray <- survreg(Surv(time, status) ~ age + sex + ph.karno, 
+                      data = canc, 
+                      dist = "rayleigh")
+
+# Extreme Value (Gumbel)
+fit_extr <- survreg(Surv(time, status) ~ age + sex + ph.karno, 
+                        data = canc, 
+                        dist = "extreme")
+
+# Gaussian (Normal)
+fit_gaus <- survreg(Surv(time, status) ~ age + sex + ph.karno, 
+                        data = canc, 
+                        dist = "gaussian")
+
+# Logistic
+fit_logis <- survreg(Surv(time, status) ~ age + sex + ph.karno, 
+                         data = canc, 
+                         dist = "logistic")
+
+# Log-Logistic
+fit_llogis <- survreg(Surv(time, status) ~ age + sex + ph.karno, 
+                          data = canc, 
+                          dist = "loglogistic")
+```
+
+
+```{r}
+BIC(fit_exp, fit_ln, fit_wei, fit_ray, fit_extr, 
+    fit_gaus, fit_logis, fit_llogis) |> 
+  as_tibble(rownames = "model") |> 
+  mutate(diff_min = BIC - min(BIC),
+         post_prob = exp(-0.5*diff_min)/sum(exp(-0.5*diff_min))) |>
+  arrange(BIC) 
+
+```
+You can see that the BIC strongly prefers the Weibull model or the log-logistic model over the others. It would be worthwhile to compare the predictive distributions. Unfortunately, there's not a simple `simulate()` function that works with `survreg()` output.
