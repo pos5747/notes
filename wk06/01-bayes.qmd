@@ -3,7 +3,7 @@
 Bayesian inference follows a simple recipe:
 
 1. Choose a distribution for the data.
-1. Choose a distribution to describe your prior beliefs.
+1. Choose a distribution to describe your prior beliefs about the parameters of that distribution.
 1. Update the prior distribution upon observing the data by computing the posterior distribution. 
 
 In simple examples, we can implement this process analytically and obtain a closed-form posterior. In most applied cases, we can only *sample from* the posterior distribution, but this turns out to work almost as well.

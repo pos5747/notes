@@ -40,6 +40,12 @@ book:
       - wk05/01-marginaleffects.qmd
       - wk05/02-ic.qmd
       - wk05/03-zero-inflation.qmd
+    - part: "Week 6"
+      chapters: 
+        - wk06/01-bayes.qmd
+        - wk06/02-rejection-sampling.qmd
+        - wk06/03-censoring.qmd
+        - wk06/04-duration-models.qmd
   appendices:
     - appendicies/999-distributions.qmd
     - wk01/frac-exp-log.qmd

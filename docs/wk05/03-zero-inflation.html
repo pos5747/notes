@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>zero-inflation</title>
+<title>15&nbsp; Zero Inflation – Modern Probability Modeling</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -57,16 +57,60 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="03-zero-inflation_files/libs/clipboard/clipboard.min.js"></script>
-<script src="03-zero-inflation_files/libs/quarto-html/quarto.js"></script>
-<script src="03-zero-inflation_files/libs/quarto-html/popper.min.js"></script>
-<script src="03-zero-inflation_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="03-zero-inflation_files/libs/quarto-html/anchor.min.js"></script>
-<link href="03-zero-inflation_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="03-zero-inflation_files/libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="03-zero-inflation_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="03-zero-inflation_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="03-zero-inflation_files/libs/bootstrap/bootstrap-c0367b04c37547644fece4185067e4a7.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../wk06/01-bayes.html" rel="next">
+<link href="../wk05/02-ic.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-2db5a64a0f9238d29502e24e892d8c52.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-ZV1MJ9E632"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-ZV1MJ9E632', { 'anonymize_ip': true});
+</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -98,37 +142,335 @@ window.Quarto = {
 };
 </script>
 
+<link rel="stylesheet" href="../_styles.css">
 </head>
 
-<body class="fullcontent">
+<body class="nav-sidebar floating slimcontent">
 
-<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../wk05/01-marginaleffects.html">Week 5</a></li><li class="breadcrumb-item"><a href="../wk05/03-zero-inflation.html"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Zero Inflation</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Modern Probability Modeling</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 2</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk02/01-maximum-likelihood.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Maximum Likelihood</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk02/02-invariance-property.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">The Invariance Property</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk02/03-predictive-distribution.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Predictive Distribution</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 3</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk03/01-sampling-distribution.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Sampling Distribution</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk03/02-parametric-bootstrap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Parametric Bootstrap</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk03/03-fisher-information-matrix.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Fisher Information Matrix</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk03/04-delta-method.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Delta Method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk03/05-evaluating-cis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Evaluating Confidence Intervals</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 4</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk04/01-design-matrix.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Design Matrix</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk04/02-formulas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Formulas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk04/03-logistic-regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Logistic Regression</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk04/04-big-four.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Big Four Models</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 5</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk05/01-marginaleffects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">{marginaleffects}</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk05/02-ic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Information Criteria</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk05/03-zero-inflation.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Zero Inflation</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 6</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk06/01-bayes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Bayesian Inference</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk06/02-rejection-sampling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Rejection Sampling</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk06/03-censoring.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Censoring</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk06/04-duration-models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Duration Models</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../appendicies/999-distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Common Distributions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk01/frac-exp-log.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Fractions, Exponents, and Logarithms</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk01/calculus-1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Derivatives</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk01/calculus-2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">D</span>&nbsp; <span class="chapter-title">Integration</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk01/matrices.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">E</span>&nbsp; <span class="chapter-title">Matrices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk01/probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">F</span>&nbsp; <span class="chapter-title">Probability Theory</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk04/05-glm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">G</span>&nbsp; <span class="chapter-title">GLMs</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#negative-binomial-case" id="toc-negative-binomial-case" class="nav-link active" data-scroll-target="#negative-binomial-case"><span class="header-section-number">15.1</span> Negative Binomial case</a>
+  <ul class="collapse">
+  <li><a href="#pmf" id="toc-pmf" class="nav-link" data-scroll-target="#pmf"><span class="header-section-number">15.1.1</span> pmf</a></li>
+  <li><a href="#likelihood" id="toc-likelihood" class="nav-link" data-scroll-target="#likelihood"><span class="header-section-number">15.1.2</span> Likelihood</a></li>
+  <li><a href="#log-likelihood" id="toc-log-likelihood" class="nav-link" data-scroll-target="#log-likelihood"><span class="header-section-number">15.1.3</span> Log-Likelihood</a></li>
+  <li><a href="#in-r" id="toc-in-r" class="nav-link" data-scroll-target="#in-r"><span class="header-section-number">15.1.4</span> In R</a></li>
+  <li><a href="#ic" id="toc-ic" class="nav-link" data-scroll-target="#ic"><span class="header-section-number">15.1.5</span> IC</a></li>
+  <li><a href="#marginaleffects" id="toc-marginaleffects" class="nav-link" data-scroll-target="#marginaleffects"><span class="header-section-number">15.1.6</span> {marginaleffects}</a></li>
+  </ul></li>
+  <li><a href="#poisson-case" id="toc-poisson-case" class="nav-link" data-scroll-target="#poisson-case"><span class="header-section-number">15.2</span> Poisson case</a></li>
+  <li><a href="#other-cases" id="toc-other-cases" class="nav-link" data-scroll-target="#other-cases"><span class="header-section-number">15.3</span> Other cases</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
 
-<main class="content" id="quarto-document-content">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../wk05/01-marginaleffects.html">Week 5</a></li><li class="breadcrumb-item"><a href="../wk05/03-zero-inflation.html"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Zero Inflation</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Zero Inflation</span></h1>
+</div>
 
 
 
+<div class="quarto-title-meta">
 
-<section id="zero-inflation" class="level1">
-<h1>Zero Inflation</h1>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
 <p>In a prior chapter, we used a negative binomial regression to model the number of enforcement operations in Holland’s (2015) data.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load package</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># load data for santiago</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>sant <span class="ot">&lt;-</span> crdata<span class="sc">::</span>holland2015 <span class="sc">|&gt;</span> </span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(city <span class="sc">==</span> <span class="st">"santiago"</span>)</span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load data</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>sant <span class="ot">&lt;-</span> crdata<span class="sc">::</span>holland2015 <span class="sc">|&gt;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(city <span class="sc">==</span> <span class="st">"santiago"</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># formula</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> operations <span class="sc">~</span> lower <span class="sc">+</span> vendors <span class="sc">+</span> budget <span class="sc">+</span> population</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># formula corresponds to model 1 for each city in holland (2015) table 2</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> operations <span class="sc">~</span> lower <span class="sc">+</span> vendors <span class="sc">+</span> budget <span class="sc">+</span> population</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># nb regression</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>nb_fit <span class="ot">&lt;-</span> MASS<span class="sc">::</span><span class="fu">glm.nb</span>(f, <span class="at">data =</span> sant)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># nb regression</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>nb_fit <span class="ot">&lt;-</span> MASS<span class="sc">::</span><span class="fu">glm.nb</span>(</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> f,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> sant</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate from predictive distribution for nb</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate from predictive distribution</span></span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>nb_sims <span class="ot">&lt;-</span> <span class="fu">simulate</span>(nb_fit, <span class="at">nsim =</span> <span class="dv">5</span>)</span>
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co"># plot</span></span>
@@ -142,7 +484,7 @@ window.Quarto = {
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="03-zero-inflation_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="03-zero-inflation_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -150,14 +492,14 @@ window.Quarto = {
 <p>Notice that the negative binomial model as too many large values. I have a subtle intuition that the negative binomial is struggling to simultaneously capture the (1) mean, (2) the large spike at zero, and (3) the relative absence of large values.</p>
 <p>To address this, we might add a component to the model to inflated the number of zeros relative to the usual negative binomial distribution.</p>
 <p>It is fairly common for count data to have lots of zeros. We can imagine this substantively by thinking of two different processes. One process determines whether the observation is at risk of any events <em>at all</em>. Another process determines the number of events, which might still be zero.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
-<p>We can model as excess of zeros using a zero-inflation model. A zero-inflation model has two steps. In the first step, we have a logit model that determines whether the observation will equal zero or be a draw from some distribution.</p>
-<section id="negative-binomial-case" class="level2">
-<h2 class="anchored" data-anchor-id="negative-binomial-case">Negative Binomial case</h2>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;This “two process” motivation is simply a story to motivate the model—don’t take it too literally, especially when interpreting parameter estimates.</p></div></div><p>We can model as excess of zeros using a zero-inflation model. A zero-inflation model has two steps. In the first step, we have a logit model that determines whether the observation will equal zero or be a draw from some distribution.</p>
+<section id="negative-binomial-case" class="level2 page-columns page-full" data-number="15.1">
+<h2 data-number="15.1" class="anchored" data-anchor-id="negative-binomial-case"><span class="header-section-number">15.1</span> Negative Binomial case</h2>
 <p>Let’s first consider zero-inflation in the negative binomial. How could we model an excess of zeros for an NB baseline distribution?</p>
-<section id="pmf" class="level3">
-<h3 class="anchored" data-anchor-id="pmf">pmf</h3>
+<section id="pmf" class="level3 page-columns page-full" data-number="15.1.1">
+<h3 data-number="15.1.1" class="anchored" data-anchor-id="pmf"><span class="header-section-number">15.1.1</span> pmf</h3>
 <p>Let <span class="math inline">\(f(y_i; \mu_i, \theta)\)</span> denote the pmf of a negative binomial distribution with mean <span class="math inline">\(\mu_i\)</span> and dispersion <span class="math inline">\(\theta\)</span>.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> We assume that observation <span class="math inline">\(i\)</span> comes from</p>
-<p><span class="math display">\[
+<div class="no-row-height column-margin column-container"><div id="fn2"><p><sup>2</sup>&nbsp;This the <code>nbinom2</code> parameterization with overdispersion parameter <span class="math inline">\(\theta\)</span>, where <span class="math inline">\(\text{Var}(Y_i) = \mu_i + \mu_i^2/\theta\)</span>).</p></div></div><p><span class="math display">\[
 y_i \sim
 \begin{cases}
 0 &amp; \text{with probability } \pi_i, \\
@@ -165,7 +507,7 @@ y_i \sim
 \end{cases}
 \]</span></p>
 <p>where <span class="math inline">\(\pi_i \in (0,1)\)</span> is the probability of a <em>structural zero</em>. The remaining values follow the usual negative binomial distribution.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
-<p>Equivalently, the pmf of <span class="math inline">\(y_i\)</span> can be written as</p>
+<div class="no-row-height column-margin column-container"><div id="fn3"><p><sup>3</sup>&nbsp;Important note: even in an observation is not a structure zero, it still might equal zero, because the negative binomial has positive probability on zero as well. So there are <em>two ways</em> to get a zero.</p></div></div><p>Equivalently, the pmf of <span class="math inline">\(y_i\)</span> can be written as</p>
 <p><span class="math display">\[
 f(y_i; \pi_i, \mu_i, \theta) =
 \begin{cases}
@@ -174,8 +516,8 @@ f(y_i; \pi_i, \mu_i, \theta) =
 \end{cases}.
 \]</span></p>
 </section>
-<section id="likelihood" class="level3">
-<h3 class="anchored" data-anchor-id="likelihood">Likelihood</h3>
+<section id="likelihood" class="level3" data-number="15.1.2">
+<h3 data-number="15.1.2" class="anchored" data-anchor-id="likelihood"><span class="header-section-number">15.1.2</span> Likelihood</h3>
 <p>Create an indicator variable <span class="math inline">\(z_i = \mathbf{1}(y_i = 0)\)</span> that equals one if <span class="math inline">\(y_i = 0\)</span> and zero otherwise. Then for independent <span class="math inline">\(y_1, \dots, y_n\)</span>, the likelihood is</p>
 <p><span class="math display">\[
 L(\pi, \mu, \theta) =
@@ -186,8 +528,8 @@ L(\pi, \mu, \theta) =
 \Bigg\}.
 \]</span></p>
 </section>
-<section id="log-likelihood" class="level3">
-<h3 class="anchored" data-anchor-id="log-likelihood">Log-Likelihood</h3>
+<section id="log-likelihood" class="level3" data-number="15.1.3">
+<h3 data-number="15.1.3" class="anchored" data-anchor-id="log-likelihood"><span class="header-section-number">15.1.3</span> Log-Likelihood</h3>
 <p>Taking logs, the log-likelihood is</p>
 <p><span class="math display">\[
 \ell(\pi, \mu, \theta) =
@@ -200,15 +542,15 @@ z_i \cdot \log\big( \pi_i + (1 - \pi_i) f(0; \mu_i, \theta) \big)
 \]</span></p>
 <p>We can imagine that <span class="math inline">\(\pi_i = \text{logit}^{-1}(Z\gamma)\)</span> and <span class="math inline">\(\mu_i = \exp(X\beta)\)</span>, with <span class="math inline">\(\theta\)</span> modeled as in a standard negative binomial regression.</p>
 </section>
-<section id="in-r" class="level3">
-<h3 class="anchored" data-anchor-id="in-r">In R</h3>
+<section id="in-r" class="level3" data-number="15.1.4">
+<h3 data-number="15.1.4" class="anchored" data-anchor-id="in-r"><span class="header-section-number">15.1.4</span> In R</h3>
 <p>We can fit the zero-inflated negative binomial using the <code>glmmTMB()</code> function in R. Create the design matrix X with <code>formula</code> (for <span class="math inline">\(\mu_i = \exp (X\beta)\)</span>) and the design matrix <code>Z</code> with <code>ziformula</code> (for <span class="math inline">\(\pi_i = \text{logit}^{-1} (Z\gamma)\)</span>). The family <code>nbinom2</code> specifies the negative binomial with variance <span class="math inline">\(\mu + \mu^2/\theta\)</span> (which matrix <code>MASS::glm.nb()</code>)</p>
 <ul>
 <li><code>glmmTMB()</code> has a <code>simulate()</code> method to simulate from the predictive distribution.</li>
 <li><code>glmTMB()</code> works well with {marginaleffects}.</li>
 </ul>
-<section id="constant-pi" class="level4">
-<h4 class="anchored" data-anchor-id="constant-pi">Constant <span class="math inline">\(\pi\)</span></h4>
+<section id="constant-pi" class="level4" data-number="15.1.4.1">
+<h4 data-number="15.1.4.1" class="anchored" data-anchor-id="constant-pi"><span class="header-section-number">15.1.4.1</span> Constant <span class="math inline">\(\pi\)</span></h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># formula</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> operations <span class="sc">~</span> lower <span class="sc">+</span> vendors <span class="sc">+</span> budget <span class="sc">+</span> population</span>
@@ -237,57 +579,49 @@ z_i \cdot \log\big( \pi_i + (1 - \pi_i) f(0; \mu_i, \theta) \big)
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(name)) <span class="sc">+</span></span>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">center =</span> <span class="dv">0</span>, <span class="at">binwidth =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 34 rows [1, 7, 13, 19,
-25, 31, 37, 43, 49, 55, 61, 67, 73, 79, 85, 91, 97, 103, 109, 115, ...].</code></pre>
-</div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="03-zero-inflation_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="03-zero-inflation_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 </section>
-<section id="pi_i-textlogit-1xbeta" class="level4">
-<h4 class="anchored" data-anchor-id="pi_i-textlogit-1xbeta"><span class="math inline">\(\pi_i = \text{logit}^{-1}(X\beta)\)</span></h4>
+<section id="pi_i-textlogit-1xbeta" class="level4" data-number="15.1.4.2">
+<h4 data-number="15.1.4.2" class="anchored" data-anchor-id="pi_i-textlogit-1xbeta"><span class="header-section-number">15.1.4.2</span> <span class="math inline">\(\pi_i = \text{logit}^{-1}(X\beta)\)</span></h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># formulas</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> operations <span class="sc">~</span> lower <span class="sc">+</span> vendors <span class="sc">+</span> budget <span class="sc">+</span> population</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>zi_f <span class="ot">&lt;-</span>  <span class="er">~</span> lower <span class="sc">+</span> vendors <span class="sc">+</span> budget <span class="sc">+</span> population</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># zinb regression</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>zinb2_fit <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> f,  </span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">ziformula =</span> zi_f, <span class="co"># 🆕 model zi using covariates</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> nbinom2,  </span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> sant</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># formulas</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> operations <span class="sc">~</span> lower <span class="sc">+</span> vendors <span class="sc">+</span> budget <span class="sc">+</span> population</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>zi_f <span class="ot">&lt;-</span>  <span class="er">~</span> lower <span class="sc">+</span> vendors <span class="sc">+</span> budget <span class="sc">+</span> population</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># zinb regression</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>zinb2_fit <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> f,  </span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">ziformula =</span> zi_f, <span class="co"># 🆕 model zi using covariates</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> nbinom2,  </span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> sant</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Then we can use <code>simulate()</code> to simulate from the predictive distribution and plot it in the usual way.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate from predictive distribution</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>zinb2_sims <span class="ot">&lt;-</span> <span class="fu">simulate</span>(zinb2_fit, <span class="at">nsim =</span> <span class="dv">5</span>)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># plot</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_cols</span>(sant, zinb2_sims) <span class="sc">|&gt;</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(operations, <span class="fu">starts_with</span>(<span class="st">"sim_"</span>))) <span class="sc">|&gt;</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate</span>(name, <span class="at">into =</span> <span class="fu">c</span>(<span class="st">"type"</span>, <span class="st">"sim_id"</span>), <span class="at">sep =</span> <span class="st">"_"</span>, <span class="at">remove =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> value)) <span class="sc">+</span> </span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(name)) <span class="sc">+</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">center =</span> <span class="dv">0</span>, <span class="at">binwidth =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate from predictive distribution</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>zinb2_sims <span class="ot">&lt;-</span> <span class="fu">simulate</span>(zinb2_fit, <span class="at">nsim =</span> <span class="dv">5</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># plot</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_cols</span>(sant, zinb2_sims) <span class="sc">|&gt;</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(operations, <span class="fu">starts_with</span>(<span class="st">"sim_"</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate</span>(name, <span class="at">into =</span> <span class="fu">c</span>(<span class="st">"type"</span>, <span class="st">"sim_id"</span>), <span class="at">sep =</span> <span class="st">"_"</span>, <span class="at">remove =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> value)) <span class="sc">+</span> </span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(name)) <span class="sc">+</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">center =</span> <span class="dv">0</span>, <span class="at">binwidth =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Expected 2 pieces. Missing pieces filled with `NA` in 34 rows [1, 7, 13, 19,
-25, 31, 37, 43, 49, 55, 61, 67, 73, 79, 85, 91, 97, 103, 109, 115, ...].</code></pre>
-</div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="03-zero-inflation_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="03-zero-inflation_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -295,13 +629,13 @@ z_i \cdot \log\big( \pi_i + (1 - \pi_i) f(0; \mu_i, \theta) \big)
 <p>The predictive distributions for both ZINB models look much better. Because the zero-inflated part of the model handles the spike at zero, the negative binomial part of the model can better match the remainder of the distribution.</p>
 </section>
 </section>
-<section id="ic" class="level3">
-<h3 class="anchored" data-anchor-id="ic">IC</h3>
+<section id="ic" class="level3" data-number="15.1.5">
+<h3 data-number="15.1.5" class="anchored" data-anchor-id="ic"><span class="header-section-number">15.1.5</span> IC</h3>
 <p>The BIC likes the ZINB model with covariates best, and the model with<em>out</em> zero-inflation is a close second.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">BIC</span>(nb_fit, zinb_fit, zinb2_fit) <span class="sc">|&gt;</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">diff_min =</span> BIC <span class="sc">-</span> <span class="fu">min</span>(BIC),</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">post_prob =</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)<span class="sc">/</span><span class="fu">sum</span>(<span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">BIC</span>(nb_fit, zinb_fit, zinb2_fit) <span class="sc">|&gt;</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">diff_min =</span> BIC <span class="sc">-</span> <span class="fu">min</span>(BIC),</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">post_prob =</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)<span class="sc">/</span><span class="fu">sum</span>(<span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>          df      BIC  diff_min  post_prob
 nb_fit     6 142.8430 0.5379471 0.40320644
@@ -311,34 +645,107 @@ zinb2_fit 11 142.3051 0.0000000 0.52764423</code></pre>
 </div>
 <p>The AIC likes the ZINB model with covariates best and the other two models aren’t particularly close.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(nb_fit, zinb_fit, zinb2_fit) <span class="sc">|&gt;</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">diff_min =</span> AIC <span class="sc">-</span> <span class="fu">min</span>(AIC),</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">akiaike_weights =</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)<span class="sc">/</span><span class="fu">sum</span>(<span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(nb_fit, zinb_fit, zinb2_fit) <span class="sc">|&gt;</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">diff_min =</span> AIC <span class="sc">-</span> <span class="fu">min</span>(AIC),</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">akaike_weights =</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)<span class="sc">/</span><span class="fu">sum</span>(<span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>          df      AIC diff_min akiaike_weights
-nb_fit     6 133.6848  8.16975     0.016446724
-zinb_fit   7 135.6848 10.16975     0.006050412
-zinb2_fit 11 125.5151  0.00000     0.977502864</code></pre>
+<pre><code>          df      AIC diff_min akaike_weights
+nb_fit     6 133.6848  8.16975    0.016446724
+zinb_fit   7 135.6848 10.16975    0.006050412
+zinb2_fit 11 125.5151  0.00000    0.977502864</code></pre>
+</div>
+</div>
+</section>
+<section id="marginaleffects" class="level3" data-number="15.1.6">
+<h3 data-number="15.1.6" class="anchored" data-anchor-id="marginaleffects"><span class="header-section-number">15.1.6</span> {marginaleffects}</h3>
+<p>We can use the <code>avg_comparisons()</code> function to compute the average first difference as we move <code>lower</code> from its min to its max, averaging across the observed values of all the other covariates.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># compute avg. fd</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">avg_comparisons</span>(nb_fit, <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">lower =</span> <span class="st">"minmax"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ Estimate Std. Error      z Pr(&gt;|z|)   S 2.5 % 97.5 %
+      -13       15.4 -0.845    0.398 1.3 -43.1   17.1
+
+Term: lower
+Type: response
+Comparison: Max - Min</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">avg_comparisons</span>(zinb_fit, <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">lower =</span> <span class="st">"minmax"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ Estimate Std. Error      z Pr(&gt;|z|)   S 2.5 % 97.5 %
+      -13         15 -0.867    0.386 1.4 -42.3   16.4
+
+Term: lower
+Type: response
+Comparison: Max - Min</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">avg_comparisons</span>(zinb2_fit, <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">lower =</span> <span class="st">"minmax"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ Estimate Std. Error      z Pr(&gt;|z|)   S 2.5 % 97.5 %
+    -5.72       6.32 -0.905    0.365 1.5 -18.1   6.67
+
+Term: lower
+Type: response
+Comparison: Max - Min</code></pre>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># compute avg. fd</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>nb_fd <span class="ot">&lt;-</span> <span class="fu">avg_comparisons</span>(nb_fit, <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">lower =</span> <span class="st">"minmax"</span>))</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>zinb_fd <span class="ot">&lt;-</span> <span class="fu">avg_comparisons</span>(zinb_fit, <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">lower =</span> <span class="st">"minmax"</span>))</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>zinb2_fd <span class="ot">&lt;-</span> <span class="fu">avg_comparisons</span>(zinb2_fit, <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">lower =</span> <span class="st">"minmax"</span>))</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co"># plot</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(<span class="st">"NB"</span> <span class="ot">=</span> nb_fd, </span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>     <span class="st">"ZINB; no covariates"</span> <span class="ot">=</span> zinb_fd,</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>     <span class="st">"ZINB; w/ covariates"</span> <span class="ot">=</span> zinb2_fd) <span class="sc">|&gt;</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(<span class="at">.id =</span> <span class="st">"model"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> estimate, <span class="at">xmin =</span> conf.low, <span class="at">xmax =</span> conf.high,</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>             <span class="at">y =</span> model)) <span class="sc">+</span> </span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbarh</span>() <span class="sc">+</span> </span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03-zero-inflation_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>It’s worth pointing out that the <code>sant</code> dataset only has 34 observations and the zero-inflated negative binomial model with covariates has 11 parameters. This is small enough that we might worry about asymptotic approximations.</p>
 </div>
 </div>
 </section>
 </section>
-<section id="poisson-case" class="level2">
-<h2 class="anchored" data-anchor-id="poisson-case">Poisson Case</h2>
+<section id="poisson-case" class="level2" data-number="15.2">
+<h2 data-number="15.2" class="anchored" data-anchor-id="poisson-case"><span class="header-section-number">15.2</span> Poisson case</h2>
 <p>We could similarly use a zero-inflated Poisson. It follows the same logic. But it seems very usual in practice to have zero-inflation without over-dispersion, so I’ll just mention the possibility.</p>
 </section>
+<section id="other-cases" class="level2" data-number="15.3">
+<h2 data-number="15.3" class="anchored" data-anchor-id="other-cases"><span class="header-section-number">15.3</span> Other cases</h2>
+<p>We can easily extend this logic to other distributions as well. For example, we might imagine that some variables, like trade (in dollars) between two countries, might have a continuous distribution with a spike at zero. In this case, we could imagine a zero-inflated normal, for example.</p>
+
+
 </section>
 
 
-<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
-
-<ol>
-<li id="fn1"><p>This “two process” motivation is simply a story to motivate the model—don’t take it too literally, especially when interpreting parameter estimates.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>This the <code>nbinom2</code> parameterization with overdispersion parameter <span class="math inline">\(\theta\)</span>, where <span class="math inline">\(\text{Var}(Y_i) = \mu_i + \mu_i^2/\theta\)</span>).<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3"><p>Important note: even in an observation is not a structure zero, it still might equal zero, because the negative binomial has positive probability on zero as well. So there are <em>two ways</em> to get a zero.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol>
-</section></div></main>
-<!-- /main column -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -756,6 +1163,18 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../wk05/02-ic.html" class="pagination-link" aria-label="Information Criteria">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Information Criteria</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../wk06/01-bayes.html" class="pagination-link" aria-label="Bayesian Inference">
+        <span class="nav-page-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Bayesian Inference</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
 </div> <!-- /content -->
 
 

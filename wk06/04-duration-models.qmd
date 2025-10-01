@@ -1,0 +1,411 @@
+
+# Duration Models
+
+In political science, it's common to model *duration* outcomes. We'll use two standard examples.
+
+1. `time` in the `cancer` data set (see `?survival::cancer`). This is the patient's survival time in days.
+1. `duration` in the `coalition` data set (see`?ZeligData::coalition`). This is the government duration in months.
+
+```{r}
+#| message: false
+#| warning: false
+#| include: false
+
+# generally useful packages
+library(tidyverse)
+library(marginaleffects)
+library(modelsummary)
+```
+
+## Exponential Model
+
+We might model `time` in the `cancer` dataset using an exponential distribution. 
+
+```{r}
+canc <- survival::cancer |>
+  mutate(sex = case_when(sex == 1 ~ "Male",
+                         sex == 2 ~ "Female"))
+
+glimpse(canc)
+```
+
+We can use covariates to either model the rate $\lambda$ or the mean $\mu = \frac{1}{\lambda}$. `survival::survreg()` models the mean, so that 
+
+$$
+t_i \sim \text{exponential}( \lambda_i), \qquad i = 1, \dots, n,
+$$
+
+with rate $\lambda_i = \frac{1}{\mu_i}$ and $\mu_i =\exp\!\left(-X_i \beta\right)$, where $x_i$ is the covariate vector (including intercept, `age`, `sex`, and `ph.karno`). For this parameterization, positive coefficients increase the mean and decrease the rate (i.e., shorter expected survival).
+
+::: {.aside}
+`flexsurv::flexsurvreg()` uses a different parameterization that models the rate directly (rather than the mean), so that
+
+$$
+t_i \sim \text{exponential}(\lambda_i), \qquad i = 1, \dots, n,
+$$
+
+with $\lambda_i = \exp\!\left(-X_i \beta\right)$. In this parameterization, a positive coefficient increases the rate and decreases the mean (i.e., shorter expected survival) .
+
+:::
+
+We can use the `survreg()` function in the {survival} package to fit the exponential regression model to the `cancer` data. For the `survreg()` function, we need to wrap the outcome in the `Surv()` function. This is unusual, but the reason will become clear in a bit.
+
+```{r}
+#| column: margin
+# load package
+library(survival)
+
+# fit model
+f <- Surv(time) ~ age + sex + ph.karno  # notice the Surv(time) bit...
+fit_exp <- survreg(f, data = canc, dist = "exp")
+
+# create table of coefs
+modelsummary(fit_exp)
+```
+
+
+### QIs
+
+We can use {marginaleffects} to compute the expected values for every row in the dataset.
+
+```{r}
+#| fig-asp: 0.5
+p <- predictions(fit_exp)
+ggplot(p, aes(x = ph.karno, y = estimate)) + 
+  geom_point()
+```
+
+We can also compute the average change in the duration as `ph.karno` changes from the 25th percentile to the 75th percentile.
+
+
+```{r}
+summary(canc$ph.karno)
+```
+
+
+```{r}
+avg_comparisons(fit_exp, 
+            variables = list(ph.karno = c(75, 90)))
+```
+
+Or we could compute the lift!
+
+```{r}
+avg_comparisons(fit_exp, 
+            variables = list(ph.karno = c(75, 90)), 
+            comparison = "lift")
+```
+
+## Two Problems
+
+1. First, we have **censoring.** If someone is still alive at the end of our study, they didn't live X days, they lived *longer than* X days.
+2. Second, maybe the exponential distribution isn't the best match to the data... are there others?
+
+### Censoring
+
+It seems like the data collection for the `cancer` study lasted about 1,000 days. 
+
+- If patients were still alive at the end of the study, then `time` was recorded as the number of days they survived *so far* and `status` was coded as 1. 
+- If patients died during the study, then `time` was recorded as the number of days they survived and `status` was coded as 2. 
+
+#### Usual Likelihood
+
+Let's let $y_i = t_i$ for this type of data, since we think of the outcome as the *time* something lasts. Let's model the outcome using an exponential distribution
+$$
+t_i \sim \text{exponential}(\lambda_i)
+$$
+mean^[Recall that `flexsurv::flexsurvreg()` models the *rate* instead, for example.] using
+
+$$
+\lambda_i = \frac{1}{\mu_i}; \quad\mu_i = \exp(X_i\beta)
+$$
+
+We can write the likelihood as the product of exponential pdfs, so that 
+
+$$
+L(\beta; t) = \prod_{i=1}^N \frac{1}{\exp(X_i\beta)} e^{-\frac{t_i}{\exp(X_i\beta)}}.
+$$
+
+Then the log-likelihood function is
+
+
+\begin{aligned}
+\log L(\beta; t) 
+  &= \log \left( \prod_{i=1}^N \frac{1}{\exp(X_i\beta)} e^{-\tfrac{t_i}{\exp(X_i\beta)}} \right) \\[6pt]
+  &= \sum_{i=1}^N \log \left( \frac{1}{\exp(X_i\beta)} \right) 
+     + \sum_{i=1}^N \log \left( e^{-\tfrac{t_i}{\exp(X_i\beta)}} \right) \\[6pt]
+  &= -\sum_{i=1}^N X_i\beta 
+     - \sum_{i=1}^N \frac{t_i}{\exp(X_i\beta)}.
+\end{aligned}
+
+
+But importantly, this likelihood is **wrong** for censored observations.
+
+#### Adjusting for Censoring
+
+The survivor function $S(t) = 1 - F(t)$ is defined as the probability of an event *not* occurring by time $t$ (or occurring *after* time $t$). 
+
+For the exponential distribution, the survivor function is
+
+$$
+S(t) = \int_{t}^\infty f(t) dt= \int_{t}^\infty \frac{1}{\mu_i} e^{-\frac{t}{\mu}} dt =  e^{-\frac{1}{\mu} t}
+$$
+Given data with uncensored *and* right-censored observations:
+
+- Uncensored: $\frac{1}{\mu_i} e^{-\frac{1}{\mu_i} t_i}$ for each observation at $t_i$
+- Right-censored: $e^{-\frac{1}{\mu_i} t_i^*}$ for each censored observation at $t_i^*$
+
+Then we have the likelihood accounting for censoring
+
+$$
+L = \prod_{\text{uncensored } i} \overbrace{\left( \frac{1}{\mu_i} e^{-\frac{1}{\mu_i} t_i} \right)}^{\text{density}} \times \prod_{\text{right-censored } j} \overbrace{\left( e^{-\frac{1}{\mu_i} t_j^*} \right)}^{\text{probability}}
+$$
+
+Taking the log, we have 
+
+$$
+\log L = \sum_{\text{uncensored } i} \left( \log \frac{1}{\mu_i} - \frac{1}{\mu_i} t_i \right) + \sum_{\text{right-censored } j} \left( -\frac{1}{\mu_i} t_j^* \right)
+$$
+
+Then we can substitute $\mu_i = \exp(X_i \beta)$ and be on our way as usual.
+
+Censoring is very common in duration models, so the `survreg()` function can easily accommodate censored observations. You simply supply a variable indicating censoring as the second argument to `Surv()`. 
+
+::: callout-warning
+
+Notice that `status` is coded as 1/2 rather than the usual 0/1. It's worth highlighting this note from `?Surv`.
+
+> The use of 1/2 coding for status is an interesting historical artifact. For data contained on punch cards, IBM 360 Fortran treated blank as a zero, which led to a policy within the Mayo Clinic section of Biostatistics to never use "0" as a data value since one could not distinguish it from a missing value. Policy became habit, as is often the case, and the use of 1/2 coding for alive/dead endured long after the demise of the punch cards that had sired the practice. At the time Surv was written many Mayo data sets still used this obsolete convention, e.g., the lung data set found in the package.
+
+:::
+
+```{r}
+f <- Surv(time, status) ~ age + sex + ph.karno
+fit_exp_cens <- survreg(f, data = canc,  dist = "exp")
+```
+
+We can compute our average first difference for a new model that accounts for censoring.
+
+```{r}
+avg_comparisons(fit_exp_cens, 
+            variables = list(ph.karno = c(75, 90)))
+```
+
+We can compare the coefficient estimates from the two models. 
+
+```{r}
+modelsummary(list("Censoring Not Modeled" = fit_exp, 
+                  "Censoring Modeled" = fit_exp_cens))
+```
+
+
+And we can compute the average first difference for both models.
+
+```{r}
+# create a list of models
+models <- list(exp = fit_exp,
+               exp_cens = fit_exp_cens)
+
+# use map to compute for several models at once!
+fd <- map_dfr(models,
+  ~ avg_comparisons(.x, variables = list(ph.karno = c(75, 90))),
+  .id = "model")
+
+# show columns of interest
+select(fd, model, estimate, std.error)
+```
+
+## Choice of Distribution
+
+- Like with any probability model, we need to choose a distribution for our outcome variable $t_i$.
+- We've been using exponential.
+
+We have three quantities that describe the distribution:
+
+- hazard function: $h(t) = \frac{f(t)}{S(t)} = \frac{f(t)}{1 - \int_{0}^{t} f(u) \, du}$
+- cumulative hazard function: $H(t) = -\log(S(t)) = -\log\left(1 - \int_{0}^{t} f(u) \, du\right)$
+- survivor function: $S(t) = 1 - F(t) = 1 - \int_{0}^{t} f(u) \, du$
+- original density: $f(t) = h(t)S(t)$
+
+The `survival::survreg()` and `flexsurv::flexsurvreg()` functions offer numerous options via the `dist` argument. See their help files for the options.
+
+Here are the distributions offered by `survival::survreg()`.
+
+```{r}
+# Exponential
+fit_exp <- survreg(f, data = canc, dist = "exp")
+
+# Log-Normal
+fit_ln <- survreg(f, data = canc, dist = "lognormal")
+
+# Weibull
+fit_wei <- survreg(f, data = canc, dist = "weibull")
+
+# Rayleigh
+fit_ray <- survreg(f, data = canc, dist = "rayleigh")
+
+# Extreme Value (Gumbel)
+fit_extr <- survreg(f, data = canc, dist = "extreme")
+
+# Gaussian (Normal)
+fit_gaus <- survreg(f, data = canc, dist = "gaussian")
+
+# Logistic
+fit_logis <- survreg(f, data = canc, dist = "logistic")
+
+# Log-Logistic
+fit_llogis <- survreg(f, data = canc, dist = "loglogistic")
+```
+
+We can use the BIC to show that the Weibull and the log-logistic are the models for these data.
+
+```{r}
+BIC(fit_exp, fit_ln, fit_wei, fit_ray, fit_extr, 
+    fit_gaus, fit_logis, fit_llogis) |> 
+  as_tibble(rownames = "model") |> 
+  mutate(diff_min = BIC - min(BIC),
+         post_prob = exp(-0.5*diff_min)/sum(exp(-0.5*diff_min))) |>
+  arrange(BIC) 
+```
+
+It would be worthwhile to compare the predictive distributions. Unfortunately, there's not a simple `simulate()` function that works with `survreg()` output. However, the figure below shows the pdfs at typical values of the covariates for all the distributions above. You can see the variety of shapes that these distributions offer.
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-height: 12
+#| fig-width: 8
+
+library(tidyverse)
+library(survival)
+library(hrbrthemes)
+library(showtext)
+
+
+# download and register Source Sans 3 from google fonts
+font_add_google("Source Sans 3", family = "Source Sans 3")
+showtext_auto() 
+# for dllogis (log-logistic density)
+if (!requireNamespace("flexsurv", quietly = TRUE)) {
+  stop("Please install {flexsurv} for the log-logistic density: install.packages('flexsurv')")
+}
+
+# Helper: statistical mode for a vector (returns first tie)
+stat_mode <- function(x) {
+  xt <- table(x)
+  names(xt)[which.max(xt)]
+}
+
+# Build "typical" covariate row: means for continuous, mode for categorical
+typical_row <- canc |>
+  summarise(
+    age = mean(age, na.rm = TRUE),
+    sex = factor(stat_mode(sex), levels = levels(factor(canc$sex))),
+    ph.karno = mean(ph.karno, na.rm = TRUE)
+  )
+
+# Predict the linear predictor (location parameter on the AFT scale)
+lp_exp    <- as.numeric(predict(fit_exp,    newdata = typical_row, type = "lp"))
+lp_ln     <- as.numeric(predict(fit_ln,     newdata = typical_row, type = "lp"))
+lp_wei    <- as.numeric(predict(fit_wei,    newdata = typical_row, type = "lp"))
+lp_ray    <- as.numeric(predict(fit_ray,    newdata = typical_row, type = "lp"))
+lp_ext    <- as.numeric(predict(fit_extr,   newdata = typical_row, type = "lp"))
+lp_gau    <- as.numeric(predict(fit_gaus,   newdata = typical_row, type = "lp"))
+lp_logis  <- as.numeric(predict(fit_logis,  newdata = typical_row, type = "lp"))
+lp_llogis <- as.numeric(predict(fit_llogis, newdata = typical_row, type = "lp"))
+
+# Extract scales (survreg's sigma). Exponential fixes scale at 1 implicitly.
+sc_exp    <- 1
+sc_ln     <- fit_ln$scale
+sc_wei    <- fit_wei$scale
+sc_ray    <- fit_ray$scale
+sc_ext    <- fit_extr$scale
+sc_gau    <- fit_gaus$scale
+sc_logis  <- fit_logis$scale
+sc_llogis <- fit_llogis$scale
+
+# Choose a t-grid based on observed data range (positive support)
+t_max <- quantile(canc$time, 0.99, na.rm = TRUE) |> as.numeric()
+t_grid <- tibble(t = seq(1e-6, max(10, t_max), length.out = 800))
+
+# Density builders for each distribution under survreg AFT parameterization
+dens_exp <- function(t) {
+  mu <- exp(lp_exp)            # mean on original scale
+  rate <- 1 / mu
+  dexp(t, rate = rate)
+}
+
+dens_weibull <- function(t) {
+  shape <- 1 / sc_wei
+  scale <- exp(lp_wei)
+  dweibull(t, shape = shape, scale = scale)
+}
+
+dens_lognormal <- function(t) {
+  dlnorm(t, meanlog = lp_ln, sdlog = sc_ln)
+}
+
+dens_loglogistic <- function(t) {
+  # flexsurv parameterization: dllogis(time, shape, scale)
+  shape <- 1 / sc_llogis
+  scale <- exp(lp_llogis)
+  flexsurv::dllogis(t, shape = shape, scale = scale)
+}
+
+dens_gaussian <- function(t) {
+  dnorm(t, mean = lp_gau, sd = sc_gau)
+}
+
+dens_logistic <- function(t) {
+  stats::dlogis(t, location = lp_logis, scale = sc_logis)
+}
+
+dens_extreme <- function(t) {
+  # Gumbel (type I) with CDF: exp(-exp(-(t - loc)/scale))
+  # PDF: (1/scale) * exp( -z - exp(-z) ), where z = (t - loc)/scale
+  z <- (t - lp_ext) / sc_ext
+  (1 / sc_ext) * exp( -z - exp(-z) )
+}
+
+dens_rayleigh <- function(t) {
+  # Rayleigh with scale s = exp(lp); f(t) = t/s^2 * exp(-t^2/(2 s^2)), t>=0
+  s <- exp(lp_ray)
+  (t / (s^2)) * exp( - t^2 / (2 * s^2) )
+}
+
+# Assemble long data for plotting
+pdf_df <-
+  bind_rows(
+    t_grid |> mutate(density = dens_exp(t),        model = "Exponential"),
+    t_grid |> mutate(density = dens_weibull(t),    model = "Weibull"),
+    t_grid |> mutate(density = dens_lognormal(t),  model = "Log-Normal"),
+    t_grid |> mutate(density = dens_loglogistic(t),model = "Log-Logistic"),
+    t_grid |> mutate(density = dens_gaussian(t),   model = "Gaussian"),
+    t_grid |> mutate(density = dens_logistic(t),   model = "Logistic"),
+    t_grid |> mutate(density = dens_extreme(t),    model = "Extreme Value (Gumbel)"),
+    t_grid |> mutate(density = dens_rayleigh(t),   model = "Rayleigh")
+  ) |>
+  # Guard against tiny negative due to floating error
+  mutate(density = pmax(density, 0))
+
+# Plot
+ggplot(pdf_df, aes(x = t, y = density)) +
+  geom_line() +
+  facet_wrap(~ model, scales = "free_y", ncol = 2) +
+  labs(
+    x = "t (time in days)",
+    y = "PDF",
+    title = "Predictive PDFs",
+    subtitle = paste0(
+      "age = ", round(typical_row$age, 1),
+      ", sex = ", as.character(typical_row$sex),
+      ", ph.karno = ", round(typical_row$ph.karno, 1)
+    )
+  ) +
+  theme_ipsum(base_family = "Source Sans 3") 
+```
+
+## Extension: Cox PH
+
+The choice of distributions turns out to be an important one, and it's difficult to choose between them. To *avoid* this choice, researchers tend to use the *semi*parametric Cox proportional hazards model. It falls slightly outside our parametric framework, for now. See ch. 4 of @boxsteffensmeier2004 for more on this standard approach. 

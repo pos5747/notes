@@ -1,5 +1,17 @@
 # Zero Inflation
 
+```{r}
+#| include: false
+#| message: false
+#| warning: false
+
+# generally useful packages
+library(tidyverse)
+library(tinytable)
+library(marginaleffects)
+```
+
+
 In a prior chapter, we used a negative binomial regression to model the number of enforcement operations in Holland's (2015) data. 
 
 ```{r}
@@ -7,6 +19,29 @@ In a prior chapter, we used a negative binomial regression to model the number o
 #| warning: false
 #| code-fold: true
 
+# load data
+sant <- crdata::holland2015 |>
+  filter(city == "santiago")
+
+# formula
+f <- operations ~ lower + vendors + budget + population
+
+# nb regression
+nb_fit <- MASS::glm.nb(
+  formula = f,
+  data = sant
+)
+
+# simulate from predictive distribution
+nb_sims <- simulate(nb_fit, nsim = 5)
+
+# plot
+bind_cols(sant, nb_sims) |>
+  pivot_longer(cols = c(operations, starts_with("sim_"))) |>
+  separate(name, into = c("type", "sim_id"), sep = "_", remove = FALSE) |>
+  ggplot(aes(x = value)) + 
+  facet_wrap(vars(name)) +
+  geom_histogram(center = 0, binwidth = 1)
  
 ```
 

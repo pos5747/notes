@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.42">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>16&nbsp; Bayesian Inference – Modern Probability Modeling</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../wk06/02-rejection-sampling.html" rel="next">
+<link href="../wk05/03-zero-inflation.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-2db5a64a0f9238d29502e24e892d8c52.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-ZV1MJ9E632"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-ZV1MJ9E632', { 'anonymize_ip': true});
+</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../_styles.css">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../wk06/01-bayes.html">Week 6</a></li><li class="breadcrumb-item"><a href="../wk06/01-bayes.html"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Bayesian Inference</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Modern Probability Modeling</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 2</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk02/01-maximum-likelihood.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Maximum Likelihood</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk02/02-invariance-property.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">The Invariance Property</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk02/03-predictive-distribution.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Predictive Distribution</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 3</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk03/01-sampling-distribution.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Sampling Distribution</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk03/02-parametric-bootstrap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Parametric Bootstrap</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk03/03-fisher-information-matrix.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Fisher Information Matrix</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk03/04-delta-method.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Delta Method</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk03/05-evaluating-cis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Evaluating Confidence Intervals</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 4</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk04/01-design-matrix.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Design Matrix</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk04/02-formulas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Formulas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk04/03-logistic-regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Logistic Regression</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk04/04-big-four.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Big Four Models</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 5</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk05/01-marginaleffects.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">{marginaleffects}</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk05/02-ic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Information Criteria</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk05/03-zero-inflation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Zero Inflation</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Week 6</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk06/01-bayes.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Bayesian Inference</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk06/02-rejection-sampling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Rejection Sampling</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk06/03-censoring.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Censoring</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk06/04-duration-models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Duration Models</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../appendicies/999-distributions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Common Distributions</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk01/frac-exp-log.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">Fractions, Exponents, and Logarithms</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk01/calculus-1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">C</span>&nbsp; <span class="chapter-title">Derivatives</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk01/calculus-2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">D</span>&nbsp; <span class="chapter-title">Integration</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk01/matrices.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">E</span>&nbsp; <span class="chapter-title">Matrices</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk01/probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">F</span>&nbsp; <span class="chapter-title">Probability Theory</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk04/05-glm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">G</span>&nbsp; <span class="chapter-title">GLMs</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#mechanics" id="toc-mechanics" class="nav-link active" data-scroll-target="#mechanics"><span class="header-section-number">16.1</span> Mechanics</a></li>
+  <li><a href="#posterior-summaries" id="toc-posterior-summaries" class="nav-link" data-scroll-target="#posterior-summaries"><span class="header-section-number">16.2</span> Posterior Summaries</a></li>
+  <li><a href="#posterior-simulation" id="toc-posterior-simulation" class="nav-link" data-scroll-target="#posterior-simulation"><span class="header-section-number">16.3</span> Posterior Simulation</a>
+  <ul class="collapse">
+  <li><a href="#example-bernoulli" id="toc-example-bernoulli" class="nav-link" data-scroll-target="#example-bernoulli"><span class="header-section-number">16.3.1</span> Example: Bernoulli</a></li>
+  </ul></li>
+  <li><a href="#likelihood" id="toc-likelihood" class="nav-link" data-scroll-target="#likelihood"><span class="header-section-number">16.4</span> The Likelihood</a></li>
+  <li><a href="#the-prior" id="toc-the-prior" class="nav-link" data-scroll-target="#the-prior"><span class="header-section-number">16.5</span> The Prior</a></li>
+  <li><a href="#the-posterior" id="toc-the-posterior" class="nav-link" data-scroll-target="#the-posterior"><span class="header-section-number">16.6</span> The Posterior</a></li>
+  <li><a href="#point-estimates" id="toc-point-estimates" class="nav-link" data-scroll-target="#point-estimates"><span class="header-section-number">16.7</span> Point Estimates</a></li>
+  <li><a href="#credible-interval" id="toc-credible-interval" class="nav-link" data-scroll-target="#credible-interval"><span class="header-section-number">16.8</span> Credible Interval</a></li>
+  <li><a href="#simulation" id="toc-simulation" class="nav-link" data-scroll-target="#simulation"><span class="header-section-number">16.9</span> Simulation</a></li>
+  <li><a href="#example-poisson-distribution" id="toc-example-poisson-distribution" class="nav-link" data-scroll-target="#example-poisson-distribution"><span class="header-section-number">16.10</span> Example: Poisson Distribution</a></li>
+  <li><a href="#remarks" id="toc-remarks" class="nav-link" data-scroll-target="#remarks"><span class="header-section-number">16.11</span> Remarks</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../wk06/01-bayes.html">Week 6</a></li><li class="breadcrumb-item"><a href="../wk06/01-bayes.html"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Bayesian Inference</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Bayesian Inference</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Bayesian inference follows a simple recipe:</p>
+<ol type="1">
+<li>Choose a distribution for the data.</li>
+<li>Choose a distribution to describe your prior beliefs about the parameters of that distribution.</li>
+<li>Update the prior distribution upon observing the data by computing the posterior distribution.</li>
+</ol>
+<p>In simple examples, we can implement this process analytically and obtain a closed-form posterior. In most applied cases, we can only <em>sample from</em> the posterior distribution, but this turns out to work almost as well.</p>
+<section id="mechanics" class="level2" data-number="16.1">
+<h2 data-number="16.1" class="anchored" data-anchor-id="mechanics"><span class="header-section-number">16.1</span> Mechanics</h2>
+<p>Suppose a random sample from a distribution <span class="math inline">\(f(x; \theta)\)</span> that depends on the unknown parameter <span class="math inline">\(\theta\)</span>.</p>
+<p>Bayesian inference models our <em>beliefs</em> about the unknown parameter <span class="math inline">\(\theta\)</span> as a distribution. It answers the question: what should we believe about <span class="math inline">\(\theta\)</span>, given the observed samples <span class="math inline">\(x = \{x_1, x_2, ..., x_n\}\)</span> from <span class="math inline">\(f(x; \theta)\)</span>? These beliefs are simply the conditional distribution <span class="math inline">\(f(\theta \mid x)\)</span>.</p>
+<p>By Bayes’ rule, <span class="math inline">\(\displaystyle f(\theta \mid x) = \frac{f(x \mid \theta)f(\theta)}{f(x)} = \frac{f(x \mid \theta)f(\theta)}{\displaystyle \int_{-\infty}^\infty f(x \mid \theta)f(\theta) d\theta}\)</span>.</p>
+<p><span class="math display">\[
+\displaystyle \underbrace{f(\theta \mid x)}_{\text{posterior}} = \frac{\overbrace{f(x \mid \theta)}^{\text{likelihood}} \times \overbrace{f(\theta)}^{\text{prior}}}{\displaystyle \underbrace{\int_{-\infty}^\infty f(x \mid \theta)f(\theta) d\theta}_{\text{normalizing constant}}}
+\]</span> There are four parts to a Bayesian analysis.</p>
+<ol type="1">
+<li><span class="math inline">\(f(\theta \mid x)\)</span>. “The posterior;” what we’re trying to find. This distribution models our beliefs about parameter <span class="math inline">\(\theta\)</span> given the data <span class="math inline">\(x\)</span>.</li>
+<li><span class="math inline">\(f(x \mid \theta)\)</span>. “The likelihood.” This distribution model conditional density/probability of the data <span class="math inline">\(x\)</span> given the parameter <span class="math inline">\(\theta\)</span>. We need to invert the conditioning in order to find the posterior.</li>
+<li><span class="math inline">\(f(\theta)\)</span>. “The prior;” our beliefs about <span class="math inline">\(\theta\)</span> prior to observing the sample <span class="math inline">\(x\)</span>.</li>
+<li><span class="math inline">\(f(x) =\int_{-\infty}^\infty f(x \mid \theta)f(\theta) d\theta\)</span>. A normalizing constant. Recall that the role of the normalizing constant is to force the distribution to integrate or sum to one. Therefore, we can safely ignore this constant until the end, and then find proper normalizing constant.</li>
+</ol>
+<p>It’s convenient to choose a <strong>conjugate</strong> prior distribution that, when combined with the likelihood, produces a posterior from the same family as the prior.</p>
+<p>The resulting distribution is a complete and correct summary of our updated beliefs about the parameters.</p>
+</section>
+<section id="posterior-summaries" class="level2" data-number="16.2">
+<h2 data-number="16.2" class="anchored" data-anchor-id="posterior-summaries"><span class="header-section-number">16.2</span> Posterior Summaries</h2>
+<p>If we want to summarize the posterior distribution, then we can (though we lose some information).</p>
+<p>First, we might summarize the distribution using a single point to make a “best guess” at the parameter of interest. We have three options:</p>
+<ol type="1">
+<li><em>The posterior mean</em>. The posterior mean minimizes a squared-error loss function.</li>
+<li><em>The posterior median</em>: The posterior median minimizes an absolute loss function where the cost of guessing <span class="math inline">\(a\)</span> when the truth is <span class="math inline">\(\alpha\)</span> is <span class="math inline">\(|a - \alpha|\)</span>. Intuitively, there’s a 50% chance that <span class="math inline">\(\pi\)</span> falls above and below the posterior median.</li>
+<li><em>The posterior mode</em>: The posterior mode is the most likely value of <span class="math inline">\(\pi\)</span>, so it minimizes a loss function that penalizes all misses equally.</li>
+</ol>
+<p>Second, we might find an <span class="math inline">\(100(1 - \alpha)\%\)</span> credible interval, by finding an interval that that integrates to <span class="math inline">\((1 - \alpha)\)</span>. That is, a region that has a <span class="math inline">\(100(1 - \alpha)\%\)</span> chance of containing the parameter. This interval is not unique; there are many. However, <em>one</em> <span class="math inline">\(100(1 - \alpha)\%\)</span> credible interval is the <span class="math inline">\(100(1 - \alpha)\%\)</span> <em>percentile</em> credible interval. Construct this interval by finding the <span class="math inline">\(100\frac{\alpha}{2}th\)</span> percentile and the <span class="math inline">\(100(1 - \frac{\alpha}{2})th\)</span> percentile. For example, if we want a 90% credible interval, we would find the 5th and 95th percentiles.</p>
+</section>
+<section id="posterior-simulation" class="level2" data-number="16.3">
+<h2 data-number="16.3" class="anchored" data-anchor-id="posterior-simulation"><span class="header-section-number">16.3</span> Posterior Simulation</h2>
+<p>In some cases, we have an analytical solution for the posterior—we can write down the equation for the posterior. But in most cases, we cannot write down the posterior. Perhaps unexpectedly, it is usually easier to <em>sample from</em> the distribution that write down the posterior in closed form.</p>
+<p>But notice that the samples are almost as good as the closed-form solution. We can sample from the distribution many times and then draw the histogram, compute the average, and find the percentiles. Except for sampling error that we can make arbitraryily small, these correspond to the posterior density, the posterior mean, and the 95% (percentile) credible interval.</p>
+<section id="example-bernoulli" class="level3" data-number="16.3.1">
+<h3 data-number="16.3.1" class="anchored" data-anchor-id="example-bernoulli"><span class="header-section-number">16.3.1</span> Example: Bernoulli</h3>
+<p>As a running example, we use the <strong>toothpaste cap problem</strong>:</p>
+<blockquote class="blockquote">
+<p>We have a toothpaste cap–one with a wide bottom and a narrow top. We’re going to toss the toothpaste cap. It can either end up lying on its side, its (wide) bottom, or its (narrow) top.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>We want to estimate the probability of the toothpaste cap landing on its top.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>We can model each toss as a Bernoulli trial, thinking of each toss as a random variable <span class="math inline">\(X\)</span> where <span class="math inline">\(X \sim \text{Bernoulli}(\pi)\)</span>. If the cap lands on its top, we think of the outcome as 1. If not, as 0.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>Suppose we toss the cap <span class="math inline">\(N\)</span> times and observe <span class="math inline">\(k\)</span> tops. What is the posterior distribution of <span class="math inline">\(\pi\)</span>?</p>
+</blockquote>
+</section>
+</section>
+<section id="likelihood" class="level2" data-number="16.4">
+<h2 data-number="16.4" class="anchored" data-anchor-id="likelihood"><span class="header-section-number">16.4</span> The Likelihood</h2>
+<p>According to the model <span class="math inline">\(f(x_i \mid \pi) = \pi^{x_i} (1 - \pi)^{(1 - x_i)}\)</span>. Because the samples are iid, we can find the <em>joint</em> distribution <span class="math inline">\(f(x) = f(x_1) \times ... \times f(x_N) = \prod_{i = 1}^N f(x_i)\)</span>. We’re just multiplying <span class="math inline">\(k\)</span> <span class="math inline">\(\pi\)</span>s (i.e., each of the <span class="math inline">\(k\)</span> ones has probability <span class="math inline">\(\pi\)</span>) and <span class="math inline">\((N - k)\)</span> <span class="math inline">\((1 - \pi)\)</span>s (i.e., each of the <span class="math inline">\(N - k\)</span> zeros has probability <span class="math inline">\(1 - \pi\)</span>), so that the <span class="math inline">\(f(x | \pi) = \pi^{k} (1 - \pi)^{(N - k)}\)</span>.</p>
+<p><span class="math display">\[
+\text{the likelihood:  } f(x | \pi) = \pi^{k} (1 - \pi)^{(N - k)}, \text{where } k = \sum_{n = 1}^N x_n \\
+\]</span></p>
+</section>
+<section id="the-prior" class="level2" data-number="16.5">
+<h2 data-number="16.5" class="anchored" data-anchor-id="the-prior"><span class="header-section-number">16.5</span> The Prior</h2>
+<p>The prior describes your beliefs about <span class="math inline">\(\pi\)</span> <em>before</em> observing the data.</p>
+<p>Here are some questions that we might ask ourselves the following questions:</p>
+<ol type="1">
+<li>What’s the most likely value of <span class="math inline">\(\pi\)</span>? <em>Perhaps 0.15.</em></li>
+<li>Are our beliefs best summarizes by a distribution that’s skewed to the left or right? <em>To the right.</em></li>
+<li><span class="math inline">\(\pi\)</span> is about _____, give or take _____ or so. <em>Perhaps 0.17 and 0.10.</em></li>
+<li>There’s a 25% chance that <span class="math inline">\(\pi\)</span> is less than ____. <em>Perhaps 0.05.</em></li>
+<li>There’s a 25% chance that <span class="math inline">\(\pi\)</span> is greater than ____. <em>Perhaps 0.20</em>.</li>
+</ol>
+<p>Given these answers, we can sketch the pdf of the prior distribution for <span class="math inline">\(\pi\)</span>.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01-bayes_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="576"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Now we need to find a density function that matches these prior beliefs. For this Bernoulli model, the <em>beta distribution</em> is the conjugate prior. While a conjugate prior is not crucial in general, it makes the math much more tractable.</p>
+<p>So then what beta distribution captures our prior beliefs?</p>
+<p>There’s a code snippet <a href="https://gist.github.com/carlislerainey/45414e0d9f22e4e1960449402e6a8048">here</a> to help you explore different beta distributions.</p>
+<p>After some exploration, I find that setting the parameters <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> of the beta distribution to 3 and 15, respectively, captures my prior beliefs about the probability of getting a top.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01-bayes_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The pdf of the beta distribution is <span class="math inline">\(f(x) = \frac{1}{B(\alpha, \beta)} x^{\alpha - 1}(1 - x)^{\beta - 1}\)</span>. Remember that <span class="math inline">\(B()\)</span> is the beta function, so <span class="math inline">\(\frac{1}{B(\alpha, \beta)}\)</span> is a constant.</p>
+<p>Let’s denote our chosen values of <span class="math inline">\(\alpha = 3\)</span> and <span class="math inline">\(\beta = 15\)</span> as <span class="math inline">\(\alpha^*\)</span> and <span class="math inline">\(\beta^*\)</span>. As we see in a moment, it’s convenient distinguish the parameters in the prior distribution from other parameters.</p>
+<p><span class="math display">\[
+\text{the prior:  }  f(\pi) = \frac{1}{B(\alpha^*, \beta^*)} \pi^{\alpha^* - 1}(1 - \pi)^{\beta^* - 1}
+\]</span></p>
+</section>
+<section id="the-posterior" class="level2" data-number="16.6">
+<h2 data-number="16.6" class="anchored" data-anchor-id="the-posterior"><span class="header-section-number">16.6</span> The Posterior</h2>
+<p>Now we need to compute the posterior by multiplying the likelihood times the prior and then finding the normalizing constant. <span class="math display">\[
+\text{the posterior: } \displaystyle \underbrace{f(\pi \mid x)}_{\text{posterior}} = \frac{\overbrace{f(x \mid \pi)}^{\text{likelihood}} \times \overbrace{f(\pi)}^{\text{prior}}}{\displaystyle \underbrace{\int_{-\infty}^\infty f(x \mid \pi)f(\pi) d\pi}_{\text{normalizing constant}}} \\
+\]</span> Now we plug in the likelihood, plug in the prior, and denote the normalizing constant as <span class="math inline">\(C_1\)</span> to remind ourselves that it’s just a constant.</p>
+<p><span class="math display">\[
+\displaystyle f(\pi \mid x) = \frac{\left[ \pi^{k} (1 - \pi)^{(N - k) }\right] \times \left[ \frac{1}{B(\alpha^*, \beta^*)} \pi^{\alpha^* - 1}(1 - \pi)^{\beta^* - 1} \right]}{ C_1} \\
+\]</span></p>
+<p><span class="math display">\[
+\text{the posterior: } \displaystyle \underbrace{f(\pi \mid x)}_{\text{posterior}} = \frac{\overbrace{\left[ \pi^{k} (1 - \pi)^{(N - k) }\right] }^{\text{likelihood}} \times \overbrace{ \left[ \frac{1}{B(\alpha^*, \beta^*)} \pi^{\alpha^* - 1}(1 - \pi)^{\beta^* - 1} \right] }^{\text{prior}}}{\displaystyle \underbrace{C_1}_{\text{normalizing constant}}} \\
+\]</span></p>
+<p>Now we need to simplify the right-hand side.</p>
+<p>First, notice that the term <span class="math inline">\(\frac{1}{B(\alpha^*, \beta^*)}\)</span> in the numerator is just a constant. We can incorporate that constant term with <span class="math inline">\(C_1\)</span> by multiplying top and bottom by <span class="math inline">\(B(\alpha^*, \beta^*)\)</span> and letting <span class="math inline">\(C_2 = C_1 \times B(\alpha^*, \beta^*)\)</span>.</p>
+<p><span class="math display">\[
+\text{the posterior: } \displaystyle \underbrace{f(\pi \mid x)}_{\text{posterior}} = \frac{\overbrace{\left[ \pi^{k} (1 - \pi)^{(N - k) }\right] }^{\text{likelihood}} \times  \left[ \pi^{\alpha^* - 1}(1 - \pi)^{\beta^* - 1} \right] }{\displaystyle \underbrace{C_2}_{\text{new normalizing constant}}} \\
+\]</span></p>
+<p>Now we can collect the exponents with base <span class="math inline">\(\pi\)</span> and the exponents with base <span class="math inline">\((1 - \pi)\)</span>.</p>
+<p><span class="math display">\[
+\text{the posterior: } \displaystyle \underbrace{f(\pi \mid x)}_{\text{posterior}} = \frac{\left[ \pi^{k} \times \pi^{\alpha^* - 1} \right] \times  \left[ (1 - \pi)^{(N - k) } \times (1 - \pi)^{\beta^* - 1} \right] }{ C_2} \\
+\]</span> Recalling that <span class="math inline">\(x^a \times x^b = x^{a + b}\)</span>, we combine the powers.</p>
+<p><span class="math display">\[
+\text{the posterior: } \displaystyle \underbrace{f(\pi \mid x)}_{\text{posterior}} = \frac{\left[ \pi^{(\alpha^* + k) - 1} \right] \times  \left[ (1 - \pi)^{[\beta^* + (N - k)] - 1} \right] }{ C_2} \\
+\]</span> <span class="math display">\[
+\displaystyle f(\theta \mid x) = \frac{f(x \mid \theta) \times f(\theta)}{\displaystyle \int_{-\infty}^\infty f(x \mid \theta)f(\theta) d\theta}
+\]</span></p>
+<p>Because we’re clever, we notice that this is <em>almost</em> a beta distribution with <span class="math inline">\(\alpha = (\alpha^* + k)\)</span> and <span class="math inline">\(\beta = [\beta^* + (N - k)]\)</span>. If <span class="math inline">\(C_2 = B(\alpha^* + k, \beta^* + (N - k))\)</span>, then the posterior is <em>exactly</em> a <span class="math inline">\(\text{beta}(\alpha^* + k, \beta^* + [N - k]))\)</span> distribution.</p>
+<p>This is completely expected. We chose a beta distribution for the prior because it would give us a beta posterior distribution. For simplicity, we can denote the parameter for the beta posterior as <span class="math inline">\(\alpha^\prime\)</span> and <span class="math inline">\(\beta^\prime\)</span>, so that <span class="math inline">\(\alpha^\prime = \alpha^* + k\)</span> and <span class="math inline">\(\beta^\prime = \beta^* + [N - k]\)</span></p>
+<p><span class="math display">\[
+\begin{aligned}
+\text{the posterior: } \displaystyle \underbrace{f(\pi \mid x)}_{\text{posterior}} &amp;= \frac{ \pi^{\overbrace{(\alpha^* + k)}^{\alpha^\prime} - 1}  \times  (1 - \pi)^{\overbrace{[\beta^* + (N - k)]}^{\beta^\prime} - 1}  }{ B(\alpha^* + k, \beta^* + [N - k])} \\
+&amp;= \frac{ \pi^{\alpha^\prime - 1}  \times  (1 - \pi)^{\beta^\prime - 1}  }{ B(\alpha^\prime, \beta^\prime)}, \text{where } \alpha^\prime = \alpha^* + k \text{ and } \beta^\prime = \beta^* + [N - k]
+\end{aligned}
+\]</span></p>
+<p>This is an elegant, simple solution. To obtain the parameters for the beta posterior distribution, we just add the number of tops (Bernoulli successes) to the prior value for <span class="math inline">\(\alpha\)</span> and the number of not-tops (sides and bottoms; Bernoulli failures) to the prior value for <span class="math inline">\(\beta\)</span>.</p>
+<p>Suppose that I tossed the toothpaste cap 150 times and got 8 tops.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># prior parameters</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>alpha_prior <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>beta_prior <span class="ot">&lt;-</span> <span class="dv">15</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># data </span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="dv">8</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">150</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># posterior parameters</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>alpha_posterior <span class="ot">&lt;-</span> alpha_prior <span class="sc">+</span> k</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>beta_posterior <span class="ot">&lt;-</span> beta_prior <span class="sc">+</span> N <span class="sc">-</span> k</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># plot prior and posterior</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>gg_prior <span class="ot">&lt;-</span> <span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> dbeta, <span class="at">args =</span> <span class="fu">list</span>(<span class="at">shape1 =</span> alpha_prior, <span class="at">shape2 =</span> beta_prior)) <span class="sc">+</span> </span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"prior distribution"</span>, <span class="at">x =</span> <span class="st">"pi"</span>, <span class="at">y =</span> <span class="st">"prior density"</span>)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>gg_posterior <span class="ot">&lt;-</span> <span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> dbeta, <span class="at">args =</span> <span class="fu">list</span>(<span class="at">shape1 =</span> alpha_posterior, <span class="at">shape2 =</span> beta_posterior)) <span class="sc">+</span> </span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"posterior distribution"</span>, <span class="at">x =</span> <span class="st">"pi"</span>, <span class="at">y =</span> <span class="st">"posterior density"</span>)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>gg_prior <span class="sc">+</span> gg_posterior</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01-bayes_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="point-estimates" class="level2" data-number="16.7">
+<h2 data-number="16.7" class="anchored" data-anchor-id="point-estimates"><span class="header-section-number">16.7</span> Point Estimates</h2>
+<ol type="1">
+<li><em>The posterior mean</em>. The posterior mean minimizes a squared-error loss function. That is, the cost of guessing <span class="math inline">\(a\)</span> when the truth is <span class="math inline">\(\alpha\)</span> is <span class="math inline">\((a - \alpha)^2\)</span>. In the case of the beta posterior, it’s just <span class="math inline">\(\dfrac{\alpha^\prime}{\alpha^\prime + \beta^\prime}\)</span>. For our prior and data, we have <span class="math inline">\(\dfrac{3 + 8}{(3 + 8) + (15 + 150 - 8)} \approx 0.065\)</span>.</li>
+<li><em>The posterior median</em>: The posterior median minimizes an absolute loss function where the cost of guessing <span class="math inline">\(a\)</span> when the truth is <span class="math inline">\(\alpha\)</span> is <span class="math inline">\(|a - \alpha|\)</span>. Intuitively, there’s a 50% chance that <span class="math inline">\(\pi\)</span> falls above and below the posterior median. In the case of the beta posterior, it’s just <span class="math inline">\(\dfrac{\alpha^\prime - \frac{1}{3}}{\alpha^\prime + \beta^\prime - \frac{2}{3}}\)</span> (for <span class="math inline">\(\alpha^\prime, \beta^\prime &gt; 1\)</span>). For our prior and data, we have <span class="math inline">\(\dfrac{3 + 8 -\frac{1}{3}}{(3 + k) + (15 + 150 - 8) - \frac{2}{3}} \approx 0.064\)</span>.</li>
+<li><em>The posterior mode</em>: The posterior mode is the most likely value of <span class="math inline">\(\pi\)</span>, so it minimizes a loss function that penalizes all misses equally. In the case of the beta posterior, it’s just <span class="math inline">\(\dfrac{\alpha^\prime - 1}{\alpha^\prime + \beta^\prime - 2}\)</span> (for <span class="math inline">\(\alpha^\prime, \beta^\prime &gt; 1\)</span>). For our prior and data, we have <span class="math inline">\(\dfrac{3 + 8 - 1}{(3 + k) + (15 + 150 - 8) - 2} \approx 0.060\)</span>.</li>
+</ol>
+</section>
+<section id="credible-interval" class="level2" data-number="16.8">
+<h2 data-number="16.8" class="anchored" data-anchor-id="credible-interval"><span class="header-section-number">16.8</span> Credible Interval</h2>
+<p>Using the percentile method, we can compute the 90% and 95% credible intervals with <code>qbeta()</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 90% credible interval</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">qbeta</span>(<span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.95</span>), <span class="dv">3</span> <span class="sc">+</span> <span class="dv">8</span>, <span class="dv">15</span> <span class="sc">+</span> <span class="dv">150</span> <span class="sc">-</span> <span class="dv">8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.03737493 0.09945329</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 95% credible interval</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">qbeta</span>(<span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>), <span class="dv">3</span> <span class="sc">+</span> <span class="dv">8</span>, <span class="dv">15</span> <span class="sc">+</span> <span class="dv">150</span> <span class="sc">-</span> <span class="dv">8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.03333712 0.10736323</code></pre>
+</div>
+</div>
+</section>
+<section id="simulation" class="level2" data-number="16.9">
+<h2 data-number="16.9" class="anchored" data-anchor-id="simulation"><span class="header-section-number">16.9</span> Simulation</h2>
+<p>We don’t need to use simulation here—we have the simple closed-form posterior. However, let’s see how simulation would work.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>post_sims <span class="ot">&lt;-</span> <span class="fu">rbeta</span>(<span class="dv">1000</span>, <span class="dv">3</span> <span class="sc">+</span> <span class="dv">8</span>, <span class="dv">15</span> <span class="sc">+</span> <span class="dv">150</span> <span class="sc">-</span> <span class="dv">8</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># posterior density</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>gg_data <span class="ot">&lt;-</span> <span class="fu">tibble</span>(post_sims)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(gg_data, <span class="fu">aes</span>(<span class="at">x =</span> post_sims)) <span class="sc">+</span> </span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01-bayes_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># posterior mean</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(post_sims)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.06558303</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># credible interval</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="example-poisson-distribution" class="level2" data-number="16.10">
+<h2 data-number="16.10" class="anchored" data-anchor-id="example-poisson-distribution"><span class="header-section-number">16.10</span> Example: Poisson Distribution</h2>
+<p>Suppose we collect <span class="math inline">\(N\)</span> random samples <span class="math inline">\(x = \{x_1, x_2, ..., x_N\}\)</span> and model each draw as a random variable <span class="math inline">\(X \sim \text{Poisson}(\lambda)\)</span>. Find the posterior distribution of <span class="math inline">\(\lambda\)</span> for the gamma prior distribution. Hint: the gamma distribution is the conjugate prior for the Poisson likelihood.</p>
+<p><span class="math display">\[
+\begin{aligned}
+\text{Poisson likelihood: } f(x \mid \lambda) &amp;= \prod_{n = 1}^N \frac{\lambda^{x_n} e^{-\lambda}}{x_n!} \\
+&amp;= \displaystyle \left[ \frac{1}{\prod_{n = 1}^N x_n !} \right]e^{-N\lambda}\lambda^{\sum_{n = 1}^N x_n}
+\end{aligned}
+\]</span></p>
+<p><span class="math display">\[
+\text{Gamma prior: } f( \lambda; \alpha^*, \beta^*) = \frac{{\beta^*}^{\alpha^*}}{\Gamma(\alpha^*)} \lambda^{\alpha^* - 1} e^{-\beta^*\lambda}
+\]</span> To find the posterior, we multiply the likelihood times the prior and normalize. Because the gamma prior distribution is the conjugate prior for the Poisson likelihood, we know that the posterior will be a gamma distribution.</p>
+<p><span class="math display">\[
+\begin{aligned}
+\text{Gamma posterior: } f( \lambda  \mid x) &amp;= \frac{\left( \displaystyle \left[ \frac{1}{\prod_{n = 1}^N x_n !} \right]e^{-N\lambda}\lambda^{\sum_{n = 1}^N x_n}\right) \times \left( \left[ \frac{{\beta^*}^{\alpha^*}}{\Gamma(\alpha^*)} \right] \lambda^{\alpha^* - 1} e^{-\beta^*\lambda}\right)}{C_1} \\
+\end{aligned}
+\]</span> Because <span class="math inline">\(x\)</span>, <span class="math inline">\(\alpha_*\)</span>, and <span class="math inline">\(\beta\)</span> are fixed, the terms in square brackets are constant, so we can safely consider those part of the normalizing constant.</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;= \frac{\left( \displaystyle  e^{-N\lambda}\lambda^{\sum_{n = 1}^N x_n}\right) \times \left( \lambda^{\alpha^* - 1} e^{-\beta^*\lambda}\right)}{C_2} \\
+\end{aligned}
+\]</span> Now we can collect the exponents with the same base.</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;= \frac{\left( \lambda^{\alpha^* - 1} \times \lambda^{\sum_{n = 1}^N x_n}\right) \times \left( \displaystyle  e^{-N\lambda} \times e^{-\beta^*\lambda} \right)}{C_2} \\
+&amp;= \frac{\lambda^{ \overbrace{\left[ \alpha^* + \sum_{n = 1}^N x_n \right]}^{\alpha^\prime} - 1}  e^{-\overbrace{[\beta^* + N]}^{\beta^\prime}\lambda} }{C_2} \\
+\end{aligned}
+\]</span></p>
+<p>We recognize this as <em>almost</em> a Gamma distribution with parameters <span class="math inline">\(\alpha^\prime = \alpha^* +  \sum_{n = 1}^N x_n\)</span> and <span class="math inline">\(\beta^\prime = \beta^* + N\)</span>. Indeed, if <span class="math inline">\(\frac{1}{C_2} = \frac{{\beta^\prime}^{\alpha^\prime}}{\Gamma(\alpha^{\prime})}\)</span>, then we have exactly a gamma distribution.</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;= \frac{{\beta^\prime}^{\alpha^\prime}}{\Gamma(\alpha^{\prime})} \lambda^{ \alpha^\prime - 1}  e^{-\beta^\prime\lambda}, \text{where } \alpha^\prime = \alpha^* +  \sum_{n = 1}^N x_n \text{ and } \beta^\prime = \beta^* + N
+\end{aligned}
+\]</span></p>
+<p>Like the Bernoulli likelihood with the beta prior, the Poisson likelihood withe the gamma prior gives a nice result. We start with values parameters of the gamma distribution <span class="math inline">\(\alpha = \alpha^*\)</span> and <span class="math inline">\(\beta + \beta^*\)</span> so that the gamma prior distribution describes our prior beliefs about the parameters <span class="math inline">\(\lambda\)</span> of the Poisson distribution. Then we add the sum of the data <span class="math inline">\(x\)</span> to <span class="math inline">\(\alpha^*\)</span> and the number of samples <span class="math inline">\(N\)</span> to <span class="math inline">\(\beta^*\)</span> to obtain the parameters of the gamma posterior distribution.</p>
+<p>The code below shows the posterior distribution</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set see to make reproducible</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># prior parameters</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>alpha_prior <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>beta_prior <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co"># create an "unknown" value of lambda to estimate</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>lambda <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="co"># generate a data set</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">5</span>  <span class="co"># number of samples</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rpois</span>(N, <span class="at">lambda =</span> lambda)</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(x)  <span class="co"># print the data set</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0 2 2 2 4</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># posterior parameters</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>alpha_posterior <span class="ot">&lt;-</span> alpha_prior <span class="sc">+</span> <span class="fu">sum</span>(x)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>beta_posterior <span class="ot">&lt;-</span> beta_prior <span class="sc">+</span> N</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co"># plot prior and posterior</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>gg_prior <span class="ot">&lt;-</span> <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">xlim</span>(<span class="dv">0</span>, <span class="dv">5</span>) <span class="sc">+</span> </span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> dgamma, <span class="at">args =</span> <span class="fu">list</span>(<span class="at">shape =</span> alpha_prior, <span class="at">rate =</span> beta_prior)) <span class="sc">+</span> </span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"prior distribution"</span>, <span class="at">x =</span> <span class="st">"lambda"</span>, <span class="at">y =</span> <span class="st">"prior density"</span>)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>gg_posterior <span class="ot">&lt;-</span> <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">xlim</span>(<span class="dv">0</span>, <span class="dv">5</span>) <span class="sc">+</span> </span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> dgamma, <span class="at">args =</span> <span class="fu">list</span>(<span class="at">shape =</span> alpha_posterior, <span class="at">rate =</span> beta_posterior)) <span class="sc">+</span> </span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"posterior distribution"</span>, <span class="at">x =</span> <span class="st">"lambda"</span>, <span class="at">y =</span> <span class="st">"posterior density"</span>)</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>gg_prior <span class="sc">+</span> gg_posterior  <span class="co"># uses patchwork package</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01-bayes_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># posterior mean: alpha/beta</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>alpha_posterior<span class="sc">/</span>beta_posterior</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.625</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># posterior mode: (alpha - 1)/beta for alpha &gt; 1</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>(alpha_posterior <span class="sc">-</span> <span class="dv">1</span>)<span class="sc">/</span>beta_posterior</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.5</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 90% credible interval</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">qgamma</span>(<span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.95</span>), alpha_posterior, beta_posterior)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.9611973 2.4303212</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 95% credible interval</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">qgamma</span>(<span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>), alpha_posterior, beta_posterior)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.8652441 2.6201981</code></pre>
+</div>
+</div>
+<p>In the case of the posterior median, there is no closed-form solution, even though we know the form of the posterior. We can use simulation to obtain the median.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># posterior median: no closed form, so simulate</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>post_sims <span class="ot">&lt;-</span> <span class="fu">rgamma</span>(<span class="dv">1000</span>, alpha_posterior, beta_posterior)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">median</span>(post_sims)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.59919</code></pre>
+</div>
+</div>
+</section>
+<section id="remarks" class="level2" data-number="16.11">
+<h2 data-number="16.11" class="anchored" data-anchor-id="remarks"><span class="header-section-number">16.11</span> Remarks</h2>
+<p>Bayesian inference presents two difficulties.</p>
+<ol type="1">
+<li>Choosing a prior.
+<ol type="a">
+<li>It can be hard to actually construct a prior distribution. It’s challenging when dealing with a single parameter. It becomes much more difficult when dealing with several or many parameters.</li>
+<li>Priors are subjective, so that one researcher’s prior might not work for another.</li>
+</ol></li>
+<li>Computing the posterior. Especially for many-parameter problems and non-conjugate priors, computing the posterior can be nearly intractable.</li>
+</ol>
+<p>However, there are several practical solutions to these difficulties.</p>
+<ol type="1">
+<li>Choosing a prior.
+<ol type="a">
+<li>We can use a “uninformative” or constant prior. Sometimes, we can use an improper prior that doesn’t integrate to one, but places equal prior weight on all values.</li>
+<li>We can use an extremely diffuse prior. For example, if we wanted to estimate the average height in a population in inches, we might use a normal distribution centered at zero with an SD of 10,000. This prior says: “The average height is about zero, give or take 10,000 inches or so.”</li>
+<li>We can use an informative prior, but conduct careful robustness checks to assess whether the conclusions depend on the particular prior.</li>
+<li>We can use a weakly informative prior, that rules places meaningful prior weight on all the plausible values and little prior weight only on the most implausible values. As a guideline, you might create a weakly informative prior by doubling or tripling the SD of the informative prior.</li>
+</ol></li>
+<li>Computing the posterior.
+<ol type="a">
+<li>While analytically deriving the posterior becomes intractable for most applied problems, it’s relatively easy to <em>sample</em> from the posterior distribution for many models.</li>
+<li>Algorithms like Gibbs samplers, MCMC, and HMC make this sampling procedure straightforward for a given model.</li>
+<li>Software such as Stan make sampling easy to set up and very fast. Post-processing R packages such as tidybayes make it each to work with the posterior simulations.</li>
+</ol></li>
+</ol>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../wk05/03-zero-inflation.html" class="pagination-link" aria-label="Zero Inflation">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Zero Inflation</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../wk06/02-rejection-sampling.html" class="pagination-link" aria-label="Rejection Sampling">
+        <span class="nav-page-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Rejection Sampling</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

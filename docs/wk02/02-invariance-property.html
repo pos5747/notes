@@ -342,12 +342,47 @@ window.Quarto = {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
- <span class="menu-text">Appendices</span></a>
+ <span class="menu-text">Week 6</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk06/01-bayes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Bayesian Inference</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk06/02-rejection-sampling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Rejection Sampling</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk06/03-censoring.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Censoring</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk06/04-duration-models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Duration Models</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../appendicies/999-distributions.html" class="sidebar-item-text sidebar-link">
@@ -430,7 +465,7 @@ window.Quarto = {
 </header>
 
 
-<p>When discussing the properties of an ML estimate <span class="math inline">\(\hat{\theta}\)</span>: we’ve mentioned two properties. First, <span class="math inline">\(\hat{\theta}\)</span> is a consistent estimator. Second, <a href="#thm-ml-invariance" class="quarto-xref">Theorem&nbsp;<span class="quarto-unresolved-ref">thm-ml-invariance</span></a> shows that we can transform <span class="math inline">\(\hat{\theta}\)</span> to obtain an ML estimate of the transformation (i.e., <span class="math inline">\(\hat{\tau} = \tau{(\hat{\theta})}\)</span>). Let’s explore this invariance property a bit more.</p>
+<p>When discussing the properties of an ML estimate <span class="math inline">\(\hat{\theta}\)</span>: we’ve mentioned two properties. First, <span class="math inline">\(\hat{\theta}\)</span> is a consistent estimator. Second, <a href="01-maximum-likelihood.html#thm-ml-invariance" class="quarto-xref">Theorem&nbsp;<span>1.2</span></a> shows that we can transform <span class="math inline">\(\hat{\theta}\)</span> to obtain an ML estimate of the transformation (i.e., <span class="math inline">\(\hat{\tau} = \tau{(\hat{\theta})}\)</span>). Let’s explore this invariance property a bit more.</p>
 <p>Model parameters sometimes have a nice interpretation. For example, the parameter <span class="math inline">\(\pi\)</span> in the Bernoulli model has a nice interpretation–it’s a probability or the expected fraction of 1s in the long-run. However, the model parameters might not always have nice interpretation. For example, the shape parameters <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> of the beta distribution do not have a nice interpretation. Fortunately, it’s easy to transform the ML estimates of the model parameters into ML estimates of a quantity of interest.</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -438,7 +473,7 @@ window.Quarto = {
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Invariance Property (<a href="#thm-ml-invariance" class="quarto-xref">Theorem&nbsp;<span class="quarto-unresolved-ref">thm-ml-invariance</span></a>)
+Invariance Property (<a href="01-maximum-likelihood.html#thm-ml-invariance" class="quarto-xref">Theorem&nbsp;<span>1.2</span></a>)
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -558,7 +593,7 @@ $ batting_average &lt;dbl&gt; 0.354, 0.337, 0.331, 0.330, 0.327, 0.319, 0.316, 0
 <pre><code>[1]  37.07655 114.92550</code></pre>
 </div>
 </div>
-<p>For the beta distribution, the mean is given by <span class="math inline">\(\frac{\alpha}{\alpha + \beta}\)</span> and the variance is given by <span class="math inline">\(\frac{\alpha\beta}{(\alpha + \beta)^2(\alpha + \beta + 1)}\)</span>. (See <a href="#tbl-beta" class="quarto-xref">Table&nbsp;<span class="quarto-unresolved-ref">tbl-beta</span></a>.)</p>
+<p>For the beta distribution, the mean is given by <span class="math inline">\(\frac{\alpha}{\alpha + \beta}\)</span> and the variance is given by <span class="math inline">\(\frac{\alpha\beta}{(\alpha + \beta)^2(\alpha + \beta + 1)}\)</span>. (See <a href="../appendicies/999-distributions.html#tbl-beta" class="quarto-xref">Table&nbsp;<span>A.2</span></a>.)</p>
 <p>We can use the invariance property to obtain ML estimates of the mean, variance, and SD using our ML estimates of <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> theta_hat<span class="sc">$</span>est[<span class="dv">1</span>]</span>

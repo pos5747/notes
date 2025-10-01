@@ -257,7 +257,7 @@ When trying to find representative summary of "the effect" from non-linear model
 - The *average case* approach tries to identify a typical case and compute the effect for that case. 
 The *observed value* approach computes the effect for all cases and then averages those effects.
 
-In many cases the two approaches give similar estimates, but these are *different estimands* and sometimes the estimates meaningfully diverge. @beger2015 discuss potential differences.
+In many cases the two approaches give similar estimates, but these are *different estimands* and sometimes the estimates meaningfully diverge. @beger2025 discuss potential differences.
 
 It is easy to compute either estimand using {marginaleffects}.
 

@@ -9,3 +9,5 @@ stringr
 forcats
 lubridate
 glmmTMB
+tinytable
+marginaleffects

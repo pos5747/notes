@@ -1,0 +1,311 @@
+
+# Censoring
+
+
+```{r}
+#| include: false
+#| message: false
+#| warning: false
+
+# generally useful packages
+library(tidyverse)
+library(tinytable)
+```
+
+For some outcomes, we certain observations are censored. For the non-censored observations, we know the value exactly, as usual. But for the censored observations, we only know the *interval* that the value lies within.
+
+For example, we could imagine a sliding scale on a survey that allows respondents to report their exact income within the \$10k to \$150k interval, but the endpoints are "less than \$10k" and "greater than \$150k." For most respondents, we know their income. But for others, we only know that it is less than \$10k. And for others, we only know it is greater than \$150k.
+
+
+## Adjusting the individual likelihood
+
+In uncensored data, the likelihood contribution of an observation $y_i$ is the pdf/pmf evaluated at the observed outcome $L_i(\theta) = f(y_i; \theta)$.
+
+For censored observations, $y_i$ is unknown, so we replace $f(y_i; \theta)$ with the *probability of the observed region*.
+
+- **Right-censoring at $c$** (we only know $y_i>c$)
+  $$
+  L_i(\theta) = \Pr(y_i>c; \theta) = 1 - F(c; \theta).
+  $$
+
+- **Left-censoring at $c$** (we only know $y_i<c$)
+  $$
+  L_i(\theta) = \Pr(y_i<c_i; \theta) = F(c; \theta).
+  $$
+
+- **Interval censoring on $(a,b)$** (we only know $a<y_i<b$)
+  $$
+  L_i(\theta) = \Pr(a<y_i<b; \theta) = F(b; \theta) - F(a; \theta).
+  $$
+
+## Combining into the full likelihood
+
+The full likelihood multiplies pdfs/pmfs for fully observed cases and cumulative probabilities for censored cases.
+
+Here is an example dataset that shows the observed data and their corresponding likelihood contributions.
+
+$$
+\begin{array}{c c c c c c c c c c c}
+   y_1=2   & ; & y_2>3   & ; & y_3=1   & ; & y_4<1   & ; & y_5 \in (1,3) & ; & \cdots \\[6pt]
+   f(2)    & \times & \Pr(Y>3) & \times & f(1)   & \times & \Pr(Y<1) & \times & \Pr(1<Y<3)   & \times & \cdots \\[6pt]
+   f(2)    & \times & 1-F(3)   & \times & f(1)   & \times & F(1)     & \times & F(3)-F(1)    & \times & \cdots
+\end{array}
+$$
+This gives us the likelihood
+
+$$
+\text{the likelihood: } 
+L(\theta) = f(2) \cdot [1-F(3)] \cdot f(1) \cdot F(1) \cdot [F(3)-F(1)]\cdots
+$$
+
+It becomes more complicated to write the likelihood, because we need a way to flag the observation that are censored and *how* they are censored. But the intuition remains the same.
+
+Here are a couple of ways we might write this likelihood.
+
+### Option 1
+
+For a observations $i \in \{1, 2, ...  n\}$, let
+
+- $U = \{i : \text{uncensored}\}$ with observed value $y_i$
+- $R = \{i : \text{right-censored at } c_i\}$
+- $L = \{i : \text{left-censored at } c_i\}$
+- $Q = \{i : \text{interval-censored on } (a_i,b_i)\}$
+
+Then we can write the likelihood as
+
+$$
+L(\theta)
+= \overbrace{\prod_{i \in U} f(y_i \mid \theta)}^{\text{uncensored}}\; \cdot
+  \overbrace{\prod_{i \in R} \{1 - F(c_i \mid \theta)\}}^{\text{right censored}}\; \cdot
+  \overbrace{\prod_{i \in L} F(c_i \mid \theta)}^{\text{left censored}}\; \cdot
+  \overbrace{\prod_{i \in Q} \{F(b_i \mid \theta) - F(a_i \mid \theta)\}}^{\text{interval censored}}.
+$$
+
+### Option 2
+
+Equivalently, we can use the same trick used by the Bernoulli pmf, with indicator variables $u_i, r_i, l_i, q_i \in \{0,1\}$,
+
+$$
+L(\theta)
+= \prod_{i=1}^n
+\Big[
+f(y_i \mid \theta)^{u_i}
+\{1 - F(c_i \mid \theta)\}^{r_i}
+F(c_i \mid \theta)^{l_i}
+\{F(b_i \mid \theta) - F(a_i \mid \theta)\}^{q_i}
+\Big].
+$$
+
+## Example
+
+To see how censoring can bias estimates and how adjusting the likelihood can fix the bias, let's simulate some fake data with censoring.
+
+```{r}
+# set seed for reproducibility
+set.seed(1)
+
+# simulate latent outcome from usual normal linear model
+n <- 100
+x <- rexp(100, rate = 1/5)
+X <- cbind(1, x) # intercept + one predictor
+beta <- c(1, 0.5)
+sigma <- 2
+mu <- X %*% beta
+y_star <- rnorm(n, mean = mu, sd = sigma)  # if fully observed
+
+# censor data
+# note: y = c if censored
+c <- 5
+d <- as.integer(y_star > c)  # 1 = censored, 0 = uncensored
+y <- ifelse(d == 1, c, y_star)  # observed outcome (i.e., the censored outcome)
+
+# make data frame
+data <- data.frame(y, x, y_star, d)
+head(data)
+
+# verify the amount of censoring
+mean(d)  # proportion of data that are censored
+```
+
+The plot below shows the structure of censored data. The blue points are censored. We do not know the values, we only know they fall *above* the threshold (i.e., are right-censored).
+
+```{r}
+#| code-fold: true
+
+# load packages
+library(hrbrthemes)
+library(showtext)
+
+# download and register Source Sans 3 from google fonts
+font_add_google("Source Sans 3", family = "Source Sans 3")
+showtext_auto() 
+
+# create factor
+gg_data <- data |>
+  mutate(d_lbl = factor(d, levels = c(0, 1),                   # original coding of d
+      labels = c("Not Censored", "Censored")))
+
+# make plot
+ggplot(gg_data, aes(x = x, y = y_star, color = d_lbl)) +
+  geom_hline(yintercept = c) + 
+  annotate("label", x = 17.5, y = c, label = "Censoring Threshold", size = 3) + 
+  geom_segment(
+    data = filter(gg_data, d == 1),
+    aes(x = x, xend = x, y = y_star, yend = y),
+    arrow = arrow(length = unit(0.15, "cm")),
+    inherit.aes = FALSE,
+    color = "grey50"
+  ) +
+  geom_point() +
+  # arrows from y_star to y, only for censored cases
+  labs(y = "Outcome", color = "Censoring") +
+  labs(title = "An Example Censored Dataset",
+       subtitle = "Values Above 5 Are Right-Censored",
+       x = "Hypothetical Explanatory Variable",
+       y = "Latent Outcome Variable", 
+       color = "Type") +
+  theme_ipsum(base_family = "Source Sans 3") + 
+  scale_color_manual(values = c("#e41a1c", "#377eb8", "#4daf4a"))
+
+```
+
+### Ignore censoring
+
+One approach would be to *ignore* the censoring. Remember that, by convention, the censored values have the cutoff value. In the fake data, I chose `c <- 5` for the cutoff. Ignoring the censoring, we estimate a slope of 0.23 give-or-take 0.03. This is much too low.
+
+```{r}
+# fit ignoring censoring
+fit_lm <- lm(y ~ x)
+arm::display(fit_lm)
+```
+
+### Model censoring
+
+Alternatively, we could model the censoring. After adjusting the likelihood function as described above, the usual recipe works as expected (ML to estimate parameters → Hessian for their variances → invariance property for quantities of interest → delta method for their variances).
+
+```{r}
+# log-likelihood w/ censoring
+normal_rightcens_ll <- function(theta, y, X, c, d) {
+  # tidy up parameters
+  k <- ncol(X)
+  beta <- theta[1:k]
+  sigma <- theta[k + 1]
+  mu <- X %*% beta
+
+  # uncensored
+  ll_unc <- dnorm(y, mean = mu, sd = sigma, log = TRUE)
+
+  # right-censored at c: log Pr(Y > c)
+  ll_cens <- pnorm(c, mean = mu, sd = sigma, lower.tail = FALSE, log.p = TRUE)
+
+  # multiply
+  ll <- sum((1 - d) * ll_unc + d * ll_cens)
+  return(ll)
+}
+
+# optim
+theta_start <- c(rep(0, ncol(X)), 2)
+est <- optim(
+  par     = theta_start,
+  fn      = normal_rightcens_ll,
+  y       = y,
+  X       = X,
+  c       = c,
+  d       = d,
+  method  = "BFGS",
+  control = list(fnscale = -1),
+  hessian = TRUE
+)
+
+# point estimates
+est$par
+```
+
+The figure below shows the estimated intercept, slope, and error SD from the two approaches, compared to the truth. This figure shows that OLS is underestimating the slope, as you might have guessed from the scatterplot above.
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+k <- ncol(X)
+
+# Censored MLE (from your `est` object)
+beta_hat_cens  <- est$par[1:k]
+sigma_hat_cens <- est$par[k + 1]
+vcov_cens      <- tryCatch(solve(-est$hessian), error = function(e) matrix(NA_real_, k + 1, k + 1))
+se_cens        <- sqrt(diag(vcov_cens))
+se_beta_cens   <- se_cens[1:k]
+se_sigma_cens  <- se_cens[k + 1]
+
+# Naive lm()
+fit_lm <- lm(y ~ x)
+coefs_lm <- coef(summary(fit_lm))
+beta_hat_lm <- coefs_lm[, "Estimate"]
+se_beta_lm  <- coefs_lm[, "Std. Error"]
+sigma_hat_lm <- summary(fit_lm)$sigma
+p <- length(beta_hat_lm)        # number of regression params including intercept
+# Approx SE for sigma under normal errors:
+se_sigma_lm <- sigma_hat_lm / sqrt(2 * (n - p))
+
+# True values
+truth_vec  <- c("Intercept" = beta[1], "Slope" = beta[2], "Error SD" = sigma)
+
+# Helper to make CI
+z90 <- qnorm(0.95)  # 90% CI uses 1.645
+mk_ci <- function(est, se) tibble(estimate = est, lwr = est - z90 * se, upr = est + z90 * se)
+
+# Build tidy frame for plotting
+coef_levels <- c("Intercept", "Slope", "Error SD")
+
+coef_df <- bind_rows(
+  # lm()
+  {
+    b <- mk_ci(beta_hat_lm, se_beta_lm) |> mutate(term = c("Intercept", "Slope"))
+    s <- mk_ci(sigma_hat_lm, se_sigma_lm) |> mutate(term = "Error SD")
+    bind_rows(b, s) |> mutate(method = "lm()")
+  },
+  # Censored MLE
+  {
+    b <- mk_ci(as.numeric(beta_hat_cens), as.numeric(se_beta_cens)) |> mutate(term = c("Intercept", "Slope"))
+    s <- mk_ci(sigma_hat_cens, se_sigma_cens) |> mutate(term = "Error SD")
+    bind_rows(b, s) |> mutate(method = "Censored MLE")
+  }
+) |>
+  mutate(term = factor(term, levels = coef_levels))
+
+truth_df <- tibble(
+  term = factor(names(truth_vec), levels = coef_levels),
+  truth = as.numeric(truth_vec)
+)
+
+
+# Palette: keep your blue/red, black for truth
+method_cols <- c("lm()" = "#377eb8", "Censored MLE" = "#e41a1c")
+
+ggplot(coef_df, aes(x = term, y = estimate, color = method)) +
+  geom_errorbar(aes(ymin = lwr, ymax = upr), width = 0.15, position = position_dodge(width = 0.5), linewidth = 0.4) +
+  geom_point(position = position_dodge(width = 0.5), size = 2.3) +
+  # Truth points (on top) for clarity
+  geom_point(data = truth_df, aes(x = term, y = truth), inherit.aes = FALSE, shape = 21, fill = "black", color = "black", size = 2.5) +
+  labs(
+    x = NULL,
+    y = "Estimate (90% CI)",
+    color = NULL,
+    title = "Estimates vs. Truth"
+  ) +
+  scale_color_manual(values = method_cols) +
+  theme_ipsum(base_family = "Source Sans 3") +
+  theme(
+    legend.position = "bottom",
+    plot.title = element_text(size = 11, face = "bold"),
+    axis.title.y = element_text(size = 10)
+  ) + 
+  facet_wrap(vars(term), scales = "free") + 
+  theme(axis.text.y = element_blank()) + 
+  coord_flip()
+```
+
+## More Reading
+
+The normal model with censoring that I used above to illustrate the idea is sometimes called the "tobit model." @king1998 [pp. 208-210] provides a brief discussion of censoring. @long1997 [pp. 187-215] provides a chapter-length description of censoring in the context of the tobit model. @boxsteffensmeier2004 [pp. 15-19] discuss censoring in the context of duration models, where is is seemingly omnipresent.

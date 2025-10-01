@@ -1,0 +1,514 @@
+# Rejection Sampling
+
+In the previous chapter, we saw that in simple cases, especially when we use conjugate priors, we can find a closed-form posterior. But in most applied cases, we can only *sample from* the posterior distribution. It might be counter-intuitive that it can be *easy* to sample from a distribution without a closed form, but it's true!
+
+In this course, we'll look at four samplers:
+
+1. rejection
+1. approximate posterior simulation
+1. Metropolis
+1. Hamiltonian Monte Carlo
+
+The algorithms start simple and intuitive and build in complexity. A deep dive on HMC--especially the hyper-optimized version used by Stan--is beyond the scope of this course. That said, HMC via Stan and it universe of enablers in R have made posterior simulation almost trivial.
+
+## Equivalence
+
+Before jumping into sampling algorithms, let's demonstrate the correspondence between sampling and closed-form results. 
+
+In the case of the toothpaste cap, problem we have a Bernoulli model, beta prior, and beta posterior from the previous chapter. For the prior, let's suppose $\alpha = 3$ and $\beta = 15$. Regardless of the summary we are interested in (e.g., mean, SD, percentiles), we can work with the closed-form result or simulations to obtain the same answer. Notice that even for this very simple closed-form result, the simulations perhaps easier to work with!
+
+It's trivial for us to simulate from the beta posterior using the `rbeta()` function.^[This makes it a good first example, since the correspondence between `rbeta()` and `dbeta()` is obvious. In more interesting cases, the simulation will be harder.] And the summaries we might want are easy to compute using closed-form results. Let's compare the two approaches.
+
+```{r}
+# prior parameters
+alpha_prior <- 3
+beta_prior <- 15
+
+# data 
+k <- 8
+N <- 150
+
+# posterior parameters
+alpha_posterior <- alpha_prior + k
+beta_posterior <- beta_prior + N - k
+
+# for compact calculations below
+a1 <- alpha_posterior
+b1 <- beta_posterior
+
+# posterior simulation; trivial
+n_sims <- 100000
+pi_tilde <- rbeta(n_sims, shape1 = a1, shape2 = b1)
+
+# posterior mean
+a1 / (a1 + b1)  # closed form
+mean(pi_tilde)  # posterior sim
+
+# posterior sd
+sqrt((a1 * b1) / ((a1 + b1)^2 * (a1 + b1 + 1))) # closed form
+sd(pi_tilde)  # posterior sim
+
+# posterior 5th percentile
+qbeta(0.05, shape1 = a1, shape2 = b1)  # closed form
+quantile(pi_tilde, probs = 0.05)  # posterior sims
+
+# posterior 95th percentile
+qbeta(0.95, shape1 = a1, shape2 = b1)  # closed form
+quantile(pi_tilde, probs = 0.95)  # posterior sims
+```
+
+## A Bayesian Invariance Property
+
+For ML estimators, we have the invariance property. The invariance property allows us to freely transform our ML estimates. But can we say something similar about Bayesian point estimates, like the posterior mean? *Kinda*, but it works slightly differently.
+
+::: {.column-margin}
+
+**Invariance Property of ML Estimators.** Suppose an ML estimator $\hat{\theta}$ of $\theta$ as in @def-mle and a quantity of interest $\tau = \tau(\theta)$ for any function $\tau$. The ML estimate $\hat{\tau}$ of $\tau = \tau(\theta)$ is $\tau(\hat{\theta})$.
+:::
+
+
+### The Incorrect Way
+
+First, there is something that we might *want* to do, but cannot.
+
+::: callout-warning
+
+## Cannot transform posterior mean
+
+Suppose a posterior mean $\hat{\theta}_{mean}$ and a transformation $\tau = \tau(\theta)$. Suppose we want the posterior mean of the transformation $\hat{\tau}_{mean}$. 
+
+$$
+\hat{\tau}_{mean} \neq \tau \left( \hat{\theta}_{mean} \right)\text{, except in special cases.}
+$$
+
+This means: we cannot freely transform posterior means.^[I suppose we *can*, but what we get out of this process isn't also a posterior mean.] 
+
+:::
+
+However, there is a way to obtain the posterior mean of the transformation. @thm-bayes-invariance tells us how. It comes down to the order of operations.
+
+### The Correct Way
+
+Instead of transforming the posterior mean, you need to *transform the simulations*, then take the mean.
+
+::: {#thm-bayes-invariance}
+
+## Simulation-Based Invariance Property of Posterior Distributions
+
+Suppose $\{\tilde{\theta}^{(s)}\}_{s=1}^S$ are posterior simulations of $\theta$. Let $\tau = \tau(\theta)$ be a quantity of interest for any function $\tau$. Then posterior simulations of $\tau$ can be obtained by applying $\tau$ to each draw $\tilde{\theta}^{(s)}$ so that $\tilde{\tau}^{(s)} = \tau \left( \tilde{\theta}^{(s)} \right)$. Summaries of the posterior distribution of $\tau$ (e.g., mean, median, credible intervals) are obtained by summarizing the transformed draws $\{\tilde{\tau}^{(s)}\}_{s=1}^S$.
+:::
+
+Importantly, if you transform the posterior mean of the parameter, you no longer have posterior mean. (Same for the median.) Instead, you must transform *each simulation* before taking the mean.^[This difference will usually be small, but Jensen's inequality still applies.]
+
+We can illustrate the the wrong way (average then transform) and the right way (transform then average). If we compute the odds (of success) $\pi/(1 - \pi)$, then the right way and wrong way give similar answers.
+
+```{r}
+# find posterior mean of pi
+mean_pi <- mean(pi_tilde)
+
+# wrong way; can't transform posterior means
+mean_pi/(1 - mean_pi)  # NOT the posterior mean of the odds
+
+# right way; transform then average
+odds_tilde <- pi_tilde/(1 - pi_tilde)
+mean(odds_tilde) # the posterior mean of the odds
+```
+
+But if we compute the odds *of failure* $(1 - \pi)/\pi$, then we get noticeably different answers.
+```{r}
+# wrong way; can't transform posterior means
+(1 - mean_pi)/(mean_pi)  # NOT the posterior mean of the odds
+
+# right way; transform then average
+odds_of_failure_tilde <- (1 - pi_tilde)/pi_tilde
+mean(odds_of_failure_tilde) # the posterior mean of the odds
+```
+
+::: {.column-margin}
+
+This happens because the posterior distributions for the odds of success and the odds of failure are skewed differently.
+
+```{r}
+hist(odds_tilde)
+hist(odds_of_failure_tilde)
+```
+
+:::
+
+## Rejection Sampling
+
+For more difficult posteriors, we can use algorithms designed to sample from complicated distributions. Most algorithms, including Stan's hyper-optimized^[My description; not a technical term.] implementation of HMC, use a form of reject.
+
+To highlight how rejection can help us sample from complicated distributions, let's look at a simple *rejection algorithm* that relies *entirely* on rejection.^[This rejection sampling is rarely useful in practice. It turns out that Stan has made most sampling easy. But the rejection algorithm does highlight the intuition of more complicated algorithms that Stan uses.]
+
+**Algorithm:** Rejection Sampling
+
+::: aside
+To make the rejection algorithm simple, I've written it to apply specifically to the posterior for the Bernoulli model, which has support $[0, 1]$. The target density doesn't need to be a posterior and can have support other than $[0, 1]$. The proposal distribution doesn't have to be uniform. The key is that $M$ is larger than the maximum of the target distribution and draws are accepted with probability $f(z)/M$. 
+:::
+
+*Inputs:* 
+
+- The *unnormalized* posterior distribution $f(\pi \mid y)$ on [0,1].  
+- Desired number of draws $S$.  
+- An envelope constant $M$ that is larger than $f(\pi)$ for all $\pi$. For our simple 1D cases, we can plot the posterior and select $M$ visually. We could also use use `optim()` to find the posterior mode.
+
+*Algorithm*:
+
+1. **Initialize:** Set $s=1$.
+1. **Repeat until $s=S$:**
+   a. Propose $z \sim \text{uniform}(0,1)$.  
+   b. Draw $u \sim \text{uniform}(0,1)$. Used to control reject/accept rates.
+   c. **Accept–reject step:**  
+      - If $u \le \dfrac{f(z)}{M}$, **accept**. Set $\pi^{(s)} = z$ and update $s \leftarrow s+1$. Because $u$ is uniform, this accepts with probability $\dfrac{f(z)}{M}$.
+      - Otherwise **reject** $z$ and return to Step 2a.
+
+*Output:* Independent samples $\pi^{(1)}, \pi^{(2)}, \dots, \pi^{(B)}$ from $f(\pi \mid y)$.
+
+### Beta(4, 10) Example
+
+The figure below shows the logic of the rejection algorithm assuming a $\pi \sim \text{beta}(4, 10)$ target distribution. We set $M = 4$ visually, but notice that we could set it at to 3.5 as well. We'll generate proposals from a uniform distribution, but *accept* those proposals a different rates depending on the posterior density *at that proposal.*
+
+```{r "Illustrating rejection sampler"}
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-height: 5
+#| fig-width: 8
+
+library(dplyr)
+library(ggplot2)
+library(geomtextpath)  
+library(hrbrthemes)
+library(showtext)
+
+
+# download and register Source Sans 3 from google fonts
+font_add_google("Source Sans 3", family = "Source Sans 3")
+showtext_auto() 
+
+# Envelope height
+M <- 4
+
+# Target function on [0,1]
+f <- function(pi) dbeta(pi, shape1 = 4, shape2 = 10)
+
+# Curve data
+df <- data.frame(pi = seq(0, 1, length.out = 1001))
+df$dens <- f(df$pi)
+
+# x-positions for vertical lines
+pis <- c(0.125, 0.25, 0.50, 0.75)
+
+# Evaluate f() and compute accept/reject probabilities at those positions
+seg_info <- data.frame(
+  pi0  = pis,
+  fval = f(pis)
+)
+seg_info$acc_prob <- pmin(seg_info$fval / M, 1)          # accept proportion
+seg_info$rej_prob <- pmax(1 - seg_info$acc_prob, 0)      # reject proportion
+
+# Build accept (green) segments: y = 0 -> f(pi0)
+acc_segments <- transform(
+  seg_info,
+  x = pi0, xend = pi0,
+  y = 0,   yend = fval,
+  y_mid = (0 + fval) / 2,                                  # midpoint for label
+  lbl = sprintf("Pr(Accept) = %.2f", acc_prob)
+) |> 
+  filter(yend > 0.01)
+
+# Build reject (red) segments: y = f(pi0) -> M
+rej_segments <- transform(
+  seg_info,
+  x = pi0, xend = pi0,
+  y = fval, yend = M,
+  y_mid = (fval + M) / 2,                                  # midpoint for label
+  lbl = sprintf("Pr(Reject) = %.2f", rej_prob)
+)
+
+ggplot(df, aes(x = pi, y = dens)) +
+  # Shade under the target distribution
+geom_area(
+  data = df,
+  aes(x = pi, y = dens),
+  fill = "#377eb8",
+  alpha = 0.2,
+  inherit.aes = FALSE
+) + 
+  geom_hline(
+    yintercept = M, 
+    color = "black", 
+    linetype = "dashed"
+  ) + 
+  # Label M
+    annotate(geom = "label",
+             x = .07, 
+             y = M, 
+             label = "M", 
+             color = "black", 
+             family = "Source Sans 3") +
+  # Target curve with a path-following label
+  geom_textpath(
+    aes(label = "target distribution"),
+    linewidth = 0.8,
+    size = 4,
+    vjust = -0.1,
+    color = "#377eb8", 
+    family = "Source Sans 3"
+  ) +
+  # Accept (green) and reject (red) vertical segments
+  geom_segment(
+    data = acc_segments,
+    aes(x = x, xend = xend, y = y, yend = yend),
+    inherit.aes = FALSE,
+    linewidth = 0.5,
+    color = "#4daf4a", 
+    linetype = "dotted"
+  ) +
+  geom_segment(
+    data = rej_segments,
+    aes(x = x, xend = xend, y = y, yend = yend),
+    inherit.aes = FALSE,
+    linewidth = 0.5,
+    color = "#e41a1c", 
+    linetype = "dotted"
+  ) +
+  # Midpoint labels: regular ggplot text, centered on each segment
+  geom_label(
+    data = acc_segments,
+    aes(x = x, y = y_mid, label = lbl),
+    inherit.aes = FALSE,
+    color = "#4daf4a",
+    size = 2.7,
+    #angle = 90,          # rotate to align with vertical segment (optional)
+    vjust = 0.5,
+    hjust = 0.5, 
+    family = "Source Sans 3"
+  ) +
+  geom_label(
+    data = rej_segments,
+    aes(x = x, y = y_mid, label = lbl),
+    inherit.aes = FALSE,
+    color = "#e41a1c",
+    size = 2.7,
+    #angle = 90,          # rotate to align with vertical segment (optional)
+    vjust = 0.5,
+    hjust = 0.5, 
+    family = "Source Sans 3"
+  ) +
+      # Label proposal density
+    annotate(geom = "label",
+             x = .5, 
+             y = M,
+             vjust = -0.3,
+             size = 3,
+             label = "← sample candidate values uniformly from 0 to 1 →", 
+             color = "black", 
+             family = "Source Sans 3") +
+  scale_x_continuous(limits = c(0, 1)) +
+  scale_y_continuous(limits = c(0, 4.2)) +
+  labs(x = expression(pi), y = "Density") +
+  theme_ipsum(base_family = "Source Sans 3") + 
+  labs(title = "Illustrating the logic of the rejection algorithm", 
+       subtitle = "For a beta(4, 10) target distribution.")
+
+```
+
+The code below implements the rejection algorithm shown in the figure above.
+
+```{r}
+rej <- function(f, S, M) {
+  
+  # record start time
+  start_time <- Sys.time()
+  
+  # create containers and initialize counters
+  samples <- numeric(S)  # container to store samples
+  rejects <- NULL  # container to track rejected values; for teaching; slow!
+  s <- 1 # currently trying to take sample 1
+  n_prop <- 0  # count proposals (for an acceptance-rate message)
+
+  # so long as the current sample s is less 
+  #   than the desired samples S.
+  #   do the following:
+  while (s <= S) { 
+    
+    # A: propose z ~ uniform(0,1)
+    z <- runif(1)
+    
+    # B: draw u ~ uniform(0,1)
+    u <- runif(1)
+
+    # C: Accept or reject
+    fz <- f(z) # compute once, for effeciency
+    
+      ## scenario 1: u <= f(z)/M  →  Accept
+      if (u <= fz / M) {
+        samples[s] <- z
+        s <- s + 1
+      } 
+    
+      ## scenario 2: f(z) > M  →  shouldn't happen; error
+      if (fz > M) stop("Stop: Envelope M is too small.")  # find appropriate M
+      
+      ## scenario 3: u > f(z)/M  →  Reject
+      ##   tracking these values just for teaching and learning--not needed usually
+      if (u > fz / M) {
+         rejects <- c(rejects, z)
+      }
+    
+    # track total proposals so far
+    n_prop <- n_prop + 1
+  }
+
+ # print a summary report
+  message(
+    paste0(
+      "💪 Successfully generated ", scales::comma(S), " samples! 🎉\n\n",
+      "✅ Accepted samples: ", scales::comma(S), "\n",
+      "❌ Rejected samples: ", scales::comma(length(rejects)), "\n",
+      "﹪ Acceptance rate: ", scales::percent(S / n_prop, accuracy = 1), "\n",
+      "⏰ Total time: ", prettyunits::pretty_dt(Sys.time() - start_time)
+    )
+  )
+
+  # return
+  list(
+    n_prop = n_prop,
+    acc_rate = S / n_prop,
+    samples = samples,
+    rejects = rejects
+  )
+}
+```
+
+```{r}
+# example target distribution; beta(4, 10)
+f <- function(z) {
+  dbeta(z, shape1 = 4, shape2 = 10)
+}
+# perform sampling
+r <- rej(f, 10000, 4)
+```
+
+
+```{r}
+#| echo: false
+#| fig-column: margin
+ggplot() +
+  stat_function(fun = f) +
+  xlim(0, 1) +
+  geom_histogram(binwidth = 1/20, boundary = 0) + 
+  theme_ipsum(base_family = "Source Sans 3") +
+  scale_fill_manual(values = c("#e41a1c", "#377eb8")) + 
+    labs(x = expression(pi), y = "Density", 
+         title = "Target distribution", 
+         subtitle = "beta(4, 10)") 
+```
+
+To develop our intuition, we can plot both the accepted samples and the rejected values on the same histogram. Notice two things.
+
+1. First, when combined---looking at stacked the red and blue bars---the histogram is uniform. This is because the proposals are from a uniform distribution. 
+1. Second, after removing the rejected values---looking at the blue accepted samples only---the histogram takes on the shape of the target distribution.
+
+```{r}
+#| code-fold: true
+bind_rows(
+  data.frame(type = "Accepted", values = r$samples),
+  data.frame(type = "Rejected", values = r$rejects)
+) |>
+  mutate(type = factor(type, levels = c("Rejected", "Accepted"))) |>
+  ggplot(aes(fill = type, x = values)) +
+  geom_histogram(binwidth = 1/20, boundary = 0) + 
+  theme_ipsum(base_family = "Source Sans 3") +
+  scale_fill_manual(values = c("#e41a1c", "#377eb8")) + 
+    labs(x = expression(pi), y = "Count", 
+         fill = "Result")
+```
+
+
+We can use the samples to compute the summaries of interest, like the posterior mean. 
+
+```{r}
+4/(4 + 10)  # analtical mean.
+mean(r$samples)  # simulation mean
+```
+
+This samples are independent. So while they are more complicated to generate, they work just as well as draws using `rbeta()`.
+
+### A Weird Example
+
+To see the power of the rejection algorithm, we can come up with a weird prior.
+
+```{r}
+# funky priors on [0,1]
+prior_saw <- function(p, n_teeth = 5) {
+  ((n_teeth*p) %% 1)
+}
+```
+
+```{r}
+#| echo: false
+#| fig-column: margin
+ggplot() +
+  stat_function(fun = prior_saw) +
+  xlim(0, 1) +
+  geom_histogram(binwidth = 1/20, boundary = 0) + 
+  theme_ipsum(base_family = "Source Sans 3") +
+  scale_fill_manual(values = c("#e41a1c", "#377eb8")) + 
+    labs(x = expression(pi), y = "Density", 
+         title = "Sawtooth prior", 
+         subtitle = "A weird example to illustrate") 
+```
+
+```{r}
+# example unnormalized target distribution
+#   bernoulli likelihood times sawtooth prior
+#   rescaled by 10,000 to make values sensible
+f <- function(z) {
+  10000*z^4 * (1 - z)^10 * prior_saw(z) 
+}
+```
+
+```{r}
+#| echo: false
+#| fig-column: margin
+ggplot() +
+  stat_function(fun = f) +
+  xlim(0, 1) +
+  geom_histogram(binwidth = 1/20, boundary = 0) + 
+  theme_ipsum(base_family = "Source Sans 3") +
+  scale_fill_manual(values = c("#e41a1c", "#377eb8")) + 
+    labs(x = expression(pi), y = "Density", 
+         title = "Unnormalized sawtooth posterior", 
+         subtitle = "A weird example to illustrate") 
+```
+```{r}
+# perform sampling
+r <- rej(f, 10000, 4)
+```
+We can create a histogram of the posterior distribution, which has a very unusal shape.
+```{r}
+#| code-fold: true
+bind_rows(
+  data.frame(type = "Accepted", values = r$samples),
+  data.frame(type = "Rejected", values = r$rejects)
+) |>
+  mutate(type = factor(type, levels = c("Rejected", "Accepted"))) |>
+  ggplot(aes(fill = type, x = values)) +
+  geom_histogram(binwidth = 1/50, boundary = 0) + 
+  theme_ipsum(base_family = "Source Sans 3") +
+  scale_fill_manual(values = c("#e41a1c", "#377eb8")) + 
+    labs(x = expression(pi), y = "Count", 
+         fill = "Result")
+```
+
+We can also compute the mean, SD, and 90% equal-tailed credible interval.
+
+```{r}
+mean(r$samples)
+sd(r$samples)
+quantile(r$samples, probs = c(0.05, 0.95))
+```
+
