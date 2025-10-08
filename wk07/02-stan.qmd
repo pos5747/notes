@@ -1,0 +1,341 @@
+---
+title: "Stan"
+format:
+  html:
+    theme: default
+execute:
+  cache: false
+---
+
+```{r}
+#| include: false
+#| message: false
+#| warning: false
+
+options(digits = 3)
+
+# packages
+library(tidyverse)
+library(tinytable)
+library(hrbrthemes)
+library(showtext)
+
+# fonts
+font_add_google("Source Sans 3", family = "Source Sans 3")
+showtext_auto()
+```
+
+Previously, we looked at the Metropolis algorithm and saw how it could generate samples from an unnormalized posterior. Metropolis is general and powerful, but requires many iterations to explore the posterior and careful tuning of proposal distributions.
+
+In this chapter, we look at Stan, a modern and general-purpose platform for Bayesian inference [@carpenter2017]. Stan automates the process of sampling from complex posterior distributions using a *hyper-optimized version* of Hamiltonian Monte Carlo (HMC) [@neal2011], which is itself a form of Markov Chain Monte Carlo (MCMC). @betancourt2017 provides a nice introduction to HMC.
+
+Stan handles nearly all the details automatically: step sizes, trajectory lengths, tuning, and adaptation [@hoffman2014]. This allows the user to focus on the model itself.
+
+::: {.aside}
+
+Before Stan, Bayesian modeling in R was typically done using **BUGS** or **JAGS**, which relied on Gibbs sampling and Metropolis-within-Gibbs updates. These samplers were intuitive and easy to use but often slow to converge, especially for correlated or high-dimensional parameters.
+
+Stan was designed to overcome these limitations. It uses gradients of the log-posterior to navigate the parameter space more efficiently, improving both speed and accuracy.
+
+:::
+
+## Logistic Regression Model
+
+Consider our usual logistic regression model.
+
+$$
+y_i \sim \text{Bernoulli}(\pi_i), \quad \pi_i = \text{logit}^{-1} \left( X_i \beta \right).
+$$
+
+We'll assume weakly informative priors (i.e., variance = 25). Because the scale of the variables affects the interpretation of the priors, it's common to rescale variables to have a common scale (e.g., SD of 0.5, SD of 1, or range of 1). For example, a prior with an SD of 5 is more or less informative depending on whether income is dollars or thousands of dollars---the coefficient is 1000x larger in the latter case.
+
+$$
+\beta \sim \mathcal{N}(0, 5^2 I).
+$$
+
+## Stan Model
+
+To use Stan, we need to represent the model in Stan's syntax.^[Stan is a *declarative* modeling language: you describe the **data** you have, the **parameters** you don’t know, and the **probabilistic relationships** (priors and likelihood) that connect them. Stan then draws samples from the posterior using HMC.]
+
+Stan's [documentation](https://mc-stan.org) is excellent. They have a [user's guide](https://mc-stan.org/docs/stan-users-guide/), a [reference manual](https://mc-stan.org/docs/reference-manual/), several [tutorials](https://mc-stan.org/learn-stan/tutorials.html), and many [case-studies](https://mc-stan.org/learn-stan/case-studies.html).
+
+Each Stan model has three main blocks.
+
+1. `data { ... }` Known inputs provided from R .
+1. `parameters { ... }` Unknowns to infer (e.g., `vector[K] beta;`, `real<lower=0> sigma;`). Put **constraints** that reflect the parameter's support.
+1. `model { ... }` Priors and likelihood live here. Use sampling statements (`theta ~ normal(0,1);`) 
+
+There are other blocks you can use as well.
+
+As an example, the model below is how we can represent our logit model in Stan. We should save this text file as `logit.stan` in our project directory.
+
+The Stan model mirrors the math closely. 
+
+```stan
+# data block
+data {
+  int<lower=0> N;  // rows in design matrix
+  int<lower=1> K;  // colummns in design matrix
+  array[N] int<lower=0, upper=1> y;  // binary outcome
+  matrix[N, K] X;  // design matrix
+}
+
+# parameters block
+parameters {
+  vector[K] beta;  // logit coefficients
+}
+
+# model block
+model {
+  beta ~ normal(0, 5);               // n(0, 5) prior for each beta
+  y ~ bernoulli_logit(X * beta);     // logistic regression likelihood
+}
+```
+
+
+## Data for Stan
+
+We can use the same turnout data and formula from the Metropolis chapter.
+
+```{r}
+#| message: false
+#| warning: false
+
+# load only the turnout data frame
+turnout <- ZeligData::turnout  |>
+  # hard code rescaled variables, because comparisons doesn't like them in the formula for some reason I don't understand
+  mutate(across(age:income, arm::rescale, .names = "rs_{.col}")) |>
+  glimpse()
+
+# build model frame
+f <- vote ~ rs_age + rs_educate + rs_income + race
+mf <- model.frame(f, data = turnout)
+X  <- model.matrix(f, data = mf)
+y  <- model.response(mf)
+
+# bundle data for Stan
+stan_data <- list(
+  N = nrow(X),
+  K = ncol(X),
+  y = as.integer(y),
+  X = X
+)
+```
+
+```{r}
+# make the Document Self-Contained (silently write `logit.stan`)
+stan_code <- "
+data {
+  int<lower=0> N;
+  int<lower=1> K;
+  array[N] int<lower=0, upper=1> y;
+  matrix[N, K] X;
+}
+parameters {
+  vector[K] beta;
+}
+model {
+  beta ~ normal(0, 5);               // weakly informative prior
+  y ~ bernoulli_logit(X * beta);     // logistic regression likelihood
+}
+"
+
+# Write the Stan program so the document runs without external files.
+writeLines(stan_code, con = 'logit.stan')
+```
+
+## `rstan`
+
+The {rstan} package allows us to compile and run Stan models directly inside R.
+
+```{r}
+#| message: false
+#| warning: false
+#| results: hide
+
+library(rstan)
+
+fit_rstan <- stan(
+  file = "logit.stan",
+  data = stan_data,
+  chains = 4,
+  cores = 4,
+  warmup = 1000,
+  iter = 3000,  # total iter, incl warmup
+  seed = 123
+)
+```
+
+The output of `stan()` has a handy `print()` method.
+
+```{r}
+print(fit_rstan, pars = "beta")
+```
+
+## `cmdstanr`
+
+The {cmdstanr} package interfaces with the CmdStan engine outside R. It compiles quickly and provides clear diagnostic output. This is slightly more tedious to set up and maintain, but is preferred to {rstan}.
+
+```{r}
+#| message: false
+#| warning: false
+#| results: hide
+
+library(cmdstanr)
+
+mod <- cmdstan_model("logit.stan")
+
+fit_cmd <- mod$sample(
+  data = stan_data,
+  chains = 4,
+  cores = 4,
+  iter_warmup = 1000,
+  iter_sampling = 2000,  # excluding warmup
+  seed = 123
+)
+```
+
+```{r}
+fit_cmd$summary(variables = "beta")
+```
+
+Both interfaces fit the same model and return similar results. Either is fine! I recommend {cmdstanr}, though it is *slightly* more work to get started.
+
+| Feature | `rstan` | `cmdstanr` |
+|----------|----------|-------------|
+| Compilation | Inside R | External CmdStan executable |
+| Speed | Slower | Faster (cached binaries) |
+| Debugging | Less transparent | Easier (visible console output) |
+| Recommendation for new users | ✅ Works fine | ✅ Preferred |
+
+## Diagnostics
+
+Stan reports two essentials:
+
+- $\hat{R}$: near 1 indicates convergence across chains.
+- Effective Sample Size (ESS): how much independent information is in the draws.
+
+The `print()` methods make these easy to find, but we can also compute them directlyAs a rule of thumb, check $\hat{R} < 1.01$ and ESS > 2,000.
+
+```{r}
+#| message: false
+#| warning: false
+
+library(posterior)
+
+draws_beta <- fit_cmd$draws(variables = "beta")  # draws array
+rhat(draws_beta)
+ess_bulk(draws_beta)
+ess_tail(draws_beta)
+```
+
+### {bayesplot}
+
+The {bayesplot} packages offers many useful functions for visualizing the simulations. There are three examples below, but there are many more useful tools in {bayesplot}. Again, the [documentation](https://mc-stan.org/bayesplot/) is excellent.
+
+```{r}
+# load packages
+library(bayesplot)
+
+# densities of parameters by chain
+mcmc_dens_overlay(fit_rstan)
+
+# ridges plot of densities of parameters
+mcmc_areas_ridges(fit_rstan, regex_pars = "beta")
+
+# r-hat
+mcmc_rhat(rhat(fit_rstan))
+```
+
+### {ShinyStan}
+
+The **ShinyStan** app provides an interactive dashboard for convergence diagnostics, traceplots, divergences, and posterior summaries.
+
+```{r}
+#| eval: false
+
+# launching a GUI is interactive; keep this non-evaluated by default
+library(shinystan)
+
+# for rstan
+launch_shinystan(fit_rstan)
+
+# for cmdstanr: convert to a stanfit first, then launch
+sf <- rstan::read_stan_csv(fit_cmd$output_files())
+launch_shinystan(sf)
+```
+
+You can inspect $\hat{R}$, ESS, and visual diagnostics interactively without additional coding.
+
+
+## Quantities of Interest
+
+We have simulations of $\beta$. We can summarize these with means, medians, SDs, quantiles, etc. The {posterior} package offers many useful function for working with the simulations from {rstan} and {cmdstanr}. Again, the documentation for {posterior} is excellent. Here, we can use the `as_draws_matrix()` function to extract the MCMC samples from `fit_rstan`. 
+
+```{r}
+# put the simulations of the coefficients into a matrix
+beta_tilde_raw <- posterior::as_draws_matrix(fit_rstan, regex_pars = "beta")
+head(beta_tilde_raw)
+```
+
+This has an extra column for `lp__` so let's grab *only* the first five columns. Notice that the `draw` is a rowname, not a column.
+
+```{r}
+# drop the unnecessary cols
+beta_tilde <- as.matrix(beta_tilde_raw)[, 1:5]
+head(beta_tilde) # first "column" is the row names
+```
+
+To compute a first difference, transform draws using the invariance principle.
+
+```{r}
+# make X_lo
+X_lo <- cbind(
+  "constant" = 1, # intercept
+  "rs_age" = -0.5, # 1 SD above avg -- see ?arm::rescale
+  "rs_educate" = 0,
+  "rs_income" = 0,
+  "white" = 1 # white indicator = 1 
+)
+
+# make X_hi by modifying the relevant value of X_lo
+X_hi <- X_lo
+X_hi[, "rs_age"] <- 0.5  # 1 SD below avg
+
+# function to compute first difference
+fd_fn <- function(beta, hi, lo) {
+  beta <- as.vector(beta)  # to prevent column/row confusion
+  plogis(hi%*%beta) - plogis(lo%*%beta)
+}
+
+# transform simulations of coefficients into simulations of first-difference
+# note 1: for clarity, just do this one simulation at a time,
+# note 2: i indexes the simulations
+fd_tilde <- numeric(nrow(beta_tilde))  # container
+for (i in 1:nrow(beta_tilde)) {
+  fd_tilde[i] <- fd_fn(beta_tilde[i, ], hi = X_hi, lo = X_lo)
+}
+
+# posterior mean
+mean(fd_tilde)
+```
+
+
+
+
+## Summary
+
+There are three important points to remember.
+
+**Stan as modern MCMC**  
+Stan automates MCMC using a hyper-optimized version of HMC. It efficiently samples from posteriors that are otherwise difficult to explore.
+
+**Interfaces**  
+
+Both `rstan` and `cmdstanr` run the same Stan model. They differ mainly in compilation method and speed.
+
+**Diagnostics and Visualization**  
+
+Always check $\hat{R}$ and ESS to ensure convergence. ShinyStan makes it easy to explore diagnostics interactively. `summary()` and `print()` methods make these easily available.
+
+Stan generalizes what we learned with the Metropolis algorithm: the logic is the same, but the computation is vastly more efficient.

@@ -46,6 +46,11 @@ book:
         - wk06/02-rejection-sampling.qmd
         - wk06/03-censoring.qmd
         - wk06/04-duration-models.qmd
+    - part: "Week 7"
+      chapters: 
+        - wk07/01-metrop.qmd
+        - wk07/02-stan.qmd
+        - wk07/03-brms.qmd
   appendices:
     - appendicies/999-distributions.qmd
     - wk01/frac-exp-log.qmd
