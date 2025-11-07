@@ -59,6 +59,7 @@ book:
     - wk01/matrices.qmd
     - wk01/probability.qmd
     - wk04/05-glm.qmd
+    - appendicies/ordered.qmd
     #- wk01/hypothesis-testing.qmd
 
 bibliography: references.bib
