@@ -1,3 +1,7 @@
+---
+fig-asp: 0.75
+---
+
 # Ordered Logit
 
 ## Ordered Outcomes
@@ -214,28 +218,43 @@ ggplot() +
   theme(legend.position = "none")
 ```
 
-## Example
+## Example: Party ID by age and race in 2014
 
-As an example, we can model party ID as a function of age and race.
+As an example, we can model party ID as a function of income.
 
 ### `polr()`
 
+First, load a data set I've created with variables party id (`pid`) and income. 
+
 ```{r}
+#| message: false
+#| warning: false
 # load data
-df <- forcats::gss_cat |>
-  mutate(race = fct_drop(race)) |>
-  mutate(partyid = case_when(partyid == "No answer" ~ NA,
-                             partyid == "Don't know" ~ NA,
-                             partyid == "Other party" ~ NA, 
-                             TRUE ~ partyid),
-         partyid = fct_drop(partyid)) |>
+anes <- read_csv("data/red-state-pid.csv") |>
+  glimpse()
+```
+
+Notice that the ordinal party ID lables have a numerial prefix as part of the character string. This is helpful to (1) quickly remind us of the order and (2) ensure that the alphabetic order and ordinal rankings of their values are the same. 
+
+Because the dataset is in `.csv` format, `pid` is loaded as a character string, but we can easily convert it to an ordered factor.
+
+```{r}
+#| message: false
+#| warning: false
+# load data
+anes <- read_csv("https://pos5747.github.io/data/red-state-pid.csv") |>
+  mutate(pid = factor(pid, ordered = TRUE)) |>
   glimpse()
 
-# look at outcome
-levels(df$partyid)
+# examine levels of ordinal variable
+levels(anes$pid)
+```
+Because of the numbers I included in the prefix, the default *alphabetical* ordering is *exactly the ordering we want.*
 
+```{r}
 # fit ordered logit model
-fit <- MASS::polr(partyid ~ age*race, data = df, Hess = TRUE)
+library(MASS)  # be wary of conflicts with filter() and select()
+fit <- polr(pid ~ income, data = anes, Hess = TRUE)
 
 # summarize fit
 summary(fit)
@@ -243,44 +262,96 @@ summary(fit)
 
 ### Probabilities with \{marginaleffects\}
 
+To interpret the coefficients, we can compute the probability of falling into each category as age varies from 18 to 89 years.
+
 ```{r}
+#| fig-asp: 0.5
+
 # use {marginaleffects}
 library(marginaleffects)
 p <- predictions(fit, 
-            variables = list(age = 25:75), 
-            newdata = datagrid(race = unique)) |>
+            newdata = datagrid(income = unique)) |>
   glimpse()
-ggplot(p, aes(x = age, y = estimate, color = group)) + 
-  geom_line() + 
-  facet_wrap(vars(race))
+ggplot(p, aes(x = income, y = estimate, color = group)) + 
+  geom_point() + 
+  geom_line()
 ```
 
 ### Computing cumulative probabilities
 
-
+However, the probabilities above are somewhat awkward to interpret. As the middle categories shrink, it isn't immediately clear what categories are growing as a result. Instead, we can compute an easier-to-interpret *cumulative* probability using `cumsum()` within `arrange()`ed groups. 
 
 ```{r}
+#| fig-asp: 0.5
 cumulative_p <- p %>%
-  arrange(race, age, group) %>%
-  group_by(race, age) %>%
+  arrange(income, group) %>%
+  group_by(income) %>%
   mutate(cumulative_prob = cumsum(estimate),
          j = as.integer(group),
          cdf_label = paste0("Pr(Y ≤ ", group, ")"),
-         cdf_label = reorder(cdf_label, -j)) %>%
+         cdf_label = reorder(cdf_label, j)) %>%
   ungroup()
-ggplot(cumulative_p, aes(x = age, y = cumulative_prob, color = cdf_label)) + 
-  geom_line() + 
-  facet_wrap(vars(race)) 
+ggplot(cumulative_p, aes(x = income, y = cumulative_prob, color = cdf_label)) + 
+  geom_line() 
 ```
 
-We can use `position = "stack"` to trick `ggplot()` into plotting the cumulative probabilities for us if we don't want to compute them manually first.
+Alternatively, w can use `position = "stack"` with `geom_line()` or `geom_area()` to trick `ggplot()` into plotting the cumulative probabilities for us if we don't want to compute them manually first.
 
 ```{r}
-ggplot(p, aes(x = age, y = estimate, color = group)) +
-  geom_line(position = "stack") +
-  facet_wrap(vars(race))
+#| fig-asp: 0.5
+ggplot(p, aes(x = income, y = estimate, color = group)) +
+  geom_line(position = "stack")
 
-ggplot(p, aes(x = age, y = estimate, fill = group)) +
+ggplot(p, aes(x = income, y = estimate, fill = group)) +
+  geom_area(position = "stack")
+```
+
+### Example: The varying relationship across years
+
+We can use a hierarchical variant to model the differences across states. Consistent with Gelman et al.'s "red state, blue state" argument, the changes across income might vary across rich and poor states. 
+
+With that in mind, we allow varying intercepts and slopes across states and model those using state median income.
+
+```{r}
+#| message: false
+#| warning: false
+#| cache: true
+#| results: hide
+# load packages
+library(brms)
+
+# fit same model, but coefs vary across years
+fit <- brm(pid ~ income*rs_state_median_income + (1 + income | state_name), 
+           data = anes, 
+           family = cumulative(),
+           cores = 4, 
+           chains = 4, 
+           backend = "rstan")
+```
+
+Now we can plot the cumulative probabilities for each of the states and see that the effect of income does indeed vary across the states.
+
+```{r}
+#| fig-asp: 2.1
+#| fig-width: 8
+
+# make grid 
+grid <- anes %>%
+  dplyr::select(state_name, state_median_income, rs_state_median_income) %>%
+  distinct() %>%
+  mutate(income = NA) |>
+  glimpse()
+
+# make predictions
+p <- predictions(fit, 
+                 variables = list(income = unique),
+                 newdata = grid) |>
+  mutate(state_name = reorder(state_name, rs_state_median_income)) |>
+  glimpse()
+
+# make plot
+ggplot(p, aes(x = income, y = estimate, fill = group)) +
   geom_area(position = "stack") +
-  facet_wrap(vars(race)) 
+  facet_wrap(vars(state_name), ncol = 4)  +
+  scale_fill_brewer(palette = "RdBu", direction = -1)
 ```

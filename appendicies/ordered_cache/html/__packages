@@ -11,3 +11,6 @@ lubridate
 latex2exp
 RColorBrewer
 marginaleffects
+Rcpp
+brms
+MASS
