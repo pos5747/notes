@@ -60,6 +60,7 @@ book:
     - wk01/probability.qmd
     - wk04/05-glm.qmd
     - appendicies/ordered.qmd
+    - appendicies/unordered.qmd
     #- wk01/hypothesis-testing.qmd
 
 bibliography: references.bib

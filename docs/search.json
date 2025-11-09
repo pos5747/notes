@@ -1822,5 +1822,38 @@
       "Appendices",
       "<span class='chapter-number'>H</span>  <span class='chapter-title'>Ordered Logit</span>"
     ]
+  },
+  {
+    "objectID": "appendicies/unordered.html",
+    "href": "appendicies/unordered.html",
+    "title": "Appendix I — Multinomial Logit",
+    "section": "",
+    "text": "I.1 The Inverse-Logit Function\nSuppose \\(y_i \\in \\{0, 1\\}\\). Using logistic regression, we model \\(\\Pr(y_i = 1)\\) as a function of covariates, so that\n\\[\n\\Pr(Y_i = 1) = \\frac{\\exp(X_i \\beta)}{1 + \\exp(X_i \\beta)}.\n\\]\nThe function \\(f(z) = \\frac{e^z}{1 + e^z}\\) is called the inverse-logit function and maps any real number \\(X_i \\beta\\) into a probability between 0 and 1.\nBecause the two probabilities must sum to one:\n\\[\n\\Pr(Y_i = 0) = 1 - \\Pr(Y_i = 1)\n             = \\frac{1}{1 + \\exp(X_i \\beta)}.\n\\]",
+    "crumbs": [
+      "Appendices",
+      "<span class='chapter-number'>I</span>  <span class='chapter-title'>Multinomial Logit</span>"
+    ]
+  },
+  {
+    "objectID": "appendicies/unordered.html#the-softmax-function",
+    "href": "appendicies/unordered.html#the-softmax-function",
+    "title": "Appendix I — Multinomial Logit",
+    "section": "I.2 The Softmax Function",
+    "text": "I.2 The Softmax Function\nThe softmax generalizes the inverse-logit–it takes \\(J\\) real input (i.e., from \\(\\mathbb{R}^J\\) and scales them to sum to one.\n\\[\n\\text{softmax}(z_j) = \\frac{\\exp(z_j)}{\\sum_{k=1}^{J} \\exp(z_k)}, \\qquad j = 1,\\ldots,J.\n\\] Because the \\(J\\) outputs must sum to one, it is natural to interpret the outputs as probabilities.\nThe OJS widget below allows you to experiment with \\(J = 4\\) inputs and see how the outputted probabilities change.\n\nviewof z1 = Inputs.range([-5, 5], {step: 0.1, value: 1,   label: \"z1\"});\nviewof z2 = Inputs.range([-5, 5], {step: 0.1, value: 0.5, label: \"z2\"});\nviewof z3 = Inputs.range([-5, 5], {step: 0.1, value: -0.5,label: \"z3\"});\nviewof z4 = Inputs.range([-5, 5], {step: 0.1, value: -1,  label: \"z4\"});\n\n// Softmax pieces\nlabels = [\"Pr(A)\",\"Pr(B)\",\"Pr(C)\",\"Pr(D)\"];\nzs = [z1, z2, z3, z4];\nexps = zs.map(Math.exp);\nsumexp = exps.reduce((a, b) =&gt; a + b, 0);\nps = exps.map(e =&gt; e / sumexp);\n\n// Data for stacked bar (one row, four segments)\ndata = ps.map((p, i) =&gt; ({ label: labels[i], value: p, row: \"softmax\" }));\n\n// === Two-column layout: sliders (left) + live table (right) ===\n{\nconst container = html`&lt;div style=\"display:flex; gap:16px; align-items:flex-start;\"&gt;&lt;/div&gt;`;\n\n// Left column: sliders\nconst left = html`&lt;div style=\"display:grid; gap:8px; min-width:220px;\"&gt;&lt;/div&gt;`;\nleft.append(viewof z1, viewof z2, viewof z3, viewof z4);\n\n// Right column: table\nconst rows = labels.map((cls, i) =&gt; ({\nClass: cls,\nz: zs[i],\n\"exp(z)\": exps[i],\nProbability: ps[i]\n}));\n\nconst right = html`&lt;div style=\"min-width:260px;\"&gt;&lt;/div&gt;`;\nright.append(\nInputs.table(rows, {\ncolumns: [\"Class\", \"z\", \"exp(z)\", \"Probability\"],\nformat: {\nz: d =&gt; d.toFixed(2),\n\"exp(z)\": d =&gt; d.toFixed(3),\nProbability: d =&gt; (d * 100).toFixed(1) + \"%\"\n}\n})\n);\n\ncontainer.append(left, right);\nreturn container;\n}\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPlot.plot({\nwidth: 720,\nheight: 120,\nmarginLeft: 10,\nmarginRight: 10,\nx: { domain: [0, 1], tickFormat: d =&gt; (d * 100).toFixed(0) + \"%\", label: \"Probability\", labelArrow: false, labelAnchor: \"center\" },\ny: { axis: null },\ncolor: { legend: true, label: \"Class\" },\nmarks: [\nPlot.barX(data, Plot.stackX({ x: \"value\", y: \"row\", fill: \"label\", sort: {fill: null} })),\nPlot.ruleX([0, 1]) // frame\n]\n})",
+    "crumbs": [
+      "Appendices",
+      "<span class='chapter-number'>I</span>  <span class='chapter-title'>Multinomial Logit</span>"
+    ]
+  },
+  {
+    "objectID": "appendicies/unordered.html#adding-covariates",
+    "href": "appendicies/unordered.html#adding-covariates",
+    "title": "Appendix I — Multinomial Logit",
+    "section": "I.3 Adding covariates",
+    "text": "I.3 Adding covariates\nNow suppose the outcome takes \\(J\\) possible values:\n\\[\ny_i \\in \\{1, 2, \\ldots, J\\}.\n\\]\nExample 1: We might label vote choice in the US as (1) abstain, (2) Repbulican, (3) Democrat, or (4) other.\nExample 2: We might label coup attempts in a given country-year as (0) none attempted, (1) failed attempt, or (2) successful attempt.\nFor each category \\(j\\), define a linear predictor \\(\\eta_{ij} = X_i \\beta_j\\). Here, each \\(\\beta_j\\) is a vector of coefficients.\nWe can use the softmax function to convert these linear predictors into probabilities that sum to one.\n\\[\n\\Pr(Y_i = j) = \\frac{\\exp(\\eta_{ij})}{\\sum_{k=1}^{J} \\exp(\\eta_{ik})},\n\\qquad j = 1, \\ldots, J.\n\\]\nThis is a generalization of the inverse-logit to \\(J\\) categories. If \\(J = 2\\), the softmax reduces to the inverse-logit.\nHowever, this model is not identified because adding any constant to each of the \\(\\eta_{ij}\\) produces the same probabilities.\n\n\nExample Inputs\n\n\n\nInput \\(z_j\\)\nSoftmax \\(p_j\\)\n\n\n\n\n\\(-1\\)\n0.0303\n\n\n\\(1\\)\n0.2242\n\n\n\\(2\\)\n0.6095\n\n\n\\(0.5\\)\n0.1360\n\n\n\n\nAdding a Constant (\\(+2\\))\n\n\n\nNew Input \\(z_j + 2\\)\nSoftmax \\(p_j\\)\n\n\n\n\n\\(-1 + 2 = 1\\)\n0.0303\n\n\n\\(1 + 2 = 3\\)\n0.2242\n\n\n\\(2 + 2 = 4\\)\n0.6095\n\n\n\\(0.5 + 2 = 2.5\\)\n0.1360\n\n\n\n\n\nAdding a constant to all inputs leaves the softmax unchanged. This is why the multinomial logit model requires an identification constraint.\nTo identify the model, we set \\(\\eta_{iJ} = 1\\). Then for \\(j = 1, \\ldots, J-1\\), we have\n\\[\n\\Pr(Y_i = j) =\n\\frac{\\exp(X_i \\beta_j)}\n     {1 + \\sum_{k=1}^{J-1} \\exp(X_i \\beta_k)}.\n\\]\nAnd for the “baseline” category \\(J\\), we have\n\\[\n\\Pr(Y_i = J) =\n\\frac{1}\n     {1 + \\sum_{k=1}^{J-1} \\exp(X_i \\beta_k)}.\n\\]",
+    "crumbs": [
+      "Appendices",
+      "<span class='chapter-number'>I</span>  <span class='chapter-title'>Multinomial Logit</span>"
+    ]
   }
 ]
