@@ -1,10 +1,15 @@
+
+```{r include=FALSE}
+library(tidyverse)
+```
+
 # Matrices
 
 ## Definitions
 
 A **scalar** is a single number.
 
-A **vector** is a 1-dimensional array of numbers.^[By default, we treat these as $1 \times n$ *column* vectors (see definition of *matrix* below).]
+A **vector** is a 1-dimensional array of numbers.^[By default, we treat these as $n \times 1$ *column* vectors (see definition of *matrix* below).]
 
 A **matrix** is a two-dimensional array of numbers.
 
@@ -77,7 +82,7 @@ B = \begin{bmatrix}
 1 & 0 \\
 0 & 1
 \end{bmatrix}
-$$.
+$$
 
 The product $C = AB$ is a $3 \times 2$ matrix. Each entry is computed as $C_{ij} = \sum_{k=1}^4 A_{ik} B_{kj}$.
 
@@ -102,7 +107,7 @@ $$
 12 & 14 \\
 10 & 2
 \end{bmatrix}
-$$.
+$$
 
 We can confirm our answer with R.
 
@@ -127,7 +132,7 @@ A %*% B
 ::: {#exm-matrix9}
 Let $X$ be a $3 \times 2$ matrix and $\beta$ a $2 \times 1$ vector. Then $X\beta$ is a $3 \times 1$ vector. $X'X$ is $2 \times 2$ and symmetric.
 
-We have a couple of familiar matrix multiplications from linear regression. $X\beta$ is especially important to us!.
+We have a couple of familiar matrix multiplications from linear regression. $X\beta$ is especially important to us!
 
 ```{r}
 X <- matrix(c(1, 1, 1, 2, 3, 4), nrow = 3)
@@ -201,7 +206,7 @@ t(X) %*% X                        # symmetric
 ```
 
 
-::: {#exm-matrix1}
+::: {#exm-special-matrices}
 
 Construct the following matrices:
 
@@ -217,7 +222,7 @@ S <- matrix(c(2, 1, 1, 3), 2)
 
 :::
 
-::: {#exm-matrix2}
+::: {#exm-diag-sd}
 
 Let $\Sigma = \begin{bmatrix}4 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 9\end{bmatrix}$. This is a diagonal covariance matrix.
 
@@ -262,7 +267,7 @@ qr(B)$rank # use QR decomposition to find rank
 
 - If $X$ is not full rank, $X'X$ is not invertible.
 - In regression, full rank $X$ ensures a unique $\hat\beta$.
-- If rank is less than the number of columns, this means on variable is perfectly collinear with another.
+- If rank is less than the number of columns, this means one variable is perfectly collinear with another.
 
 ## Examples
 
@@ -285,7 +290,7 @@ Let $C = \begin{bmatrix}1 & 2 \\ 2 & 4\end{bmatrix}$. Is $C$ invertible?
 C <- matrix(c(1, 2, 2, 4), 2)
 qr(C)$rank                      # rank < n
 ```
-We can see that the second column is simple 2 times the first column, so the matrix is not full rank and thus not invertible.
+We can see that the second column is simply 2 times the first column, so the matrix is not full rank and thus not invertible.
 :::
 
 ## Matrix Calculus (Introductory)
@@ -307,7 +312,7 @@ $$
 \vdots \\
 \frac{\partial f}{\partial x_n}
 \end{bmatrix}
-$$.
+$$
 
 This vector tells us how the function $f(x)$ changes in each coordinate direction, and it points in the direction of steepest ascent.
 
@@ -354,7 +359,7 @@ x_1 \\
 \frac{1}{x_3} \\
 e^{x_4}
 \end{bmatrix}
-$$.
+$$
 
 :::
 

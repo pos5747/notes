@@ -1,3 +1,9 @@
+
+```{r include=FALSE}
+library(tidyverse)
+library(numDeriv)
+```
+
 # Derivatives
 
 ## Definition
@@ -30,7 +36,7 @@ But if I ask you *how fast you are going at a specific point*, that's a differen
 
 Derivatives help us learn about rate of change from a function describing distance traveled.
 
-The derivative describes a quantity is changing at a given moment. If $f(x)$ is your position, then $f'(x)$ is your **velolcity**----how fast your position is changing. And $f''(x)$ is your **acceleration**---how fast your velocity is changing. This idea extends naturally to even higher-order changes, in the table below.
+The derivative describes how a quantity is changing at a given moment. If $f(x)$ is your position, then $f'(x)$ is your **velocity**---how fast your position is changing. And $f''(x)$ is your **acceleration**---how fast your velocity is changing. This idea extends naturally to even higher-order changes, in the table below.
 
 | Order | Notation       | Name             | Interpretation                     | Units (if $x$ is time)       |
 |-------|----------------|------------------|------------------------------------|-------------------------------|
@@ -62,7 +68,7 @@ All of these questions require derivatives. And to understand them, you need to 
 
 ## Rules for Derivatives
 
-The rules below describe how differentiate common types of functions. Each rule can be derived from @def-derivative.
+The rules below describe how to differentiate common types of functions. Each rule can be derived from @def-derivative.
 
 ### Constant Rule
 
@@ -200,7 +206,7 @@ $$
 
 ### Chain Rule
 
-The chain rule is really important! We can think of many functions $f$ as a function of a function. In this case, This allows us to use the rules above, which apply to relatively simple functions, to much more complicated function.
+The chain rule is really important! We can think of many functions $f$ as a function of a function. This allows us to use the rules above, which apply to relatively simple functions, to much more complicated functions.
 
 ::: {#thm-chain}
 ## Chain Rule
@@ -482,12 +488,6 @@ Differentiate $x^2$.
 D(expression(x^2), "x")
 ```
 
-This returns:
-
-```
-2 * x
-```
-
 ::: {#exm-rsymbolic2}
 Differentiate $x^2 \log(x)$ using the product rule.
 :::
@@ -498,13 +498,9 @@ Differentiate $x^2 \log(x)$ using the product rule.
 D(expression(x^2 * log(x)), "x")
 ```
 
-Returns:
-
-```
-2 * x * log(x) + x
-```
-
-This matches the product rule: $f'(x) = 2x \log(x) + x$.
+`D()` applies the product rule but does not simplify, so it leaves the second
+term as $x^2 \cdot \frac{1}{x}$. Simplifying by hand gives the familiar
+$f'(x) = 2x \log(x) + x$.
 
 ::: {#exm-rsymbolic3}
 Differentiate $\frac{x^3}{\exp(x)}$.
@@ -516,13 +512,7 @@ Differentiate $\frac{x^3}{\exp(x)}$.
 D(expression(x^3 / exp(x)), "x")
 ```
 
-Returns:
-
-```
-((3 * x^2 * exp(x)) - (x^3 * exp(x))) / exp(x)^2
-```
-
-This simplifies to the same expression obtained manually.
+Again unsimplified, but algebraically the same expression obtained manually.
 
 ---
 
@@ -532,13 +522,12 @@ To simplify or evaluate expressions numerically, you can use `deriv()`, `eval()`
 
 When symbolic derivatives are unavailable, R can approximate first derivatives numerically using finite differences. The `numDeriv` package provides convenient tools.
 
-Install the package if needed:
+Install the package if needed.
 
-Then load it:
-
-```{r}
-library(numDeriv)
+```r
+install.packages("numDeriv")
 ```
+
 
 ### First Derivative
 
@@ -553,12 +542,6 @@ Let $f(x) = x^2 \log(x)$. Compute $f'(2)$ numerically.
 ```{r}
 f <- function(x) x^2 * log(x)
 grad(f, x = 2)
-```
-
-Returns:
-
-```
-[1] 4.772589
 ```
 
 This matches the exact result: $f'(x) = 2x \log(x) + x$, so $f'(2) = 4 \log(2) + 2 \approx 4.7726$.
@@ -593,13 +576,8 @@ Use the product rule: $f(x) = x^2 \cdot \log(x)$
 D(expression(x^2 * log(x)), "x")
 ```
 
-Returns:
-
-```
-2 * x * log(x) + x
-```
-
-Same expression as the hand-calculated result.
+The same expression as the hand-calculated result, before simplifying
+$x^2 \cdot \frac{1}{x}$ to $x$.
 
 To evaluate at $x = 2$:
 
@@ -607,24 +585,11 @@ To evaluate at $x = 2$:
 eval(D(expression(x^2 * log(x)), "x"), list(x = 2))
 ```
 
-Returns:
-
-```
-[1] 4.772589
-```
-
 ### Numeric in R
 
 ```{r}
-library(numDeriv)
 f <- function(x) x^2 * log(x)
 grad(f, x = 2)
-```
-
-Returns:
-
-```
-[1] 4.772589
 ```
 
 ### Conclusion

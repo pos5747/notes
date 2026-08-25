@@ -139,3 +139,91 @@ ggplot(df, aes(x = theta, y = power)) +
 In the figure above, the shaded region corresponds to values of $\theta$ consistent with the null hypothesis. The power function increases as $\theta$ moves away from the null threshold, showing that the test becomes more likely to reject the null as the true effect grows larger. The dashed red line at 0.05 marks the size of the test.
 
 
+## Confidence Intervals and Hypothesis Tests
+
+Confidence intervals and hypothesis tests are closely related tools for inference. In many common settings, they are essentially two ways to summarize the same underlying statistical information.
+
+### Relationship Between Confidence Intervals and Hypothesis Tests
+
+Consider a research hypothesis of the form $H_r : \theta \in B$ and its corresponding null hypothesis $H_0 : \theta \in B^C$. Suppose we use a test statistic that yields a $p$-value for evaluating the null hypothesis. For a given significance level $\alpha$, we reject $H_0$ if and only if the $p$-value is less than or equal to $\alpha$.
+
+Now consider constructing a $(1-\alpha)$ confidence interval for $\theta$.
+
+The key relationship is:
+
+::: {#thm-ci-test-link}
+We reject the point null hypothesis $H_0 : \theta = \theta_0$ at level $\alpha$ if and only if the $(1-\alpha)$ confidence interval for $\theta$ does not contain $\theta_0$.
+:::
+
+This result implies that hypothesis testing and interval estimation are two equivalent methods for evaluating the consistency of the data with particular parameter values.
+
+### One-Sided Alternatives
+
+The same logic holds for one-sided research hypotheses. Suppose the research hypothesis is $H_r : \theta > m$ with null hypothesis $H_0 : \theta \le m$. A one-sided $(1-\alpha)$ confidence interval for $\theta$ will have the form $(L, \infty)$. We reject the null hypothesis at level $\alpha$ if and only if $L > m$.
+
+This formulation clarifies that a one-sided test corresponds to a one-sided confidence interval. Importantly, a two-sided confidence interval cannot appropriately represent evidence for a one-sided research hypothesis unless it is first converted into a one-sided interval.
+
+Interpretation
+
+The link between hypothesis tests and confidence intervals provides a practical interpretation advantage. 
+
+For a 90% confidence interval $[L, U]$ (for fixed $L$ and $U$), we can always *reject* the following two hypothesis:
+- $H_0 : \theta \le L$
+- $H_0 : \theta \ge U$
+
+In that since, we have a two-claims: a claim about the upper-bound and a claim about the lower-bound. 
+
+- We can say "the parameter is larger than $L$."
+- We can say "the parameter is smaller than $U$."
+
+These are *two* one-sided hypotheses. We both have size-0.05. These are the *strongest size-0.05 claims* we can make. 
+## Testing for Negligible Effects
+
+In many applications, researchers are interested not in showing that an effect exists, but rather that any effect is **substantively negligible**. For example, a theory may claim that a variable does *not* meaningfully influence an outcome, or a researcher may want to demonstrate that a treatment effect is too small to matter in practice. In such cases, the conventional approach of testing the null hypothesis $H_0 : \theta = 0$ is inadequate, because *failing to reject* $H_0$ does not imply that $\theta$ is close to zero in a substantively meaningful sense.
+
+Following @rainey2014, we instead define what it means for an effect to be negligible and construct a hypothesis test around that definition.
+
+### Research Hypothesis of Negligible Effect
+
+Suppose $\theta$ is a quantity of interest (e.g., a treatment effect). Let $m > 0$ denote a threshold defining the smallest substantively meaningful effect.
+
+::: {#def-negligible-effect}
+A **negligible effect hypothesis** is a research hypothesis of the form  
+$$H_r : \theta \in (-m, m),$$  
+meaning that the effect is too small to be substantively meaningful.
+:::
+
+The corresponding null hypothesis claims that the effect is meaningfully large:
+
+::: {#def-non-negligible-null}
+The **null hypothesis** corresponding to a negligible effect claim is  
+$$H_0 : \theta \in (-\infty,-m] \cup [m,\infty).$$
+:::
+
+Note that the null hypothesis here claims that the effect is **large enough to matter**, not that it is exactly zero.
+
+### Testing Negligible Effects
+
+To evaluate these hypotheses, we must determine whether the data rule out all substantively meaningful effects. A convenient way to do this is to use confidence intervals.
+
+If a $(1-\alpha)$ confidence interval for $\theta$ lies entirely inside $(-m, m)$, then all values of $\theta$ consistent with the data at level $\alpha$ are negligible. Thus, we reject the null hypothesis of a meaningful effect.
+
+::: {#def-ci-negligible-test}
+We **reject** $H_0$ in favor of $H_r : \theta \in (-m,m)$ if and only if the $(1-\alpha)$ confidence interval for $\theta$ is contained in $(-m, m)$.
+:::
+
+Equivalently, this corresponds to conducting two one-sided hypothesis tests (often referred to as a *two one-sided test* or TOST procedure).
+
+### Interpretation
+
+This approach directly addresses the limitations of “non-significant” results. A failure to reject $H_0 : \theta = 0$ merely indicates ambiguous evidence. By contrast, a test of $H_r : \theta \in (-m,m)$ allows us to provide *positive evidence* that the effect is too small to matter.
+
+Confidence intervals play an important role here: they indicate *which* effect sizes are plausible and whether substantively meaningful effects are ruled out by the data.
+
+### Practical Implications
+
+- Researchers must **explicitly define $m$** based on substantive reasoning, not statistical convention.
+- Arguing for a negligible effect typically requires **more precision** (smaller standard errors) than arguing for the presence of an effect.
+- Wide confidence intervals that include values outside $(-m,m)$ lead to **ambiguous evidence**, not evidence of no effect.
+
+This framework shifts the logic of inference from “absence of evidence” to evidence of **absence of substantively meaningful effects**.

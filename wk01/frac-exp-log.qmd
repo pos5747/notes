@@ -1,3 +1,8 @@
+
+```{r include=FALSE}
+library(tidyverse)
+```
+
 # Fractions, Exponents, and Logarithms
 
 ## Fractions
@@ -13,7 +18,7 @@ You can manipulate fractions with the identities below:
 - $\dfrac{\frac{a}{b}}{\frac{c}{d}} = \dfrac{a}{b} \times \dfrac{d}{c} = \dfrac{a \times d}{b \times c}$
 
 ::: {.callout-warning}
-**Potential Pitfalls**
+## Common Pitfalls
 
 - Do **not** add fractions with different denominators directly. For example, $\frac{1}{2} + \frac{1}{3} \ne \frac{2}{5}$ and $\frac{1}{a} + \frac{1}{b} \ne \frac{1}{a + b}$.
 :::
@@ -85,7 +90,7 @@ Evaluate $\log(e^3)$.
 Evaluate $e^{\log(7)}$.
 :::
 
-*Solution.* Since exponentiation and log are inverse operations, so $e^{\log(7)} = 7$. In general, $e^{\log(x)} = x$.
+*Solution.* Since exponentiation and log are inverse operations, $e^{\log(7)} = 7$. In general, $e^{\log(x)} = x$.
 
 ::: {#exm-log-2}
 Simplify then evaluate $\log(8) + \log(2)$.
@@ -146,9 +151,6 @@ Solve $x^2 = 4$.
 *Solution.* Take square roots to obtain $x = \pm 2$. Notice that there are two solutions. The plot below shows that the curve $x^2 - 4$ crosses the $x$-axis in two places (i.e., at $x = \pm 2$, which are the solutions we found above).
 
 ```{r}
-# load packages
-library(ggplot2)
-
 # create function
 f <- function(x) x^2 - 4
 
@@ -166,7 +168,7 @@ ggplot() +
 Solve $e^x = 7$.
 :::
 
-*Solution.* Take natural logs to obtain $x = \log(7)$. Using R, $\log(y) \approx 1.9459$.
+*Solution.* Take natural logs to obtain $x = \log(7)$. Using R, $\log(7) \approx 1.9459$.
 
 ```{r}
 log(7)
@@ -246,9 +248,6 @@ Solve $\alpha^2 + 3\alpha = 0$.
 *Solution.* Factor the left-hand side to obtain $\alpha(\alpha + 3) = 0$. Then it's clear that $\alpha = 0$ or $\alpha = -3$. The plot below shows the two solutions.
 
 ```{r}
-# load packages
-library(ggplot2)
-
 # create function
 f <- function(x) x^2 + 3*x
 
@@ -265,4 +264,4 @@ ggplot() +
 Solve $y_1 - 2y_2 = 4$ for $y_1$ in terms of $y_2$.
 :::
 
-*Solution.* Add $2y_2$ to both side to obtain $y_1 = 4 + 2y_2$.
+*Solution.* Add $2y_2$ to both sides to obtain $y_1 = 4 + 2y_2$.

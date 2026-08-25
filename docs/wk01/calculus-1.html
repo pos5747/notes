@@ -540,7 +540,7 @@ window.Quarto = {
 <p>Suppose you’re driving a car, and you know how far you’ve traveled at every point in time. This distance is given by the function <span class="math inline">\(f(x)\)</span>, where <span class="math inline">\(x\)</span> is time and <span class="math inline">\(f(x)\)</span> is the distance you’ve traveled (say, in meters).</p>
 <p>But if I ask you <em>how fast you are going at a specific point</em>, that’s a different question. You’re no longer asking about distance. Instead, you’re asking about <em>rate of change</em>.</p>
 <p>Derivatives help us learn about rate of change from a function describing distance traveled.</p>
-<p>The derivative describes a quantity is changing at a given moment. If <span class="math inline">\(f(x)\)</span> is your position, then <span class="math inline">\(f'(x)\)</span> is your <strong>velolcity</strong>—-how fast your position is changing. And <span class="math inline">\(f''(x)\)</span> is your <strong>acceleration</strong>—how fast your velocity is changing. This idea extends naturally to even higher-order changes, in the table below.</p>
+<p>The derivative describes how a quantity is changing at a given moment. If <span class="math inline">\(f(x)\)</span> is your position, then <span class="math inline">\(f'(x)\)</span> is your <strong>velocity</strong>—how fast your position is changing. And <span class="math inline">\(f''(x)\)</span> is your <strong>acceleration</strong>—how fast your velocity is changing. This idea extends naturally to even higher-order changes, in the table below.</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 6%">
@@ -627,7 +627,7 @@ window.Quarto = {
 </section>
 <section id="rules-for-derivatives" class="level2" data-number="C.3">
 <h2 data-number="C.3" class="anchored" data-anchor-id="rules-for-derivatives"><span class="header-section-number">C.3</span> Rules for Derivatives</h2>
-<p>The rules below describe how differentiate common types of functions. Each rule can be derived from <a href="#def-derivative" class="quarto-xref">Definition&nbsp;<span>C.1</span></a>.</p>
+<p>The rules below describe how to differentiate common types of functions. Each rule can be derived from <a href="#def-derivative" class="quarto-xref">Definition&nbsp;<span>C.1</span></a>.</p>
 <section id="constant-rule" class="level3" data-number="C.3.1">
 <h3 data-number="C.3.1" class="anchored" data-anchor-id="constant-rule"><span class="header-section-number">C.3.1</span> Constant Rule</h3>
 <div id="thm-const" class="theorem">
@@ -725,7 +725,7 @@ f'(x) = \frac{(1/x) \cdot x^2 - \log(x) \cdot 2x}{x^4} = \frac{x - 2x \log(x)}{x
 </section>
 <section id="chain-rule" class="level3" data-number="C.3.8">
 <h3 data-number="C.3.8" class="anchored" data-anchor-id="chain-rule"><span class="header-section-number">C.3.8</span> Chain Rule</h3>
-<p>The chain rule is really important! We can think of many functions <span class="math inline">\(f\)</span> as a function of a function. In this case, This allows us to use the rules above, which apply to relatively simple functions, to much more complicated function.</p>
+<p>The chain rule is really important! We can think of many functions <span class="math inline">\(f\)</span> as a function of a function. This allows us to use the rules above, which apply to relatively simple functions, to much more complicated functions.</p>
 <div id="thm-chain" class="theorem">
 <p><span class="theorem-title"><strong>Theorem C.8 (Chain Rule)</strong></span> If <span class="math inline">\(f(x) = h(g(x))\)</span>, then <span class="math inline">\(f'(x) = h'(g(x)) \cdot g'(x)\)</span>.</p>
 </div>
@@ -942,45 +942,36 @@ H_f(x, y) =
 <pre><code>2 * x</code></pre>
 </div>
 </div>
-<p>This returns:</p>
-<pre><code>2 * x</code></pre>
 <div id="exm-rsymbolic2" class="theorem example">
 <p><span class="theorem-title"><strong>Example C.19</strong></span> Differentiate <span class="math inline">\(x^2 \log(x)\)</span> using the product rule.</p>
 </div>
 <p><em>Solution.</em> R handles this automatically:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">D</span>(<span class="fu">expression</span>(x<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> <span class="fu">log</span>(x)), <span class="st">"x"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">D</span>(<span class="fu">expression</span>(x<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> <span class="fu">log</span>(x)), <span class="st">"x"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>2 * x * log(x) + x^2 * (1/x)</code></pre>
 </div>
 </div>
-<p>Returns:</p>
-<pre><code>2 * x * log(x) + x</code></pre>
-<p>This matches the product rule: <span class="math inline">\(f'(x) = 2x \log(x) + x\)</span>.</p>
+<p><code>D()</code> applies the product rule but does not simplify, so it leaves the second term as <span class="math inline">\(x^2 \cdot \frac{1}{x}\)</span>. Simplifying by hand gives the familiar <span class="math inline">\(f'(x) = 2x \log(x) + x\)</span>.</p>
 <div id="exm-rsymbolic3" class="theorem example">
 <p><span class="theorem-title"><strong>Example C.20</strong></span> Differentiate <span class="math inline">\(\frac{x^3}{\exp(x)}\)</span>.</p>
 </div>
 <p><em>Solution.</em> R will apply the quotient rule:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">D</span>(<span class="fu">expression</span>(x<span class="sc">^</span><span class="dv">3</span> <span class="sc">/</span> <span class="fu">exp</span>(x)), <span class="st">"x"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">D</span>(<span class="fu">expression</span>(x<span class="sc">^</span><span class="dv">3</span> <span class="sc">/</span> <span class="fu">exp</span>(x)), <span class="st">"x"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>3 * x^2/exp(x) - x^3 * exp(x)/exp(x)^2</code></pre>
 </div>
 </div>
-<p>Returns:</p>
-<pre><code>((3 * x^2 * exp(x)) - (x^3 * exp(x))) / exp(x)^2</code></pre>
-<p>This simplifies to the same expression obtained manually.</p>
+<p>Again unsimplified, but algebraically the same expression obtained manually.</p>
 <hr>
 <p>To simplify or evaluate expressions numerically, you can use <code>deriv()</code>, <code>eval()</code>, or symbolic math tools in packages like <strong>Ryacas</strong>, <strong>caracas</strong>, or <strong>symengine</strong>.</p>
 </section>
 <section id="numeric-differentiation-in-r" class="level2" data-number="C.8">
 <h2 data-number="C.8" class="anchored" data-anchor-id="numeric-differentiation-in-r"><span class="header-section-number">C.8</span> Numeric Differentiation in R</h2>
 <p>When symbolic derivatives are unavailable, R can approximate first derivatives numerically using finite differences. The <code>numDeriv</code> package provides convenient tools.</p>
-<p>Install the package if needed:</p>
-<p>Then load it:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(numDeriv)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+<p>Install the package if needed.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"numDeriv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <section id="first-derivative" class="level3" data-number="C.8.1">
 <h3 data-number="C.8.1" class="anchored" data-anchor-id="first-derivative"><span class="header-section-number">C.8.1</span> First Derivative</h3>
 <p>Use <code>grad()</code> to compute the approximate derivative of a single-variable function at a point.</p>
@@ -989,14 +980,12 @@ H_f(x, y) =
 </div>
 <p><em>Solution.</em> Define the function and apply <code>grad()</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="cf">function</span>(x) x<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> <span class="fu">log</span>(x)</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">grad</span>(f, <span class="at">x =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="cf">function</span>(x) x<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> <span class="fu">log</span>(x)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">grad</span>(f, <span class="at">x =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 4.772589</code></pre>
 </div>
 </div>
-<p>Returns:</p>
-<pre><code>[1] 4.772589</code></pre>
 <p>This matches the exact result: <span class="math inline">\(f'(x) = 2x \log(x) + x\)</span>, so <span class="math inline">\(f'(2) = 4 \log(2) + 2 \approx 4.7726\)</span>.</p>
 <hr>
 <p>Numeric differentiation is useful when working with functions that are not easily expressed in closed form.</p>
@@ -1020,36 +1009,29 @@ H_f(x, y) =
 <section id="symbolic-in-r" class="level3" data-number="C.9.2">
 <h3 data-number="C.9.2" class="anchored" data-anchor-id="symbolic-in-r"><span class="header-section-number">C.9.2</span> Symbolic in R</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">D</span>(<span class="fu">expression</span>(x<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> <span class="fu">log</span>(x)), <span class="st">"x"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">D</span>(<span class="fu">expression</span>(x<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> <span class="fu">log</span>(x)), <span class="st">"x"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>2 * x * log(x) + x^2 * (1/x)</code></pre>
 </div>
 </div>
-<p>Returns:</p>
-<pre><code>2 * x * log(x) + x</code></pre>
-<p>Same expression as the hand-calculated result.</p>
+<p>The same expression as the hand-calculated result, before simplifying <span class="math inline">\(x^2 \cdot \frac{1}{x}\)</span> to <span class="math inline">\(x\)</span>.</p>
 <p>To evaluate at <span class="math inline">\(x = 2\)</span>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eval</span>(<span class="fu">D</span>(<span class="fu">expression</span>(x<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> <span class="fu">log</span>(x)), <span class="st">"x"</span>), <span class="fu">list</span>(<span class="at">x =</span> <span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eval</span>(<span class="fu">D</span>(<span class="fu">expression</span>(x<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> <span class="fu">log</span>(x)), <span class="st">"x"</span>), <span class="fu">list</span>(<span class="at">x =</span> <span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 4.772589</code></pre>
 </div>
 </div>
-<p>Returns:</p>
-<pre><code>[1] 4.772589</code></pre>
 </section>
 <section id="numeric-in-r" class="level3" data-number="C.9.3">
 <h3 data-number="C.9.3" class="anchored" data-anchor-id="numeric-in-r"><span class="header-section-number">C.9.3</span> Numeric in R</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(numDeriv)</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="cf">function</span>(x) x<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> <span class="fu">log</span>(x)</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">grad</span>(f, <span class="at">x =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="cf">function</span>(x) x<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> <span class="fu">log</span>(x)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">grad</span>(f, <span class="at">x =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 4.772589</code></pre>
 </div>
 </div>
-<p>Returns:</p>
-<pre><code>[1] 4.772589</code></pre>
 </section>
 <section id="conclusion" class="level3" data-number="C.9.4">
 <h3 data-number="C.9.4" class="anchored" data-anchor-id="conclusion"><span class="header-section-number">C.9.4</span> Conclusion</h3>

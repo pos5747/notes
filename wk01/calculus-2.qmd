@@ -1,3 +1,8 @@
+
+```{r include=FALSE}
+library(tidyverse)
+```
+
 # Integration
 
 ## Definition
@@ -105,7 +110,7 @@ $$
 $$
 
 ::: {#exm-int2b}
-Compute $\int x^5 - 2x^2 + 7\, dx$.
+Compute $\int (x^5 - 2x^2 + 7)\, dx$.
 :::
 
 *Solution.* Integrate each term using the power rule:
@@ -265,6 +270,42 @@ $$
 
 ---
 
+## Improper Integrals
+
+Sometimes the interval has no upper bound. We handle an unbounded interval by integrating to a finite endpoint $b$ and then letting $b$ grow without bound.
+
+::: {#def-improper}
+The **improper integral** of $f(x)$ from $a$ to $\infty$ is
+
+$$
+\int_a^\infty f(x)\, dx = \lim_{b \to \infty} \int_a^b f(x)\, dx
+$$
+
+If this limit exists and is finite, the integral **converges**. Otherwise, the integral **diverges**.
+:::
+
+::: {#exm-improper1}
+Compute $\int_0^\infty e^{-x}\, dx$.
+:::
+
+*Solution.* Find the antiderivative $F(x) = -e^{-x}$ and evaluate it from $0$ to a finite endpoint $b$, so that
+
+$$
+\int_0^b e^{-x}\, dx = -e^{-b} - \left( -e^{0} \right) = 1 - e^{-b}
+$$
+
+Now let $b$ grow without bound. Since $e^{-b} \to 0$ as $b \to \infty$, we obtain
+
+$$
+\int_0^\infty e^{-x}\, dx = \lim_{b \to \infty} \left( 1 - e^{-b} \right) = 1
+$$
+
+Improper integrals come up whenever we work with a continuous random variable defined on $[0, \infty)$, because its probability density function accumulates to one over that whole range. The exponential distribution is the case we use most.
+
+When you integrate by parts on an unbounded interval, the boundary term $\left[ u v \right]_0^\infty$ is also a limit. Terms like $b e^{-\lambda b}$ and $b^2 e^{-\lambda b}$ go to zero as $b \to \infty$, because $e^{-\lambda b}$ shrinks faster than any power of $b$ grows.
+
+---
+
 ## Integration in R
 
 R does not compute symbolic integrals with base functions, but numerical integration is straightforward using `integrate()`.
@@ -278,11 +319,7 @@ f <- function(x) x^2
 integrate(f, lower = 1, upper = 2)
 ```
 
-Returns:
-
-```
-7/3 = 2.333...
-```
+This matches the exact value $\frac{7}{3} \approx 2.3333$.
 
 ::: {#exm-rint2}
 Compute $\int_0^1 x \log(x)\, dx$ numerically.
@@ -293,11 +330,7 @@ f <- function(x) ifelse(x == 0, 0, x * log(x))
 integrate(f, 0, 1)
 ```
 
-This returns approximately:
-
-```
--0.25
-```
+This matches the exact value $-\frac{1}{4}$.
 
 ---
 

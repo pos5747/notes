@@ -469,15 +469,15 @@ beta  <- seq(1, 25, length.out = 100)
 
 # compute log-likelihood for each combination of parameters
 data <- crossing(alpha, beta) %>%
-  mutate(log_lik = alpha*sum(log(y)) + beta*sum(log(1 - y)) - 
+  mutate(log_lik = (alpha - 1)*sum(log(y)) + (beta - 1)*sum(log(1 - y)) -
            length(y)*log(beta(alpha, beta)))
 
 # make contour plot with labelled contours
 ggplot(data, aes(x = alpha, 
                  y = beta, 
                  z = log_lik)) +
-  geom_contour_filled(breaks = c(Inf, -55, -60, -70, -100, -200, -500, -Inf)) +
-  geom_labelcontour(breaks = c(Inf, -55, -60, -70, -100, -200, -500, -Inf), straight = TRUE) +
+  geom_contour_filled(breaks = c(Inf, 85, 75, 50, 0, -100, -400, -Inf)) +
+  geom_labelcontour(breaks = c(Inf, 85, 75, 50, 0, -100, -400, -Inf), straight = TRUE) +
   theme_classic() +
   theme(legend.position = "none")
 ```
@@ -490,7 +490,7 @@ Let's program the log-likelihood function in R to handle the optimization numeri
 ll_fn <- function(theta, y) { # <1>
   alpha <- theta[1] # <2>
   beta <- theta[2] # <2>
-  ll <- alpha*sum(log(y)) + beta*sum(log(1 - y)) - # <2>
+  ll <- (alpha - 1)*sum(log(y)) + (beta - 1)*sum(log(1 - y)) - # <2>
            length(y)*log(beta(alpha, beta)) # <2>
   return(ll) # <3>
 }

@@ -1,10 +1,15 @@
+
+```{r include=FALSE}
+library(tidyverse)
+```
+
 # Probability Theory
 
 Probability theory gives us a language to describe uncertainty. 
 
 ## Probability, Outcomes, and Events
 
-Probability theory begins with the idea of a **random process**, which an ``experiment'' or procedure whose outcome is not known in advance.
+Probability theory begins with the idea of a **random process**, which is an "experiment" or procedure whose outcome is not known in advance.
 
 ::: {#def-random-process}
 A **random process** is a repeatable procedure to obtain an observation from a defined set of outcomes.
@@ -19,21 +24,21 @@ A **realization** of the random process produces an outcome from the sample spac
 :::
 
 ::: {#def-event}
-An **event** is any subset  of outcomes $A \subseteq \Omega$. The probability of an event $A$ is denoted $\Pr(A)$.
+An **event** is any subset of outcomes $A \subseteq \Omega$. The probability of an event $A$ is denoted $\Pr(A)$.
 :::
 
 
 
 ## Axioms of Probability
 
-The probability function $P(\cdot)$ must satisfy the following three rules.
+The probability function $\Pr(\cdot)$ must satisfy the following three rules.
 
 ::: {#thm-axioms}
 Let $P$ be a probability function defined on a sample space $\Omega$. Then:
 
-1. $P(A) \ge 0$ for all events $A$.
-2. $P(\Omega) = 1$.
-3. For every infinite sequence of disjoint events $A_1, A_2, ...$, $\Pr \left( \displaystyle \bigcup_{i = 1}^\infty A_i \right) = \displaystyle \sum_{i = 1}^\infty \Pr(A_i)$.^[Some notes on Axiom 3. Examples of an infinite sequence of disjoint events? For $\Omega = \mathbb{R}^+$? For $S =\{0, 1\}$? An infinite sequence of disjoint events is difficult to conceptualize. For $S = \mathbb{R}^+$, *one* such sequence would be $[0, 1), [1, 2), [2, 3), ...$. For $S =\{0, 1\}$, *one* such sequence would be $\{0\}, \{1\}, \emptyset, \emptyset, \emptyset,...$.]
+1. $\Pr(A) \ge 0$ for all events $A$.
+2. $\Pr(\Omega) = 1$.
+3. For every infinite sequence of disjoint events $A_1, A_2, ...$, $\Pr \left( \displaystyle \bigcup_{i = 1}^\infty A_i \right) = \displaystyle \sum_{i = 1}^\infty \Pr(A_i)$.^[Some notes on Axiom 3. Examples of an infinite sequence of disjoint events? For $\Omega = \mathbb{R}^+$? For $\Omega =\{0, 1\}$? An infinite sequence of disjoint events is difficult to conceptualize. For $\Omega = \mathbb{R}^+$, *one* such sequence would be $[0, 1), [1, 2), [2, 3), ...$. For $\Omega =\{0, 1\}$, *one* such sequence would be $\{0\}, \{1\}, \emptyset, \emptyset, \emptyset,...$.]
 :::
 
 ::: {#def-probability}
@@ -44,14 +49,14 @@ For a sample space $\Omega$, a **probability** is a collection of real numbers a
 ::: {#exm-axiom1}
 Let $\Omega = \{\text{H}, \text{T}\}$ represent the outcomes of a fair coin flip.  
 Define a probability function:  
-- $P(\{\text{H}\}) = 0.5$  
-- $P(\{\text{T}\}) = 0.5$
+- $\Pr(\{\text{H}\}) = 0.5$  
+- $\Pr(\{\text{T}\}) = 0.5$
 
 Then the three axioms of probability are satisfied as follows:
 
-1. $P(\{\text{H}\}) = 0.5 \ge 0$, $P(\{\text{T}\}) = 0.5 \ge 0$
-1. $P(\Omega) = P(\{\text{H}, \text{T}\}) = 0.5 + 0.5 = 1$
-1. Let $A = \{\text{H}\}$, $B = \{\text{T}\}$. These are disjoint, so, $P(A \cup B) = P(A) + P(B) = 0.5 + 0.5 = 1$.
+1. $\Pr(\{\text{H}\}) = 0.5 \ge 0$, $\Pr(\{\text{T}\}) = 0.5 \ge 0$
+1. $\Pr(\Omega) = \Pr(\{\text{H}, \text{T}\}) = 0.5 + 0.5 = 1$
+1. Let $A = \{\text{H}\}$, $B = \{\text{T}\}$. These are disjoint, so, $\Pr(A \cup B) = \Pr(A) + \Pr(B) = 0.5 + 0.5 = 1$.
 :::
 
 
@@ -133,12 +138,12 @@ The "every subset" part of @def-independence-n is subtle, so let's create a spec
 ## Fundamental Laws
 
 ::: {#def-partition}
-To create a **partition** $B_1, B_2, ..., B_k$ of the sample space $S$, divide $S$ into $k$ disjoint events $B_1, B_2, ..., B_k$ so that $\bigcup_{i = 1}^n B_i = S$.
+To create a **partition** $B_1, B_2, ..., B_k$ of the sample space $\Omega$, divide $\Omega$ into $k$ disjoint events $B_1, B_2, ..., B_k$ so that $\bigcup_{i = 1}^k B_i = \Omega$.
 :::
 
 ::: {#thm-ltp}
 **Law of Total Probability**  
-Suppose a partition $B_1, B_2, ..., B_k$ of the sample space $S$ where $\Pr(B_j) > 0$ for $j = 1, 2, ... , k$. Then
+Suppose a partition $B_1, B_2, ..., B_k$ of the sample space $\Omega$ where $\Pr(B_j) > 0$ for $j = 1, 2, ... , k$. Then
 
 $$
 \Pr(A) = \sum_{j = 1}^k \Pr(B_j )\Pr(A \mid B_j).
@@ -147,7 +152,7 @@ $$
 
 ::: {#thm-bayes}
 **Bayes' Rule**  
-Suppose a partition $B_1, B_2, ..., B_k$ of the sample space $S$ where $\Pr(B_j) > 0$ for $j = 1, 2, ... , k$. Suppose an event $A$, where $\Pr(A) > 0$. Then
+Suppose a partition $B_1, B_2, ..., B_k$ of the sample space $\Omega$ where $\Pr(B_j) > 0$ for $j = 1, 2, ... , k$. Suppose an event $A$, where $\Pr(A) > 0$. Then
 
 $$
 \Pr(B_i \mid A) = \dfrac{\Pr(B_i) \Pr(A \mid B_i)}{\sum_{j = 1}^k \Pr(B_j )\Pr(A \mid B_j)}.
@@ -156,7 +161,7 @@ $$
 
 ::: {#thm-bayes-simple}
 **Bayes' Rule for a simpler partition**  
-Suppose the simple partition $B$ and $B^c$ of the sample space $S$ where $\Pr(B) > 0$ and $\Pr(B^c) > 0$. Suppose an event $A$, where $\Pr(A) > 0$. Then
+Suppose the simple partition $B$ and $B^c$ of the sample space $\Omega$ where $\Pr(B) > 0$ and $\Pr(B^c) > 0$. Suppose an event $A$, where $\Pr(A) > 0$. Then
 
 $$
 \Pr(B \mid A) = \dfrac{\Pr(B) \Pr(A \mid B)}{\Pr(B) \Pr(A \mid B) + \Pr(B^c) \Pr(A \mid B^c)}.
@@ -164,21 +169,21 @@ $$
 :::
 
 
-::: {#exr-bayes-rule}
+::: {#exm-bayes-rule}
 You're considering getting tested for a rare disease that 1 in 100,000 people have. If given to a person with the disease, the test will produce a positive result 99\% of the time. If given to a person without the disease, the test will produce a positive result 0.1\% of the time (i.e., 1 in 1,000). You are given the test and the result comes back positive. Use Bayes' rule to compute the chance that you have the disease. 
 
-**Solution**
+*Solution.*
 
 Let $D$ denote having the disease and $T$ a positive test.
 
-- $P(D) = 1/100{,}000 = 10^{-5}$
-- $P(T \mid D) = 0.99$
-- $P(T \mid D^c) = 0.001$
+- $\Pr(D) = 1/100{,}000 = 10^{-5}$
+- $\Pr(T \mid D) = 0.99$
+- $\Pr(T \mid D^c) = 0.001$
 
 Compute the marginal
 
 $$
-P(T) \;=\; P(T\mid D)P(D) + P(T\mid D^c)P(D^c)
+\Pr(T) \;=\; \Pr(T\mid D)\Pr(D) + \Pr(T\mid D^c)\Pr(D^c)
 = 0.99(10^{-5}) + 0.001(1-10^{-5})
 = 9.9\times 10^{-6} + 0.00099999
 = 0.00100989.
@@ -187,7 +192,7 @@ $$
 Apply Bayes' rule
 
 $$
-P(D\mid T) \;=\; \frac{P(T\mid D)P(D)}{P(T)}
+\Pr(D\mid T) \;=\; \frac{\Pr(T\mid D)\Pr(D)}{\Pr(T)}
 = \frac{0.99 \times 10^{-5}}{0.00100989}
 \approx 0.0098.
 $$
@@ -261,12 +266,12 @@ A continuous random variable $X$ has a **PDF** $f(x)$ satisfying $f(x) \ge 0$ fo
 For continuous variables, probabilities are areas under the density curve:
 
 $$
-P(a \le X \le b) = \int_a^b f(x)\, dx
+\Pr(a \le X \le b) = \int_a^b f(x)\, dx
 $$
 
 ### CDF (Cumulative Distribution Function)
 
-The **CDF** $F(x)$ of a random variable $X$ is $F(x) = P(X \le x)$.
+The **CDF** $F(x)$ of a random variable $X$ is $F(x) = \Pr(X \le x)$.
 
 - For discrete $X$: $F(x) = \sum_{t \le x} p(t)$.
 - For continuous $X$: $F(x) = \int_{-\infty}^x f(t)\, dt$.
@@ -274,7 +279,7 @@ The **CDF** $F(x)$ of a random variable $X$ is $F(x) = P(X \le x)$.
 ::: {#exm-pmfpdf1}
 Let $X \sim \text{Bernoulli}(0.7)$. Then:
 
-- PMF: $P(X = 1) = 0.7$, $P(X = 0) = 0.3$
+- PMF: $\Pr(X = 1) = 0.7$, $\Pr(X = 0) = 0.3$
 - CDF: $F(x) = 0$ for $x < 0$, $0.3$ for $0 \le x < 1$, $1$ for $x \ge 1$
 
 Let $Y \sim \text{Exponential}(\lambda = 2)$. Then:
@@ -305,7 +310,7 @@ Let $Y \sim \text{Exponential}(\lambda = 2)$. Then $\mathbb{E}[Y] = \frac{1}{2} 
 Let $X \sim \text{Bernoulli}(0.7)$. Compute $\mathbb{E}[X]$ and $\text{Var}(X)$.
 
 *Solution.*  
-PMF: $P(X = 1) = 0.7$, $P(X = 0) = 0.3$
+PMF: $\Pr(X = 1) = 0.7$, $\Pr(X = 0) = 0.3$
 
 - $\mathbb{E}[X] = 0 \cdot 0.3 + 1 \cdot 0.7 = 0.7$
 - $\mathbb{E}[X^2] = 0^2 \cdot 0.3 + 1^2 \cdot 0.7 = 0.7$
@@ -320,7 +325,7 @@ PMF: $P(X = 1) = 0.7$, $P(X = 0) = 0.3$
 ::: {#thm-linearity-expect}
 ## Linearity of Expectation
 For any constants $a, b$ and random variables $X, Y$,
-$\mathbb{E}[X + bY] = a\,\mathbb{E}[X] + b\,\mathbb{E}[Y]$.
+$\mathbb{E}[aX + bY] = a\,\mathbb{E}[X] + b\,\mathbb{E}[Y]$.
 :::
 
 ::: {#thm-expect-constant}
@@ -372,8 +377,8 @@ Let $X$ and $Y$ be random variables.
 
 ### Joint Distribution
 
-- Discrete: $p(x, y) = P(X = x, Y = y)$
-- Continuous: $f(x, y)$ such that $P((X, Y) \in A) = \iint_A f(x, y)\, dx\, dy$
+- Discrete: $p(x, y) = \Pr(X = x, Y = y)$
+- Continuous: $f(x, y)$ such that $\Pr((X, Y) \in A) = \iint_A f(x, y)\, dx\, dy$
 
 ### Marginal Distribution
 
@@ -382,7 +387,7 @@ Let $X$ and $Y$ be random variables.
 
 ### Conditional Distribution
 
-- Discrete: $P(Y = y \mid X = x) = \frac{P(X = x, Y = y)}{P(X = x)}$
+- Discrete: $\Pr(Y = y \mid X = x) = \frac{\Pr(X = x, Y = y)}{\Pr(X = x)}$
 - Continuous: $f(y \mid x) = \frac{f(x, y)}{f_X(x)}$
 
 
@@ -394,13 +399,13 @@ Let $X, Y$ be discrete with joint PMF:
 | 0                | 0.1 | 0.3 |
 | 1                | 0.2 | 0.4 |
 
-Compute $P(X = 1)$, $P(Y = 0)$, and $P(Y = 1 \mid X = 1)$.
+Compute $\Pr(X = 1)$, $\Pr(Y = 0)$, and $\Pr(Y = 1 \mid X = 1)$.
 
 *Solution.*
 
-- $P(X = 1) = 0.2 + 0.4 = 0.6$
-- $P(Y = 0) = 0.1 + 0.2 = 0.3$
-- $P(Y = 1 \mid X = 1) = \frac{0.4}{0.6} = 0.\overline{6}$
+- $\Pr(X = 1) = 0.2 + 0.4 = 0.6$
+- $\Pr(Y = 0) = 0.1 + 0.2 = 0.3$
+- $\Pr(Y = 1 \mid X = 1) = \frac{0.4}{0.6} = 0.\overline{6}$
 
 :::
 
@@ -425,9 +430,11 @@ First compute
 
 - $\mathbb{E}[X] = 0 \cdot (0.1 + 0.3) + 1 \cdot (0.2 + 0.4) = 0.6$,
 - $\mathbb{E}[Y] = 0 \cdot (0.1 + 0.2) + 1 \cdot (0.3 + 0.4) = 0.7$, and
-- $\mathbb{E}[XY] = 0 \cdot 0.1 + 0 \cdot 0.3 + 1 \cdot 0.2 + 1 \cdot 0.4 = 0.6$.
+- $\mathbb{E}[XY] = (0)(0) \cdot 0.1 + (0)(1) \cdot 0.3 + (1)(0) \cdot 0.2 + (1)(1) \cdot 0.4 = 0.4$.
 
-Then $\text{Cov}(X, Y) = 0.6 - (0.6)(0.7) = 0.6 - 0.42 = 0.18$.
+Only the cell with $X = 1$ *and* $Y = 1$ contributes to $\mathbb{E}[XY]$, because $XY = 0$ whenever either variable is 0.
+
+Then $\text{Cov}(X, Y) = 0.4 - (0.6)(0.7) = 0.4 - 0.42 = -0.02$.
 
 :::
 
@@ -501,7 +508,7 @@ We have several functions to work with the normal distribution in R.
 | Function    | Description                        |
 |-------------|------------------------------------|
 | `dnorm(x)`  | PDF: $f(x)$                        |
-| `pnorm(x)`  | CDF: $P(X \le x)$                  |
+| `pnorm(x)`  | CDF: $\Pr(X \le x)$                  |
 | `qnorm(p)`  | Quantile: inverse CDF              |
 | `rnorm(n)`  | Simulate from $\mathcal{N}(\mu, \sigma^2)$ |
 
@@ -510,6 +517,7 @@ We have several functions to work with the normal distribution in R.
 Simulate 5 draws from $\mathcal{N}(2, 1)$.
 
 ```{r}
+set.seed(1234)
 rnorm(5, mean = 2, sd = 1)
 ```
 :::

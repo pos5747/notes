@@ -475,8 +475,9 @@ window.Quarto = {
   <li><a href="#integration-by-parts-product-rule-reversed" id="toc-integration-by-parts-product-rule-reversed" class="nav-link" data-scroll-target="#integration-by-parts-product-rule-reversed"><span class="header-section-number">D.4.7</span> Integration by Parts (Product Rule Reversed)</a></li>
   </ul></li>
   <li><a href="#definite-integrals" id="toc-definite-integrals" class="nav-link" data-scroll-target="#definite-integrals"><span class="header-section-number">D.5</span> Definite Integrals</a></li>
-  <li><a href="#integration-in-r" id="toc-integration-in-r" class="nav-link" data-scroll-target="#integration-in-r"><span class="header-section-number">D.6</span> Integration in R</a></li>
-  <li><a href="#summary-derivatives-vs-integrals" id="toc-summary-derivatives-vs-integrals" class="nav-link" data-scroll-target="#summary-derivatives-vs-integrals"><span class="header-section-number">D.7</span> Summary: Derivatives vs Integrals</a></li>
+  <li><a href="#improper-integrals" id="toc-improper-integrals" class="nav-link" data-scroll-target="#improper-integrals"><span class="header-section-number">D.6</span> Improper Integrals</a></li>
+  <li><a href="#integration-in-r" id="toc-integration-in-r" class="nav-link" data-scroll-target="#integration-in-r"><span class="header-section-number">D.7</span> Integration in R</a></li>
+  <li><a href="#summary-derivatives-vs-integrals" id="toc-summary-derivatives-vs-integrals" class="nav-link" data-scroll-target="#summary-derivatives-vs-integrals"><span class="header-section-number">D.8</span> Summary: Derivatives vs Integrals</a></li>
   </ul>
 </nav>
     </div>
@@ -610,7 +611,7 @@ window.Quarto = {
 \int x^3\, dx = \frac{x^4}{4} + C
 \]</span></p>
 <div id="exm-int2b" class="theorem example">
-<p><span class="theorem-title"><strong>Example D.3</strong></span> Compute <span class="math inline">\(\int x^5 - 2x^2 + 7\, dx\)</span>.</p>
+<p><span class="theorem-title"><strong>Example D.3</strong></span> Compute <span class="math inline">\(\int (x^5 - 2x^2 + 7)\, dx\)</span>.</p>
 </div>
 <p><em>Solution.</em> Integrate each term using the power rule:</p>
 <p><span class="math display">\[
@@ -728,11 +729,36 @@ Let <span class="math inline">\(dv = x\, dx\)</span>, so <span class="math inlin
 \]</span></p>
 <hr>
 </section>
-<section id="integration-in-r" class="level2" data-number="D.6">
-<h2 data-number="D.6" class="anchored" data-anchor-id="integration-in-r"><span class="header-section-number">D.6</span> Integration in R</h2>
+<section id="improper-integrals" class="level2" data-number="D.6">
+<h2 data-number="D.6" class="anchored" data-anchor-id="improper-integrals"><span class="header-section-number">D.6</span> Improper Integrals</h2>
+<p>Sometimes the interval has no upper bound. We handle an unbounded interval by integrating to a finite endpoint <span class="math inline">\(b\)</span> and then letting <span class="math inline">\(b\)</span> grow without bound.</p>
+<div id="def-improper" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition D.4</strong></span> The <strong>improper integral</strong> of <span class="math inline">\(f(x)\)</span> from <span class="math inline">\(a\)</span> to <span class="math inline">\(\infty\)</span> is</p>
+<p><span class="math display">\[
+\int_a^\infty f(x)\, dx = \lim_{b \to \infty} \int_a^b f(x)\, dx
+\]</span></p>
+<p>If this limit exists and is finite, the integral <strong>converges</strong>. Otherwise, the integral <strong>diverges</strong>.</p>
+</div>
+<div id="exm-improper1" class="theorem example">
+<p><span class="theorem-title"><strong>Example D.8</strong></span> Compute <span class="math inline">\(\int_0^\infty e^{-x}\, dx\)</span>.</p>
+</div>
+<p><em>Solution.</em> Find the antiderivative <span class="math inline">\(F(x) = -e^{-x}\)</span> and evaluate it from <span class="math inline">\(0\)</span> to a finite endpoint <span class="math inline">\(b\)</span>, so that</p>
+<p><span class="math display">\[
+\int_0^b e^{-x}\, dx = -e^{-b} - \left( -e^{0} \right) = 1 - e^{-b}
+\]</span></p>
+<p>Now let <span class="math inline">\(b\)</span> grow without bound. Since <span class="math inline">\(e^{-b} \to 0\)</span> as <span class="math inline">\(b \to \infty\)</span>, we obtain</p>
+<p><span class="math display">\[
+\int_0^\infty e^{-x}\, dx = \lim_{b \to \infty} \left( 1 - e^{-b} \right) = 1
+\]</span></p>
+<p>Improper integrals come up whenever we work with a continuous random variable defined on <span class="math inline">\([0, \infty)\)</span>, because its probability density function accumulates to one over that whole range. The exponential distribution is the case we use most.</p>
+<p>When you integrate by parts on an unbounded interval, the boundary term <span class="math inline">\(\left[ u v \right]_0^\infty\)</span> is also a limit. Terms like <span class="math inline">\(b e^{-\lambda b}\)</span> and <span class="math inline">\(b^2 e^{-\lambda b}\)</span> go to zero as <span class="math inline">\(b \to \infty\)</span>, because <span class="math inline">\(e^{-\lambda b}\)</span> shrinks faster than any power of <span class="math inline">\(b\)</span> grows.</p>
+<hr>
+</section>
+<section id="integration-in-r" class="level2" data-number="D.7">
+<h2 data-number="D.7" class="anchored" data-anchor-id="integration-in-r"><span class="header-section-number">D.7</span> Integration in R</h2>
 <p>R does not compute symbolic integrals with base functions, but numerical integration is straightforward using <code>integrate()</code>.</p>
 <div id="exm-rint1" class="theorem example">
-<p><span class="theorem-title"><strong>Example D.8</strong></span> Compute <span class="math inline">\(\int_1^2 x^2\, dx\)</span> numerically.</p>
+<p><span class="theorem-title"><strong>Example D.9</strong></span> Compute <span class="math inline">\(\int_1^2 x^2\, dx\)</span> numerically.</p>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="cf">function</span>(x) x<span class="sc">^</span><span class="dv">2</span></span>
@@ -741,26 +767,24 @@ Let <span class="math inline">\(dv = x\, dx\)</span>, so <span class="math inlin
 <pre><code>2.333333 with absolute error &lt; 2.6e-14</code></pre>
 </div>
 </div>
-<p>Returns:</p>
-<pre><code>7/3 = 2.333...</code></pre>
+<p>This matches the exact value <span class="math inline">\(\frac{7}{3} \approx 2.3333\)</span>.</p>
 <div id="exm-rint2" class="theorem example">
-<p><span class="theorem-title"><strong>Example D.9</strong></span> Compute <span class="math inline">\(\int_0^1 x \log(x)\, dx\)</span> numerically.</p>
+<p><span class="theorem-title"><strong>Example D.10</strong></span> Compute <span class="math inline">\(\int_0^1 x \log(x)\, dx\)</span> numerically.</p>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="fu">ifelse</span>(x <span class="sc">==</span> <span class="dv">0</span>, <span class="dv">0</span>, x <span class="sc">*</span> <span class="fu">log</span>(x))</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">integrate</span>(f, <span class="dv">0</span>, <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="fu">ifelse</span>(x <span class="sc">==</span> <span class="dv">0</span>, <span class="dv">0</span>, x <span class="sc">*</span> <span class="fu">log</span>(x))</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">integrate</span>(f, <span class="dv">0</span>, <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>-0.25 with absolute error &lt; 3e-05</code></pre>
 </div>
 </div>
-<p>This returns approximately:</p>
-<pre><code>-0.25</code></pre>
+<p>This matches the exact value <span class="math inline">\(-\frac{1}{4}\)</span>.</p>
 <hr>
 <p>Numerical integration is useful for functions that have no closed-form antiderivative or are only defined computationally.</p>
 <hr>
 </section>
-<section id="summary-derivatives-vs-integrals" class="level2" data-number="D.7">
-<h2 data-number="D.7" class="anchored" data-anchor-id="summary-derivatives-vs-integrals"><span class="header-section-number">D.7</span> Summary: Derivatives vs Integrals</h2>
+<section id="summary-derivatives-vs-integrals" class="level2" data-number="D.8">
+<h2 data-number="D.8" class="anchored" data-anchor-id="summary-derivatives-vs-integrals"><span class="header-section-number">D.8</span> Summary: Derivatives vs Integrals</h2>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 19%">

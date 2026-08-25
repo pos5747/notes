@@ -727,16 +727,16 @@ N \hat{\mu} &amp;= \sum_{i = 1}^N x_i \\
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(region <span class="sc">!=</span> <span class="st">"Aggregates"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Rows: 216
+<pre><code>Rows: 217
 Columns: 13
 $ country           &lt;chr&gt; "Afghanistan", "Albania", "Algeria", "American Samoa…
 $ iso2c             &lt;chr&gt; "AF", "AL", "DZ", "AS", "AD", "AO", "AG", "AR", "AM"…
 $ iso3c             &lt;chr&gt; "AFG", "ALB", "DZA", "ASM", "AND", "AGO", "ATG", "AR…
 $ year              &lt;int&gt; 2022, 2022, 2022, 2022, 2022, 2022, 2022, 2022, 2022…
-$ NY.GDP.MKTP.KD.ZG &lt;dbl&gt; -6.240172, 4.826696, 3.600000, 1.735016, 9.564612, 3…
+$ NY.GDP.MKTP.KD.ZG &lt;dbl&gt; -6.240172, 4.826801, 3.600000, 1.735016, 9.564612, 3…
 $ status            &lt;chr&gt; "", "", "", "", "", "", "", "", "", "", "", "", "", …
-$ lastupdated       &lt;chr&gt; "2025-07-01", "2025-07-01", "2025-07-01", "2025-07-0…
-$ region            &lt;chr&gt; "South Asia", "Europe &amp; Central Asia", "Middle East …
+$ lastupdated       &lt;chr&gt; "2026-07-13", "2026-07-13", "2026-07-13", "2026-07-1…
+$ region            &lt;chr&gt; "Middle East, North Africa, Afghanistan &amp; Pakistan",…
 $ capital           &lt;chr&gt; "Kabul", "Tirane", "Algiers", "Pago Pago", "Andorra …
 $ longitude         &lt;chr&gt; "69.1761", "19.8172", "3.05097", "-170.691", "1.5218…
 $ latitude          &lt;chr&gt; "34.5228", "41.3317", "36.7397", "-14.2846", "42.507…
@@ -757,18 +757,18 @@ $ lending           &lt;chr&gt; "IDA", "IBRD", "IBRD", "Not classified", "Not cl
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ml estimate of mu</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(gdp_growth_2022<span class="sc">$</span>NY.GDP.MKTP.KD.ZG, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 4.478777</code></pre>
+<pre><code>[1] 4.418957</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ml estimate of sigma^2</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(gdp_growth_2022<span class="sc">$</span>NY.GDP.MKTP.KD.ZG)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>((x <span class="sc">-</span> <span class="fu">mean</span>(x))<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span><span class="fu">length</span>(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 45.93108</code></pre>
+<pre><code>[1] 45.78837</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># compare to classic, unbiased estimate that uses N - 1 in denominator</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">var</span>(gdp_growth_2022<span class="sc">$</span>NY.GDP.MKTP.KD.ZG, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 46.15405</code></pre>
+<pre><code>[1] 46.0085</code></pre>
 </div>
 </div>
 </section>
@@ -861,15 +861,15 @@ L(\alpha, \beta) &amp;= \displaystyle\prod_{i = 1}^N \dfrac{y_i^{\alpha - 1}(1 -
 <span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="co"># compute log-likelihood for each combination of parameters</span></span>
 <span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">crossing</span>(alpha, beta) <span class="sc">%&gt;%</span></span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">log_lik =</span> alpha<span class="sc">*</span><span class="fu">sum</span>(<span class="fu">log</span>(y)) <span class="sc">+</span> beta<span class="sc">*</span><span class="fu">sum</span>(<span class="fu">log</span>(<span class="dv">1</span> <span class="sc">-</span> y)) <span class="sc">-</span> </span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">log_lik =</span> (alpha <span class="sc">-</span> <span class="dv">1</span>)<span class="sc">*</span><span class="fu">sum</span>(<span class="fu">log</span>(y)) <span class="sc">+</span> (beta <span class="sc">-</span> <span class="dv">1</span>)<span class="sc">*</span><span class="fu">sum</span>(<span class="fu">log</span>(<span class="dv">1</span> <span class="sc">-</span> y)) <span class="sc">-</span></span>
 <span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>           <span class="fu">length</span>(y)<span class="sc">*</span><span class="fu">log</span>(<span class="fu">beta</span>(alpha, beta)))</span>
 <span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="co"># make contour plot with labelled contours</span></span>
 <span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> alpha, </span>
 <span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>                 <span class="at">y =</span> beta, </span>
 <span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>                 <span class="at">z =</span> log_lik)) <span class="sc">+</span></span>
-<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_contour_filled</span>(<span class="at">breaks =</span> <span class="fu">c</span>(<span class="cn">Inf</span>, <span class="sc">-</span><span class="dv">55</span>, <span class="sc">-</span><span class="dv">60</span>, <span class="sc">-</span><span class="dv">70</span>, <span class="sc">-</span><span class="dv">100</span>, <span class="sc">-</span><span class="dv">200</span>, <span class="sc">-</span><span class="dv">500</span>, <span class="sc">-</span><span class="cn">Inf</span>)) <span class="sc">+</span></span>
-<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_labelcontour</span>(<span class="at">breaks =</span> <span class="fu">c</span>(<span class="cn">Inf</span>, <span class="sc">-</span><span class="dv">55</span>, <span class="sc">-</span><span class="dv">60</span>, <span class="sc">-</span><span class="dv">70</span>, <span class="sc">-</span><span class="dv">100</span>, <span class="sc">-</span><span class="dv">200</span>, <span class="sc">-</span><span class="dv">500</span>, <span class="sc">-</span><span class="cn">Inf</span>), <span class="at">straight =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_contour_filled</span>(<span class="at">breaks =</span> <span class="fu">c</span>(<span class="cn">Inf</span>, <span class="dv">85</span>, <span class="dv">75</span>, <span class="dv">50</span>, <span class="dv">0</span>, <span class="sc">-</span><span class="dv">100</span>, <span class="sc">-</span><span class="dv">400</span>, <span class="sc">-</span><span class="cn">Inf</span>)) <span class="sc">+</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_labelcontour</span>(<span class="at">breaks =</span> <span class="fu">c</span>(<span class="cn">Inf</span>, <span class="dv">85</span>, <span class="dv">75</span>, <span class="dv">50</span>, <span class="dv">0</span>, <span class="sc">-</span><span class="dv">100</span>, <span class="sc">-</span><span class="dv">400</span>, <span class="sc">-</span><span class="cn">Inf</span>), <span class="at">straight =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
 <span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
 <span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -886,7 +886,7 @@ L(\alpha, \beta) &amp;= \displaystyle\prod_{i = 1}^N \dfrac{y_i^{\alpha - 1}(1 -
 <div class="sourceCode cell-code" id="annotated-cell-10"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><a class="code-annotation-anchor" data-target-cell="annotated-cell-10" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-10-1" class="code-annotation-target"><a href="#annotated-cell-10-1" aria-hidden="true" tabindex="-1"></a>ll_fn <span class="ot">&lt;-</span> <span class="cf">function</span>(theta, y) {</span>
 <a class="code-annotation-anchor" data-target-cell="annotated-cell-10" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-10-2" class="code-annotation-target"><a href="#annotated-cell-10-2" aria-hidden="true" tabindex="-1"></a>  alpha <span class="ot">&lt;-</span> theta[<span class="dv">1</span>]</span>
 <span id="annotated-cell-10-3"><a href="#annotated-cell-10-3" aria-hidden="true" tabindex="-1"></a>  beta <span class="ot">&lt;-</span> theta[<span class="dv">2</span>]</span>
-<span id="annotated-cell-10-4"><a href="#annotated-cell-10-4" aria-hidden="true" tabindex="-1"></a>  ll <span class="ot">&lt;-</span> alpha<span class="sc">*</span><span class="fu">sum</span>(<span class="fu">log</span>(y)) <span class="sc">+</span> beta<span class="sc">*</span><span class="fu">sum</span>(<span class="fu">log</span>(<span class="dv">1</span> <span class="sc">-</span> y)) <span class="sc">-</span></span>
+<span id="annotated-cell-10-4"><a href="#annotated-cell-10-4" aria-hidden="true" tabindex="-1"></a>  ll <span class="ot">&lt;-</span> (alpha <span class="sc">-</span> <span class="dv">1</span>)<span class="sc">*</span><span class="fu">sum</span>(<span class="fu">log</span>(y)) <span class="sc">+</span> (beta <span class="sc">-</span> <span class="dv">1</span>)<span class="sc">*</span><span class="fu">sum</span>(<span class="fu">log</span>(<span class="dv">1</span> <span class="sc">-</span> y)) <span class="sc">-</span></span>
 <span id="annotated-cell-10-5"><a href="#annotated-cell-10-5" aria-hidden="true" tabindex="-1"></a>           <span class="fu">length</span>(y)<span class="sc">*</span><span class="fu">log</span>(<span class="fu">beta</span>(alpha, beta))</span>
 <a class="code-annotation-anchor" data-target-cell="annotated-cell-10" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-10-6" class="code-annotation-target"><a href="#annotated-cell-10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(ll)</span>
 <span id="annotated-cell-10-7"><a href="#annotated-cell-10-7" aria-hidden="true" tabindex="-1"></a>}</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>

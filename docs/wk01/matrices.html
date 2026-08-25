@@ -513,7 +513,7 @@ window.Quarto = {
 <h2 data-number="E.1" class="anchored" data-anchor-id="definitions"><span class="header-section-number">E.1</span> Definitions</h2>
 <p>A <strong>scalar</strong> is a single number.</p>
 <p>A <strong>vector</strong> is a 1-dimensional array of numbers.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
-<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;By default, we treat these as <span class="math inline">\(1 \times n\)</span> <em>column</em> vectors (see definition of <em>matrix</em> below).</p></div></div><p>A <strong>matrix</strong> is a two-dimensional array of numbers.</p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;By default, we treat these as <span class="math inline">\(n \times 1\)</span> <em>column</em> vectors (see definition of <em>matrix</em> below).</p></div></div><p>A <strong>matrix</strong> is a two-dimensional array of numbers.</p>
 <ul>
 <li><span class="math inline">\(x\)</span> is <span class="math inline">\(n \times 1\)</span> (column vector).</li>
 <li><span class="math inline">\(x'\)</span> is <span class="math inline">\(1 \times n\)</span> (row vector).</li>
@@ -611,7 +611,7 @@ B = \begin{bmatrix}
 1 &amp; 0 \\
 0 &amp; 1
 \end{bmatrix}
-\]</span>.</p>
+\]</span></p>
 <p>The product <span class="math inline">\(C = AB\)</span> is a <span class="math inline">\(3 \times 2\)</span> matrix. Each entry is computed as <span class="math inline">\(C_{ij} = \sum_{k=1}^4 A_{ik} B_{kj}\)</span>.</p>
 <p><span class="math display">\[
 C = AB = \begin{bmatrix}
@@ -632,7 +632,7 @@ C = AB = \begin{bmatrix}
 12 &amp; 14 \\
 10 &amp; 2
 \end{bmatrix}
-\]</span>.</p>
+\]</span></p>
 <p>We can confirm our answer with R.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>A <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(</span>
@@ -659,7 +659,7 @@ C = AB = \begin{bmatrix}
 </div>
 <div id="exm-matrix9" class="theorem example">
 <p><span class="theorem-title"><strong>Example E.4</strong></span> Let <span class="math inline">\(X\)</span> be a <span class="math inline">\(3 \times 2\)</span> matrix and <span class="math inline">\(\beta\)</span> a <span class="math inline">\(2 \times 1\)</span> vector. Then <span class="math inline">\(X\beta\)</span> is a <span class="math inline">\(3 \times 1\)</span> vector. <span class="math inline">\(X'X\)</span> is <span class="math inline">\(2 \times 2\)</span> and symmetric.</p>
-<p>We have a couple of familiar matrix multiplications from linear regression. <span class="math inline">\(X\beta\)</span> is especially important to us!.</p>
+<p>We have a couple of familiar matrix multiplications from linear regression. <span class="math inline">\(X\beta\)</span> is especially important to us!</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>), <span class="at">nrow =</span> <span class="dv">3</span>)</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="dv">1</span>)</span>
@@ -788,7 +788,7 @@ C = AB = \begin{bmatrix}
 [2,]   32   77</code></pre>
 </div>
 </div>
-<div id="exm-matrix1" class="theorem example">
+<div id="exm-special-matrices" class="theorem example">
 <p><span class="theorem-title"><strong>Example E.6</strong></span> Construct the following matrices:</p>
 <ul>
 <li>Identity matrix <span class="math inline">\(I_2\)</span></li>
@@ -801,7 +801,7 @@ C = AB = \begin{bmatrix}
 <span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>S <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">3</span>), <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
-<div id="exm-matrix2" class="theorem example">
+<div id="exm-diag-sd" class="theorem example">
 <p><span class="theorem-title"><strong>Example E.7</strong></span> Let <span class="math inline">\(\Sigma = \begin{bmatrix}4 &amp; 0 &amp; 0 \\ 0 &amp; 1 &amp; 0 \\ 0 &amp; 0 &amp; 9\end{bmatrix}\)</span>. This is a diagonal covariance matrix.</p>
 <p>Extract the standard deviations.</p>
 <div class="cell">
@@ -860,7 +860,7 @@ C = AB = \begin{bmatrix}
 <ul>
 <li>If <span class="math inline">\(X\)</span> is not full rank, <span class="math inline">\(X'X\)</span> is not invertible.</li>
 <li>In regression, full rank <span class="math inline">\(X\)</span> ensures a unique <span class="math inline">\(\hat\beta\)</span>.</li>
-<li>If rank is less than the number of columns, this means on variable is perfectly collinear with another.</li>
+<li>If rank is less than the number of columns, this means one variable is perfectly collinear with another.</li>
 </ul>
 </section>
 <section id="examples" class="level2" data-number="E.8">
@@ -886,7 +886,7 @@ C = AB = \begin{bmatrix}
 <pre><code>[1] 1</code></pre>
 </div>
 </div>
-<p>We can see that the second column is simple 2 times the first column, so the matrix is not full rank and thus not invertible.</p>
+<p>We can see that the second column is simply 2 times the first column, so the matrix is not full rank and thus not invertible.</p>
 </div>
 </section>
 <section id="matrix-calculus-introductory" class="level2" data-number="E.9">
@@ -907,7 +907,7 @@ C = AB = \begin{bmatrix}
 \vdots \\
 \frac{\partial f}{\partial x_n}
 \end{bmatrix}
-\]</span>.</p>
+\]</span></p>
 <p>This vector tells us how the function <span class="math inline">\(f(x)\)</span> changes in each coordinate direction, and it points in the direction of steepest ascent.</p>
 <div id="exm-grad1" class="theorem example">
 <p><span class="theorem-title"><strong>Example E.10</strong></span> Let <span class="math inline">\(f(x) = x_1^2 + 3x_2\)</span>, where <span class="math inline">\(x = \begin{bmatrix} x_1 \\ x_2 \end{bmatrix}\)</span>.</p>
@@ -943,7 +943,7 @@ x_1 \\
 \frac{1}{x_3} \\
 e^{x_4}
 \end{bmatrix}
-\]</span>.</p>
+\]</span></p>
 </div>
 </section>
 <section id="hessians" class="level3" data-number="E.9.2">

@@ -1,6 +1,10 @@
 project:
   type: book
   output-dir: docs/
+  # readings/ holds PDFs of articles the exercises assign (FirstauthorYEAR.pdf);
+  # exercises link to https://pos5747.github.io/notes/readings/<file>.pdf
+  resources:
+    - readings/
   
 freeze: auto  
 

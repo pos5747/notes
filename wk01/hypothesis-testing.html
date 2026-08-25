@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.42">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>hypothesis-testing</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="hypothesis-testing_files/libs/clipboard/clipboard.min.js"></script>
+<script src="hypothesis-testing_files/libs/quarto-html/quarto.js"></script>
+<script src="hypothesis-testing_files/libs/quarto-html/popper.min.js"></script>
+<script src="hypothesis-testing_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="hypothesis-testing_files/libs/quarto-html/anchor.min.js"></script>
+<link href="hypothesis-testing_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="hypothesis-testing_files/libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="hypothesis-testing_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="hypothesis-testing_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="hypothesis-testing_files/libs/bootstrap/bootstrap-c0367b04c37547644fece4185067e4a7.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+
+
+
+<section id="hypothesis-testing" class="level1">
+<h1>Hypothesis Testing</h1>
+</section>
+<section id="hypotheses" class="level1">
+<h1>Hypotheses</h1>
+<section id="research-hypothesis" class="level2">
+<h2 class="anchored" data-anchor-id="research-hypothesis">Research Hypothesis</h2>
+<p>In the typical hypothesis testing situation in political science, the researcher posits a theoretically interesting hypothesis <span class="math inline">\(H_r\)</span>, often called the “alternative” or “research” hypothesis.</p>
+<div id="def-research-hypothesis" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 1</strong></span> A research hypothesis, denoted by <span class="math inline">\(H_r\)</span>, is a claim that a quantity of interest <span class="math inline">\(\theta\)</span> lies in a specific region <span class="math inline">\(B \subset \mathbb{R}\)</span>.</p>
+</div>
+<p>The first step in hypothesis testing requires the researcher to precisely state the prediction that she wishes to test, usually derived from some theory. The research hypothesis might suggest that a variable has a non-zero, positive, negative, or negligible effect, among others.</p>
+<p>In almost all political science applications, <span class="math inline">\(B\)</span> is either the interval <span class="math inline">\((-\infty, 0)\)</span>, predicting a negative effect, or <span class="math inline">\((0,\infty)\)</span>, predicting a positive effect. But we can also test other research hypotheses, such as <span class="math inline">\(H_r: \theta \in (m,\infty)\)</span>, where <span class="math inline">\(m\)</span> is a threshold that defines a substantively meaningful effect. Such a test would partially address the concerns raised by <span class="citation" data-cites="mcclosky1996">@mcclosky1996</span>, @ziliak2004, and <span class="citation" data-cites="mccloskey2008">@mccloskey2008</span>, who note that statistical significance based on a null hypothesis of zero does not imply a substantively large effect. <span class="citation" data-cites="rainey2014">@rainey2014</span>, for example, argues that political scientists should consider the hypothesis that a variable does not have a substantively meaningful effect on the outcome of interest <span class="math inline">\(H_r: \theta \in (-m,m)\)</span>.</p>
+<section id="null-hypothesis" class="level3">
+<h3 class="anchored" data-anchor-id="null-hypothesis">Null Hypothesis</h3>
+<p>Each research hypothesis implies a particular null hypothesis.</p>
+<p>By definition, the null hypothesis is a claim that <span class="math inline">\(\theta \in B^C\)</span>, or alternatively, that the reseach hypothesis is false.</p>
+<div id="def-null-hypothesis" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 2</strong></span> The research hypothesis <span class="math inline">\(H_r: \theta \in B\)</span> implies a <strong>null hypothesis</strong>, denoted by <span class="math inline">\(H_0\)</span>, that the quantity of interest lies in the region <span class="math inline">\(B^C\)</span> (i.e., outside the region claimed by the research hypothesis).</p>
+</div>
+<p>Importantly, the null hypothesis does not necessarily claim that a variable has exactly no effect, although it might in some cases.</p>
+</section>
+</section>
+<section id="testing-hypotheses" class="level2">
+<h2 class="anchored" data-anchor-id="testing-hypotheses">Testing Hypotheses</h2>
+<p>Once we carefully state the research hypothesis and the null implied null hypothesis, we must evaluate the hypotheses empirically.</p>
+<p>Typically, we compute a test statistic that summarizes the amount of evidence against the null hypothesis.</p>
+<div id="def-test-statistic" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 3</strong></span> Define a <strong>test statistic</strong> <span class="math inline">\(T({\bf{x}}) \in [0, \infty)\)</span> as a function of the observed data <span class="math inline">\(\bf{x}\)</span> such that larger [smaller] values of <span class="math inline">\(T\)</span> indicate greater evidence against the null hypothesis <span class="math inline">\(H_0\)</span>.</p>
+</div>
+<p>Once we obtain the test statistic <span class="math inline">\(T\)</span>, we must make a decision. We can decide to reject the null hypothesis (and therefore accept the research hypothesis as correct). Or we can decide <em>not</em> to reject the null hypothesis.</p>
+<p>Importantly, if we do not have enough evidence against the null hypothesis to reject it, then we fail to reject the null and <em>the evidence is considered ambiguous</em>.</p>
+<p>Researchers usually make this decision using a hypothesis test.</p>
+<div id="def-hypothesis-test" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 4</strong></span> A <strong>hypothesis test</strong> partitions the interval <span class="math inline">\([0,\infty)\)</span> into two regions <span class="math inline">\(R\)</span> and <span class="math inline">\(R^C\)</span>, such that if <span class="math inline">\(T \in R\)</span> then we rejects the null hypothesis (and accept the research hypothesis). If <span class="math inline">\(T \in R^C\)</span>, then we fail to reject the null hypothesis.</p>
+</div>
+</section>
+<section id="errors" class="level2">
+<h2 class="anchored" data-anchor-id="errors">Errors</h2>
+<p>A hypothesis test can generate two types of errors:</p>
+<ol type="1">
+<li>Rejecting the null hypothesis when it is actually correct, known as a Type-I error or false-positive error.</li>
+<li>Failing to reject the null when it is actually false, a Type-II error or false-negative error.</li>
+</ol>
+<p>Obviously, we prefer tests that make fewer errors to those that make more, but we also care about the specific type of error that a test makes. In particular, convention requires that tests have a low error rate (usually less than or equal to 5%) when the null hypothesis is true.</p>
+</section>
+<section id="p-value" class="level2">
+<h2 class="anchored" data-anchor-id="p-value"><span class="math inline">\(p\)</span>-Value</h2>
+<p>The <span class="math inline">\(p\)</span>-value is a particularly useful test statistics, because many test statistics can be converted to <span class="math inline">\(p\)</span>-values, which, in turn, have a common interpretation and are broadly familiar.</p>
+<div id="def-hypothesis-test" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 5</strong></span> Suppose a test statistic <span class="math inline">\(T\)</span> such that larger values indicate evidence against the null hypothesis. Define a <strong><span class="math inline">\(p\)</span>-value</strong> such that <span class="math inline">\(p =\displaystyle \max_{\theta \in B^C} P(T({\bf X}) \geq T({\bf x}))\)</span>, where <span class="math inline">\({\bf X}\)</span> is a hypothetical (random) data set generated when the true quantity of interest is <span class="math inline">\(\theta\)</span>.</p>
+</div>
+<p><span class="math inline">\(p\)</span>-values allow us to be more specific about the rejection region defined more generally in <a href="#def-hypothesis-test" class="quarto-xref">Definition&nbsp;5</a>. In particular, we reject the null if and only if the <span class="math inline">\(p\)</span>-value is less than or equal to <span class="math inline">\(\alpha\)</span>, where <span class="math inline">\(\alpha \in [0, 1]\)</span>.</p>
+</section>
+<section id="power-function-and-size" class="level2">
+<h2 class="anchored" data-anchor-id="power-function-and-size">Power Function and Size</h2>
+<div id="def-power-function" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 6</strong></span> The <strong>power function</strong> of a hypothesis test is the probability of rejecting the null hypothesis for a given value of <span class="math inline">\(\theta\)</span>.</p>
+</div>
+<p>Assuming we are using <span class="math inline">\(p\)</span>-values as a test statistics, then the power function is <span class="math inline">\(\Pr(\text{$p$-value} \leq \alpha \mid \theta)\)</span>.</p>
+<p>We want the power function to have certain properties. First, we want the probability of rejecting the null hypothesis to be low when the null hypothesis is true.</p>
+<div id="def-size" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 7</strong></span> Say that a hypothesis test is a <strong>size-<span class="math inline">\(\alpha\)</span> test</strong> if the largest probability of rejecting the null hypothesis across all values of <span class="math inline">\(\theta\)</span> consistent with the null hypothesis equals<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> <span class="math inline">\(\alpha\)</span>.</p>
+</div>
+<p>In the social sciences, we typically use size-0.05 tests. We can easily create a size-0.05 by rejecting the null hypothesis if the <span class="math inline">\(p\)</span>-value is less than 0.05.</p>
+</section>
+<section id="example" class="level2">
+<h2 class="anchored" data-anchor-id="example">Example</h2>
+<p>Suppose we conduct a experiment comparing two conditions and test whether the difference in mean outcomes between the two groups exceeds a substantively meaningful threshold <span class="math inline">\(m=1\)</span>.</p>
+<p>Let <span class="math inline">\(\theta=\mu_1 - \mu_2\)</span> denote the true difference in population means. Our research hypothesis is <span class="math inline">\(H_r: \theta \in (1,\infty)\)</span>, that is, the treatment effect is not merely positive, but exceeds the threshold <span class="math inline">\(m=1\)</span>.</p>
+<p>The null hypothesis is <span class="math inline">\(H_0: \theta \in (-\infty, 1]\)</span>.</p>
+<p>To evaluate these hypotheses, we compute the observed difference in sample means <span class="math inline">\(\hat{\theta} = \bar{X}_1 - \bar{X}_2\)</span> and its standard error <span class="math inline">\(\text{SE}(\hat{\theta})\)</span>. Assuming a large sample size, we use the z-statistic <span class="math inline">\(z = \frac{\hat{\theta} - 1}{\text{SE}(\hat{\theta})}\)</span></p>
+<p>This statistic summarizes the evidence against the null hypothesis that <span class="math inline">\(\theta \leq 1\)</span>. Larger values of <span class="math inline">\(T\)</span> provide stronger evidence against <span class="math inline">\(H_0\)</span>.</p>
+<p>We reject <span class="math inline">\(H_0\)</span> if the p-value is less than or equal to <span class="math inline">\(\alpha=0.05\)</span>. Since the alternative is one-sided, the p-value is <span class="math inline">\(p = P(Z \geq T)\)</span>, where <span class="math inline">\(Z \sim \text{Normal}(0,1)\)</span>. If <span class="math inline">\(p \leq 0.05\)</span>, we reject the null and conclude that the treatment effect exceeds the threshold <span class="math inline">\(m=1\)</span>. Otherwise, we fail to reject the null and conclude that the evidence is ambiguous.</p>
+<p>This test is a size-0.05 test for the null hypothesis <span class="math inline">\(H_0: \theta \in (-\infty,1]\)</span>. It controls the Type I error rate at 5% when the true effect <span class="math inline">\(\theta\)</span> is equal to or less than 1 and has increasing power for values of <span class="math inline">\(\theta\)</span> greater than 1.</p>
+<section id="power-function" class="level3">
+<h3 class="anchored" data-anchor-id="power-function">Power Function</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Parameters</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> <span class="fl">0.05</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>se_hat <span class="ot">&lt;-</span> <span class="fl">0.3</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>theta_seq <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">2</span>, <span class="at">length.out =</span> <span class="dv">500</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>z_alpha <span class="ot">&lt;-</span> <span class="fu">qnorm</span>(<span class="dv">1</span> <span class="sc">-</span> alpha)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Correct power function:</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Power(theta) = 1 - Φ(z_alpha - (theta - 1) / SE)</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>power <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">pnorm</span>(z_alpha <span class="sc">-</span> (theta_seq <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">/</span> se_hat)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify null-consistent values</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">theta =</span> theta_seq,</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">power =</span> power,</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">null_region =</span> theta_seq <span class="sc">&lt;=</span> <span class="dv">1</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x =</span> theta, <span class="at">y =</span> power)) <span class="sc">+</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">size =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_area</span>(<span class="at">data =</span> <span class="fu">subset</span>(df, null_region), <span class="fu">aes</span>(<span class="at">x =</span> theta, <span class="at">y =</span> power), <span class="at">fill =</span> <span class="st">"gray90"</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> alpha, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Power Function for One-Sided Superiority Test"</span>,</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="fu">expression</span>(H[<span class="dv">0</span>]<span class="sc">*</span><span class="st">":"</span><span class="sc">~</span>theta <span class="sc">&lt;=</span> <span class="dv">1</span><span class="sc">~</span><span class="er">~</span><span class="st">"vs"</span><span class="sc">~</span><span class="er">~</span>H[r]<span class="sc">*</span><span class="st">":"</span><span class="sc">~</span>theta <span class="sc">&gt;</span> <span class="dv">1</span>),</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">expression</span>(theta),</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Power"</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">14</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+ℹ Please use `linewidth` instead.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="hypothesis-testing_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>In the figure above, the shaded region corresponds to values of <span class="math inline">\(\theta\)</span> consistent with the null hypothesis. The power function increases as <span class="math inline">\(\theta\)</span> moves away from the null threshold, showing that the test becomes more likely to reject the null as the true effect grows larger. The dashed red line at 0.05 marks the size of the test.</p>
+</section>
+</section>
+<section id="confidence-intervals-and-hypothesis-tests" class="level2">
+<h2 class="anchored" data-anchor-id="confidence-intervals-and-hypothesis-tests">Confidence Intervals and Hypothesis Tests</h2>
+<p>Confidence intervals and hypothesis tests are closely related tools for inference. In many common settings, they are essentially two ways to summarize the same underlying statistical information.</p>
+<section id="relationship-between-confidence-intervals-and-hypothesis-tests" class="level3">
+<h3 class="anchored" data-anchor-id="relationship-between-confidence-intervals-and-hypothesis-tests">Relationship Between Confidence Intervals and Hypothesis Tests</h3>
+<p>Consider a research hypothesis of the form <span class="math inline">\(H_r : \theta \in B\)</span> and its corresponding null hypothesis <span class="math inline">\(H_0 : \theta \in B^C\)</span>. Suppose we use a test statistic that yields a <span class="math inline">\(p\)</span>-value for evaluating the null hypothesis. For a given significance level <span class="math inline">\(\alpha\)</span>, we reject <span class="math inline">\(H_0\)</span> if and only if the <span class="math inline">\(p\)</span>-value is less than or equal to <span class="math inline">\(\alpha\)</span>.</p>
+<p>Now consider constructing a <span class="math inline">\((1-\alpha)\)</span> confidence interval for <span class="math inline">\(\theta\)</span>.</p>
+<p>The key relationship is:</p>
+<div id="thm-ci-test-link" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 1</strong></span> We reject the point null hypothesis <span class="math inline">\(H_0 : \theta = \theta_0\)</span> at level <span class="math inline">\(\alpha\)</span> if and only if the <span class="math inline">\((1-\alpha)\)</span> confidence interval for <span class="math inline">\(\theta\)</span> does not contain <span class="math inline">\(\theta_0\)</span>.</p>
+</div>
+<p>This result implies that hypothesis testing and interval estimation are two equivalent methods for evaluating the consistency of the data with particular parameter values.</p>
+</section>
+<section id="one-sided-alternatives" class="level3">
+<h3 class="anchored" data-anchor-id="one-sided-alternatives">One-Sided Alternatives</h3>
+<p>The same logic holds for one-sided research hypotheses. Suppose the research hypothesis is <span class="math inline">\(H_r : \theta &gt; m\)</span> with null hypothesis <span class="math inline">\(H_0 : \theta \le m\)</span>. A one-sided <span class="math inline">\((1-\alpha)\)</span> confidence interval for <span class="math inline">\(\theta\)</span> will have the form <span class="math inline">\((L, \infty)\)</span>. We reject the null hypothesis at level <span class="math inline">\(\alpha\)</span> if and only if <span class="math inline">\(L &gt; m\)</span>.</p>
+<p>This formulation clarifies that a one-sided test corresponds to a one-sided confidence interval. Importantly, a two-sided confidence interval cannot appropriately represent evidence for a one-sided research hypothesis unless it is first converted into a one-sided interval.</p>
+<p>Interpretation</p>
+<p>The link between hypothesis tests and confidence intervals provides a practical interpretation advantage.</p>
+<p>For a 90% confidence interval <span class="math inline">\([L, U]\)</span> (for fixed <span class="math inline">\(L\)</span> and <span class="math inline">\(U\)</span>), we can always <em>reject</em> the following two hypothesis: - <span class="math inline">\(H_0 : \theta \le L\)</span> - <span class="math inline">\(H_0 : \theta \ge U\)</span></p>
+<p>In that since, we have a two-claims: a claim about the upper-bound and a claim about the lower-bound.</p>
+<ul>
+<li>We can say “the parameter is larger than <span class="math inline">\(L\)</span>.”</li>
+<li>We can say “the parameter is smaller than <span class="math inline">\(U\)</span>.”</li>
+</ul>
+<p>These are <em>two</em> one-sided hypotheses. We both have size-0.05. These are the <em>strongest size-0.05 claims</em> we can make. ## Testing for Negligible Effects</p>
+<p>In many applications, researchers are interested not in showing that an effect exists, but rather that any effect is <strong>substantively negligible</strong>. For example, a theory may claim that a variable does <em>not</em> meaningfully influence an outcome, or a researcher may want to demonstrate that a treatment effect is too small to matter in practice. In such cases, the conventional approach of testing the null hypothesis <span class="math inline">\(H_0 : \theta = 0\)</span> is inadequate, because <em>failing to reject</em> <span class="math inline">\(H_0\)</span> does not imply that <span class="math inline">\(\theta\)</span> is close to zero in a substantively meaningful sense.</p>
+<p>Following <span class="citation" data-cites="rainey2014">@rainey2014</span>, we instead define what it means for an effect to be negligible and construct a hypothesis test around that definition.</p>
+</section>
+<section id="research-hypothesis-of-negligible-effect" class="level3">
+<h3 class="anchored" data-anchor-id="research-hypothesis-of-negligible-effect">Research Hypothesis of Negligible Effect</h3>
+<p>Suppose <span class="math inline">\(\theta\)</span> is a quantity of interest (e.g., a treatment effect). Let <span class="math inline">\(m &gt; 0\)</span> denote a threshold defining the smallest substantively meaningful effect.</p>
+<div id="def-negligible-effect" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 8</strong></span> A <strong>negligible effect hypothesis</strong> is a research hypothesis of the form<br>
+<span class="math display">\[H_r : \theta \in (-m, m),\]</span><br>
+meaning that the effect is too small to be substantively meaningful.</p>
+</div>
+<p>The corresponding null hypothesis claims that the effect is meaningfully large:</p>
+<div id="def-non-negligible-null" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 9</strong></span> The <strong>null hypothesis</strong> corresponding to a negligible effect claim is<br>
+<span class="math display">\[H_0 : \theta \in (-\infty,-m] \cup [m,\infty).\]</span></p>
+</div>
+<p>Note that the null hypothesis here claims that the effect is <strong>large enough to matter</strong>, not that it is exactly zero.</p>
+</section>
+<section id="testing-negligible-effects" class="level3">
+<h3 class="anchored" data-anchor-id="testing-negligible-effects">Testing Negligible Effects</h3>
+<p>To evaluate these hypotheses, we must determine whether the data rule out all substantively meaningful effects. A convenient way to do this is to use confidence intervals.</p>
+<p>If a <span class="math inline">\((1-\alpha)\)</span> confidence interval for <span class="math inline">\(\theta\)</span> lies entirely inside <span class="math inline">\((-m, m)\)</span>, then all values of <span class="math inline">\(\theta\)</span> consistent with the data at level <span class="math inline">\(\alpha\)</span> are negligible. Thus, we reject the null hypothesis of a meaningful effect.</p>
+<div id="def-ci-negligible-test" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 10</strong></span> We <strong>reject</strong> <span class="math inline">\(H_0\)</span> in favor of <span class="math inline">\(H_r : \theta \in (-m,m)\)</span> if and only if the <span class="math inline">\((1-\alpha)\)</span> confidence interval for <span class="math inline">\(\theta\)</span> is contained in <span class="math inline">\((-m, m)\)</span>.</p>
+</div>
+<p>Equivalently, this corresponds to conducting two one-sided hypothesis tests (often referred to as a <em>two one-sided test</em> or TOST procedure).</p>
+</section>
+<section id="interpretation" class="level3">
+<h3 class="anchored" data-anchor-id="interpretation">Interpretation</h3>
+<p>This approach directly addresses the limitations of “non-significant” results. A failure to reject <span class="math inline">\(H_0 : \theta = 0\)</span> merely indicates ambiguous evidence. By contrast, a test of <span class="math inline">\(H_r : \theta \in (-m,m)\)</span> allows us to provide <em>positive evidence</em> that the effect is too small to matter.</p>
+<p>Confidence intervals play an important role here: they indicate <em>which</em> effect sizes are plausible and whether substantively meaningful effects are ruled out by the data.</p>
+</section>
+<section id="practical-implications" class="level3">
+<h3 class="anchored" data-anchor-id="practical-implications">Practical Implications</h3>
+<ul>
+<li>Researchers must <strong>explicitly define <span class="math inline">\(m\)</span></strong> based on substantive reasoning, not statistical convention.</li>
+<li>Arguing for a negligible effect typically requires <strong>more precision</strong> (smaller standard errors) than arguing for the presence of an effect.</li>
+<li>Wide confidence intervals that include values outside <span class="math inline">\((-m,m)\)</span> lead to <strong>ambiguous evidence</strong>, not evidence of no effect.</li>
+</ul>
+<p>This framework shifts the logic of inference from “absence of evidence” to evidence of <strong>absence of substantively meaningful effects</strong>.</p>
+</section>
+</section>
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>Some authors distinguish between “size” and “level” and others use these two words interchangeably. Where authors distinguish between the two, “size” requires a strict equality here and “level” requires “less than or equal to.” For most purposes, it’s not critical to make the distinction, but “level” is a weaker criterion because it only bounds the size from above.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
