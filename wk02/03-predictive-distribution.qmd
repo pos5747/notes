@@ -15,15 +15,15 @@ In my view, the predictive distribution is the best way to (1) understand, (2) e
 You can use the predictive distribution as follows:
 
 1. Fit your model with maximum likelihood.
-1. Simulate a new outcome variable using the estimated model parameters (i.e., $f(y; \hat{\theta})$). Perhaps simulate a several for comparison.
-1. Compare the simulated outcome variable(s) to the observed outcome variables. You can use histograms and or plots of the ECDF.
+1. Simulate a new outcome variable using the estimated model parameters (i.e., $f(y; \hat{\theta})$). Perhaps simulate several for comparison.
+1. Compare the simulated outcome variable(s) to the observed outcome variables. You can use histograms and/or plots of the ECDF.
 
 There are two reasons why an observed data set might not look like the distribution assumed by the model. 
 
 1. First, the model might not capture the observed data well. For example, you might use a normal distribution to model a variable that isn't similar to a normal distribution. 
 2. Second, the deviations between the observed data and model might be consistent with noise. For example, if you take 25 draws from a normal distribution and draw a histogram of those values, the histogram will not look exactly normal. It will be lumpy, bumpy, and/or skewed, simply due to noise.
 
-When we compare the observed data with the predictive distribution, we are keeping both of these deviations in mind. We simulate several fake data sets to understand how the outcome might change from sample to sample if the assumed distrubtion were correct. The we compare the patterns across the simulated fake data sets to the observed data set: are the two easily distiguishable?
+When we compare the observed data with the predictive distribution, we are keeping both of these deviations in mind. We simulate several fake data sets to understand how the outcome might change from sample to sample if the assumed distribution were correct. Then we compare the patterns across the simulated fake data sets to the observed data set: are the two easily distinguishable?
 
 ## Example: Poisson Distribution
 
@@ -50,7 +50,7 @@ print(y_pred[1:10])
 print(y[1:10])
 ```
 
-Simply printing a few results, we can immediately see a problem with data, when compared with the raw data
+Simply printing a few results, we can immediately see a problem: the simulated data look quite different from the observed data.
 
 To see it even more clearly, we can create a histogram of the observed and simulated data.
 
@@ -117,7 +117,7 @@ library(Lahman)  # data from Lahman's baseball database
 
 # create data frame with batting average
 bstats <- battingStats() |> 
-  filter(yearID == 2023, AB > 100) |>  # data from 2023
+  filter(yearID == 2023) |>  # data from 2023
   filter(AB >= 100) |>  # players with at least 100 at-bats
   select(player_id = playerID, batting_average = BA) |>
   arrange(-batting_average) |>
@@ -177,14 +177,14 @@ ggplot(gg_data, aes(x = batting_average)) +
                 color = "red")
 ```
 
-On the whole, we see hear a close correspondence between the observed and simulated data. That suggests that our model is a good description of the data.
+On the whole, we see here a close correspondence between the observed and simulated data. That suggests that our model is a good description of the data.
 
 If we use the ECDFs rather than the histograms, we see a similarly well-fitting model.
 ```{r}
-# plot histograms of real and fake data
-ggplot(gg_data, aes(x = batting_average)) + 
-  stat_ecdf() + 
-  facet_wrap(vars(type)) + 
+# plot ecdfs of real and fake data
+ggplot(gg_data, aes(x = batting_average)) +
+  stat_ecdf() +
+  facet_wrap(vars(type)) +
   stat_function(fun = pbeta, args = list(shape1 = theta_hat$est[1], 
                                          shape2 = theta_hat$est[2]), 
                 color = "red")
@@ -200,9 +200,9 @@ gg_data2 <- gg_data |>
   separate(type, into = c("type", "version")) |>
   glimpse()
 
-# plot histograms of real and fake data
-ggplot(gg_data2, aes(x = batting_average, color = type, group = version)) + 
-  stat_ecdf() 
+# plot ecdfs of real and fake data
+ggplot(gg_data2, aes(x = batting_average, color = type, group = version)) +
+  stat_ecdf()
 ```
 
-If we look *really* hard, we can start to see some small differences between these the observed data and the model, but the model is a really good one. With only two parameters, the beta distribution does an excellent job of recreating the distribution of the observed data.
+If we look *really* hard, we can start to see some small differences between the observed data and the model, but the model is a really good one. With only two parameters, the beta distribution does an excellent job of recreating the distribution of the observed data.

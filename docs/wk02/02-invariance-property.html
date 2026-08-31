@@ -506,7 +506,7 @@ window.Quarto = {
 </header>
 
 
-<p>When discussing the properties of an ML estimate <span class="math inline">\(\hat{\theta}\)</span>: we’ve mentioned two properties. First, <span class="math inline">\(\hat{\theta}\)</span> is a consistent estimator. Second, <a href="01-maximum-likelihood.html#thm-ml-invariance" class="quarto-xref">Theorem&nbsp;<span>1.2</span></a> shows that we can transform <span class="math inline">\(\hat{\theta}\)</span> to obtain an ML estimate of the transformation (i.e., <span class="math inline">\(\hat{\tau} = \tau{(\hat{\theta})}\)</span>). Let’s explore this invariance property a bit more.</p>
+<p>When discussing the properties of an ML estimate <span class="math inline">\(\hat{\theta}\)</span>, we’ve mentioned two properties. First, <span class="math inline">\(\hat{\theta}\)</span> is a consistent estimator. Second, <a href="01-maximum-likelihood.html#thm-ml-invariance" class="quarto-xref">Theorem&nbsp;<span>1.2</span></a> shows that we can transform <span class="math inline">\(\hat{\theta}\)</span> to obtain an ML estimate of the transformation (i.e., <span class="math inline">\(\hat{\tau} = \tau{(\hat{\theta})}\)</span>). Let’s explore this invariance property a bit more.</p>
 <p>Model parameters sometimes have a nice interpretation. For example, the parameter <span class="math inline">\(\pi\)</span> in the Bernoulli model has a nice interpretation–it’s a probability or the expected fraction of 1s in the long-run. However, the model parameters might not always have nice interpretation. For example, the shape parameters <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> of the beta distribution do not have a nice interpretation. Fortunately, it’s easy to transform the ML estimates of the model parameters into ML estimates of a quantity of interest.</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -518,7 +518,7 @@ Invariance Property (<a href="01-maximum-likelihood.html#thm-ml-invariance" clas
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Suppose we obtain an ML estimate <span class="math inline">\(\hat{\theta}\)</span> of a parameter <span class="math inline">\(\theta\)</span>. But we also (or instead) want to estimate a transformation <span class="math inline">\(\tau(\theta)\)</span>. The we can estimate <span class="math inline">\(\tau(\theta)\)</span> by applying the transformation <span class="math inline">\(\tau\)</span> to the ML estimate <span class="math inline">\(\hat{\theta}\)</span>, so that <span class="math inline">\(\widehat{\tau(\theta)} = \hat{\tau} = \tau(\hat{\theta})\)</span>.</p>
+<p>Suppose we obtain an ML estimate <span class="math inline">\(\hat{\theta}\)</span> of a parameter <span class="math inline">\(\theta\)</span>. But we also (or instead) want to estimate a transformation <span class="math inline">\(\tau(\theta)\)</span>. Then we can estimate <span class="math inline">\(\tau(\theta)\)</span> by applying the transformation <span class="math inline">\(\tau\)</span> to the ML estimate <span class="math inline">\(\hat{\theta}\)</span>, so that <span class="math inline">\(\widehat{\tau(\theta)} = \hat{\tau} = \tau(\hat{\theta})\)</span>.</p>
 </div>
 </div>
 <section id="example-bernoulli-odds" class="level2" data-number="2.1">
@@ -533,7 +533,7 @@ Invariance Property (<a href="01-maximum-likelihood.html#thm-ml-invariance" clas
 &amp; = \frac{8}{142} \\
 &amp; \approx 0.056
 \end{aligned}
-\]</span> This means that tops are about 0.06 times as likelihood as not-tops. Inverted, you’re about <span class="math inline">\(\frac{142}{8} \approx 18\)</span> times more likely to not get a top than get a top.</p>
+\]</span> This means that tops are about 0.06 times as likely as not-tops. Inverted, you’re about <span class="math inline">\(\frac{142}{8} \approx 18\)</span> times more likely to not get a top than get a top.</p>
 </section>
 <section id="example-poisson-sd" class="level2 page-columns page-full" data-number="2.2">
 <h2 data-number="2.2" class="anchored" data-anchor-id="example-poisson-sd"><span class="header-section-number">2.2</span> Example: Poisson SD</h2>
@@ -571,9 +571,9 @@ $ population &lt;dbl&gt; 6.6160, 13.3943, 10.7246, 16.8302, 11.1702, 8.5761, 5.1
 3 santiago       2.71</code></pre>
 </div>
 </div>
-<p>The parameter <span class="math inline">\(\lambda\)</span> is a nice, interpretable quantity—it’s a mean! But we might want also want the SD. For the Poisson distribution, the variance equals the mean, so <span class="math inline">\(\text{Var}(y) = \text{E}(y) = \lambda\)</span>. Therefore, the SD is <span class="math inline">\(\sqrt{\lambda}\)</span>. We don’t need to do the hard work of finding a new ML estimator for the SD, we can just use <span class="math inline">\(\widehat{\text{SD}} = \sqrt{\hat{\lambda}}\)</span>. This is the ML estimate of the SD of the data, and it carries all the properties of ML estimators.</p>
+<p>The parameter <span class="math inline">\(\lambda\)</span> is a nice, interpretable quantity—it’s a mean! But we might also want the SD. For the Poisson distribution, the variance equals the mean, so <span class="math inline">\(\text{Var}(y) = \text{E}(y) = \lambda\)</span>. Therefore, the SD is <span class="math inline">\(\sqrt{\lambda}\)</span>. We don’t need to do the hard work of finding a new ML estimator for the SD, we can just use <span class="math inline">\(\widehat{\text{SD}} = \sqrt{\hat{\lambda}}\)</span>. This is the ML estimate of the SD of the data, and it carries all the properties of ML estimators.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># compute compute ml estimate of lambda (mean) and sd</span></span>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># compute ml estimate of lambda (mean) and sd</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>holland2015 <span class="sc">|&gt;</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(city) <span class="sc">|&gt;</span></span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">lambda_hat =</span> <span class="fu">mean</span>(operations), </span>
@@ -599,7 +599,7 @@ $ population &lt;dbl&gt; 6.6160, 13.3943, 10.7246, 16.8302, 11.1702, 8.5761, 5.1
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># create data frame with batting average</span></span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>bstats <span class="ot">&lt;-</span> <span class="fu">battingStats</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(yearID <span class="sc">==</span> <span class="dv">2023</span>, AB <span class="sc">&gt;</span> <span class="dv">100</span>) <span class="sc">|&gt;</span>  <span class="co"># data from 2023</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(yearID <span class="sc">==</span> <span class="dv">2023</span>) <span class="sc">|&gt;</span>  <span class="co"># data from 2023</span></span>
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(AB <span class="sc">&gt;=</span> <span class="dv">100</span>) <span class="sc">|&gt;</span>  <span class="co"># players with at least 100 at-bats</span></span>
 <span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="at">player_id =</span> playerID, <span class="at">batting_average =</span> BA) <span class="sc">|&gt;</span></span>
 <span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="sc">-</span>batting_average) <span class="sc">|&gt;</span></span>

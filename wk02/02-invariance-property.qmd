@@ -7,14 +7,14 @@ library(latex2exp)
 
 # The Invariance Property
 
-When discussing the properties of an ML estimate $\hat{\theta}$: we've mentioned two properties. First, $\hat{\theta}$ is a consistent estimator. Second, @thm-ml-invariance shows that we can transform $\hat{\theta}$ to obtain an ML estimate of the transformation (i.e., $\hat{\tau} = \tau{(\hat{\theta})}$). Let's explore this invariance property a bit more.
+When discussing the properties of an ML estimate $\hat{\theta}$, we've mentioned two properties. First, $\hat{\theta}$ is a consistent estimator. Second, @thm-ml-invariance shows that we can transform $\hat{\theta}$ to obtain an ML estimate of the transformation (i.e., $\hat{\tau} = \tau{(\hat{\theta})}$). Let's explore this invariance property a bit more.
 
 Model parameters sometimes have a nice interpretation. For example, the parameter $\pi$ in the Bernoulli model has a nice interpretation--it's a probability or the expected fraction of 1s in the long-run. However, the model parameters might not always have nice interpretation. For example, the shape parameters $\alpha$ and $\beta$ of the beta distribution do not have a nice interpretation. Fortunately, it's easy to transform the ML estimates of the model parameters into ML estimates of a quantity of interest.
 
 ::: callout-important
 ## Invariance Property (@thm-ml-invariance)
 
-Suppose we obtain an ML estimate $\hat{\theta}$ of a parameter $\theta$. But we also (or instead) want to estimate a transformation $\tau(\theta)$. The we can estimate $\tau(\theta)$ by applying the transformation $\tau$ to the ML estimate $\hat{\theta}$, so that $\widehat{\tau(\theta)} = \hat{\tau} = \tau(\hat{\theta})$.
+Suppose we obtain an ML estimate $\hat{\theta}$ of a parameter $\theta$. But we also (or instead) want to estimate a transformation $\tau(\theta)$. Then we can estimate $\tau(\theta)$ by applying the transformation $\tau$ to the ML estimate $\hat{\theta}$, so that $\widehat{\tau(\theta)} = \hat{\tau} = \tau(\hat{\theta})$.
 :::
 
 ## Example: Bernoulli Odds
@@ -30,7 +30,7 @@ In our case, we can plug our ML estimate of $\pi$ into the transformation to obt
 & = \frac{8}{142} \\
 & \approx 0.056
 \end{aligned}
-$$ This means that tops are about 0.06 times as likelihood as not-tops. Inverted, you're about $\frac{142}{8} \approx 18$ times more likely to not get a top than get a top.
+$$ This means that tops are about 0.06 times as likely as not-tops. Inverted, you're about $\frac{142}{8} \approx 18$ times more likely to not get a top than get a top.
 
 ## Example: Poisson SD
 
@@ -50,11 +50,11 @@ holland2015 |>
   summarize(lambda_hat = mean(operations))
 ```
 
-The parameter $\lambda$ is a nice, interpretable quantity---it's a mean! But we might want also want the SD. For the Poisson distribution, the variance equals the mean, so $\text{Var}(y) = \text{E}(y) = \lambda$. Therefore, the SD is $\sqrt{\lambda}$. We don't need to do the hard work of finding a new ML estimator for the SD, we can just use $\widehat{\text{SD}} = \sqrt{\hat{\lambda}}$. This is the ML estimate of the SD of the data, and it carries all the properties of ML estimators. 
+The parameter $\lambda$ is a nice, interpretable quantity---it's a mean! But we might also want the SD. For the Poisson distribution, the variance equals the mean, so $\text{Var}(y) = \text{E}(y) = \lambda$. Therefore, the SD is $\sqrt{\lambda}$. We don't need to do the hard work of finding a new ML estimator for the SD, we can just use $\widehat{\text{SD}} = \sqrt{\hat{\lambda}}$. This is the ML estimate of the SD of the data, and it carries all the properties of ML estimators. 
 
 
 ```{r}
-# compute compute ml estimate of lambda (mean) and sd
+# compute ml estimate of lambda (mean) and sd
 holland2015 |>
   group_by(city) |>
   summarize(lambda_hat = mean(operations), 
@@ -76,7 +76,7 @@ library(Lahman)  # data from Lahman's baseball database
 
 # create data frame with batting average
 bstats <- battingStats() |> 
-  filter(yearID == 2023, AB > 100) |>  # data from 2023
+  filter(yearID == 2023) |>  # data from 2023
   filter(AB >= 100) |>  # players with at least 100 at-bats
   select(player_id = playerID, batting_average = BA) |>
   arrange(-batting_average) |>

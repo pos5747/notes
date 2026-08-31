@@ -512,15 +512,15 @@ window.Quarto = {
 <p>You can use the predictive distribution as follows:</p>
 <ol type="1">
 <li>Fit your model with maximum likelihood.</li>
-<li>Simulate a new outcome variable using the estimated model parameters (i.e., <span class="math inline">\(f(y; \hat{\theta})\)</span>). Perhaps simulate a several for comparison.</li>
-<li>Compare the simulated outcome variable(s) to the observed outcome variables. You can use histograms and or plots of the ECDF.</li>
+<li>Simulate a new outcome variable using the estimated model parameters (i.e., <span class="math inline">\(f(y; \hat{\theta})\)</span>). Perhaps simulate several for comparison.</li>
+<li>Compare the simulated outcome variable(s) to the observed outcome variables. You can use histograms and/or plots of the ECDF.</li>
 </ol>
 <p>There are two reasons why an observed data set might not look like the distribution assumed by the model.</p>
 <ol type="1">
 <li>First, the model might not capture the observed data well. For example, you might use a normal distribution to model a variable that isn’t similar to a normal distribution.</li>
 <li>Second, the deviations between the observed data and model might be consistent with noise. For example, if you take 25 draws from a normal distribution and draw a histogram of those values, the histogram will not look exactly normal. It will be lumpy, bumpy, and/or skewed, simply due to noise.</li>
 </ol>
-<p>When we compare the observed data with the predictive distribution, we are keeping both of these deviations in mind. We simulate several fake data sets to understand how the outcome might change from sample to sample if the assumed distrubtion were correct. The we compare the patterns across the simulated fake data sets to the observed data set: are the two easily distiguishable?</p>
+<p>When we compare the observed data with the predictive distribution, we are keeping both of these deviations in mind. We simulate several fake data sets to understand how the outcome might change from sample to sample if the assumed distribution were correct. Then we compare the patterns across the simulated fake data sets to the observed data set: are the two easily distinguishable?</p>
 <section id="example-poisson-distribution" class="level2 page-columns page-full" data-number="3.1">
 <h2 data-number="3.1" class="anchored" data-anchor-id="example-poisson-distribution"><span class="header-section-number">3.1</span> Example: Poisson Distribution</h2>
 <p>Earlier, we fit a Poisson distribution to data from <span class="citation" data-cites="Holland2015">Holland (<a href="#ref-Holland2015" role="doc-biblioref">2015</a>)</span>.</p>
@@ -538,14 +538,14 @@ Holland, Alisha C. 2015. <span>“The Distributive Politics of Enforcement.”</
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>y_pred <span class="ot">&lt;-</span> <span class="fu">rpois</span>(n, <span class="at">lambda =</span> ml_est)</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(y_pred[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> [1] 28 24 21 21 34 22 15 22 18 18</code></pre>
+<pre><code> [1] 30 19 21 23 18 16 28 17 13 26</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(y[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1]  7  0 20  1  1 50  3  0 36 32</code></pre>
 </div>
 </div>
-<p>Simply printing a few results, we can immediately see a problem with data, when compared with the raw data</p>
+<p>Simply printing a few results, we can immediately see a problem: the simulated data look quite different from the observed data.</p>
 <p>To see it even more clearly, we can create a histogram of the observed and simulated data.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load packages</span></span>
@@ -603,7 +603,7 @@ $ type       &lt;chr&gt; "observed", "observed", "observed", "observed", "observ
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 216
 Columns: 2
-$ operations &lt;dbl&gt; 24, 28, 22, 24, 27, 22, 29, 25, 21, 16, 24, 24, 24, 25, 19,…
+$ operations &lt;dbl&gt; 25, 25, 25, 31, 25, 24, 32, 26, 29, 31, 28, 22, 30, 20, 24,…
 $ type       &lt;chr&gt; "simulated #1", "simulated #1", "simulated #1", "simulated …</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot the observed and fake data sets</span></span>
@@ -664,7 +664,7 @@ $ type            &lt;chr&gt; "observed", "observed", "observed", "observed", "o
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 2,742
 Columns: 2
-$ batting_average &lt;dbl&gt; 0.2556765, 0.2591884, 0.2886362, 0.1711872, 0.2356319,…
+$ batting_average &lt;dbl&gt; 0.3156619, 0.2444453, 0.2112071, 0.1907687, 0.2344979,…
 $ type            &lt;chr&gt; "simulated #1", "simulated #1", "simulated #1", "simul…</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot histograms of real and fake data</span></span>
@@ -682,13 +682,13 @@ $ type            &lt;chr&gt; "simulated #1", "simulated #1", "simulated #1", "s
 </div>
 </div>
 </div>
-<p>On the whole, we see hear a close correspondence between the observed and simulated data. That suggests that our model is a good description of the data.</p>
+<p>On the whole, we see here a close correspondence between the observed and simulated data. That suggests that our model is a good description of the data.</p>
 <p>If we use the ECDFs rather than the histograms, we see a similarly well-fitting model.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot histograms of real and fake data</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(gg_data, <span class="fu">aes</span>(<span class="at">x =</span> batting_average)) <span class="sc">+</span> </span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_ecdf</span>() <span class="sc">+</span> </span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(type)) <span class="sc">+</span> </span>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot ecdfs of real and fake data</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(gg_data, <span class="fu">aes</span>(<span class="at">x =</span> batting_average)) <span class="sc">+</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_ecdf</span>() <span class="sc">+</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(type)) <span class="sc">+</span></span>
 <span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> pbeta, <span class="at">args =</span> <span class="fu">list</span>(<span class="at">shape1 =</span> theta_hat<span class="sc">$</span>est[<span class="dv">1</span>], </span>
 <span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>                                         <span class="at">shape2 =</span> theta_hat<span class="sc">$</span>est[<span class="dv">2</span>]), </span>
 <span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>                <span class="at">color =</span> <span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -710,13 +710,13 @@ $ type            &lt;chr&gt; "simulated #1", "simulated #1", "simulated #1", "s
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 2,742
 Columns: 3
-$ batting_average &lt;dbl&gt; 0.2556765, 0.2591884, 0.2886362, 0.1711872, 0.2356319,…
+$ batting_average &lt;dbl&gt; 0.3156619, 0.2444453, 0.2112071, 0.1907687, 0.2344979,…
 $ type            &lt;chr&gt; "simulated", "simulated", "simulated", "simulated", "s…
 $ version         &lt;chr&gt; "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1",…</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot histograms of real and fake data</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(gg_data2, <span class="fu">aes</span>(<span class="at">x =</span> batting_average, <span class="at">color =</span> type, <span class="at">group =</span> version)) <span class="sc">+</span> </span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_ecdf</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot ecdfs of real and fake data</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(gg_data2, <span class="fu">aes</span>(<span class="at">x =</span> batting_average, <span class="at">color =</span> type, <span class="at">group =</span> version)) <span class="sc">+</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_ecdf</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -725,7 +725,7 @@ $ version         &lt;chr&gt; "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", 
 </div>
 </div>
 </div>
-<p>If we look <em>really</em> hard, we can start to see some small differences between these the observed data and the model, but the model is a really good one. With only two parameters, the beta distribution does an excellent job of recreating the distribution of the observed data.</p>
+<p>If we look <em>really</em> hard, we can start to see some small differences between the observed data and the model, but the model is a really good one. With only two parameters, the beta distribution does an excellent job of recreating the distribution of the observed data.</p>
 
 
 
