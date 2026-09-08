@@ -10,19 +10,19 @@ The parametric bootstrap is used less often than the *non*parametric bootstrap, 
 
 **Algorithm:** Parametric Bootstrap Estimator
 
-1.  **Input:** Observed data $x_1, x_2, \dots, x_n$, a parametric model $f(\theta)$, an estimator $\hat{\theta}$, and a quantity of interest $\hat{\tau} = \tau(\hat{\theta})$.[^02-parametric-bootstrap-1]
+1.  **Input:** Observed data $y_1, y_2, \dots, y_N$, a parametric model $f(y; \theta)$, an estimator $\hat{\theta}$, and a quantity of interest $\hat{\tau} = \tau(\hat{\theta})$.[^02-parametric-bootstrap-1]
 2.  Compute $\hat{\theta}$ from the observed data.
 3.  For $b = 1, 2, \dots, B$:[^02-parametric-bootstrap-2]
-    1.  Generate a bootstrap sample $x_1^{*(b)}, x_2^{*(b)}, \dots, x_n^{*(b)} \sim f(\hat{\theta})$. That is, simulate a new data set from the fitted parametric model.[^02-parametric-bootstrap-3]
-    2.  Fit the model to the simulated data set $x_1^{*(b)}, x_2^{*(b)}, \dots, x_n^{*(b)}$ and compute $\hat{\theta}^{*(b)}$.
-    3.  Compute $\hat{\tau}^{*(b)} = \tau \left( \hat{\theta}^{*(b)}\right)$, which might be $\theta^{*(b)}$ itself if no transformation is needed.
+    1.  Generate a bootstrap sample $y_1^{*(b)}, y_2^{*(b)}, \dots, y_N^{*(b)} \sim f(y; \hat{\theta})$. That is, simulate a new data set from the fitted parametric model.[^02-parametric-bootstrap-3]
+    2.  Fit the model to the simulated data set $y_1^{*(b)}, y_2^{*(b)}, \dots, y_N^{*(b)}$ and compute $\hat{\theta}^{*(b)}$.
+    3.  Compute $\hat{\tau}^{*(b)} = \tau \left( \hat{\theta}^{*(b)}\right)$, which might be $\hat{\theta}^{*(b)}$ itself if no transformation is needed.
 4.  Summarize the empirical distribution of $\hat{\tau}^{*(1)}, \hat{\tau}^{*(2)}, \dots, \hat{\tau}^{*(B)}$ using the SD to estimate the SE or 5th/95th percentiles to obtain a 90% confidence interval.
 
-[^02-parametric-bootstrap-1]: This works for *any* statistic that is a function of $x_1, \dots, x_n$, but we'll mainly use ML estimators and direct transformations of those.
+[^02-parametric-bootstrap-1]: This works for *any* statistic that is a function of $y_1, \dots, y_N$, but we'll mainly use ML estimators and direct transformations of those.
 
 [^02-parametric-bootstrap-2]: We typically use $B = 2,000$ as a good starting point.
 
-[^02-parametric-bootstrap-3]: For example, if we use an exponential model and estimate the rate as $\hat{\lambda}$, then we would simulate each data set from an exponential distribution with parameter $\hat{\lambda}$. The first data set is $x_1^{*(1)}, \dots, x_n^{*(1)}$, the second data set is $x_1^{*(2)}, \dots, x_n^{*(2)}$, and so on. In R, that would be `rexp(N, rate = lambda_hat)`
+[^02-parametric-bootstrap-3]: For example, if we use an exponential model and estimate the rate as $\hat{\lambda}$, then we would simulate each data set from an exponential distribution with parameter $\hat{\lambda}$. The first data set is $y_1^{*(1)}, \dots, y_N^{*(1)}$, the second data set is $y_1^{*(2)}, \dots, y_N^{*(2)}$, and so on. In R, that would be `rexp(N, rate = lambda_hat)`
 
 Importantly, we lean *heavily* on the assumption that we have a good model of the distribution of the data. (The predictive distribution allows us to assess this.) There's also a ***non**parametric* bootstrap, which is much more popular. We consider that later in the semester.
 
@@ -43,7 +43,7 @@ print(quantile(bs_est, probs = c(0.05, 0.95)), digits = 2)  # 90% ci
 ```
 
 
-We leave an evaluation of this confidence interval (i.e., Does it capture $\theta$ 90% of the time?) to later.
+We leave an evaluation of this confidence interval (i.e., Does it capture $\pi$ 90% of the time?) to later.
 
 ## Example: Beta Distribution
 
@@ -58,8 +58,8 @@ beta <- 2
 
 # simulate data
 set.seed(1234)
-n <- 100
-y <- rbeta(n, alpha, beta)
+N <- 100
+y <- rbeta(N, shape1 = alpha, shape2 = beta)
 ```
 
 Now let's find the ML estimates of the two shape parameters.
@@ -86,7 +86,7 @@ Now let's use those ML estimates to perform a parametric bootstrap and find 95% 
 n_bs <- 2000
 bs_est <- matrix(NA, nrow = n_bs, ncol = 2)  # a container for the estimates
 for (i in 1:n_bs) {
-  bs_y <- rbeta(n, shape1 = ml_est[1], shape2 = ml_est[2])
+  bs_y <- rbeta(N, shape1 = ml_est[1], shape2 = ml_est[2])
   bs_opt <- optim(par = c(3, 3), fn = log_lik_fn, y = bs_y,
              control = list(fnscale = -1))
   bs_est[i, ] <- bs_opt$par
@@ -103,14 +103,14 @@ If instead we cared about the mean of the beta distribution (which is $\frac{\al
 n_bs <- 2000
 bs_est <- numeric(n_bs)  # a container for the estimates
 for (i in 1:n_bs) {
-  bs_y <- rbeta(n, shape1 = ml_est[1], shape2 = ml_est[2])
+  bs_y <- rbeta(N, shape1 = ml_est[1], shape2 = ml_est[2])
   bs_opt <- optim(par = c(3, 3), fn = log_lik_fn, y = bs_y,
              control = list(fnscale = -1))
   bs_alpha <- bs_opt$par[1]
   bs_beta <- bs_opt$par[2]
   bs_est[i] <- bs_alpha/(bs_alpha + bs_beta)
 }
-print(quantile(bs_est, probs = c(0.05, 0.95)), digits = 2)  # 95% ci
+print(quantile(bs_est, probs = c(0.025, 0.975)), digits = 2)  # 95% ci
 print(sd(bs_est), digits = 2)  # estimate of SE
 
 # true mean 

@@ -59,9 +59,19 @@ In this example, we examine curvature for a single-parameter model.
 
 To develop our intuition about "curvature" and confidence intervals, I analyze the *Stylized Normal Model* ($\sigma = 1$). Here, we model the data as a normal distribution with $\mu$ unknown (and to be estimated), but $\sigma = 1$ (known; not estimated). That is, $y \sim N(\mu, 1)$.
 
+::: callout-important
+
+## $\ell(\theta)$: A new notation for the log-likelihood
+
+Last week, we introduced the liklihood function $L(\theta)$ and the log-likelihood function $\log L(\theta)$. To emphasize and clarify, it made a lot of sense to denote the log-likelihood function as $\log L(\theta)$. 
+
+However, we need something more compact this week, so we're going to use $\log L(\theta) = \ell(\theta)$. That is, whenever you see $\ell(\theta)$, that's just the same old log-likelihood function $\log L(\theta)$.
+
+:::
+
 $$
 \begin{aligned}
-\ell(\mu) &= -\tfrac{N}{2}\log(2\pi) - \tfrac{1}{2}\sum_{i = 1}^N (y_i - \mu)^2\\
+\log L(\mu) = \ell(\mu) &= -\tfrac{N}{2}\log(2\pi) - \tfrac{1}{2}\sum_{i = 1}^N (y_i - \mu)^2\\
 \dfrac{\partial \ell(\mu)}{\partial \mu} &= \sum_{i = 1}^N (y_i - \mu) = \sum y_i - N\mu\\
 \dfrac{\partial^2 \ell(\mu)}{\partial \mu^2} &=  - N
 \end{aligned}
@@ -69,8 +79,8 @@ $$
 
 Facts:
 
-- As $N$ increases, $\dfrac{\partial^2 \ell(\mu \mid y)}{\partial \mu^2}$ becomes more negative.
-- As the magnitude of $\dfrac{\partial^2 \ell(\mu \mid y)}{\partial \mu^2}$ increases, the curvature increases.
+- As $N$ increases, $\dfrac{\partial^2 \ell(\mu)}{\partial \mu^2}$ becomes more negative.
+- As the magnitude of $\dfrac{\partial^2 \ell(\mu)}{\partial \mu^2}$ increases, the curvature increases.
 - As the curvature increases, the uncertainty decreases.
 
 Wouldn't it be really nice if we could use $\dfrac{\partial^2 \ell(\mu)}{\partial \mu^2}$ to estimate the standard error?
@@ -85,12 +95,12 @@ It turns out that this quantity is a direct, almost magically intuitive estimato
 
 ## Fisher Information
 
-For a model $f(y \mid \theta)$ with log-likelihood $\ell(\theta) = \sum_{i=1}^N \log f(y_i \mid \theta)$, the **expected information** is defined as $\mathcal I(\theta) = -\mathbb E_\theta\!\left[\nabla^2 \ell(\theta)\right]$.
+For a model $f(y; \theta)$ with log-likelihood $\ell(\theta) = \sum_{i=1}^N \log f(y_i; \theta)$, the **expected information** is defined as $\mathcal I(\theta) = -\mathbb E_\theta\!\left[\nabla^2 \ell(\theta)\right]$.
 
 In practice, we often use the **observed information**, given by the negative Hessian of the log-likelihood at the ML estimate $\mathcal I_{\text{obs}}(\hat\theta) = -\nabla^2 \ell(\hat\theta)$.
 :::
 
-There's an important *theoretical distinction* between the expected and observed information. The *expected* Fisher information $\mathcal I(\theta) = \mathbb E_\theta[-\nabla^2 \ell(\theta)]$ is the *expected* curvature of the log-likelihood under the model. In contrast, the *observed* information $\mathcal I_{\text{obs}}(\hat\theta) = -\nabla^2 \ell(\hat\theta)$ uses the curvature at the ML estimate $\hat{\theta}$ from a particular sample. Under standard regularity conditions, both lead to the same large-sample variance: $\mathcal I_{\text{obs}}(\hat\theta) \overset{p}{\to} \mathcal I(\theta)$ and $\widehat{\operatorname{Var}}(\hat\theta) \approx \mathcal I_{\text{obs}}(\hat\theta)^{-1} \approx \mathcal I(\theta)^{-1}$. And in many examples, they are numerically identical. In some weird cases, the expected information is "more robust." In these notes, I use the observed information to make the curvature↔uncertainty link concrete and intuitive.
+There's an important *theoretical distinction* between the expected and observed information. The *expected* Fisher information $\mathcal I(\theta) = \mathbb E_\theta[-\nabla^2 \ell(\theta)]$ is the *expected* curvature of the log-likelihood under the model. In contrast, the *observed* information $\mathcal I_{\text{obs}}(\hat\theta) = -\nabla^2 \ell(\hat\theta)$ uses the curvature at the ML estimate $\hat{\theta}$ from a particular sample. Under standard regularity conditions, both lead to the same large-sample variance: $\mathcal I_{\text{obs}}(\hat\theta) \big/ \mathcal I(\theta) \overset{p}{\to} 1$ and $\widehat{\operatorname{Var}}(\hat\theta) \approx \mathcal I_{\text{obs}}(\hat\theta)^{-1} \approx \mathcal I(\theta)^{-1}$. And in many examples, they are numerically identical. In some weird cases, the expected information is "more robust." In these notes, I use the observed information to make the curvature↔uncertainty link concrete and intuitive.
 
 ::: {.aside}
 Recall that $\nabla$ denotes the gradient vector of first derivatives of the log-likelihood with respect to the parameters,  
@@ -125,7 +135,7 @@ These gradient and Hessian objects are the matrix calculus tools needed to defin
 
 ## Asymptotic Normality of ML Estimators
 
-Let $y_1,\dots,y_N$ be iid from a model $f(y \mid \theta)$ with true parameter $\theta$. Suppose the regularity conditions in @thm-ml-consistency hold and the Fisher information matrix $\mathcal I(\theta)$ is finite and positive definite. Then the maximum likelihood estimator $\hat\theta$ is asymptotically normal $\hat\theta \overset{a}{\sim} \mathcal N\big(\theta, \mathcal I(\theta)^{-1}\big)$.
+Let $y_1,\dots,y_N$ be iid from a model $f(y; \theta)$ with true parameter $\theta$. Suppose the regularity conditions in @thm-ml-consistency hold and the Fisher information matrix $\mathcal I(\theta)$ is finite and positive definite. Then the maximum likelihood estimator $\hat\theta$ is asymptotically normal $\hat\theta \overset{a}{\sim} \mathcal N\big(\theta, \mathcal I(\theta)^{-1}\big)$.
 
 :::
 
@@ -135,7 +145,7 @@ This is an important result, because it tells us the location (i.e., $\theta$), 
 
 ## Asymptotic Variance of ML Estimators
 
-Under the conditions of @thm-ml-asymp-normality, the covariance of the maximum likelihood estimator is well-approximated by the inverse Fisher information $ \operatorname{Var}(\hat\theta) \;\approx\; \mathcal I(\theta)^{-1}$.  
+Under the conditions of @thm-ml-asymp-normality, the covariance of the maximum likelihood estimator is well-approximated by the inverse Fisher information $\operatorname{Var}(\hat\theta) \;\approx\; \mathcal I(\theta)^{-1}$.  
 
 In practice, we replace the unknown $\theta$ with the maximum likelihood estimate and use the observed information $\widehat{\operatorname{Var}}(\hat\theta) \;\approx\; \big[-\nabla^2 \ell(\hat\theta)\big]^{-1}$.  
 
@@ -158,16 +168,16 @@ This means that we can estimate the SE as follows:
 1. Take the square root.
 
 $$
-\widehat{\text{SE}}(\hat{\theta}) = \sqrt{\left[\left. - \dfrac{\partial^2 \ell(\theta)}{\partial \theta^2}\right| _{\theta = \hat{\theta}}\right] ^{-1}}
+\widehat{\operatorname{SE}}(\hat{\theta}) = \sqrt{\left[\left. - \dfrac{\partial^2 \ell(\theta)}{\partial \theta^2}\right| _{\theta = \hat{\theta}}\right] ^{-1}}
 $$
 
 If we continue the stylized normal example, we have the following.
 
 $$
 \begin{equation*}
-\dfrac{\partial^2 \ell(\mu \mid y)}{\partial \mu^2} =  - N
+\dfrac{\partial^2 \ell(\mu)}{\partial \mu^2} =  - N
  ~{\color{purple}{\Longrightarrow}}~
-\left[\left. - \dfrac{\partial^2 \ell(\mu \mid y)}{\partial \mu^2}\right| _{\mu = \hat{\mu}}\right] ^{-1} 
+\left[\left. - \dfrac{\partial^2 \ell(\mu)}{\partial \mu^2}\right| _{\mu = \hat{\mu}}\right] ^{-1} 
  = \dfrac{1}{N} 
 \approx \widehat{\operatorname{Var}}(\hat{\mu})
 \end{equation*}
@@ -177,17 +187,17 @@ And then
 
 $$
 \begin{equation*}
-\widehat{\text{SE}}(\hat{\mu}) \approx \sqrt{\dfrac{1}{N}} 
+\widehat{\operatorname{SE}}(\hat{\mu}) \approx \sqrt{\dfrac{1}{N}} 
 \end{equation*}
 $$
 
-Does this answer make sense? What is the classic standard error of the mean when taking a random sample from a population? Hint: It's $\text{SE}[\operatorname{avg}(y)] = \sigma/\sqrt{N}$. In this case, the "population SD" is $\sigma = 1$, as assumed by the *stylized* normal model.
+Does this answer make sense? What is the classic standard error of the mean when taking a random sample from a population? Hint: It's $\operatorname{SE}[\operatorname{avg}(y)] = \sigma/\sqrt{N}$. In this case, the "population SD" is $\sigma = 1$, as assumed by the *stylized* normal model.
 
 ## Curvature in Multiple Dimensions
 
 To add multiple dimensions, let's consider the beta model. Our goal is to estimate $\alpha$ and $\beta$. The key is that we have *multiple* (i.e., two) parameters to estimate.
 
-It's a bit trickier to think about curvature in multiple dimensions. Instead of a second derivative like we have in a single dimension, we have **Hessian** matrix in multiple dimensions.
+It's a bit trickier to think about curvature in multiple dimensions. Instead of a second derivative like we have in a single dimension, we have a **Hessian** matrix in multiple dimensions.
 
 Here's what the log-likelihood function might look like for a given data set. This is a raster and contour plot. The contour lines connect parameter combinations with the *same* log-likelihood. The color shows the log-likelihood — larger log-likelihoods are red and small log-likelihoods are blue.
 
@@ -267,8 +277,8 @@ Z <- data |>
   select(-alpha) |>
   as.matrix()
 
-x <- alpha                      # x-grid
-y <- beta                       # y-grid
+alpha_grid <- alpha             # x-grid
+beta_grid  <- beta              # y-grid
 zmin <- min(data$log_lik)
 zmax <- max(data$log_lik)
 zmid <- -5000                   # same midpoint as your ggplot scale
@@ -287,8 +297,8 @@ cs <- list(
 fig3d <- plot_ly() |>
   # surface with (approximate) on-surface contours for context while rotating
   add_surface(
-    x = ~x,
-    y = ~y,
+    x = ~alpha_grid,
+    y = ~beta_grid,
     z = ~Z,
     colorscale = cs,
     cmin = zmin,
@@ -311,7 +321,7 @@ fig3d <- plot_ly() |>
 for (lev in contour_lines_at) {
   fig3d <- fig3d |>
     add_contour(
-      x = x, y = y, z = Z,
+      x = alpha_grid, y = beta_grid, z = Z,
       contours = list(
         start = lev, end = lev, size = 1e-9,  # draw only this level
         coloring = "lines", showlabels = FALSE
@@ -384,7 +394,6 @@ p2 <- p +
     vjust = -1.5, 
     hjust = 0.5,    
     family = "Source Sans 3",    # Source Sans font
-    size = 4,                      # adjust to taste
     colour = "black"
   )
 
@@ -427,7 +436,6 @@ p3 <- p +
     label = TeX(r'(The curvature around the maximum \textbf{horizontally} tells us about the variance in $\hat{\alpha}$.)'),
     vjust = 1, hjust = 0.5,
     family = "Source Sans 3",
-    size = 4,
     colour = "black"
   )
 
@@ -466,7 +474,7 @@ p4 <- p +
     x = 10, y = 10,
         vjust = 1, hjust = 0.5,
     label = TeX(r"(The curvature \textbf{diagonally} tells us about the covariance between $\hat{\alpha}$ and $\hat{\beta}$)"),
-    family = "Source Sans 3", size = 4, colour = "black",
+    family = "Source Sans 3", colour = "black",
   )
 
 p4
@@ -480,10 +488,10 @@ Rather than a single variance, we get a variance **matrix** (sometimes called th
 
 $$
 \begin{equation*}
-\widehat{\operatorname{Var}}(\hat{\theta})= \widehat{\text{Cov}}(\hat{\theta}) \approx \left. \left[ 
+\widehat{\operatorname{Var}}(\hat{\theta})= \widehat{\operatorname{Cov}}(\hat{\theta}) \approx \left. \left[ 
 \displaystyle \begin{matrix}
-- \dfrac{\partial^2 \ell(\theta\mid y)}{\partial \theta_1^2} & - \dfrac{\partial^2 \ell(\theta\mid y)}{\partial \theta_1 \partial \theta_2}\\
-- \dfrac{\partial^2 \ell(\theta\mid y)}{\partial \theta_2 \partial \theta_1} & - \dfrac{\partial^2 \ell(\theta\mid y)}{\partial \theta_2^2}\\
+- \dfrac{\partial^2 \ell(\theta)}{\partial \theta_1^2} & - \dfrac{\partial^2 \ell(\theta)}{\partial \theta_1 \partial \theta_2}\\
+- \dfrac{\partial^2 \ell(\theta)}{\partial \theta_2 \partial \theta_1} & - \dfrac{\partial^2 \ell(\theta)}{\partial \theta_2^2}\\
 \end{matrix}\right]^{-1} \right|_{\theta = \hat{\theta}}
 \end{equation*}
 $$
@@ -494,8 +502,8 @@ $$
 \begin{equation*}
 \widehat{\operatorname{Var}}(\hat{\theta}) \approx \left. \left[ 
 \displaystyle \begin{matrix}
-\color{red}{- \dfrac{\partial^2 \ell(\theta\mid y)}{\partial \theta_1^2}} & - \dfrac{\partial^2 \ell(\theta\mid y)}{\partial \theta_1 \partial \theta_2}\\
-- \dfrac{\partial^2 \ell(\theta\mid y)}{\partial \theta_2 \partial \theta_1} & \color{red}{- \dfrac{\partial^2 \ell(\theta\mid y)}{\partial \theta_2^2}}\\
+\color{red}{- \dfrac{\partial^2 \ell(\theta)}{\partial \theta_1^2}} & - \dfrac{\partial^2 \ell(\theta)}{\partial \theta_1 \partial \theta_2}\\
+- \dfrac{\partial^2 \ell(\theta)}{\partial \theta_2 \partial \theta_1} & \color{red}{- \dfrac{\partial^2 \ell(\theta)}{\partial \theta_2^2}}\\
 \end{matrix}\right]^{-1} \right|_{\theta = \hat{\theta}}
 \end{equation*}
 $$
@@ -506,8 +514,8 @@ $$
 \begin{equation*}
 \widehat{\operatorname{Var}}(\hat{\theta}) \approx \left. \left[ 
 \displaystyle \begin{matrix}
-- \dfrac{\partial^2 \ell(\theta\mid y)}{\partial \theta_1^2} & \color{blue}{- \dfrac{\partial^2 \ell(\theta\mid y)}{\partial \theta_1 \partial \theta_2}}\\
-\color{blue}{- \dfrac{\partial^2 \ell(\theta\mid y)}{\partial \theta_2 \partial \theta_1}} & - \dfrac{\partial^2 \ell(\theta\mid y)}{\partial \theta_2^2}\\
+- \dfrac{\partial^2 \ell(\theta)}{\partial \theta_1^2} & \color{blue}{- \dfrac{\partial^2 \ell(\theta)}{\partial \theta_1 \partial \theta_2}}\\
+\color{blue}{- \dfrac{\partial^2 \ell(\theta)}{\partial \theta_2 \partial \theta_1}} & - \dfrac{\partial^2 \ell(\theta)}{\partial \theta_2^2}\\
 \end{matrix}\right]^{-1} \right|_{\theta = \hat{\theta}}
 \end{equation*}
 $$
@@ -522,12 +530,12 @@ $$
 \begin{aligned}
 \widehat{\operatorname{Var}}(\hat{\theta}) &\approx \left. \left[ 
 \displaystyle \begin{matrix}
-- \dfrac{\partial^2 \ell(\theta\mid y)}{\partial \theta_1^2} & - \dfrac{\partial^2 \ell(\theta\mid y)}{\partial \theta_1 \partial \theta_2} & \ldots &- \dfrac{\partial^2 \ell(\theta\mid y)}{\partial \theta_1 \partial \theta_k}\\
-- \dfrac{\partial^2 \ell(\theta\mid y)}{\partial \theta_2 \partial \theta_1} & - \dfrac{\partial^2 \ell(\theta\mid y)}{\partial \theta_2^2} & \ldots & - \dfrac{\partial^2 \ell(\theta\mid y)}{\partial \theta_2 \partial \theta_k}\\
+- \dfrac{\partial^2 \ell(\theta)}{\partial \theta_1^2} & - \dfrac{\partial^2 \ell(\theta)}{\partial \theta_1 \partial \theta_2} & \ldots &- \dfrac{\partial^2 \ell(\theta)}{\partial \theta_1 \partial \theta_k}\\
+- \dfrac{\partial^2 \ell(\theta)}{\partial \theta_2 \partial \theta_1} & - \dfrac{\partial^2 \ell(\theta)}{\partial \theta_2^2} & \ldots & - \dfrac{\partial^2 \ell(\theta)}{\partial \theta_2 \partial \theta_k}\\
 \vdots & \vdots & \ddots & \vdots \\
-- \dfrac{\partial^2 \ell(\theta\mid y)}{\partial \theta_k \partial \theta_1}     & - \dfrac{\partial^2 \ell(\theta\mid y)}{\partial \theta_k \partial \theta_2} & \ldots & - \dfrac{\partial^2 \ell(\theta\mid y)}{\partial \theta_k^2}\\
+- \dfrac{\partial^2 \ell(\theta)}{\partial \theta_k \partial \theta_1}     & - \dfrac{\partial^2 \ell(\theta)}{\partial \theta_k \partial \theta_2} & \ldots & - \dfrac{\partial^2 \ell(\theta)}{\partial \theta_k^2}\\
 \end{matrix}\right]^{-1} \right|_{\theta = \hat{\theta}}\\
- & \approx \mathcal{I}_{\text{obs}}(\theta)^{-1}\big|_{\theta = \hat{\theta}}\\
+ & = \mathcal{I}_{\text{obs}}(\theta)^{-1}\big|_{\theta = \hat{\theta}}\\
  &\approx \mathcal{I}_{\text{obs}}(\hat{\theta})^{-1}
 \end{aligned}
 \end{equation*}
@@ -539,12 +547,12 @@ As the sample size grows large, the ML estimate converges to a normally distribu
 
 In practice, we'll take this to mean it's *approximately* normal, which justifies the usual Wald procedure of creating a 90% confidence interval by hopping 1.64 SEs to the left and right of the estimate.
 
-Recall that $\widehat{\text{SE}}(\hat{\theta}) = \sqrt{\left[\left. - \dfrac{\partial^2 \ell(\theta)}{\partial \theta^2}\right| _{\theta = \hat{\theta}}\right]^{-1}}$.
+Recall that $\widehat{\operatorname{SE}}(\hat{\theta}) = \sqrt{\left[\left. - \dfrac{\partial^2 \ell(\theta)}{\partial \theta^2}\right| _{\theta = \hat{\theta}}\right]^{-1}}$.
 
 $$
 \begin{align*}
- 90\%~\text{C.I.}  &= \hat{\theta} \pm 1.64 \cdot \widehat{\text{SE}}(\hat{\theta})\\
- 95\%~\text{C.I.}  &= \hat{\theta} \pm 1.96 \cdot \widehat{\text{SE}}(\hat{\theta})
+ 90\%~\text{C.I.}  &= \hat{\theta} \pm 1.64 \cdot \widehat{\operatorname{SE}}(\hat{\theta})\\
+ 95\%~\text{C.I.}  &= \hat{\theta} \pm 1.96 \cdot \widehat{\operatorname{SE}}(\hat{\theta})
 \end{align*}
 $$
 
@@ -552,7 +560,7 @@ To work with these intervals, then, we just need the variance matrix $\widehat{\
 
 ## Example: Exponential Model
 
-In this example, we compute the standard error for the rate parameter in the exponential model. The exponential pdf is $f(y_i \mid \lambda) = \lambda \exp(-\lambda y_i)$ for $y_i \ge 0$ and the ML estimate is $\hat{\lambda} = \dfrac{1}{\operatorname{avg}(y)}$ (from earlier).
+In this example, we compute the standard error for the rate parameter in the exponential model. The exponential pdf is $f(y_i; \lambda) = \lambda \exp(-\lambda y_i)$ for $y_i \ge 0$ and the ML estimate is $\hat{\lambda} = \dfrac{1}{\operatorname{avg}(y)}$ (from earlier).
 
 The log-likelihood is
 
@@ -578,7 +586,7 @@ $$
 = \dfrac{N}{\hat{\lambda}^2}.
 $$
 
-Invert to estimate the variance $\widehat{\operatorname{Var}}(\hat{\lambda}) \approx \dfrac{\hat{\lambda}^2}{N}$. Take the square root to get the standard error $\widehat{\text{SE}}(\hat{\lambda}) \approx \dfrac{\hat{\lambda}}{\sqrt{N}}$.
+Invert to estimate the variance $\widehat{\operatorname{Var}}(\hat{\lambda}) \approx \dfrac{\hat{\lambda}^2}{N}$. Take the square root to get the standard error $\widehat{\operatorname{SE}}(\hat{\lambda}) \approx \dfrac{\hat{\lambda}}{\sqrt{N}}$.
 
 And just as before, we use these SE estimates to create confidence intervals.
 
@@ -597,7 +605,7 @@ Just like `optim()` can use a numerical hill-climbing algorithm to find and retu
 
 ### The logic of `optim()`'s `hessian`
 
-At the maximum likelihood estimate, the first derivative is zero. That means we are sitting right on top of the hill. At that precision point, the slope is flat. To find the Hessian, we need to know how *quickly* the slope changes as we move away from the maximum. That "rate of change of the slope" is exactly the second derivative. In multiple dimensions, we call this matrix of second derivatives the **Hessian**.  
+At the maximum likelihood estimate, the first derivative is zero. That means we are sitting right on top of the hill. At that precise point, the slope is flat. To find the Hessian, we need to know how *quickly* the slope changes as we move away from the maximum. That "rate of change of the slope" is exactly the second derivative. In multiple dimensions, we call this matrix of second derivatives the **Hessian**.  
 
 How does `optim()` find this Hessian? It does not derive it with calculus. Instead, it uses *numerical differences*. Starting at the maximum, the first derivative is zero. `optim()` nudges each parameter slightly up and down. After each nudge, it checks how the slope changes in response. The pattern of those changes (i.e., the changes in the slopes) is the Hessian. `optim()` is just poking the surface around the maximum and carefully watching how the flat spot bends.
 
@@ -608,7 +616,7 @@ To see this in action, we can use data on batting average in Major League Baseba
 
 ```{r}
 #| label: fig-batting-avg
-#| fig-cap: "A histogram of batting average in Lahman's data. Data from 2023 onward; includes players with at least 100 at-bats."
+#| fig-cap: "A histogram of batting average in Lahman's data. Data from 2023; includes players with at least 100 at-bats."
 #| column: margin
 
 
@@ -670,7 +678,7 @@ est_beta <- function(y) {
 }
 ```
 
-1. **Compute the log-likelihood.** `dbeta(..., log = TRUE)` returns $\log f(y_i \mid \alpha, \beta)$. Summing produces $\ell(\alpha,\beta) \;=\; \sum_{i=1}^N \log f(y_i \mid \alpha,\beta)$. We work with the log-likelihood because (1) logging turns numerically unstable products into stable sums and (2) the Hessian of the log-likelihood is useful for estimating the variance.  
+1. **Compute the log-likelihood.** `dbeta(..., log = TRUE)` returns $\log f(y_i; \alpha, \beta)$. Summing produces $\ell(\alpha,\beta) \;=\; \sum_{i=1}^N \log f(y_i; \alpha,\beta)$. We work with the log-likelihood because (1) logging turns numerically unstable products into stable sums and (2) the Hessian of the log-likelihood is useful for estimating the variance.  
 
 2. **Use `optim()` to maximize $\ell$.** `fnscale = -1` makes `optim()` minimize $-\ell(\theta)$, which is equivalent to maximizing $\ell(\theta)$. 
 
@@ -686,7 +694,7 @@ $$
    \end{bmatrix}_{\theta=\hat\theta}.
 $$
 
-5. **Invert `hessian` to get variance.** Asymptotic theory tells us that $\widehat{\operatorname{Var}}(\hat\theta) \approx \mathcal I_{\text{obs}}(\hat\theta)^{-1}$. So `solve(info_obs)` returns the estimated covariance matrix for $(\hat\alpha,\hat\beta)$. The diagonal entries are $\widehat{\operatorname{Var}}(\hat\alpha)$ and $\widehat{\operatorname{Var}}(\hat\beta)$. The square roots are the standard errors. The off-diagonal entry is $\widehat{\text{Cov}}(\hat\alpha,\hat\beta)$.
+5. **Invert `hessian` to get variance.** Asymptotic theory tells us that $\widehat{\operatorname{Var}}(\hat\theta) \approx \mathcal I_{\text{obs}}(\hat\theta)^{-1}$. So `solve(info_obs)` returns the estimated covariance matrix for $(\hat\alpha,\hat\beta)$. The diagonal entries are $\widehat{\operatorname{Var}}(\hat\alpha)$ and $\widehat{\operatorname{Var}}(\hat\beta)$. The square roots are the standard errors. The off-diagonal entry is $\widehat{\operatorname{Cov}}(\hat\alpha,\hat\beta)$.
 
 6. **Return `var_hat`.** We now have two items to `return()` after fitting the model. The parameter estimate vector `theta_hat` and the estimated covariance matrix `var_hat`.
 

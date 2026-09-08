@@ -538,7 +538,7 @@ window.Quarto = {
 <pre><code> [1] 0.060 0.060 0.067 0.073 0.040 0.060 0.033 0.047 0.073 0.073</code></pre>
 </div>
 </div>
-<p>As you can see, the ML estimates vary to from sample to sample—different data sets produce different ML estimates.</p>
+<p>As you can see, the ML estimates vary from sample to sample—different data sets produce different ML estimates.</p>
 <p>If we repeat the simulations a large number of times, we can use a histogram to visualize the sampling distribution.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">10000</span></span>
@@ -591,14 +591,14 @@ E(\hat{\pi})
 \]</span></p>
 <p>Second, we can work out the variance and SD. Again, for this problem, this is easy.</p>
 <p>$$ <span class="math display">\[\begin{align*}
-\text{Var}(\hat{\pi})
-&amp;= \text{Var}\left( \frac{1}{150} \sum_{i=1}^{150} y_i \right)
+\operatorname{Var}(\hat{\pi})
+&amp;= \operatorname{Var}\left( \frac{1}{150} \sum_{i=1}^{150} y_i \right)
 &amp;&amp; \text{definition of } \hat{\pi} \\
-&amp;= \frac{1}{150^2} \sum_{i=1}^{150} \text{Var}(y_i)
-&amp;&amp; \text{variance rule for sum of independent variables; } \text{Var}(cX) = c^2 \text{Var}(X) \\
-&amp;= \frac{1}{150^2} \cdot 150 \cdot \text{Var}(y_i)
+&amp;= \frac{1}{150^2} \sum_{i=1}^{150} \operatorname{Var}(y_i)
+&amp;&amp; \text{variance rule for sum of independent variables; } \operatorname{Var}(cX) = c^2 \operatorname{Var}(X) \\
+&amp;= \frac{1}{150^2} \cdot 150 \cdot \operatorname{Var}(y_i)
 &amp;&amp; \text{each } y_i \text{ has same variance because they are iid} \\
-&amp;= \frac{1}{150} \cdot \text{Var}(y_i)
+&amp;= \frac{1}{150} \cdot \operatorname{Var}(y_i)
 &amp;&amp; \text{simplify constants; } \frac{1}{150^2} \cdot 150 = \frac{1}{150} \\
 &amp;= \frac{1}{150} \cdot 0.05 \cdot (1 - 0.05)
 &amp;&amp; \text{each } y_i \text{ is Bernoulli w/ variance } \pi(1 - \pi) = 0.05\cdot (1 - 0.05)\\
@@ -636,7 +636,7 @@ E(\hat{\pi})
 </div>
 </div>
 <p>Lastly, we can approximate the shape of the sampling distribution. Since we are summing many (i.e., 150) iid random variables (i.e., Bernoulli trials), the central limit theorem<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> suggests that this histogram will be approximately normal.</p>
-<div class="no-row-height column-margin column-container"><div id="fn2"><p><sup>2</sup>&nbsp;Suppose <span class="math inline">\(y_1, y_2, \dots, y_N\)</span> are iid random variables with finite mean <span class="math inline">\(\mu\)</span> and finite variance <span class="math inline">\(\sigma^2\)</span> Then, as <span class="math inline">\(N \to \infty\)</span>, <span class="math inline">\(\sqrt{N}\cdot \left[ \frac{ \operatorname{avg}(y_n) - \mu}{\sigma} \right]\)</span> converges in distribution to the standard normal distribution, where . Said less formally, the distribution of the sample average approaches a normal distribution as the sample size grows large, regardless of the distribution of <span class="math inline">\(y_i\)</span> (but finite mean and variance are required).</p></div></div><p>The figure below shows the sampling distribution.</p>
+<div class="no-row-height column-margin column-container"><div id="fn2"><p><sup>2</sup>&nbsp;Suppose <span class="math inline">\(y_1, y_2, \dots, y_N\)</span> are iid random variables with finite mean <span class="math inline">\(\mu\)</span> and finite variance <span class="math inline">\(\sigma^2\)</span>. Then, as <span class="math inline">\(N \to \infty\)</span>, <span class="math inline">\(\sqrt{N}\cdot \left[ \frac{ \operatorname{avg}(y) - \mu}{\sigma} \right]\)</span> converges in distribution to the standard normal distribution. Said less formally, the distribution of the sample average approaches a normal distribution as the sample size grows large, regardless of the distribution of <span class="math inline">\(y_i\)</span> (but finite mean and variance are required).</p></div></div><p>The figure below shows the sampling distribution.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(gg_data, <span class="fu">aes</span>(<span class="at">x =</span> ml_est)) <span class="sc">+</span> </span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(</span>
@@ -659,7 +659,7 @@ E(\hat{\pi})
 <section id="example-normal-model" class="level2 page-columns page-full" data-number="4.2">
 <h2 data-number="4.2" class="anchored" data-anchor-id="example-normal-model"><span class="header-section-number">4.2</span> Example: Normal Model</h2>
 <p>As a second example, let’s review the familiar normal model.</p>
-<p>Suppose we collect a sample of size <span class="math inline">\(N\)</span> from a normal distribution with unknown mean <span class="math inline">\(\mu\)</span> and unknown variance <span class="math inline">\(\sigma^2\)</span>. We estimate the mean using the sample average so that <span class="math inline">\(\hat{\mu} = \operatorname{avg}(y) = \frac{1}{n} \sum_{i=1}^N y_i\)</span>.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
+<p>Suppose we collect a sample of size <span class="math inline">\(N\)</span> from a normal distribution with unknown mean <span class="math inline">\(\mu\)</span> and unknown variance <span class="math inline">\(\sigma^2\)</span>. We estimate the mean using the sample average so that <span class="math inline">\(\hat{\mu} = \operatorname{avg}(y) = \frac{1}{N} \sum_{i=1}^N y_i\)</span>.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
 <div class="no-row-height column-margin column-container"><div id="fn3"><p><sup>3</sup>&nbsp;This is the ML estimator as well! But it’s also motivated in other (sometimes even better!) ways.</p></div></div><p>As is well-known, the expected value of <span class="math inline">\(\hat{\mu}\)</span> is <span class="math inline">\(\mu\)</span>.</p>
 <p><span class="math display">\[
 \small
@@ -678,10 +678,10 @@ E \left[ \operatorname{avg}(y) \right]
 <p>And the variance has a familiar form.</p>
 <p><span class="math display">\[
 \begin{align*}
-\text{Var}[\operatorname{avg}(y)]
-&amp;= \text{Var}\left( \frac{1}{N} \sum_{i=1}^N y_i \right)
+\operatorname{Var}[\operatorname{avg}(y)]
+&amp;= \operatorname{Var}\left( \frac{1}{N} \sum_{i=1}^N y_i \right)
 &amp;&amp; \text{definition of } \operatorname{avg}(y) \\
-&amp;= \frac{1}{N^2} \sum_{i=1}^N \text{Var}(y_i)
+&amp;= \frac{1}{N^2} \sum_{i=1}^N \operatorname{Var}(y_i)
 &amp;&amp; \text{variance of independent sum} \\
 &amp;= \frac{1}{N^2} \cdot N \cdot \sigma^2
 &amp;&amp; y_i \text{ are normal with variance } \sigma^2 \text{ and are iid} \\
@@ -690,7 +690,7 @@ E \left[ \operatorname{avg}(y) \right]
 \end{align*}
 \]</span></p>
 <p>The SD, then, is a familiar quantity <span class="math inline">\(\frac{\sigma}{\sqrt{N}}\)</span>.</p>
-<p>Lastly, the standardized sample mean follows a <span class="math inline">\(t\)</span> distribution, so that <span class="math inline">\(\sqrt{N} \cdot \left[ \frac{\operatorname{avg}(y) - \mu}{\operatorname{SD}(y)} \right]\)</span> follows a <em>t</em> distribution in <span class="math inline">\(N - 1\)</span> degrees of freedom. This sampling distribution is the foundation for the one-sample <span class="math inline">\(t\)</span>-test.</p>
+<p>Lastly, the standardized sample mean follows a <span class="math inline">\(t\)</span> distribution, so that <span class="math inline">\(\sqrt{N} \cdot \left[ \frac{\operatorname{avg}(y) - \mu}{\operatorname{SD}(y)} \right]\)</span> follows a <em>t</em> distribution with <span class="math inline">\(N - 1\)</span> degrees of freedom. This sampling distribution is the foundation for the one-sample <span class="math inline">\(t\)</span>-test.</p>
 </section>
 <section id="bias" class="level2 page-columns page-full" data-number="4.3">
 <h2 data-number="4.3" class="anchored" data-anchor-id="bias"><span class="header-section-number">4.3</span> Bias</h2>
@@ -712,7 +712,7 @@ E \left[ \operatorname{avg}(y) \right]
 <p>Importantly, <strong>ML estimators are not necessarily unbiased</strong>. Of the models we see in this course, <em>most</em> are biased.</p>
 <section id="example-bernoulli-distribution" class="level3 page-columns page-full" data-number="4.3.1">
 <h3 data-number="4.3.1" class="anchored" data-anchor-id="example-bernoulli-distribution"><span class="header-section-number">4.3.1</span> Example: Bernoulli Distribution</h3>
-<p>Above, we saw that that for the toothpaste cap problem with 150 tosses and a 5% chance of a top, the fraction of tosses in the sample has an expected value of 5%. This means that the ML estimator is unbiased in that situation.</p>
+<p>Above, we saw that for the toothpaste cap problem with 150 tosses and a 5% chance of a top, the fraction of tosses in the sample has an expected value of 5%. This means that the ML estimator is unbiased in that situation.</p>
 <p>This is true more generally as well. You could show that a similar result holds for any number of tosses and any chance of a top.</p>
 <p>We can use a Monte Carlo simulation to check this analytical result.</p>
 <div class="cell">
@@ -765,10 +765,10 @@ Rainey, Carlisle. 2017. <span>“Transformation-Induced Bias: Unbiased Coefficie
 </section>
 <section id="example-exponential-distribution" class="level3 page-columns page-full" data-number="4.3.2">
 <h3 data-number="4.3.2" class="anchored" data-anchor-id="example-exponential-distribution"><span class="header-section-number">4.3.2</span> Example: Exponential Distribution</h3>
-<p>Suppose we sample from an exponential distribution with unknown rate <span class="math inline">\(\lambda\)</span>. The ML estimator of the rate <span class="math inline">\(\lambda\)</span> is <span class="math inline">\(\hat{\lambda}^{ML} = \frac{1}{\text{avg}(x)}\)</span>.</p>
-<p>To compute bias, we compute the expectation <span class="math inline">\(E \left( \hat{\lambda}^{ML} \right) = E\left( \frac{1}{\text{avg}(x)} \right)\)</span>.</p>
-<p>There’s a trick. Notice that <span class="math inline">\(\frac{1}{x}\)</span> is convex for <span class="math inline">\(x &gt; 0\)</span>.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> Jensen’s Inequality states that if <span class="math inline">\(g()\)</span> is a convex function and <span class="math inline">\(X\)</span> is a random variable, then <span class="math inline">\(g(E(X)) \leq E(g(X))\)</span>; moving an expectation inside a convex function decreases the value. Applying Jensen’s inequality, we know that <span class="math inline">\(E\left( \frac{1}{\text{avg}(x)} \right) &gt; \frac{1}{E(\text{avg}(x))}\)</span>.</p>
-<div class="no-row-height column-margin column-container"><div id="fn4"><p><sup>4</sup>&nbsp;A function is <strong>convex</strong> if the function never curves above the line between any two of its points.</p></div></div><p>But <span class="math inline">\(\text{avg}(x)\)</span> is the sample mean of iid exponential random variables, so <span class="math inline">\(E[\text{avg}(x)] = \frac{1}{\lambda}\)</span>. It must be, then, that <span class="math inline">\(E \left( \hat{\lambda}^{ML} \right) = E\left( \frac{1}{\text{avg}(x)} \right) &gt; \lambda\)</span>. Thus, <span class="math inline">\(\hat{\lambda}^{ML}\)</span> overestimates the true rate on average and is a biased estimator.</p>
+<p>Suppose we sample from an exponential distribution with unknown rate <span class="math inline">\(\lambda\)</span>. The ML estimator of the rate <span class="math inline">\(\lambda\)</span> is <span class="math inline">\(\hat{\lambda}^{ML} = \frac{1}{\operatorname{avg}(y)}\)</span>.</p>
+<p>To compute bias, we compute the expectation <span class="math inline">\(E \left( \hat{\lambda}^{ML} \right) = E\left( \frac{1}{\operatorname{avg}(y)} \right)\)</span>.</p>
+<p>There’s a trick. Notice that <span class="math inline">\(\frac{1}{x}\)</span> is convex for <span class="math inline">\(x &gt; 0\)</span>.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> Jensen’s Inequality states that if <span class="math inline">\(g()\)</span> is a convex function and <span class="math inline">\(X\)</span> is a random variable, then <span class="math inline">\(g(E(X)) \leq E(g(X))\)</span>; moving an expectation inside a convex function decreases the value. Applying Jensen’s inequality, we know that <span class="math inline">\(E\left( \frac{1}{\operatorname{avg}(y)} \right) &gt; \frac{1}{E[\operatorname{avg}(y)]}\)</span>.</p>
+<div class="no-row-height column-margin column-container"><div id="fn4"><p><sup>4</sup>&nbsp;A function is <strong>convex</strong> if the function never curves above the line between any two of its points.</p></div></div><p>But <span class="math inline">\(\operatorname{avg}(y)\)</span> is the sample mean of iid exponential random variables, so <span class="math inline">\(E[\operatorname{avg}(y)] = \frac{1}{\lambda}\)</span>. It must be, then, that <span class="math inline">\(E \left( \hat{\lambda}^{ML} \right) = E\left( \frac{1}{\operatorname{avg}(y)} \right) &gt; \lambda\)</span>. Thus, <span class="math inline">\(\hat{\lambda}^{ML}\)</span> overestimates the true rate on average and is a biased estimator.</p>
 <p>We can confirm this result with a Monte Carlo simulation.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>lambda <span class="ot">&lt;-</span> <span class="fl">2.0</span>        <span class="co"># the true rate</span></span>
@@ -778,8 +778,8 @@ Rainey, Carlisle. 2017. <span>“Transformation-Induced Bias: Unbiased Coefficie
 <span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="co"># do monte carlo simulations</span></span>
 <span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>lambda_hat <span class="ot">&lt;-</span> <span class="fu">numeric</span>(n_mc_sims)  <span class="co"># container</span></span>
 <span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_mc_sims) {</span>
-<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">rexp</span>(sample_size, <span class="at">rate =</span> lambda)</span>
-<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>  lambda_hat[i] <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">mean</span>(x)  <span class="co"># ml estimate</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> <span class="fu">rexp</span>(sample_size, <span class="at">rate =</span> lambda)</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>  lambda_hat[i] <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">mean</span>(y)  <span class="co"># ml estimate</span></span>
 <span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a><span class="co"># expected value of lambda-hat</span></span>
@@ -799,39 +799,39 @@ Rainey, Carlisle. 2017. <span>“Transformation-Induced Bias: Unbiased Coefficie
 <section id="standard-error" class="level2 page-columns page-full" data-number="4.4">
 <h2 data-number="4.4" class="anchored" data-anchor-id="standard-error"><span class="header-section-number">4.4</span> Standard Error</h2>
 <p>Second, we can use the sampling distribution (or estimates of features of the sampling distribution) to create hypothesis tests or confidence intervals.</p>
-<p>For many problems, we know that we can create a 90% confidence interval for <span class="math inline">\(\theta\)</span> using <span class="math inline">\([\hat{\theta} - 1.64 \cdot \hat{\text{SE}}(\hat{\theta}), \hat{\theta} + 1.64 \cdot \hat{\text{SE}}(\hat{\theta})]\)</span>, where <span class="math inline">\(\hat{\text{SE}}(\hat{\theta})\)</span> is the <em>estimate</em> of the standard error of the sampling distribution.</p>
-<p>Similarly, we can compute the <em>p</em>-value for the test of the one-sided hypothesis that <span class="math inline">\(\theta &gt; 0\)</span> using <span class="math inline">\(1 - \Phi\left( \frac{\hat{\theta}}{\hat{\text{SE}}(\hat{\theta})} \right)\)</span>, where <span class="math inline">\(\Phi(\cdot)\)</span> is the standard normal CDF.</p>
+<p>For many problems, we know that we can create a 90% confidence interval for <span class="math inline">\(\theta\)</span> using <span class="math inline">\([\hat{\theta} - 1.64 \cdot \widehat{\operatorname{SE}}(\hat{\theta}), \hat{\theta} + 1.64 \cdot \widehat{\operatorname{SE}}(\hat{\theta})]\)</span>, where <span class="math inline">\(\widehat{\operatorname{SE}}(\hat{\theta})\)</span> is the <em>estimate</em> of the standard error of the sampling distribution.</p>
+<p>Similarly, we can compute the <em>p</em>-value for the one-sided test of the null hypothesis that <span class="math inline">\(\theta = 0\)</span> against the alternative that <span class="math inline">\(\theta &gt; 0\)</span> using <span class="math inline">\(1 - \Phi\left( \frac{\hat{\theta}}{\widehat{\operatorname{SE}}(\hat{\theta})} \right)\)</span>, where <span class="math inline">\(\Phi(\cdot)\)</span> is the standard normal CDF.</p>
 <div id="def-se" class="theorem definition">
 <p><span class="theorem-title"><strong>Definition 4.2 (Standard Error (SE))</strong></span> The <strong>standard error</strong> is the standard deviation of the sampling distribution.</p>
 </div>
 <p>In practice, we’ll need to <em>estimate</em> the SE using a single, observed data set. But before we worry about <em>estimating</em> the SE, let’s focus on understanding the <em>actual</em> SE using a few examples. For a hypothetical model, we can work out the actual SE directly or use a simulation.</p>
 <section id="example-bernoulli-model" class="level3 page-columns page-full" data-number="4.4.1">
 <h3 data-number="4.4.1" class="anchored" data-anchor-id="example-bernoulli-model"><span class="header-section-number">4.4.1</span> Example: Bernoulli Model</h3>
-<p>Suppose <span class="math inline">\(n\)</span> samples <span class="math inline">\(y_1, \dots, y_n\)</span> from a Bernoulli distribution with parameter <span class="math inline">\(\pi\)</span>. Let <span class="math inline">\(\hat{\pi} = \text{avg}(y)\)</span>. We can compute the SE of <span class="math inline">\(\hat{\pi}\)</span> analytically, but we work with the variance first, since that’s easier.</p>
+<p>Suppose <span class="math inline">\(N\)</span> samples <span class="math inline">\(y_1, \dots, y_N\)</span> from a Bernoulli distribution with parameter <span class="math inline">\(\pi\)</span>. Let <span class="math inline">\(\hat{\pi} = \operatorname{avg}(y)\)</span>. We can compute the SE of <span class="math inline">\(\hat{\pi}\)</span> analytically, but we work with the variance first, since that’s easier.</p>
 <p><span class="math display">\[
 \small
 \begin{align*}
-\text{Var}(\hat{\pi})
-&amp;= \text{Var}\left( \frac{1}{n} \sum_{i=1}^n y_i \right) \\
-&amp;= \frac{1}{n^2} \sum_{i=1}^n \text{Var}(y_i) \\
-&amp;= \frac{1}{n^2} \cdot n \cdot \pi(1 - \pi) \\
-&amp;= \frac{\pi(1 - \pi)}{n}
+\operatorname{Var}(\hat{\pi})
+&amp;= \operatorname{Var}\left( \frac{1}{N} \sum_{i=1}^N y_i \right) \\
+&amp;= \frac{1}{N^2} \sum_{i=1}^N \operatorname{Var}(y_i) \\
+&amp;= \frac{1}{N^2} \cdot N \cdot \pi(1 - \pi) \\
+&amp;= \frac{\pi(1 - \pi)}{N}
 \end{align*}
 \]</span></p>
-<p>The standard error is the square root of the variance, so that <span class="math inline">\(\text{SE}(\hat{\pi}) = \sqrt{ \frac{\pi(1 - \pi)}{n} }\)</span>.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></p>
-<div class="no-row-height column-margin column-container"><div id="fn5"><p><sup>5</sup>&nbsp;To obtain a commonly-used formula and preview a later result, we can plug in the estimator <span class="math inline">\(\hat{\pi}\)</span> into <span class="math inline">\(\text{SE}(\hat{\pi}) = \sqrt{ \frac{\pi(1 - \pi)}{n} }\)</span> to obtain an <em>estimate</em> of the SE, so that <span class="math inline">\(\hat{\text{SE}}(\hat{\pi}) = \sqrt{ \frac{\hat{\pi}(1 - \hat{\pi})}{n} }\)</span>.</p></div></div></section>
+<p>The standard error is the square root of the variance, so that <span class="math inline">\(\operatorname{SE}(\hat{\pi}) = \sqrt{ \frac{\pi(1 - \pi)}{N} }\)</span>.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn5"><p><sup>5</sup>&nbsp;To obtain a commonly-used formula and preview a later result, we can plug in the estimator <span class="math inline">\(\hat{\pi}\)</span> into <span class="math inline">\(\operatorname{SE}(\hat{\pi}) = \sqrt{ \frac{\pi(1 - \pi)}{N} }\)</span> to obtain an <em>estimate</em> of the SE, so that <span class="math inline">\(\widehat{\operatorname{SE}}(\hat{\pi}) = \sqrt{ \frac{\hat{\pi}(1 - \hat{\pi})}{N} }\)</span>.</p></div></div></section>
 <section id="example-exponential-model" class="level3" data-number="4.4.2">
 <h3 data-number="4.4.2" class="anchored" data-anchor-id="example-exponential-model"><span class="header-section-number">4.4.2</span> Example: Exponential Model</h3>
-<p>Suppose we have <span class="math inline">\(n\)</span> samples <span class="math inline">\(y_1, \dots, y_n\)</span> from an exponential distribution and estimate the rate <span class="math inline">\(\lambda\)</span> with <span class="math inline">\(\hat{\lambda}^{ML} = \frac{1}{\text{avg}(y)}\)</span>. It isn’t easy to work out the variance analytically, but a simulation works just fine for particular values of <span class="math inline">\(n\)</span> and <span class="math inline">\(\lambda\)</span>.</p>
+<p>Suppose we have <span class="math inline">\(N\)</span> samples <span class="math inline">\(y_1, \dots, y_N\)</span> from an exponential distribution and estimate the rate <span class="math inline">\(\lambda\)</span> with <span class="math inline">\(\hat{\lambda}^{ML} = \frac{1}{\operatorname{avg}(y)}\)</span>. It isn’t easy to work out the variance analytically, but a simulation works just fine for particular values of <span class="math inline">\(N\)</span> and <span class="math inline">\(\lambda\)</span>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>lambda <span class="ot">&lt;-</span> <span class="fl">2.0</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">30</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">30</span></span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>n_mc_sims <span class="ot">&lt;-</span> <span class="dv">10000</span></span>
 <span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>lambda_hat <span class="ot">&lt;-</span> <span class="fu">numeric</span>(n_mc_sims)</span>
 <span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_mc_sims) {</span>
-<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">rexp</span>(n, <span class="at">rate =</span> lambda)</span>
-<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>  lambda_hat[i] <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">mean</span>(x)</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> <span class="fu">rexp</span>(N, <span class="at">rate =</span> lambda)</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>  lambda_hat[i] <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">mean</span>(y)</span>
 <span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a><span class="co"># simulated SE</span></span>

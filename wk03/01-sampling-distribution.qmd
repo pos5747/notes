@@ -30,7 +30,7 @@ for (i in 1:n_sims) {
 print(ml_est, digits = 2)
 ```
 
-As you can see, the ML estimates vary to from sample to sample---different data sets produce different ML estimates.
+As you can see, the ML estimates vary from sample to sample---different data sets produce different ML estimates.
 
 If we repeat the simulations a large number of times, we can use a histogram to visualize the sampling distribution.
 
@@ -85,14 +85,14 @@ Second, we can work out the variance and SD. Again, for this problem, this is ea
 $$
 \small
 \begin{align*}
-\text{Var}(\hat{\pi}) 
-&= \text{Var}\left( \frac{1}{150} \sum_{i=1}^{150} y_i \right) 
+\operatorname{Var}(\hat{\pi}) 
+&= \operatorname{Var}\left( \frac{1}{150} \sum_{i=1}^{150} y_i \right) 
 && \text{definition of } \hat{\pi} \\
-&= \frac{1}{150^2} \sum_{i=1}^{150} \text{Var}(y_i) 
-&& \text{variance rule for sum of independent variables; } \text{Var}(cX) = c^2 \text{Var}(X) \\
-&= \frac{1}{150^2} \cdot 150 \cdot \text{Var}(y_i) 
+&= \frac{1}{150^2} \sum_{i=1}^{150} \operatorname{Var}(y_i) 
+&& \text{variance rule for sum of independent variables; } \operatorname{Var}(cX) = c^2 \operatorname{Var}(X) \\
+&= \frac{1}{150^2} \cdot 150 \cdot \operatorname{Var}(y_i) 
 && \text{each } y_i \text{ has same variance because they are iid} \\
-&= \frac{1}{150} \cdot \text{Var}(y_i) 
+&= \frac{1}{150} \cdot \operatorname{Var}(y_i) 
 && \text{simplify constants; } \frac{1}{150^2} \cdot 150 = \frac{1}{150} \\
 &= \frac{1}{150} \cdot 0.05 \cdot (1 - 0.05) 
 && \text{each } y_i \text{ is Bernoulli w/ variance } \pi(1 - \pi) = 0.05\cdot (1 - 0.05)\\
@@ -130,7 +130,7 @@ sd(ml_est)
 
 Lastly, we can approximate the shape of the sampling distribution. Since we are summing many (i.e., 150) iid random variables (i.e., Bernoulli trials), the central limit theorem[^central-limit-theorem] suggests that this histogram will be approximately normal.
 
-[^central-limit-theorem]: Suppose $y_1, y_2, \dots, y_N$ are iid random variables with finite mean $\mu$ and finite variance $\sigma^2$ Then, as $N \to \infty$, $\sqrt{N}\cdot \left[ \frac{ \operatorname{avg}(y_n) - \mu}{\sigma} \right]$ converges in distribution to the standard normal distribution, where . Said less formally, the distribution of the sample average approaches a normal distribution as the sample size grows large, regardless of the distribution of $y_i$ (but finite mean and variance are required).
+[^central-limit-theorem]: Suppose $y_1, y_2, \dots, y_N$ are iid random variables with finite mean $\mu$ and finite variance $\sigma^2$. Then, as $N \to \infty$, $\sqrt{N}\cdot \left[ \frac{ \operatorname{avg}(y) - \mu}{\sigma} \right]$ converges in distribution to the standard normal distribution. Said less formally, the distribution of the sample average approaches a normal distribution as the sample size grows large, regardless of the distribution of $y_i$ (but finite mean and variance are required).
 
 
 The figure below shows the sampling distribution.
@@ -151,7 +151,7 @@ ggplot(gg_data, aes(x = ml_est)) +
 
 As a second example, let's review the familiar normal model.
 
-Suppose we collect a sample of size $N$ from a normal distribution with unknown mean $\mu$ and unknown variance $\sigma^2$. We estimate the mean using the sample average so that $\hat{\mu} = \operatorname{avg}(y) = \frac{1}{n} \sum_{i=1}^N y_i$.[^01-sampling-distribution-2]
+Suppose we collect a sample of size $N$ from a normal distribution with unknown mean $\mu$ and unknown variance $\sigma^2$. We estimate the mean using the sample average so that $\hat{\mu} = \operatorname{avg}(y) = \frac{1}{N} \sum_{i=1}^N y_i$.[^01-sampling-distribution-2]
 
 [^01-sampling-distribution-2]: This is the ML estimator as well! But it's also motivated in other (sometimes even better!) ways.
 
@@ -176,10 +176,10 @@ And the variance has a familiar form.
 
 $$
 \begin{align*}
-\text{Var}[\operatorname{avg}(y)]
-&= \text{Var}\left( \frac{1}{N} \sum_{i=1}^N y_i \right)
+\operatorname{Var}[\operatorname{avg}(y)]
+&= \operatorname{Var}\left( \frac{1}{N} \sum_{i=1}^N y_i \right)
 && \text{definition of } \operatorname{avg}(y) \\
-&= \frac{1}{N^2} \sum_{i=1}^N \text{Var}(y_i)
+&= \frac{1}{N^2} \sum_{i=1}^N \operatorname{Var}(y_i)
 && \text{variance of independent sum} \\
 &= \frac{1}{N^2} \cdot N \cdot \sigma^2 
 && y_i \text{ are normal with variance } \sigma^2 \text{ and are iid} \\
@@ -190,7 +190,7 @@ $$
 
 The SD, then, is a familiar quantity $\frac{\sigma}{\sqrt{N}}$.
 
-Lastly, the standardized sample mean follows a $t$ distribution, so that $\sqrt{N} \cdot \left[ \frac{\operatorname{avg}(y) - \mu}{\operatorname{SD}(y)} \right]$ follows a *t* distribution in $N - 1$ degrees of freedom. This sampling distribution is the foundation for the one-sample $t$-test.
+Lastly, the standardized sample mean follows a $t$ distribution, so that $\sqrt{N} \cdot \left[ \frac{\operatorname{avg}(y) - \mu}{\operatorname{SD}(y)} \right]$ follows a *t* distribution with $N - 1$ degrees of freedom. This sampling distribution is the foundation for the one-sample $t$-test.
 
 ## Bias
 
@@ -215,7 +215,7 @@ Importantly, **ML estimators are not necessarily unbiased**. Of the models we se
 
 ### Example: Bernoulli Distribution
 
-Above, we saw that that for the toothpaste cap problem with 150 tosses and a 5% chance of a top, the fraction of tosses in the sample has an expected value of 5%. This means that the ML estimator is unbiased in that situation.
+Above, we saw that for the toothpaste cap problem with 150 tosses and a 5% chance of a top, the fraction of tosses in the sample has an expected value of 5%. This means that the ML estimator is unbiased in that situation.
 
 This is true more generally as well. You could show that a similar result holds for any number of tosses and any chance of a top.
 
@@ -257,13 +257,13 @@ sd(odds_hat)/sqrt(n_mc_sims)
 
 ### Example: Exponential Distribution
 
-Suppose we sample from an exponential distribution with unknown rate $\lambda$. The ML estimator of the rate $\lambda$ is $\hat{\lambda}^{ML} = \frac{1}{\text{avg}(x)}$.
+Suppose we sample from an exponential distribution with unknown rate $\lambda$. The ML estimator of the rate $\lambda$ is $\hat{\lambda}^{ML} = \frac{1}{\operatorname{avg}(y)}$.
 
-To compute bias, we compute the expectation $E \left( \hat{\lambda}^{ML} \right) = E\left( \frac{1}{\text{avg}(x)} \right)$.
+To compute bias, we compute the expectation $E \left( \hat{\lambda}^{ML} \right) = E\left( \frac{1}{\operatorname{avg}(y)} \right)$.
 
-There's a trick. Notice that $\frac{1}{x}$ is convex for $x > 0$.^[A function is **convex** if the function never curves above the line between any two of its points.] Jensen's Inequality states that if $g()$ is a convex function and $X$ is a random variable, then $g(E(X)) \leq E(g(X))$; moving an expectation inside a convex function decreases the value. Applying Jensen's inequality, we know that $E\left( \frac{1}{\text{avg}(x)} \right) > \frac{1}{E(\text{avg}(x))}$.
+There's a trick. Notice that $\frac{1}{x}$ is convex for $x > 0$.^[A function is **convex** if the function never curves above the line between any two of its points.] Jensen's Inequality states that if $g()$ is a convex function and $X$ is a random variable, then $g(E(X)) \leq E(g(X))$; moving an expectation inside a convex function decreases the value. Applying Jensen's inequality, we know that $E\left( \frac{1}{\operatorname{avg}(y)} \right) > \frac{1}{E[\operatorname{avg}(y)]}$.
 
-But $\text{avg}(x)$ is the sample mean of iid exponential random variables, so $E[\text{avg}(x)] = \frac{1}{\lambda}$. It must be, then, that $E \left( \hat{\lambda}^{ML} \right) = E\left( \frac{1}{\text{avg}(x)} \right) > \lambda$. Thus, $\hat{\lambda}^{ML}$ overestimates the true rate on average and is a biased estimator.
+But $\operatorname{avg}(y)$ is the sample mean of iid exponential random variables, so $E[\operatorname{avg}(y)] = \frac{1}{\lambda}$. It must be, then, that $E \left( \hat{\lambda}^{ML} \right) = E\left( \frac{1}{\operatorname{avg}(y)} \right) > \lambda$. Thus, $\hat{\lambda}^{ML}$ overestimates the true rate on average and is a biased estimator.
 
 We can confirm this result with a Monte Carlo simulation.
 
@@ -275,8 +275,8 @@ n_mc_sims <- 100000  # number of monte carlo simulations
 # do monte carlo simulations
 lambda_hat <- numeric(n_mc_sims)  # container
 for (i in 1:n_mc_sims) {
-  x <- rexp(sample_size, rate = lambda)
-  lambda_hat[i] <- 1 / mean(x)  # ml estimate
+  y <- rexp(sample_size, rate = lambda)
+  lambda_hat[i] <- 1 / mean(y)  # ml estimate
 }
 
 # expected value of lambda-hat
@@ -292,9 +292,9 @@ The average of the simulated values of $\hat{\lambda}^{ML} \approx 2.5$ is large
 
 Second, we can use the sampling distribution (or estimates of features of the sampling distribution) to create hypothesis tests or confidence intervals. 
 
-For many problems, we know that we can create a 90% confidence interval for $\theta$ using $[\hat{\theta} - 1.64 \cdot \hat{\text{SE}}(\hat{\theta}), \hat{\theta} + 1.64 \cdot \hat{\text{SE}}(\hat{\theta})]$, where $\hat{\text{SE}}(\hat{\theta})$ is the *estimate* of the standard error of the sampling distribution.
+For many problems, we know that we can create a 90% confidence interval for $\theta$ using $[\hat{\theta} - 1.64 \cdot \widehat{\operatorname{SE}}(\hat{\theta}), \hat{\theta} + 1.64 \cdot \widehat{\operatorname{SE}}(\hat{\theta})]$, where $\widehat{\operatorname{SE}}(\hat{\theta})$ is the *estimate* of the standard error of the sampling distribution.
 
-Similarly, we can compute the *p*-value for the test of the one-sided hypothesis that $\theta > 0$ using $1 - \Phi\left( \frac{\hat{\theta}}{\hat{\text{SE}}(\hat{\theta})} \right)$, where $\Phi(\cdot)$ is the standard normal CDF.
+Similarly, we can compute the *p*-value for the one-sided test of the null hypothesis that $\theta = 0$ against the alternative that $\theta > 0$ using $1 - \Phi\left( \frac{\hat{\theta}}{\widehat{\operatorname{SE}}(\hat{\theta})} \right)$, where $\Phi(\cdot)$ is the standard normal CDF.
 
 ::: {#def-se}
 ## Standard Error (SE)
@@ -306,34 +306,34 @@ In practice, we'll need to *estimate* the SE using a single, observed data set. 
 
 ### Example: Bernoulli Model
 
-Suppose $n$ samples $y_1, \dots, y_n$ from a Bernoulli distribution with parameter $\pi$. Let $\hat{\pi} = \text{avg}(y)$. We can compute the SE of $\hat{\pi}$ analytically, but we work with the variance first, since that's easier.
+Suppose $N$ samples $y_1, \dots, y_N$ from a Bernoulli distribution with parameter $\pi$. Let $\hat{\pi} = \operatorname{avg}(y)$. We can compute the SE of $\hat{\pi}$ analytically, but we work with the variance first, since that's easier.
 
 $$
 \small
 \begin{align*}
-\text{Var}(\hat{\pi}) 
-&= \text{Var}\left( \frac{1}{n} \sum_{i=1}^n y_i \right) \\
-&= \frac{1}{n^2} \sum_{i=1}^n \text{Var}(y_i) \\
-&= \frac{1}{n^2} \cdot n \cdot \pi(1 - \pi) \\
-&= \frac{\pi(1 - \pi)}{n}
+\operatorname{Var}(\hat{\pi}) 
+&= \operatorname{Var}\left( \frac{1}{N} \sum_{i=1}^N y_i \right) \\
+&= \frac{1}{N^2} \sum_{i=1}^N \operatorname{Var}(y_i) \\
+&= \frac{1}{N^2} \cdot N \cdot \pi(1 - \pi) \\
+&= \frac{\pi(1 - \pi)}{N}
 \end{align*}
 $$
 
-The standard error is the square root of the variance, so that $\text{SE}(\hat{\pi}) = \sqrt{ \frac{\pi(1 - \pi)}{n} }$.^[To obtain a commonly-used formula and preview a later result, we can plug in the estimator $\hat{\pi}$ into $\text{SE}(\hat{\pi}) = \sqrt{ \frac{\pi(1 - \pi)}{n} }$ to obtain an *estimate* of the SE, so that $\hat{\text{SE}}(\hat{\pi}) = \sqrt{ \frac{\hat{\pi}(1 - \hat{\pi})}{n} }$.]
+The standard error is the square root of the variance, so that $\operatorname{SE}(\hat{\pi}) = \sqrt{ \frac{\pi(1 - \pi)}{N} }$.^[To obtain a commonly-used formula and preview a later result, we can plug in the estimator $\hat{\pi}$ into $\operatorname{SE}(\hat{\pi}) = \sqrt{ \frac{\pi(1 - \pi)}{N} }$ to obtain an *estimate* of the SE, so that $\widehat{\operatorname{SE}}(\hat{\pi}) = \sqrt{ \frac{\hat{\pi}(1 - \hat{\pi})}{N} }$.]
 
 ### Example: Exponential Model
 
-Suppose we have $n$ samples $y_1, \dots, y_n$ from an exponential distribution and estimate the rate $\lambda$ with $\hat{\lambda}^{ML} = \frac{1}{\text{avg}(y)}$. It isn't easy to work out the variance analytically, but a simulation works just fine for particular values of $n$ and $\lambda$.
+Suppose we have $N$ samples $y_1, \dots, y_N$ from an exponential distribution and estimate the rate $\lambda$ with $\hat{\lambda}^{ML} = \frac{1}{\operatorname{avg}(y)}$. It isn't easy to work out the variance analytically, but a simulation works just fine for particular values of $N$ and $\lambda$.
 
 ```{r}
 lambda <- 2.0
-n <- 30
+N <- 30
 n_mc_sims <- 10000
 
 lambda_hat <- numeric(n_mc_sims)
 for (i in 1:n_mc_sims) {
-  x <- rexp(n, rate = lambda)
-  lambda_hat[i] <- 1 / mean(x)
+  y <- rexp(N, rate = lambda)
+  lambda_hat[i] <- 1 / mean(y)
 }
 
 # simulated SE

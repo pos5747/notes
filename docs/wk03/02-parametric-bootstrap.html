@@ -501,17 +501,17 @@ Parametric bootstrap versus alternatives
 </div>
 <p><strong>Algorithm:</strong> Parametric Bootstrap Estimator</p>
 <ol type="1">
-<li><strong>Input:</strong> Observed data <span class="math inline">\(x_1, x_2, \dots, x_n\)</span>, a parametric model <span class="math inline">\(f(\theta)\)</span>, an estimator <span class="math inline">\(\hat{\theta}\)</span>, and a quantity of interest <span class="math inline">\(\hat{\tau} = \tau(\hat{\theta})\)</span>.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></li>
+<li><strong>Input:</strong> Observed data <span class="math inline">\(y_1, y_2, \dots, y_N\)</span>, a parametric model <span class="math inline">\(f(y; \theta)\)</span>, an estimator <span class="math inline">\(\hat{\theta}\)</span>, and a quantity of interest <span class="math inline">\(\hat{\tau} = \tau(\hat{\theta})\)</span>.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></li>
 <li>Compute <span class="math inline">\(\hat{\theta}\)</span> from the observed data.</li>
 <li>For <span class="math inline">\(b = 1, 2, \dots, B\)</span>:<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>
 <ol type="1">
-<li>Generate a bootstrap sample <span class="math inline">\(x_1^{*(b)}, x_2^{*(b)}, \dots, x_n^{*(b)} \sim f(\hat{\theta})\)</span>. That is, simulate a new data set from the fitted parametric model.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></li>
-<li>Fit the model to the simulated data set <span class="math inline">\(x_1^{*(b)}, x_2^{*(b)}, \dots, x_n^{*(b)}\)</span> and compute <span class="math inline">\(\hat{\theta}^{*(b)}\)</span>.</li>
-<li>Compute <span class="math inline">\(\hat{\tau}^{*(b)} = \tau \left( \hat{\theta}^{*(b)}\right)\)</span>, which might be <span class="math inline">\(\theta^{*(b)}\)</span> itself if no transformation is needed.</li>
+<li>Generate a bootstrap sample <span class="math inline">\(y_1^{*(b)}, y_2^{*(b)}, \dots, y_N^{*(b)} \sim f(y; \hat{\theta})\)</span>. That is, simulate a new data set from the fitted parametric model.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></li>
+<li>Fit the model to the simulated data set <span class="math inline">\(y_1^{*(b)}, y_2^{*(b)}, \dots, y_N^{*(b)}\)</span> and compute <span class="math inline">\(\hat{\theta}^{*(b)}\)</span>.</li>
+<li>Compute <span class="math inline">\(\hat{\tau}^{*(b)} = \tau \left( \hat{\theta}^{*(b)}\right)\)</span>, which might be <span class="math inline">\(\hat{\theta}^{*(b)}\)</span> itself if no transformation is needed.</li>
 </ol></li>
 <li>Summarize the empirical distribution of <span class="math inline">\(\hat{\tau}^{*(1)}, \hat{\tau}^{*(2)}, \dots, \hat{\tau}^{*(B)}\)</span> using the SD to estimate the SE or 5th/95th percentiles to obtain a 90% confidence interval.</li>
 </ol>
-<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;This works for <em>any</em> statistic that is a function of <span class="math inline">\(x_1, \dots, x_n\)</span>, but we’ll mainly use ML estimators and direct transformations of those.</p></div><div id="fn2"><p><sup>2</sup>&nbsp;We typically use <span class="math inline">\(B = 2,000\)</span> as a good starting point.</p></div><div id="fn3"><p><sup>3</sup>&nbsp;For example, if we use an exponential model and estimate the rate as <span class="math inline">\(\hat{\lambda}\)</span>, then we would simulate each data set from an exponential distribution with parameter <span class="math inline">\(\hat{\lambda}\)</span>. The first data set is <span class="math inline">\(x_1^{*(1)}, \dots, x_n^{*(1)}\)</span>, the second data set is <span class="math inline">\(x_1^{*(2)}, \dots, x_n^{*(2)}\)</span>, and so on. In R, that would be <code>rexp(N, rate = lambda_hat)</code></p></div></div><p>Importantly, we lean <em>heavily</em> on the assumption that we have a good model of the distribution of the data. (The predictive distribution allows us to assess this.) There’s also a <em><strong>non</strong>parametric</em> bootstrap, which is much more popular. We consider that later in the semester.</p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;This works for <em>any</em> statistic that is a function of <span class="math inline">\(y_1, \dots, y_N\)</span>, but we’ll mainly use ML estimators and direct transformations of those.</p></div><div id="fn2"><p><sup>2</sup>&nbsp;We typically use <span class="math inline">\(B = 2,000\)</span> as a good starting point.</p></div><div id="fn3"><p><sup>3</sup>&nbsp;For example, if we use an exponential model and estimate the rate as <span class="math inline">\(\hat{\lambda}\)</span>, then we would simulate each data set from an exponential distribution with parameter <span class="math inline">\(\hat{\lambda}\)</span>. The first data set is <span class="math inline">\(y_1^{*(1)}, \dots, y_N^{*(1)}\)</span>, the second data set is <span class="math inline">\(y_1^{*(2)}, \dots, y_N^{*(2)}\)</span>, and so on. In R, that would be <code>rexp(N, rate = lambda_hat)</code></p></div></div><p>Importantly, we lean <em>heavily</em> on the assumption that we have a good model of the distribution of the data. (The predictive distribution allows us to assess this.) There’s also a <em><strong>non</strong>parametric</em> bootstrap, which is much more popular. We consider that later in the semester.</p>
 <section id="example-toothpaste-cap-problem" class="level2" data-number="5.1">
 <h2 data-number="5.1" class="anchored" data-anchor-id="example-toothpaste-cap-problem"><span class="header-section-number">5.1</span> Example: Toothpaste Cap Problem</h2>
 <p>The code below implements the parametric bootstrap for the toothpaste cap problem. For 2,000 iterations, it draws 150 observations from a Bernoulli distribution with <span class="math inline">\(\hat{\pi} = \frac{8}{150}\)</span>. For each iteration, it computes the ML estimate of <span class="math inline">\(\pi\)</span> for the bootstrapped data set. Then it uses the SD of the bootstrap estimates to estimate the SE and computes the percentiles of the bootstrap estimates to obtain the confidence interval.</p>
@@ -533,7 +533,7 @@ Parametric bootstrap versus alternatives
 0.027 0.087 </code></pre>
 </div>
 </div>
-<p>We leave an evaluation of this confidence interval (i.e., Does it capture <span class="math inline">\(\theta\)</span> 90% of the time?) to later.</p>
+<p>We leave an evaluation of this confidence interval (i.e., Does it capture <span class="math inline">\(\pi\)</span> 90% of the time?) to later.</p>
 </section>
 <section id="example-beta-distribution" class="level2" data-number="5.2">
 <h2 data-number="5.2" class="anchored" data-anchor-id="example-beta-distribution"><span class="header-section-number">5.2</span> Example: Beta Distribution</h2>
@@ -546,8 +546,8 @@ Parametric bootstrap versus alternatives
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate data</span></span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">100</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">rbeta</span>(n, alpha, beta)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">rbeta</span>(N, <span class="at">shape1 =</span> alpha, <span class="at">shape2 =</span> beta)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now let’s find the ML estimates of the two shape parameters.</p>
 <div class="cell">
@@ -573,7 +573,7 @@ Parametric bootstrap versus alternatives
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>n_bs <span class="ot">&lt;-</span> <span class="dv">2000</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>bs_est <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="at">nrow =</span> n_bs, <span class="at">ncol =</span> <span class="dv">2</span>)  <span class="co"># a container for the estimates</span></span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_bs) {</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  bs_y <span class="ot">&lt;-</span> <span class="fu">rbeta</span>(n, <span class="at">shape1 =</span> ml_est[<span class="dv">1</span>], <span class="at">shape2 =</span> ml_est[<span class="dv">2</span>])</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  bs_y <span class="ot">&lt;-</span> <span class="fu">rbeta</span>(N, <span class="at">shape1 =</span> ml_est[<span class="dv">1</span>], <span class="at">shape2 =</span> ml_est[<span class="dv">2</span>])</span>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  bs_opt <span class="ot">&lt;-</span> <span class="fu">optim</span>(<span class="at">par =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">3</span>), <span class="at">fn =</span> log_lik_fn, <span class="at">y =</span> bs_y,</span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>             <span class="at">control =</span> <span class="fu">list</span>(<span class="at">fnscale =</span> <span class="sc">-</span><span class="dv">1</span>))</span>
 <span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  bs_est[i, ] <span class="ot">&lt;-</span> bs_opt<span class="sc">$</span>par</span>
@@ -592,17 +592,17 @@ Parametric bootstrap versus alternatives
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>n_bs <span class="ot">&lt;-</span> <span class="dv">2000</span></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>bs_est <span class="ot">&lt;-</span> <span class="fu">numeric</span>(n_bs)  <span class="co"># a container for the estimates</span></span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_bs) {</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  bs_y <span class="ot">&lt;-</span> <span class="fu">rbeta</span>(n, <span class="at">shape1 =</span> ml_est[<span class="dv">1</span>], <span class="at">shape2 =</span> ml_est[<span class="dv">2</span>])</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  bs_y <span class="ot">&lt;-</span> <span class="fu">rbeta</span>(N, <span class="at">shape1 =</span> ml_est[<span class="dv">1</span>], <span class="at">shape2 =</span> ml_est[<span class="dv">2</span>])</span>
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  bs_opt <span class="ot">&lt;-</span> <span class="fu">optim</span>(<span class="at">par =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">3</span>), <span class="at">fn =</span> log_lik_fn, <span class="at">y =</span> bs_y,</span>
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>             <span class="at">control =</span> <span class="fu">list</span>(<span class="at">fnscale =</span> <span class="sc">-</span><span class="dv">1</span>))</span>
 <span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  bs_alpha <span class="ot">&lt;-</span> bs_opt<span class="sc">$</span>par[<span class="dv">1</span>]</span>
 <span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  bs_beta <span class="ot">&lt;-</span> bs_opt<span class="sc">$</span>par[<span class="dv">2</span>]</span>
 <span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  bs_est[i] <span class="ot">&lt;-</span> bs_alpha<span class="sc">/</span>(bs_alpha <span class="sc">+</span> bs_beta)</span>
 <span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">quantile</span>(bs_est, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.95</span>)), <span class="at">digits =</span> <span class="dv">2</span>)  <span class="co"># 95% ci</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">quantile</span>(bs_est, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>)), <span class="at">digits =</span> <span class="dv">2</span>)  <span class="co"># 95% ci</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  5%  95% 
-0.72 0.77 </code></pre>
+<pre><code> 2.5% 97.5% 
+ 0.71  0.77 </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">sd</span>(bs_est), <span class="at">digits =</span> <span class="dv">2</span>)  <span class="co"># estimate of SE</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">

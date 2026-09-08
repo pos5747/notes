@@ -516,17 +516,17 @@ window.Quarto = {
 <p>In the multi-parameter case, if <span class="math inline">\(\hat{\theta}\)</span> is a vector and <span class="math inline">\(\tau(\cdot)\)</span> is a function, then <span class="math display">\[
 \widehat{\operatorname{Var}}(\hat\tau) = \widehat{\operatorname{Var}}[\tau(\hat{\theta})] \approx \nabla \tau(\hat{\theta})^\top \cdot \widehat{\operatorname{Var}}(\hat{\theta}) \cdot \nabla \tau(\hat{\theta}),
 \]</span> where <span class="math inline">\(\nabla \tau(\hat{\theta})\)</span> is the gradient of <span class="math inline">\(\tau(\theta)\)</span> with respect to <span class="math inline">\(\theta\)</span> evaluated at <span class="math inline">\(\hat\theta\)</span>.</p>
-<p>From there, we can create Wald confidence intervals in the usual way. Recall that <span class="math inline">\(\widehat{\text{SE}}(\hat{\tau}) = \sqrt{\widehat{\operatorname{Var}}(\hat\tau)}\)</span>.</p>
+<p>From there, we can create Wald confidence intervals in the usual way. Recall that <span class="math inline">\(\widehat{\operatorname{SE}}(\hat{\tau}) = \sqrt{\widehat{\operatorname{Var}}(\hat\tau)}\)</span>.</p>
 <p><span class="math display">\[
 \begin{align*}
-90\%~\text{C.I.}  &amp;= \hat{\tau} \pm 1.64 \cdot \widehat{\text{SE}}(\hat{\tau})\\
-95\%~\text{C.I.}  &amp;= \hat{\tau} \pm 1.96 \cdot \widehat{\text{SE}}(\hat{\tau})
+90\%~\text{C.I.}  &amp;= \hat{\tau} \pm 1.64 \cdot \widehat{\operatorname{SE}}(\hat{\tau})\\
+95\%~\text{C.I.}  &amp;= \hat{\tau} \pm 1.96 \cdot \widehat{\operatorname{SE}}(\hat{\tau})
 \end{align*}
 \]</span></p>
 <section id="bernoulli-from-pi-to-odds" class="level2" data-number="7.1">
 <h2 data-number="7.1" class="anchored" data-anchor-id="bernoulli-from-pi-to-odds"><span class="header-section-number">7.1</span> Bernoulli: From <span class="math inline">\(\pi\)</span> to odds</h2>
-<p>Suppose a Bernoulli model of a binary outcome <span class="math inline">\(y\)</span>. The ML estimate of <span class="math inline">\(\pi\)</span> is <span class="math inline">\(\hat{\pi} = \text{avg}(y)\)</span>. Using the Fisher information, the variance of <span class="math inline">\(\hat{\pi}\)</span> is <span class="math inline">\(\widehat{\operatorname{Var}}(\hat{\pi}) = \dfrac{\hat{\pi}(1 - \hat{\pi})}{N}\)</span>.</p>
-<p>Suppose we want to transform <span class="math inline">\(\pi\)</span> to the odds, where <span class="math inline">\(\text{odds} = \tau(\pi) = \dfrac{\pi}{1 - \pi}\)</span>. <span class="math inline">\(\tau(\pi) = \dfrac{\pi}{1 - \pi}\)</span>. We use the invariance property to obtain an ML estimate <span class="math inline">\(\widehat{\text{odds}} = \dfrac{\hat\pi}{1 - \hat\pi}\)</span>.</p>
+<p>Suppose a Bernoulli model of a binary outcome <span class="math inline">\(y\)</span>. The ML estimate of <span class="math inline">\(\pi\)</span> is <span class="math inline">\(\hat{\pi} = \operatorname{avg}(y)\)</span>. Using the Fisher information, the variance of <span class="math inline">\(\hat{\pi}\)</span> is <span class="math inline">\(\widehat{\operatorname{Var}}(\hat{\pi}) = \dfrac{\hat{\pi}(1 - \hat{\pi})}{N}\)</span>.</p>
+<p>Suppose we want to transform <span class="math inline">\(\pi\)</span> to the odds, where <span class="math inline">\(\text{odds} = \tau(\pi) = \dfrac{\pi}{1 - \pi}\)</span>. We use the invariance property to obtain an ML estimate <span class="math inline">\(\widehat{\text{odds}} = \dfrac{\hat\pi}{1 - \hat\pi}\)</span>.</p>
 <p>To estimate the variance of <span class="math inline">\(\widehat{\text{odds}}\)</span>, we need to use the delta method.</p>
 <p>First, find the first derivative of <span class="math inline">\(\tau(\pi)\)</span>. <span class="math inline">\(\tau'(\pi) = \dfrac{1}{(1 - \pi)^2}\)</span>.</p>
 <p>Plugging in, we have</p>
@@ -541,22 +541,22 @@ window.Quarto = {
 \]</span></p>
 <p>And the standard error is</p>
 <p><span class="math display">\[
-\widehat{\text{SE}}(\widehat{\text{odds}}) \;\approx\; \sqrt{\dfrac{\hat{\pi}}{N(1 - \hat{\pi})^3}}.
+\widehat{\operatorname{SE}}(\widehat{\text{odds}}) \;\approx\; \sqrt{\dfrac{\hat{\pi}}{N(1 - \hat{\pi})^3}}.
 \]</span></p>
 <p>Assuming a data set with 150 trials and 8 successes, we have the following estimates.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># number of trials and successes</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">150</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="dv">8</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">150</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="dv">8</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># estimate pi</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>pi_hat <span class="ot">&lt;-</span> y <span class="sc">/</span> n</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>pi_hat <span class="ot">&lt;-</span> k <span class="sc">/</span> N</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>pi_hat</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.05333333</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># variance and SE estimate for pi_hat</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>var_pi_hat <span class="ot">&lt;-</span> pi_hat <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> pi_hat) <span class="sc">/</span> n</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>var_pi_hat <span class="ot">&lt;-</span> pi_hat <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> pi_hat) <span class="sc">/</span> N</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>se_pi_hat  <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(var_pi_hat)</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>se_pi_hat</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -569,35 +569,34 @@ window.Quarto = {
 <pre><code>[1] 0.05633803</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># variance and SE for odds_hat (delta method)</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>var_odds_hat <span class="ot">&lt;-</span> pi_hat <span class="sc">/</span> (n <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> pi_hat)<span class="sc">^</span><span class="dv">3</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>var_odds_hat <span class="ot">&lt;-</span> pi_hat <span class="sc">/</span> (N <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> pi_hat)<span class="sc">^</span><span class="dv">3</span>)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>se_odds_hat  <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(var_odds_hat)</span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>se_odds_hat</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.0204719</code></pre>
 </div>
 </div>
-<hr>
 </section>
 <section id="poisson-from-lambda-to-sd" class="level2" data-number="7.2">
 <h2 data-number="7.2" class="anchored" data-anchor-id="poisson-from-lambda-to-sd"><span class="header-section-number">7.2</span> Poisson: From <span class="math inline">\(\lambda\)</span> to SD</h2>
-<p>Suppose a Poisson model of a count variable <span class="math inline">\(y\)</span>. The ML estimate is <span class="math inline">\(\hat{\lambda} = \text{avg}(y)\)</span>. We can use the information matrix to estimate the variance <span class="math inline">\(\widehat{\operatorname{Var}}(\hat{\lambda}) = \dfrac{\hat{\lambda}}{N}\)</span>.</p>
+<p>Suppose a Poisson model of a count variable <span class="math inline">\(y\)</span>. The ML estimate is <span class="math inline">\(\hat{\lambda} = \operatorname{avg}(y)\)</span>. We can use the information matrix to estimate the variance <span class="math inline">\(\widehat{\operatorname{Var}}(\hat{\lambda}) = \dfrac{\hat{\lambda}}{N}\)</span>.</p>
 <p>Suppose we want to estimate the standard deviation of the Poisson distribution, which is <span class="math inline">\(\sigma = \sqrt{\lambda}\)</span>. Then <span class="math inline">\(\sigma = \tau(\lambda) = \sqrt{\lambda}\)</span> and <span class="math inline">\(\tau'(\lambda) = \dfrac{1}{2\sqrt{\lambda}}\)</span>. Then, by the delta method, <span class="math inline">\(\widehat{\operatorname{Var}}(\hat{\sigma}) \approx \left(\dfrac{1}{2\sqrt{\hat{\lambda}}}\right)^2 \cdot \dfrac{\hat{\lambda}}{N}\)</span>.</p>
-<p>Simplifying, we have <span class="math inline">\(\widehat{\operatorname{Var}}(\hat{\sigma}) \approx \dfrac{1}{4N}\)</span> and <span class="math inline">\(\widehat{\text{SE}}(\hat{\sigma}) \;\approx\; \dfrac{1}{2\sqrt{N}}\)</span>.</p>
+<p>Simplifying, we have <span class="math inline">\(\widehat{\operatorname{Var}}(\hat{\sigma}) \approx \dfrac{1}{4N}\)</span> and <span class="math inline">\(\widehat{\operatorname{SE}}(\hat{\sigma}) \;\approx\; \dfrac{1}{2\sqrt{N}}\)</span>.</p>
 <p><em>Notice:</em> This result does not depend on <span class="math inline">\(\hat{\lambda}\)</span>; this is perhaps unexpected. We can check our work with a quick simulation.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fix sample size, vary lambda</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">100</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>lambda_vals <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">10</span>, <span class="dv">50</span>)</span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"># store results</span></span>
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">lambda =</span> lambda_vals, <span class="at">se_sigma_mc =</span> <span class="cn">NA</span>)</span>
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(lambda_vals)) {</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (j <span class="cf">in</span> <span class="fu">seq_along</span>(lambda_vals)) {</span>
 <span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  lambda_j <span class="ot">&lt;-</span> lambda_vals[j]  <span class="co"># current value of lambda</span></span>
 <span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  sigma_hats <span class="ot">&lt;-</span> <span class="fu">numeric</span>(<span class="dv">10000</span>)   <span class="co"># container for 10,000 estimates</span></span>
 <span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10000</span>) {</span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    y <span class="ot">&lt;-</span> <span class="fu">rpois</span>(n, lambda_j)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    y <span class="ot">&lt;-</span> <span class="fu">rpois</span>(N, lambda_j)</span>
 <span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    lambda_hat <span class="ot">&lt;-</span> <span class="fu">mean</span>(y)</span>
 <span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    sigma_hats[i] <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(lambda_hat)</span>
 <span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>  }</span>
@@ -605,16 +604,16 @@ window.Quarto = {
 <span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>  results<span class="sc">$</span>se_sigma_mc[j] <span class="ot">&lt;-</span> <span class="fu">sd</span>(sigma_hats)</span>
 <span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span><span class="fu">sqrt</span>(n))  <span class="co"># delta method SE</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span><span class="fu">sqrt</span>(N))  <span class="co"># delta method SE</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.05</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>results  <span class="co"># monte carlo SE</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  lambda se_sigma_mc
-1      2  0.04981397
-2     10  0.05012129
-3     50  0.05006480</code></pre>
+1      2  0.05028840
+2     10  0.05038287
+3     50  0.04985509</code></pre>
 </div>
 </div>
 </section>
@@ -734,7 +733,7 @@ $ batting_average &lt;dbl&gt; 0.354, 0.337, 0.331, 0.330, 0.327, 0.319, 0.316, 0
 \]</span></p>
 <p>Plugging in <span class="math inline">\(\hat\alpha\)</span> and <span class="math inline">\(\hat\beta\)</span>, we have</p>
 <p><span class="math display">\[
-\nabla \tau(\hat\alpha, \hat\beta) =\begin{bmatrix}\dfrac{\hat\beta}{(\hat\alpha+\hat\beta)^2}\\-\dfrac{\hat\alpha}{(\hat\alpha+\hat\beta)^2}\end{bmatrix} = \begin{bmatrix}\dfrac{114.93}{(37.08+114.93)^2}\\[6pt]-\dfrac{37.08}{(37.08+114.93)^2}\end{bmatrix} = \begin{bmatrix} 0.0050 \\ -0.0016\end{bmatrix}
+\nabla \tau(\hat\alpha, \hat\beta) =\begin{bmatrix}\dfrac{\hat\beta}{(\hat\alpha+\hat\beta)^2}\\-\dfrac{\hat\alpha}{(\hat\alpha+\hat\beta)^2}\end{bmatrix} = \begin{bmatrix}\dfrac{114.93}{(37.08+114.93)^2}\\[6pt]-\dfrac{37.08}{(37.08+114.93)^2}\end{bmatrix} = \begin{bmatrix} 0.004974 \\ -0.001605\end{bmatrix}
 \]</span></p>
 </section>
 <section id="the-matrix-algebra" class="level3" data-number="7.3.3">
@@ -779,36 +778,36 @@ $ batting_average &lt;dbl&gt; 0.354, 0.337, 0.331, 0.330, 0.327, 0.319, 0.316, 0
 </section>
 <section id="by-hand" class="level4" data-number="7.3.3.2">
 <h4 data-number="7.3.3.2" class="anchored" data-anchor-id="by-hand"><span class="header-section-number">7.3.3.2</span> “By hand”</h4>
-<p>To remind us what R is doing with <code>t(grad) %*% fit$var_hat %*% grad</code>, here is what the matrix multiplication looks like “by hand.”</p>
+<p>To remind us what R is doing with <code>t(grad) %*% fit$var_hat %*% grad</code>, here is what the matrix multiplication looks like “by hand.” I carry four significant figures throughout, because the two terms inside each entry nearly cancel—rounding earlier gives a visibly wrong answer.</p>
 <p><span class="math display">\[
 \begin{aligned}
-\widehat{\mathrm{Var}}(\widehat{\mu})
+\widehat{\operatorname{Var}}(\widehat{\mu})
 &amp;\approx
-\overbrace{\begin{bmatrix} 0.0050 &amp; -0.0016 \end{bmatrix}}^{\nabla\tau(\hat\alpha,\hat\beta)^{\!\top}}
+\overbrace{\begin{bmatrix} 0.004974 &amp; -0.001605 \end{bmatrix}}^{\nabla\tau(\hat\alpha,\hat\beta)^{\!\top}}
 \Biggl(
-\underbrace{\begin{bmatrix} 5.96 &amp; 18.41\\[2pt] 18.41 &amp; 57.84 \end{bmatrix}}_{\widehat{\mathrm{Var}}(\hat\alpha,\hat\beta)}
-\underbrace{\begin{bmatrix} 0.0050\\[2pt] -0.0016 \end{bmatrix}}_{\nabla\tau(\hat\alpha,\hat\beta)}
+\underbrace{\begin{bmatrix} 5.964 &amp; 18.407\\[2pt] 18.407 &amp; 57.831 \end{bmatrix}}_{\widehat{\operatorname{Var}}(\hat\alpha,\hat\beta)}
+\underbrace{\begin{bmatrix} 0.004974\\[2pt] -0.001605 \end{bmatrix}}_{\nabla\tau(\hat\alpha,\hat\beta)}
 \Biggr)
 &amp;&amp; \text{plug in values} \\[10pt]
 &amp;=
-\overbrace{\begin{bmatrix} 0.0050 &amp; -0.0016 \end{bmatrix}}^{\nabla\tau^{\!\top}}
+\overbrace{\begin{bmatrix} 0.004974 &amp; -0.001605 \end{bmatrix}}^{\nabla\tau^{\!\top}}
 \begin{bmatrix}
-5.96(0.0050) + 18.41(-0.0016)\\[2pt]
-18.41(0.0050) + 57.84(-0.0016)
+5.964(0.004974) + 18.407(-0.001605)\\[2pt]
+18.407(0.004974) + 57.831(-0.001605)
 \end{bmatrix}
 &amp;&amp; \text{multiply RHS;  (2 x 2) x (2 x 1)} \\[10pt]
 &amp;=
-\overbrace{\begin{bmatrix} 0.0050 &amp; -0.0016 \end{bmatrix}}^{\nabla\tau^{\!\top}}
+\overbrace{\begin{bmatrix} 0.004974 &amp; -0.001605 \end{bmatrix}}^{\nabla\tau^{\!\top}}
 \begin{bmatrix}
-0.00037\\[2pt]
--0.0010
+0.0001217\\[2pt]
+-0.001261
 \end{bmatrix}
 &amp;&amp; \text{simplify} \\[10pt]
 &amp;=
-0.0050\cdot 0.00037 \;+\; (-0.0016)\cdot(-0.0010)
+0.004974\cdot 0.0001217 \;+\; (-0.001605)\cdot(-0.001261)
 &amp;&amp; \text{multiply; (1 x 2) x (2 x 1)} \\[6pt]
 &amp;\approx
-0.0000019 \;+\; 0.0000016
+0.00000061 \;+\; 0.00000202
 &amp;&amp; \text{simplify} \\[6pt]
 &amp;=
 0.0000026
@@ -830,10 +829,9 @@ $ batting_average &lt;dbl&gt; 0.354, 0.337, 0.331, 0.330, 0.327, 0.319, 0.316, 0
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<!-- preamble start -->
 
     <!-- tinytable mathjax start -->
-    <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script>
     MathJax = {
       tex: {
@@ -846,92 +844,58 @@ $ batting_average &lt;dbl&gt; 0.354, 0.337, 0.331, 0.330, 0.327, 0.319, 0.316, 0
     </script>
     <!-- tinytable mathjax end -->
 
+    <script src="https://cdn.jsdelivr.net/gh/vincentarelbundock/tinytable@main/inst/tinytable.js"></script>
+
     <script>
-
-      function styleCell_ee674t9dwqo4w2zifda5(i, j, css_id) {
-          var table = document.getElementById("tinytable_ee674t9dwqo4w2zifda5");
-          var cell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
-          if (cell) {
-              console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
-              cell.classList.add(css_id);
-          } else {
-              console.warn(`Cell at (${i}, ${j}) not found.`);
-          }
-      }
-      function spanCell_ee674t9dwqo4w2zifda5(i, j, rowspan, colspan) {
-        var table = document.getElementById("tinytable_ee674t9dwqo4w2zifda5");
-        const targetCell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
-        if (!targetCell) {
-          console.warn(`Cell at (${i}, ${j}) not found.`);
-        }
-
-        // Get all cells that need to be removed
-        const cellsToRemove = [];
-        for (let r = 0; r < rowspan; r++) {
-          for (let c = 0; c < colspan; c++) {
-            if (r === 0 && c === 0) continue; // Skip the target cell
-            const cell = table.querySelector(`[data-row="${i + r}"][data-col="${j + c}"]`);
-            if (cell) {
-              cellsToRemove.push(cell);
-            }
-          }
-        }
-
-        // Remove all cells
-        cellsToRemove.forEach(cell => cell.remove());
-
-        // Set rowspan and colspan of the target cell if it exists
-        if (targetCell) {
-          targetCell.rowSpan = rowspan;
-          targetCell.colSpan = colspan;
-        }
-      }
+      // Create table-specific functions using external factory
+      const tableFns_tb36j47z9xl3fkzhns1j = TinyTable.createTableFunctions("tinytable_tb36j47z9xl3fkzhns1j");
       // tinytable span after
       window.addEventListener('load', function () {
           var cellsToStyle = [
             // tinytable style arrays after
-          { positions: [ { i: '2', j: 0 }, { i: '2', j: 1 }, { i: '2', j: 2 }, { i: '2', j: 3 },  ], css_id: 'tinytable_css_tfcgpn52jsqg9c1ohgim',}, 
-          { positions: [ { i: '0', j: 0 }, { i: '0', j: 1 }, { i: '0', j: 2 }, { i: '0', j: 3 },  ], css_id: 'tinytable_css_y5wcnmejntrd01yida09',}, 
+          { positions: [ { i: '2', j: 1 }, { i: '2', j: 2 }, { i: '2', j: 3 }, { i: '2', j: 4 } ], css_id: 'tinytable_css_mhs5mctz1v25er0alnuc',}, 
+          { positions: [ { i: '0', j: 1 }, { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 } ], css_id: 'tinytable_css_01tv9viperiy9oef6xiq',}, 
           ];
 
           // Loop over the arrays to style the cells
           cellsToStyle.forEach(function (group) {
               group.positions.forEach(function (cell) {
-                  styleCell_ee674t9dwqo4w2zifda5(cell.i, cell.j, group.css_id);
+                  tableFns_tb36j47z9xl3fkzhns1j.styleCell(cell.i, cell.j, group.css_id);
               });
           });
       });
     </script>
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/vincentarelbundock/tinytable@main/inst/tinytable.css">
     <style>
-      /* tinytable css entries after */
-      .table td.tinytable_css_tfcgpn52jsqg9c1ohgim, .table th.tinytable_css_tfcgpn52jsqg9c1ohgim { border-bottom: solid #d3d8dc 0.1em; }
-      .table td.tinytable_css_y5wcnmejntrd01yida09, .table th.tinytable_css_y5wcnmejntrd01yida09 { border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+    /* tinytable css entries after */
+    #tinytable_tb36j47z9xl3fkzhns1j td.tinytable_css_mhs5mctz1v25er0alnuc, #tinytable_tb36j47z9xl3fkzhns1j th.tinytable_css_mhs5mctz1v25er0alnuc {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.08em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --line-type-bottom: solid; --line-type-left: solid; --line-type-right: solid; --line-type-top: solid; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%;  }
+    #tinytable_tb36j47z9xl3fkzhns1j td.tinytable_css_01tv9viperiy9oef6xiq, #tinytable_tb36j47z9xl3fkzhns1j th.tinytable_css_01tv9viperiy9oef6xiq {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 1; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.08em; --line-type-bottom: solid; --line-type-left: solid; --line-type-right: solid; --line-type-top: solid; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%;  }
     </style>
     <div class="container">
-      <table class="table table-borderless" id="tinytable_ee674t9dwqo4w2zifda5" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
-        <thead>
+      <table class="tinytable" id="tinytable_tb36j47z9xl3fkzhns1j" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
         
+        <thead>
               <tr>
-                <th scope="col" data-row="0" data-col="0">Model</th>
-                <th scope="col" data-row="0" data-col="1">How mean and SE are estimated</th>
-                <th scope="col" data-row="0" data-col="2">Mean</th>
-                <th scope="col" data-row="0" data-col="3">SE</th>
+                <th scope="col" data-row="0" data-col="1">Model</th>
+                <th scope="col" data-row="0" data-col="2">How mean and SE are estimated</th>
+                <th scope="col" data-row="0" data-col="3">Mean</th>
+                <th scope="col" data-row="0" data-col="4">SE</th>
               </tr>
         </thead>
         
         <tbody>
                 <tr>
-                  <td data-row="1" data-col="0">Classical</td>
-                  <td data-row="1" data-col="1">$\hat\mu = \operatorname{avg}(y)$. $\widehat{\text{SE}} = \frac{\operatorname{SD}(y)}{\sqrt{N}}$.</td>
-                  <td data-row="1" data-col="2">0.24397</td>
-                  <td data-row="1" data-col="3">0.001590</td>
+                  <td data-row="1" data-col="1">Classical</td>
+                  <td data-row="1" data-col="2">$\hat\mu = \operatorname{avg}(y)$. $\widehat{\operatorname{SE}} = \frac{\operatorname{SD}(y)}{\sqrt{N}}$.</td>
+                  <td data-row="1" data-col="3">0.24397</td>
+                  <td data-row="1" data-col="4">0.001590</td>
                 </tr>
                 <tr>
-                  <td data-row="2" data-col="0">Beta model</td>
-                  <td data-row="2" data-col="1">Estimate $\hat\alpha$ and $\hat\beta$ with ML. Estimate variance of $\hat\alpha$ and $\hat\beta$ with information matrix. Estimate $\hat\mu$ with invariance property. Estimate SE using delta method.</td>
-                  <td data-row="2" data-col="2">0.24392</td>
-                  <td data-row="2" data-col="3">0.001624</td>
+                  <td data-row="2" data-col="1">Beta model</td>
+                  <td data-row="2" data-col="2">Estimate $\hat\alpha$ and $\hat\beta$ with ML. Estimate variance of $\hat\alpha$ and $\hat\beta$ with information matrix. Estimate $\hat\mu$ with invariance property. Estimate SE using delta method.</td>
+                  <td data-row="2" data-col="3">0.24392</td>
+                  <td data-row="2" data-col="4">0.001624</td>
                 </tr>
         </tbody>
       </table>
@@ -954,11 +918,11 @@ $ batting_average &lt;dbl&gt; 0.354, 0.337, 0.331, 0.330, 0.327, 0.319, 0.316, 0
 <span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>  a <span class="sc">/</span> (a <span class="sc">+</span> b)</span>
 <span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a><span class="co"># compute the gradient of tau</span></span>
-<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>grad <span class="ot">&lt;-</span> <span class="fu">grad</span>(<span class="at">func =</span> tau_fn, <span class="at">x =</span> fit<span class="sc">$</span>theta_hat)</span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a><span class="co"># compute the gradient of tau (a new name, so numDeriv's grad() stays usable)</span></span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>grad_tau <span class="ot">&lt;-</span> <span class="fu">grad</span>(<span class="at">func =</span> tau_fn, <span class="at">x =</span> fit<span class="sc">$</span>theta_hat)</span>
 <span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a><span class="co"># delta method</span></span>
-<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a>var_hat_mu <span class="ot">&lt;-</span> grad <span class="sc">%*%</span> fit<span class="sc">$</span>var_hat <span class="sc">%*%</span> grad  <span class="co"># R transposes grad as needed</span></span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a>var_hat_mu <span class="ot">&lt;-</span> grad_tau <span class="sc">%*%</span> fit<span class="sc">$</span>var_hat <span class="sc">%*%</span> grad_tau  <span class="co"># R transposes as needed</span></span>
 <span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a>var_hat_mu</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>             [,1]
