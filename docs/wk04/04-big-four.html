@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>12&nbsp; Big Four Models – Modern Probability Modeling</title>
+<title>12&nbsp; Four Common Models – Modern Probability Modeling</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -154,7 +154,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../wk04/01-design-matrix.html">Week 4</a></li><li class="breadcrumb-item"><a href="../wk04/04-big-four.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Big Four Models</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../wk04/01-design-matrix.html">Week 4</a></li><li class="breadcrumb-item"><a href="../wk04/04-big-four.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Four Common Models</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -285,7 +285,7 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../wk04/04-big-four.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Big Four Models</span></span></a>
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Four Common Models</span></span></a>
   </div>
 </li>
       </ul>
@@ -458,7 +458,7 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#summary-of-the-big-four-models" id="toc-summary-of-the-big-four-models" class="nav-link active" data-scroll-target="#summary-of-the-big-four-models"><span class="header-section-number">12.1</span> Summary of the big four models</a>
+  <li><a href="#summary-of-four-common-models" id="toc-summary-of-four-common-models" class="nav-link active" data-scroll-target="#summary-of-four-common-models"><span class="header-section-number">12.1</span> Summary of four common models</a>
   <ul class="collapse">
   <li><a href="#normal-linear" id="toc-normal-linear" class="nav-link" data-scroll-target="#normal-linear"><span class="header-section-number">12.1.1</span> Normal Linear</a></li>
   <li><a href="#logit" id="toc-logit" class="nav-link" data-scroll-target="#logit"><span class="header-section-number">12.1.2</span> Logit</a></li>
@@ -471,9 +471,9 @@ window.Quarto = {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../wk04/01-design-matrix.html">Week 4</a></li><li class="breadcrumb-item"><a href="../wk04/04-big-four.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Big Four Models</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../wk04/01-design-matrix.html">Week 4</a></li><li class="breadcrumb-item"><a href="../wk04/04-big-four.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Four Common Models</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Big Four Models</span></h1>
+<h1 class="title"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Four Common Models</span></h1>
 </div>
 
 
@@ -497,8 +497,13 @@ window.Quarto = {
 <li>Choose an inverse link function that maps the unbounded linear predictor <span class="math inline">\(X_i \beta \in \mathbb R\)</span> onto the parameter space of the modeled parameters.</li>
 <li>Fit the model using maximum likelihood. Use Fisher information to estimate the variance. Use invariance property and delta method to obtain quantities of interest and estimate their variance.</li>
 </ol>
-<section id="summary-of-the-big-four-models" class="level2" data-number="12.1">
-<h2 data-number="12.1" class="anchored" data-anchor-id="summary-of-the-big-four-models"><span class="header-section-number">12.1</span> Summary of the big four models</h2>
+<section id="summary-of-four-common-models" class="level2" data-number="12.1">
+<h2 data-number="12.1" class="anchored" data-anchor-id="summary-of-four-common-models"><span class="header-section-number">12.1</span> Summary of four common models</h2>
+<p>Just as an example of the kinds of models we can develop using this approach, here are four common models.</p>
+<ol type="1">
+<li>Normal linear: common for unbounded outcomes (without severe outliers)</li>
+<li>Logit: common for binary outcomes 3: Negative binomial: common four count data (allows for overdispersion, unlike the Poisson) 4: Weibull: common for time-to-event or duration data, though we have many options here and Weibull might not be the best.</li>
+</ol>
 <section id="normal-linear" class="level3" data-number="12.1.1">
 <h3 data-number="12.1.1" class="anchored" data-anchor-id="normal-linear"><span class="header-section-number">12.1.1</span> Normal Linear</h3>
 <table class="caption-top table">

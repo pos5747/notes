@@ -297,6 +297,9 @@ df <- tidyr::expand_grid(x = seq(0,8,0.1), z = 0:2) |>
 
 x_star <- optimize(\(x) abs(m(x,0) - m(x,2)), c(0,8), maximum = TRUE)$maximum
 
+# the anchor rows must be invisible through fill and colour, not alpha alone:
+# the label box's fill and border ignore the alpha aesthetic, so alpha = 0
+# anchors render as ~40 empty boxes across the panel
 repel_df <- bind_rows(
   tibble(
     x = x_star,
@@ -305,10 +308,10 @@ repel_df <- bind_rows(
       "frac(partialdiff*Pr(y),~partialdiff*x[1])==",
       sub("^0","",sprintf("%.3f", m(x_star, c(0,2))))
     ),                                   # lower-case y and x[1]
-    alpha = 1
+    alpha = 1, fill = "white", colour = "black"
   ),
   df |> group_by(z) |> slice(which(row_number() %% 3 == 1)) |> ungroup() |>
-    transmute(x, y = p, label = '""', alpha = 0)
+    transmute(x, y = p, label = '""', alpha = 0, fill = NA, colour = NA)
 )
 
 set.seed(1234)
@@ -320,7 +323,7 @@ ggplot(df, aes(x, p)) +
   ) +
   geom_label_repel(
     data = repel_df,
-    aes(x, y, label = label, alpha = alpha),
+    aes(x, y, label = label, alpha = alpha, fill = fill, colour = colour),
     inherit.aes = FALSE, parse = TRUE, size = 2.2,
     label.r = unit(0.08,"lines"), point.padding = 0.5,
     box.padding = 0.5, #force = 1., force_pull = 0.2,
@@ -334,6 +337,8 @@ ggplot(df, aes(x, p)) +
     aes(x, y), inherit.aes = FALSE, size = 1.2
   ) +
   scale_alpha_identity() +
+  scale_fill_identity() +
+  scale_colour_identity() +
   scale_x_continuous(limits = c(0,8), breaks = 0:8, expand = expansion(mult = c(0,0))) +
   scale_y_continuous(limits = c(0,1), breaks = seq(0,1,0.2), expand = expansion(mult = c(0,0))) +
   scale_linetype_manual(values = c("solid","dashed","dotted")) +

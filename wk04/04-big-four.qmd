@@ -1,4 +1,4 @@
-# Big Four Models
+# Four Common Models
 
 ```{r include=FALSE}
 library(tidyverse)
@@ -11,7 +11,14 @@ We can extend the ideas from the last chapter on logistic regression to a larger
 1. Choose an inverse link function that maps the unbounded linear predictor $X_i \beta \in \mathbb R$ onto the parameter space of the modeled parameters.
 1. Fit the model using maximum likelihood. Use Fisher information to estimate the variance. Use invariance property and delta method to obtain quantities of interest and estimate their variance.
 
-## Summary of the big four models
+## Summary of four common models
+
+Just as an example of the kinds of models we can develop using this approach, here are four common models. 
+
+1. Normal linear: common for unbounded outcomes (without severe outliers)
+2. Logit: common for binary outcomes
+3: Negative binomial: common four count data (allows for overdispersion, unlike the Poisson)
+4: Weibull: common for time-to-event or duration data, though we have many options here and Weibull might not be the best.
 
 ### Normal Linear
 
