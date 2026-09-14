@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>20&nbsp; Metropolis Algorithm – Modern Probability Modeling</title>
+<title>19&nbsp; Metropolis Algorithm – Modern Probability Modeling</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -85,7 +85,7 @@ div.csl-indent {
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
 <link href="../wk07/02-stan.html" rel="next">
-<link href="../wk06/04-duration-models.html" rel="prev">
+<link href="../wk06/03-ordered-logit.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -174,7 +174,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../wk07/01-metrop.html">Week 7</a></li><li class="breadcrumb-item"><a href="../wk07/01-metrop.html"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Metropolis</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../wk07/01-metrop.html">Week 7</a></li><li class="breadcrumb-item"><a href="../wk07/01-metrop.html"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Metropolis</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -362,14 +362,8 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../wk06/03-censoring.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Censoring</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../wk06/04-duration-models.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Duration Models</span></span></a>
+  <a href="../wk06/03-ordered-logit.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Ordered Logit</span></span></a>
   </div>
 </li>
       </ul>
@@ -386,19 +380,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../wk07/01-metrop.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Metropolis</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Metropolis</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../wk07/02-stan.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Stan</span></span></a>
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Stan</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../wk07/03-brms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">{brms}</span></span></a>
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">{brms}</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk07/04-multinomial-logit.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Multinomial Logit</span></span></a>
   </div>
 </li>
       </ul>
@@ -456,14 +456,14 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../appendicies/ordered.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">H</span>&nbsp; <span class="chapter-title">Ordered Logit</span></span></a>
+  <a href="../appendicies/censoring.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">H</span>&nbsp; <span class="chapter-title">Censoring</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../appendicies/unordered.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">I</span>&nbsp; <span class="chapter-title">Multinomial Logit</span></span></a>
+  <a href="../appendicies/duration-models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">I</span>&nbsp; <span class="chapter-title">Duration Models</span></span></a>
   </div>
 </li>
       </ul>
@@ -478,38 +478,38 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#algorithm-metropolis" id="toc-algorithm-metropolis" class="nav-link active" data-scroll-target="#algorithm-metropolis"><span class="header-section-number">20.1</span> Algorithm: Metropolis</a>
+  <li><a href="#algorithm-metropolis" id="toc-algorithm-metropolis" class="nav-link active" data-scroll-target="#algorithm-metropolis"><span class="header-section-number">19.1</span> Algorithm: Metropolis</a>
   <ul class="collapse">
-  <li><a href="#minimal-version" id="toc-minimal-version" class="nav-link" data-scroll-target="#minimal-version"><span class="header-section-number">20.1.1</span> Minimal version</a></li>
-  <li><a href="#some-features-added" id="toc-some-features-added" class="nav-link" data-scroll-target="#some-features-added"><span class="header-section-number">20.1.2</span> Some features added</a></li>
+  <li><a href="#minimal-version" id="toc-minimal-version" class="nav-link" data-scroll-target="#minimal-version"><span class="header-section-number">19.1.1</span> Minimal version</a></li>
+  <li><a href="#some-features-added" id="toc-some-features-added" class="nav-link" data-scroll-target="#some-features-added"><span class="header-section-number">19.1.2</span> Some features added</a></li>
   </ul></li>
-  <li><a href="#toothpaste-cap" id="toc-toothpaste-cap" class="nav-link" data-scroll-target="#toothpaste-cap"><span class="header-section-number">20.2</span> Toothpaste Cap</a>
+  <li><a href="#toothpaste-cap" id="toc-toothpaste-cap" class="nav-link" data-scroll-target="#toothpaste-cap"><span class="header-section-number">19.2</span> Toothpaste Cap</a>
   <ul class="collapse">
-  <li><a href="#burn-in" id="toc-burn-in" class="nav-link" data-scroll-target="#burn-in"><span class="header-section-number">20.2.1</span> Burn-in</a></li>
-  <li><a href="#hatr-or-r-hat" id="toc-hatr-or-r-hat" class="nav-link" data-scroll-target="#hatr-or-r-hat"><span class="header-section-number">20.2.2</span> <span class="math inline">\(\hat{R}\)</span> or R-hat</a></li>
-  <li><a href="#parallel" id="toc-parallel" class="nav-link" data-scroll-target="#parallel"><span class="header-section-number">20.2.3</span> Parallel</a></li>
-  <li><a href="#ess" id="toc-ess" class="nav-link" data-scroll-target="#ess"><span class="header-section-number">20.2.4</span> ESS</a></li>
-  <li><a href="#tuning-for-intuition" id="toc-tuning-for-intuition" class="nav-link" data-scroll-target="#tuning-for-intuition"><span class="header-section-number">20.2.5</span> Tuning for intuition</a></li>
+  <li><a href="#burn-in" id="toc-burn-in" class="nav-link" data-scroll-target="#burn-in"><span class="header-section-number">19.2.1</span> Burn-in</a></li>
+  <li><a href="#hatr-or-r-hat" id="toc-hatr-or-r-hat" class="nav-link" data-scroll-target="#hatr-or-r-hat"><span class="header-section-number">19.2.2</span> <span class="math inline">\(\hat{R}\)</span> or R-hat</a></li>
+  <li><a href="#parallel" id="toc-parallel" class="nav-link" data-scroll-target="#parallel"><span class="header-section-number">19.2.3</span> Parallel</a></li>
+  <li><a href="#ess" id="toc-ess" class="nav-link" data-scroll-target="#ess"><span class="header-section-number">19.2.4</span> ESS</a></li>
+  <li><a href="#tuning-for-intuition" id="toc-tuning-for-intuition" class="nav-link" data-scroll-target="#tuning-for-intuition"><span class="header-section-number">19.2.5</span> Tuning for intuition</a></li>
   </ul></li>
-  <li><a href="#sawtooth-prior" id="toc-sawtooth-prior" class="nav-link" data-scroll-target="#sawtooth-prior"><span class="header-section-number">20.3</span> Sawtooth Prior</a></li>
-  <li><a href="#logistic-regression" id="toc-logistic-regression" class="nav-link" data-scroll-target="#logistic-regression"><span class="header-section-number">20.4</span> Logistic Regression</a>
+  <li><a href="#sawtooth-prior" id="toc-sawtooth-prior" class="nav-link" data-scroll-target="#sawtooth-prior"><span class="header-section-number">19.3</span> Sawtooth Prior</a></li>
+  <li><a href="#logistic-regression" id="toc-logistic-regression" class="nav-link" data-scroll-target="#logistic-regression"><span class="header-section-number">19.4</span> Logistic Regression</a>
   <ul class="collapse">
-  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data"><span class="header-section-number">20.4.1</span> Data</a></li>
-  <li><a href="#log-posterior" id="toc-log-posterior" class="nav-link" data-scroll-target="#log-posterior"><span class="header-section-number">20.4.2</span> Log-Posterior</a></li>
-  <li><a href="#running-the-algorithm" id="toc-running-the-algorithm" class="nav-link" data-scroll-target="#running-the-algorithm"><span class="header-section-number">20.4.3</span> Running the Algorithm</a></li>
-  <li><a href="#comparing" id="toc-comparing" class="nav-link" data-scroll-target="#comparing"><span class="header-section-number">20.4.4</span> Comparing</a></li>
-  <li><a href="#quantities-of-interest" id="toc-quantities-of-interest" class="nav-link" data-scroll-target="#quantities-of-interest"><span class="header-section-number">20.4.5</span> Quantities of Interest</a></li>
+  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data"><span class="header-section-number">19.4.1</span> Data</a></li>
+  <li><a href="#log-posterior" id="toc-log-posterior" class="nav-link" data-scroll-target="#log-posterior"><span class="header-section-number">19.4.2</span> Log-Posterior</a></li>
+  <li><a href="#running-the-algorithm" id="toc-running-the-algorithm" class="nav-link" data-scroll-target="#running-the-algorithm"><span class="header-section-number">19.4.3</span> Running the Algorithm</a></li>
+  <li><a href="#comparing" id="toc-comparing" class="nav-link" data-scroll-target="#comparing"><span class="header-section-number">19.4.4</span> Comparing</a></li>
+  <li><a href="#quantities-of-interest" id="toc-quantities-of-interest" class="nav-link" data-scroll-target="#quantities-of-interest"><span class="header-section-number">19.4.5</span> Quantities of Interest</a></li>
   </ul></li>
-  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">20.5</span> Summary</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">19.5</span> Summary</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content page-columns page-full" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../wk07/01-metrop.html">Week 7</a></li><li class="breadcrumb-item"><a href="../wk07/01-metrop.html"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Metropolis</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../wk07/01-metrop.html">Week 7</a></li><li class="breadcrumb-item"><a href="../wk07/01-metrop.html"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Metropolis</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Metropolis Algorithm</span></h1>
+<h1 class="title"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Metropolis Algorithm</span></h1>
 </div>
 
 
@@ -528,8 +528,8 @@ window.Quarto = {
 
 <p>Previously, we used the rejection algorithm to build intuition about sampling from an unnormalized posterior. We showed that it can be easier to <em>sample from</em> a distribution than to work with closed-form results. The rejection algorithm is simple and intuitive, but requires (1) finding a suitable envelope constant and (2) rejecting many samples in realistic problems (e.g., logistic regression).</p>
 <p>We can improve the rejection algorithm by making <em>adaptive</em> proposals. Many algorithms—including Stan!—use addaptive proposals. The Metropolis algorithm is one example. The Metropolis algorithm belongs to a larger class of Markov chain Monte Carlo (MCMC) algorithms,<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> which includes Metropolis-Hastings, Gibbs sampling, and the Hamiltonian Monte Carlo algorithm used by Stan.</p>
-<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;MCMC refers to a family of algorithms for generating samples from a target probability distribution by constructing a Markov chain whose stationary distribution is that target. Over many iterations, the samples produced by the chain approximate independent draws from the posterior distribution, allowing us to estimate quantities such as means, variances, and credible intervals even when the posterior cannot be computed analytically.</p></div></div><section id="algorithm-metropolis" class="level2 page-columns page-full" data-number="20.1">
-<h2 data-number="20.1" class="anchored" data-anchor-id="algorithm-metropolis"><span class="header-section-number">20.1</span> Algorithm: Metropolis</h2>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;MCMC refers to a family of algorithms for generating samples from a target probability distribution by constructing a Markov chain whose stationary distribution is that target. Over many iterations, the samples produced by the chain approximate independent draws from the posterior distribution, allowing us to estimate quantities such as means, variances, and credible intervals even when the posterior cannot be computed analytically.</p></div></div><section id="algorithm-metropolis" class="level2 page-columns page-full" data-number="19.1">
+<h2 data-number="19.1" class="anchored" data-anchor-id="algorithm-metropolis"><span class="header-section-number">19.1</span> Algorithm: Metropolis</h2>
 <p><em>Inputs:</em></p>
 <ul>
 <li>The unnormalized log-posterior <span class="math inline">\(\log f(\theta\mid y)\)</span>.</li>
@@ -549,8 +549,8 @@ window.Quarto = {
 </ul>
 <div class="no-row-height column-margin column-container"><div id="fn2"><p><sup>2</sup>&nbsp;Importantly, this accepts with probability equal to <span class="math inline">\(\frac{f(\text{proposal})}{f(\text{current})\)</span> if the ratio is between zero and one and always if the ratio is greater than one. This step is similar to the rejection algorithm, except we keep the current value in the rejected values place in Metropolis.</p></div></div><p><em>Output:</em> A Markov chain <span class="math inline">\(\{\theta^{(s)}\}_{s=1}^S\)</span> with stationary distribution <span class="math inline">\(f(\theta\mid y)\)</span>. Consecutive draws are not independent; in practice, discard a burn-in and tune <span class="math inline">\(\tau\)</span> to maintain a reasonable acceptance rate (perhaps 0.2-0.5, problem-dependent).</p>
 <p>We can write this algorithm in R.</p>
-<section id="minimal-version" class="level3" data-number="20.1.1">
-<h3 data-number="20.1.1" class="anchored" data-anchor-id="minimal-version"><span class="header-section-number">20.1.1</span> Minimal version</h3>
+<section id="minimal-version" class="level3" data-number="19.1.1">
+<h3 data-number="19.1.1" class="anchored" data-anchor-id="minimal-version"><span class="header-section-number">19.1.1</span> Minimal version</h3>
 <p>The version below has only the critical pieces.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>metrop <span class="ot">&lt;-</span> <span class="cf">function</span>(logf, theta_start, <span class="at">S =</span> <span class="dv">10000</span>, <span class="at">tau =</span> <span class="fl">0.1</span>, ...) {</span>
@@ -588,8 +588,8 @@ window.Quarto = {
 <span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="some-features-added" class="level3" data-number="20.1.2">
-<h3 data-number="20.1.2" class="anchored" data-anchor-id="some-features-added"><span class="header-section-number">20.1.2</span> Some features added</h3>
+<section id="some-features-added" class="level3" data-number="19.1.2">
+<h3 data-number="19.1.2" class="anchored" data-anchor-id="some-features-added"><span class="header-section-number">19.1.2</span> Some features added</h3>
 <p>The version below adds a few features, like a helpful message and an optional progress bar.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>metrop <span class="ot">&lt;-</span> <span class="cf">function</span>(logf, theta_start, <span class="at">S =</span> <span class="dv">10000</span>, <span class="at">tau =</span> <span class="fl">0.1</span>, <span class="at">progress_bar =</span> <span class="cn">FALSE</span>, ...) {</span>
@@ -661,8 +661,8 @@ window.Quarto = {
 </div>
 </section>
 </section>
-<section id="toothpaste-cap" class="level2" data-number="20.2">
-<h2 data-number="20.2" class="anchored" data-anchor-id="toothpaste-cap"><span class="header-section-number">20.2</span> Toothpaste Cap</h2>
+<section id="toothpaste-cap" class="level2" data-number="19.2">
+<h2 data-number="19.2" class="anchored" data-anchor-id="toothpaste-cap"><span class="header-section-number">19.2</span> Toothpaste Cap</h2>
 <p>This example has a known analytical solution. For <span class="math inline">\(k=8\)</span> and <span class="math inline">\(N=150\)</span>, the posterior is <span class="math inline">\(\text{beta}(11,165)\)</span>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create log-target for Beta posterior; -Inf outside (0,1)</span></span>
@@ -711,8 +711,8 @@ window.Quarto = {
 <li>The samples are <strong>not independent</strong>. Many consecutive draws are identical (rejections) or move only a little; the chain <strong>explores the target slowly</strong>.</li>
 <li>It takes a few iterations for the chain to reach the high-probability region (burn-in). Starting at <span class="math inline">\(\pi=0.5\)</span> is far from the posterior mass; it takes roughly a few dozen iterations to reach <span class="math inline">\(\approx 0.1\)</span>.</li>
 </ol>
-<section id="burn-in" class="level3" data-number="20.2.1">
-<h3 data-number="20.2.1" class="anchored" data-anchor-id="burn-in"><span class="header-section-number">20.2.1</span> Burn-in</h3>
+<section id="burn-in" class="level3" data-number="19.2.1">
+<h3 data-number="19.2.1" class="anchored" data-anchor-id="burn-in"><span class="header-section-number">19.2.1</span> Burn-in</h3>
 <p>The MCMC samples are heavily dependent on the starting values, so discard early samples that depend strongly on the starting value (the “burn-in”). Discarding the first 10% to 50% of the samples is typical.</p>
 <p>Rather than use all the samples (including our chosen starting value) to compute the posterior mean, let’s use only the last 5,000 samples.</p>
 <div class="cell">
@@ -723,8 +723,8 @@ window.Quarto = {
 </div>
 </div>
 </section>
-<section id="hatr-or-r-hat" class="level3" data-number="20.2.2">
-<h3 data-number="20.2.2" class="anchored" data-anchor-id="hatr-or-r-hat"><span class="header-section-number">20.2.2</span> <span class="math inline">\(\hat{R}\)</span> or R-hat</h3>
+<section id="hatr-or-r-hat" class="level3" data-number="19.2.2">
+<h3 data-number="19.2.2" class="anchored" data-anchor-id="hatr-or-r-hat"><span class="header-section-number">19.2.2</span> <span class="math inline">\(\hat{R}\)</span> or R-hat</h3>
 <p>But how do we know how long to run our algorithms? How do we know if the samples have converged to the target distribution. Until recently, this was a difficult problem. Now we simply quickly check that R-hat is less than 1.01.</p>
 <p>To compute R-hat, run several chains from overdispersed starting values. It is importantly that these be high and low relevative to the target distribution. If chains have converged, within- and between-chain variation align and <span class="math inline">\(\hat{R}\approx 1\)</span>. The literature and practices on R-hat are evolving rapidly; see <code>?posterior::rhat</code> for the latest references.</p>
 <p>For example, we can run the algorithm for 25 iterations and see that R-hat is much larger than 1.01.</p>
@@ -772,8 +772,8 @@ window.Quarto = {
 </div>
 </div>
 </section>
-<section id="parallel" class="level3" data-number="20.2.3">
-<h3 data-number="20.2.3" class="anchored" data-anchor-id="parallel"><span class="header-section-number">20.2.3</span> Parallel</h3>
+<section id="parallel" class="level3" data-number="19.2.3">
+<h3 data-number="19.2.3" class="anchored" data-anchor-id="parallel"><span class="header-section-number">19.2.3</span> Parallel</h3>
 <p>Multiple chains are naturally parallelizable. In fact, these are called “embarrassingly parallel,” because the chains are run entirely independently—nothing from the first chain is needed for the second, and so on.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># count physical cores (leave some free)</span></span>
@@ -853,8 +853,8 @@ window.Quarto = {
 </div>
 </div>
 </section>
-<section id="ess" class="level3" data-number="20.2.4">
-<h3 data-number="20.2.4" class="anchored" data-anchor-id="ess"><span class="header-section-number">20.2.4</span> ESS</h3>
+<section id="ess" class="level3" data-number="19.2.4">
+<h3 data-number="19.2.4" class="anchored" data-anchor-id="ess"><span class="header-section-number">19.2.4</span> ESS</h3>
 <p>Dependent Metropolis samples carry less information than the same number of independent samples. The Effective Sample Size (ESS) summarizes the amount of information in our dependent samples—“our dependent samples are like ______ independent samples.” The literature and practices on ESS are evolving rapidly; see <code>?posterior::ess_bulk</code> for the latest references.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(matrix_of_chains)  <span class="co"># 15,000 x 4 = 60,000 samples</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -872,8 +872,8 @@ window.Quarto = {
 </div>
 </div>
 </section>
-<section id="tuning-for-intuition" class="level3" data-number="20.2.5">
-<h3 data-number="20.2.5" class="anchored" data-anchor-id="tuning-for-intuition"><span class="header-section-number">20.2.5</span> Tuning for intuition</h3>
+<section id="tuning-for-intuition" class="level3" data-number="19.2.5">
+<h3 data-number="19.2.5" class="anchored" data-anchor-id="tuning-for-intuition"><span class="header-section-number">19.2.5</span> Tuning for intuition</h3>
 <p>The tuning parameter matters a lot. I’ve chosen a smart default for many problems, but the value of <code>tau</code> should be something like the SD of the posterior. Below, we can see how “bad” values of <code>tau</code> work.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># varying the tuning parameter tau</span></span>
@@ -897,8 +897,8 @@ window.Quarto = {
 </div>
 </section>
 </section>
-<section id="sawtooth-prior" class="level2" data-number="20.3">
-<h2 data-number="20.3" class="anchored" data-anchor-id="sawtooth-prior"><span class="header-section-number">20.3</span> Sawtooth Prior</h2>
+<section id="sawtooth-prior" class="level2" data-number="19.3">
+<h2 data-number="19.3" class="anchored" data-anchor-id="sawtooth-prior"><span class="header-section-number">19.3</span> Sawtooth Prior</h2>
 <p>We can use the Metropolis algorithm for our “weird” sawtooth posterior. We’ll the log-posterior in this case.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># sawtooth log-prior (unnormalized): log of ((n_teeth*p) %% 1) on (0,1)</span></span>
@@ -934,10 +934,10 @@ window.Quarto = {
 </div>
 </div>
 </section>
-<section id="logistic-regression" class="level2 page-columns page-full" data-number="20.4">
-<h2 data-number="20.4" class="anchored" data-anchor-id="logistic-regression"><span class="header-section-number">20.4</span> Logistic Regression</h2>
-<section id="data" class="level3 page-columns page-full" data-number="20.4.1">
-<h3 data-number="20.4.1" class="anchored" data-anchor-id="data"><span class="header-section-number">20.4.1</span> Data</h3>
+<section id="logistic-regression" class="level2 page-columns page-full" data-number="19.4">
+<h2 data-number="19.4" class="anchored" data-anchor-id="logistic-regression"><span class="header-section-number">19.4</span> Logistic Regression</h2>
+<section id="data" class="level3 page-columns page-full" data-number="19.4.1">
+<h3 data-number="19.4.1" class="anchored" data-anchor-id="data"><span class="header-section-number">19.4.1</span> Data</h3>
 <p>Recall the logit model from a previous chapter. This time, let’s rescale the numeric variables to have mean of zero and SD of 0.5 This keeps coefficients on a similar scale, which helps us with the computation. For more on this rescaling strategy and it’s advantages, see <span class="citation" data-cites="gelman2008">Gelman (<a href="#ref-gelman2008" role="doc-biblioref">2008</a>)</span>.</p>
 <div class="no-row-height column-margin column-container"><div id="ref-gelman2008" class="csl-entry" role="listitem">
 Gelman, Andrew. 2008. <span>“Scaling Regression Inputs by Dividing by Two Standard Deviations.”</span> <em>Statistics in Medicine</em> 27 (15): 2865–73. <a href="https://doi.org/10.1002/sim.3107">https://doi.org/10.1002/sim.3107</a>.
@@ -987,8 +987,8 @@ racewhite   0.2508   0.1465
 </div>
 </div>
 </section>
-<section id="log-posterior" class="level3" data-number="20.4.2">
-<h3 data-number="20.4.2" class="anchored" data-anchor-id="log-posterior"><span class="header-section-number">20.4.2</span> Log-Posterior</h3>
+<section id="log-posterior" class="level3" data-number="19.4.2">
+<h3 data-number="19.4.2" class="anchored" data-anchor-id="log-posterior"><span class="header-section-number">19.4.2</span> Log-Posterior</h3>
 <p>Now define the unnormalized log-posterior. For this example, we imagine an improper, constant prior.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># make X and y</span></span>
@@ -1011,8 +1011,8 @@ racewhite   0.2508   0.1465
 <span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="running-the-algorithm" class="level3" data-number="20.4.3">
-<h3 data-number="20.4.3" class="anchored" data-anchor-id="running-the-algorithm"><span class="header-section-number">20.4.3</span> Running the Algorithm</h3>
+<section id="running-the-algorithm" class="level3" data-number="19.4.3">
+<h3 data-number="19.4.3" class="anchored" data-anchor-id="running-the-algorithm"><span class="header-section-number">19.4.3</span> Running the Algorithm</h3>
 <p>After some experimenting, I found that I 100,000 iterations with a 20,000 iteration burn-in works well.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set seed</span></span>
@@ -1205,8 +1205,8 @@ racewhite   0.2508   0.1465
 </div>
 </div>
 </section>
-<section id="comparing" class="level3" data-number="20.4.4">
-<h3 data-number="20.4.4" class="anchored" data-anchor-id="comparing"><span class="header-section-number">20.4.4</span> Comparing</h3>
+<section id="comparing" class="level3" data-number="19.4.4">
+<h3 data-number="19.4.4" class="anchored" data-anchor-id="comparing"><span class="header-section-number">19.4.4</span> Comparing</h3>
 <p>Finally, we can compare the posterior mean and 95% credible intervals to the ML estimate and 95% Wald confidence intervals. They are almost identical.</p>
 <div class="cell">
 <div class="cell-output-display">
@@ -1218,8 +1218,8 @@ racewhite   0.2508   0.1465
 </div>
 </div>
 </section>
-<section id="quantities-of-interest" class="level3 page-columns page-full" data-number="20.4.5">
-<h3 data-number="20.4.5" class="anchored" data-anchor-id="quantities-of-interest"><span class="header-section-number">20.4.5</span> Quantities of Interest</h3>
+<section id="quantities-of-interest" class="level3 page-columns page-full" data-number="19.4.5">
+<h3 data-number="19.4.5" class="anchored" data-anchor-id="quantities-of-interest"><span class="header-section-number">19.4.5</span> Quantities of Interest</h3>
 <p>To compute a quantity of interest, we need to use our Bayesian invariance property. We need to transform, then summarize, the simulations.</p>
 <p>Here’s an example of the first difference for a “typical” case.</p>
 <div class="cell">
@@ -1288,8 +1288,8 @@ Comparison: 0.5 - -0.5</code></pre>
 </div>
 </div></div></section>
 </section>
-<section id="summary" class="level2" data-number="20.5">
-<h2 data-number="20.5" class="anchored" data-anchor-id="summary"><span class="header-section-number">20.5</span> Summary</h2>
+<section id="summary" class="level2" data-number="19.5">
+<h2 data-number="19.5" class="anchored" data-anchor-id="summary"><span class="header-section-number">19.5</span> Summary</h2>
 <p>There are three important points in this chapter.</p>
 <p><strong>MCMC</strong></p>
 <p>MCMC offers a powerful and general way to sample from an unnormalized (log-)posterior. The Metropolis algorithm is one such method. Hamiltonian Monte Carlo (HMC) via Stan is even better.</p>
@@ -1731,13 +1731,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../wk06/04-duration-models.html" class="pagination-link" aria-label="Duration Models">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Duration Models</span></span>
+      <a href="../wk06/03-ordered-logit.html" class="pagination-link" aria-label="Ordered Logit">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Ordered Logit</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="../wk07/02-stan.html" class="pagination-link" aria-label="Stan">
-        <span class="nav-page-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Stan</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Stan</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

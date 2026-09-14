@@ -50,7 +50,7 @@ div.csl-indent {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../appendicies/ordered.html" rel="next">
+<link href="../appendicies/censoring.html" rel="next">
 <link href="../wk01/probability.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -328,14 +328,8 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../wk06/03-censoring.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Censoring</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../wk06/04-duration-models.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Duration Models</span></span></a>
+  <a href="../wk06/03-ordered-logit.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Ordered Logit</span></span></a>
   </div>
 </li>
       </ul>
@@ -352,19 +346,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../wk07/01-metrop.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Metropolis</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Metropolis</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../wk07/02-stan.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Stan</span></span></a>
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Stan</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../wk07/03-brms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">{brms}</span></span></a>
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">{brms}</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk07/04-multinomial-logit.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Multinomial Logit</span></span></a>
   </div>
 </li>
       </ul>
@@ -422,14 +422,14 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../appendicies/ordered.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">H</span>&nbsp; <span class="chapter-title">Ordered Logit</span></span></a>
+  <a href="../appendicies/censoring.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">H</span>&nbsp; <span class="chapter-title">Censoring</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../appendicies/unordered.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">I</span>&nbsp; <span class="chapter-title">Multinomial Logit</span></span></a>
+  <a href="../appendicies/duration-models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">I</span>&nbsp; <span class="chapter-title">Duration Models</span></span></a>
   </div>
 </li>
       </ul>
@@ -477,7 +477,7 @@ window.Quarto = {
 </header>
 
 
-<p>This is a course on probability models. A commonly referenced subset of these models are referred to as generalized linear models or GLMs. Because GLMs are commonly referenced, it’s worth understanding the theory. But for our purposes, there isn’t a practical difference between probability models that are GLMs and probabilities models that are not GLMs.</p>
+<p>This is a course on probability models. A commonly referenced subset of these models are referred to as generalized linear models or GLMs. Because GLMs are commonly referenced, it’s worth understanding the theory. But for our purposes, there isn’t a practical difference between probability models that are GLMs and probability models that are not GLMs.</p>
 <p>In fact, some use the term “GLM” to mean probability models broadly, not just those models covered in the theory below.<br>
 </p>
 <p><img src="images/clipboard-1034886583.png" class="img-fluid" style="width:50.0%"><br>
@@ -491,26 +491,27 @@ Gill, Jeff, and Michelle Torres. 2019. <em>Generalized Linear Models: A Unified 
 <ol type="1">
 <li><strong>Random component.</strong> <span class="math inline">\(y_i\)</span> follows a distribution in the exponential family.</li>
 <li><strong>Systematic component.</strong> Linear predictor <span class="math inline">\(\eta_i = X_i\beta\)</span>.</li>
-<li><strong>Link function.</strong> Monotone map <span class="math inline">\(g(\mu_i) = \eta_i\)</span> with <span class="math inline">\(\mu_i = \mathbb{E}(Y_i)\)</span>.</li>
+<li><strong>Link function.</strong> Monotone map <span class="math inline">\(g(\mu_i) = \eta_i\)</span> with <span class="math inline">\(\mu_i = E(Y_i)\)</span>.</li>
 </ol>
 <section id="exponential-families" class="level2" data-number="G.1">
 <h2 data-number="G.1" class="anchored" data-anchor-id="exponential-families"><span class="header-section-number">G.1</span> Exponential families</h2>
 <p>A density/pmf is in the <strong>exponential family</strong> if it can be written</p>
 <p><span class="math display">\[
-f(y\mid \theta,\phi)
+f(y; \theta,\phi)
 =\exp\!\left\{\frac{y\theta - b(\theta)}{a(\phi)} + c(y,\phi)\right\}.
 \]</span></p>
 <ul>
 <li><span class="math inline">\(\theta\)</span>: canonical parameter</li>
 <li><span class="math inline">\(\phi\)</span>: dispersion parameter</li>
-<li><span class="math inline">\(\mu = \mathbb{E}(Y) = b'(\theta)\)</span></li>
+<li><span class="math inline">\(\mu = E(Y) = b'(\theta)\)</span></li>
 <li><span class="math inline">\(\operatorname{Var}(Y) = b''(\theta)\,a(\phi)\)</span></li>
 </ul>
-<p>If we choose <span class="math inline">\(g(\mu)\)</span> so that the linear predictor <span class="math inline">\(X_i \beta\)</span> equals the canonical parameter <span class="math inline">\(\eta_i\)</span>, then we say that <span class="math inline">\(g(\cdot)\)</span> is the <em>canonical link.</em> Canonical links simplify the score equations and IRWLS weights, but are not required in practice.</p>
+<p>For the models we use, <span class="math inline">\(a(\phi) = \phi\)</span>, so I write <span class="math inline">\(\phi\)</span> rather than <span class="math inline">\(a(\phi)\)</span> below.</p>
+<p>If we choose <span class="math inline">\(g(\mu)\)</span> so that the linear predictor <span class="math inline">\(\eta_i = X_i \beta\)</span> equals the canonical parameter <span class="math inline">\(\theta_i\)</span>, then we say that <span class="math inline">\(g(\cdot)\)</span> is the <em>canonical link.</em> Canonical links simplify the score equations and IRLS weights, but are not required in practice.</p>
 <section id="core-examples" class="level3" data-number="G.1.1">
 <h3 data-number="G.1.1" class="anchored" data-anchor-id="core-examples"><span class="header-section-number">G.1.1</span> Core examples</h3>
-<p><strong>Logistic regression.</strong> <span class="math inline">\(Y_i \sim \operatorname{Bernoulli}(\pi_i)\)</span> with canonical link <span class="math inline">\(g(\pi_i)=\log\!\dfrac{\pi_i}{1-\pi_i}=X_i\beta\)</span>.</p>
-<p><strong>Poisson regression (counts).</strong> <span class="math inline">\(Y_i \sim \operatorname{Poisson}(\lambda_i)\)</span> with canonical link <span class="math inline">\(g(\lambda_i)=\log\lambda_i=X_i\beta\)</span>.</p>
+<p><strong>Logistic regression.</strong> <span class="math inline">\(Y_i \sim \text{Bernoulli}(\pi_i)\)</span> with canonical link <span class="math inline">\(g(\pi_i)=\log\!\dfrac{\pi_i}{1-\pi_i}=X_i\beta\)</span>.</p>
+<p><strong>Poisson regression (counts).</strong> <span class="math inline">\(Y_i \sim \text{Poisson}(\lambda_i)\)</span> with canonical link <span class="math inline">\(g(\lambda_i)=\log\lambda_i=X_i\beta\)</span>.</p>
 </section>
 <section id="negative-binomial-edge-case" class="level3" data-number="G.1.2">
 <h3 data-number="G.1.2" class="anchored" data-anchor-id="negative-binomial-edge-case"><span class="header-section-number">G.1.2</span> Negative binomial edge case</h3>
@@ -568,17 +569,17 @@ f(y\mid \theta,\phi)
 <ul>
 <li>Working response: <span class="math inline">\(z_i = \eta_i + (y_i-\mu_i)\dfrac{d\eta_i}{d\mu_i}\)</span>.<br>
 </li>
-<li>Weights: <span class="math inline">\(w_i = \dfrac{1}{\phi}\left(\dfrac{d\mu_i}{d\eta_i}\right)^2 \big/ V(\mu_i)\)</span>.<br>
+<li>Weights: <span class="math inline">\(w_i = \left(\dfrac{d\mu_i}{d\eta_i}\right)^2 \big/ V(\mu_i)\)</span>.<br>
 </li>
 <li>Update: <span class="math inline">\(\hat\beta \leftarrow (X^\top W X)^{-1} X^\top W z\)</span>.</li>
 </ul>
 <p>Repeat until convergence.</p>
-<p>This algorithm is historically important, but happens “behind the scenes” in modern computation. It’s more conceptually useful to imagine a generic gradient ascent algorithm applied to directly to the multidimensional log-likelihood.</p>
+<p>This algorithm is historically important, but happens “behind the scenes” in modern computation. It’s more conceptually useful to imagine a generic gradient ascent algorithm applied directly to the multidimensional log-likelihood.</p>
 </section>
 <section id="expected-fisher-information" class="level2" data-number="G.3">
 <h2 data-number="G.3" class="anchored" data-anchor-id="expected-fisher-information"><span class="header-section-number">G.3</span> Expected Fisher information</h2>
-<p>At the MLE, <span class="math inline">\(\mathcal{I}(\beta) = \tfrac{1}{\phi} X^\top W X\)</span>. This looks very similar to the weighted cross-product matrix used in the IRLS updating step. There’s a connection here. IRLS arises from applying Newton–Raphson to the gradient of the log-likelihood, and the Hessian of the log-likelihood (whose expectation is the Fisher information) uses the same <span class="math inline">\(W\)</span> matrix.</p>
-<p>As an interesting result, the weights <span class="math inline">\(W\)</span> indicate both the direction of the iterative updates and the curvature of the likelihood surface. When the algorithm has converged, the final <span class="math inline">\(X^\top W X\)</span> approximates the covariance matrix for <span class="math inline">\(\hat\beta\)</span>.</p>
+<p>At the MLE, <span class="math inline">\(\mathcal{I}(\beta) = \tfrac{1}{\phi} X^\top W X\)</span>. This looks very similar to the weighted cross-product matrix used in the IRLS updating step. There’s a connection here. IRLS arises from applying Newton–Raphson to the gradient of the log-likelihood, and the Hessian of the log-likelihood (whose negative expectation is the Fisher information) uses the same <span class="math inline">\(W\)</span> matrix.</p>
+<p>As an interesting result, the weights <span class="math inline">\(W\)</span> indicate both the direction of the iterative updates and the curvature of the likelihood surface. When the algorithm has converged, <span class="math inline">\(\phi\,(X^\top W X)^{-1}\)</span> approximates the covariance matrix for <span class="math inline">\(\hat\beta\)</span>.</p>
 
 
 
@@ -1009,8 +1010,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../appendicies/ordered.html" class="pagination-link" aria-label="Ordered Logit">
-        <span class="nav-page-text"><span class="chapter-number">H</span>&nbsp; <span class="chapter-title">Ordered Logit</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../appendicies/censoring.html" class="pagination-link" aria-label="Censoring">
+        <span class="nav-page-text"><span class="chapter-number">H</span>&nbsp; <span class="chapter-title">Censoring</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

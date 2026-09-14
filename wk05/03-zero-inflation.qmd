@@ -108,11 +108,11 @@ z_i \cdot \log\big( \pi_i + (1 - \pi_i) f(0; \mu_i, \theta) \big)
 \Bigg\}.
 $$
 
-We can imagine that $\pi_i = \text{logit}^{-1}(Z\gamma)$ and $\mu_i = \exp(X\beta)$, with $\theta$ modeled as in a standard negative binomial regression.
+We can imagine that $\pi_i = \operatorname{logit}^{-1}(Z\gamma)$ and $\mu_i = \exp(X\beta)$, with $\theta$ modeled as in a standard negative binomial regression.
 
 ### In R
 
-We can fit the zero-inflated negative binomial using the `glmmTMB()` function in R. Create the design matrix X with `formula` (for $\mu_i = \exp (X\beta)$) and the design matrix `Z` with `ziformula` (for $\pi_i = \text{logit}^{-1} (Z\gamma)$). The family `nbinom2` specifies the negative binomial with variance $\mu + \mu^2/\theta$ (which matrix `MASS::glm.nb()`)
+We can fit the zero-inflated negative binomial using the `glmmTMB()` function in R. Create the design matrix X with `formula` (for $\mu_i = \exp (X\beta)$) and the design matrix `Z` with `ziformula` (for $\pi_i = \operatorname{logit}^{-1} (Z\gamma)$). The family `nbinom2` specifies the negative binomial with variance $\mu + \mu^2/\theta$ (which matrix `MASS::glm.nb()`)
 
 - `glmmTMB()` has a `simulate()` method to simulate from the predictive distribution.
 - `glmTMB()` works well with {marginaleffects}.
@@ -152,7 +152,7 @@ bind_cols(sant, zinb_sims) |>
   geom_histogram(center = 0, binwidth = 1)
 ```
 
-#### $\pi_i = \text{logit}^{-1}(X\beta)$
+#### $\pi_i = \operatorname{logit}^{-1}(X\beta)$
 
 ```{r}
 #| message: false

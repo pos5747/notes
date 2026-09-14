@@ -362,14 +362,8 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../wk06/03-censoring.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Censoring</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../wk06/04-duration-models.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Duration Models</span></span></a>
+  <a href="../wk06/03-ordered-logit.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Ordered Logit</span></span></a>
   </div>
 </li>
       </ul>
@@ -386,19 +380,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../wk07/01-metrop.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Metropolis</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Metropolis</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../wk07/02-stan.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Stan</span></span></a>
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Stan</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../wk07/03-brms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">{brms}</span></span></a>
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">{brms}</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk07/04-multinomial-logit.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Multinomial Logit</span></span></a>
   </div>
 </li>
       </ul>
@@ -456,14 +456,14 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../appendicies/ordered.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">H</span>&nbsp; <span class="chapter-title">Ordered Logit</span></span></a>
+  <a href="../appendicies/censoring.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">H</span>&nbsp; <span class="chapter-title">Censoring</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../appendicies/unordered.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">I</span>&nbsp; <span class="chapter-title">Multinomial Logit</span></span></a>
+  <a href="../appendicies/duration-models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">I</span>&nbsp; <span class="chapter-title">Duration Models</span></span></a>
   </div>
 </li>
       </ul>
@@ -539,7 +539,7 @@ window.Quarto = {
 \]</span></p>
 <p>We use formulas to specify the columns of the design matrix in the normal linear model.</p>
 <p>A formula has a LHS (left-hand side) and a RHS separated by a <code>~</code>. The LHS indicates the outcome and the RHS indicates the predictors. The RHS determines the columns of the linear predictor. The operator <code>+</code> adds predictors. By default, an intercept (a column of 1’s) is included.</p>
-<p>For the linear regression above, we would use the formula <code>y ~ x1 + x2</code></p>
+<p>For the linear regression above, we would use the formula <code>y ~ x1 + x2</code>.</p>
 <section id="model.matrix-examples" class="level3" data-number="10.1.1">
 <h3 data-number="10.1.1" class="anchored" data-anchor-id="model.matrix-examples"><span class="header-section-number">10.1.1</span> <code>model.matrix()</code> examples</h3>
 <p>Throughout these examples, I use the <code>penguins</code> data set from the {palmerpenguins} R package. For more, see <code>?palmerpenguins::penguins</code> or the <a href="https://allisonhorst.github.io/palmerpenguins/">website for the package</a>.</p>
@@ -609,7 +609,7 @@ $ year              &lt;int&gt; 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007, 
 </section>
 <section id="removing-the-intercept" class="level4" data-number="10.1.1.3">
 <h4 data-number="10.1.1.3" class="anchored" data-anchor-id="removing-the-intercept"><span class="header-section-number">10.1.1.3</span> Removing the intercept</h4>
-<p>An intercept (or column of ones) is added to the design matrix by default. You can remove the intercetp by adding <code>-1</code> or <code>+ 0</code> to the formula.</p>
+<p>An intercept (or column of ones) is added to the design matrix by default. You can remove the intercept by adding <code>-1</code> or <code>+ 0</code> to the formula.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="er">~</span> <span class="sc">-</span><span class="dv">1</span> <span class="sc">+</span> flipper_length_mm <span class="sc">+</span> body_mass_g</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(f, <span class="at">data =</span> penguins)</span>
@@ -787,7 +787,7 @@ $ year              &lt;int&gt; 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007, 
 <pre><code>[1] "Adelie"    "Chinstrap" "Gentoo"   </code></pre>
 </div>
 </div>
-<p>A formula with <code>species</code> on the right-hand side makes a design matrix with two an intercept and two indicators. One indicator variable is for Chinstrap penguins; the other is for Gentoo penguins. Adelie penguins are the reference (i.e., left-out) category.</p>
+<p>A formula with <code>species</code> on the right-hand side makes a design matrix with an intercept and two indicators. One indicator variable is for Chinstrap penguins; the other is for Gentoo penguins. Adelie penguins are the reference (i.e., left-out) category.</p>
 <p>The coefficients for <code>speciesChinstrap</code> and <code>speciesGentoo</code> are the changes in <span class="math inline">\(\mu_i\)</span> for Chinstrap and Gentoo penguins relative to Adelie penguins, respectively.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="er">~</span> species</span>
@@ -838,7 +838,7 @@ $ year              &lt;int&gt; 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007, 
 6           1             1                0               181</code></pre>
 </div>
 </div>
-<p>The resulting design matrix includes columns for the intercept, the dummy variables for <code>species</code>, and the continuous predictor. The coefficients on the indicators have the same interpretation variables represent differences between species, but now “holding flipper length constant.”</p>
+<p>The resulting design matrix includes columns for the intercept, the dummy variables for <code>species</code>, and the continuous predictor. The coefficients on the indicator variables represent differences between species, but now “holding flipper length constant.”</p>
 </section>
 </section>
 <section id="lm-examples-1" class="level3" data-number="10.2.2">
@@ -1053,14 +1053,14 @@ $ year              &lt;int&gt; 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007, 
 </section>
 <section id="polynomials" class="level2 page-columns page-full" data-number="10.3">
 <h2 data-number="10.3" class="anchored" data-anchor-id="polynomials"><span class="header-section-number">10.3</span> Polynomials</h2>
-<p>Sometimes the we suspect the effect of a variable on the outcome is not linear. To allow nonlinear effects, we can include polynomial terms of the predictor in the design matrix. For example, we can use the quadratic model</p>
+<p>Sometimes we suspect the effect of a variable on the outcome is not linear. To allow nonlinear effects, we can include polynomial terms of the predictor in the design matrix. For example, we can use the quadratic model</p>
 <p><span class="math display">\[
 \mu_i = \beta_0 + \beta_1 x_i + \beta_2 x_i^2.
 \]</span></p>
 <p>Here the effect of <span class="math inline">\(x_i\)</span> depends on its value—<span class="math inline">\(\frac{d \mu_i}{d x_i} = \beta_1 + 2\beta_2 x_i\)</span>. We can build the design matrix easily with formulas and the <code>poly()</code> function.</p>
 <section id="orthogonal-and-raw-polynomials" class="level3 page-columns page-full" data-number="10.3.1">
 <h3 data-number="10.3.1" class="anchored" data-anchor-id="orthogonal-and-raw-polynomials"><span class="header-section-number">10.3.1</span> Orthogonal and raw polynomials</h3>
-<p>The function <code>poly()</code> creates polynomial terms. By default, it produces <em>orthogonal polynomials</em>, which are linear combinations of <span class="math inline">\(x, x^2, x^3, ...\)</span>, that are uncorrelated.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> If we set <code>raw = TRUE</code>, <code>poly()</code> returns the raw powers of <span class="math inline">\(x\)</span> (i.e, <span class="math inline">\(x = 3\)</span> becomes <span class="math inline">\(x^2 = 9\)</span>). The raw powers are easier to interpret directly when they appear in regression tables but can sometimes cause problems for computation.</p>
+<p>The function <code>poly()</code> creates polynomial terms. By default, it produces <em>orthogonal polynomials</em>, which are linear combinations of <span class="math inline">\(x, x^2, x^3, ...\)</span>, that are uncorrelated.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> If we set <code>raw = TRUE</code>, <code>poly()</code> returns the raw powers of <span class="math inline">\(x\)</span> (i.e., <span class="math inline">\(x = 3\)</span> becomes <span class="math inline">\(x^2 = 9\)</span>). The raw powers are easier to interpret directly when they appear in regression tables but can sometimes cause problems for computation.</p>
 <div class="no-row-height column-margin column-container"><div id="fn2"><p><sup>2</sup>&nbsp;These uncorrelated variables are created using the Gram–Schmidt process. Orthogonal polynomials are helpful because they reduce multicollinearity. Less multicollinearly makes numerical optimization routines (e.g., Newton–Raphson) more robust and MCMC samplers mix more efficiently. Raw powers can lead to high multicollinearity and cause problems for our computational procedures. However, these transformed variables do not have the same interpretation.</p></div></div><p><strong>Recommendation:</strong> I recommend using <code>raw = TRUE</code> if you are reporting results in a regression table, unless these cause numerical problems. However, it usually doesn’t matter. First, we <em>usually</em> process our results in a way that means our interpretation is the same with <code>raw = FALSE</code> and <code>raw = TRUE</code>. Second, numerical routines are really good, so <code>raw = FALSE</code> doesn’t usually lead to problems.</p>
 </section>
 <section id="model.matrix-examples-2" class="level3" data-number="10.3.2">
@@ -1101,7 +1101,7 @@ $ year              &lt;int&gt; 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007, 
 6                                   32761</code></pre>
 </div>
 </div>
-<p>With orthogonal polynomials, the columns are not <span class="math inline">\(x\)</span> and <span class="math inline">\(x^2\)</span> but to uncorrelated combinations of them. With raw polynomials, the columns are <span class="math inline">\(x\)</span> and <span class="math inline">\(x^2\)</span> exactly.</p>
+<p>With orthogonal polynomials, the columns are not <span class="math inline">\(x\)</span> and <span class="math inline">\(x^2\)</span> but two uncorrelated combinations of them. With raw polynomials, the columns are <span class="math inline">\(x\)</span> and <span class="math inline">\(x^2\)</span> exactly.</p>
 <p>Here’s an example of a 4th-order polynomial.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># raw</span></span>
@@ -1142,7 +1142,6 @@ $ year              &lt;int&gt; 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007, 
 </section>
 <section id="lm-examples-2" class="level3" data-number="10.3.3">
 <h3 data-number="10.3.3" class="anchored" data-anchor-id="lm-examples-2"><span class="header-section-number">10.3.3</span> <code>lm()</code> examples</h3>
-<p>As familiar examples, here are a few models with factors <code>species</code> and <code>island</code> as predictors of <code>bill_length_mm</code>.</p>
 <p>As familiar examples, here are a few <code>lm()</code> fits with both orthogonal and raw polynomials.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>fit1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(bill_length_mm <span class="sc">~</span> <span class="fu">poly</span>(flipper_length_mm, <span class="dv">2</span>), <span class="at">data =</span> penguins)</span>
@@ -1537,7 +1536,7 @@ Brambor, Thomas, William Roberts Clark, and Matt Golder. 2006. <span>“Understa
 </div>
 </div>
 <p>This creates dummy variables for both main effects and for combinations of levels across the two factors.</p>
-<p>Remember: When the models get complicated, you can take a first derivative to understand the meaning of the coefficients. For example, the effect of <code>speciesChinstrap</code> is <span class="math inline">\(\beta_2 + \beta_6 \texttt{islandDream} + \beta_8 \texttt{islandTorgerson}\)</span>. This means that the effect is <span class="math inline">\(\beta_2\)</span> for penguins on Biscoe (the reference island), <span class="math inline">\(\beta_2 + \beta_6\)</span> for penguins on Dream, and <span class="math inline">\(\beta_2 + \beta_8\)</span> for penguins on Torgerson.</p>
+<p>Remember: When the models get complicated, you can take a first derivative to understand the meaning of the coefficients. For example, the effect of <code>speciesChinstrap</code> is <span class="math inline">\(\beta_2 + \beta_6 \texttt{islandDream} + \beta_8 \texttt{islandTorgersen}\)</span>. This means that the effect is <span class="math inline">\(\beta_2\)</span> for penguins on Biscoe (the reference island), <span class="math inline">\(\beta_2 + \beta_6\)</span> for penguins on Dream, and <span class="math inline">\(\beta_2 + \beta_8\)</span> for penguins on Torgersen.</p>
 </section>
 </section>
 <section id="lm-examples-3" class="level3" data-number="10.4.2">
@@ -1880,7 +1879,7 @@ Brambor, Thomas, William Roberts Clark, and Matt Golder. 2006. <span>“Understa
 <section id="transformations-that-require-i" class="level3" data-number="10.5.2">
 <h3 data-number="10.5.2" class="anchored" data-anchor-id="transformations-that-require-i"><span class="header-section-number">10.5.2</span> Transformations that require <code>I()</code></h3>
 <p>Importantly, though, some symbols in formulas have special meaning. In formulas, <code>+</code> adds predictors, <code>-</code> removes predictors, <code>^</code> expands interactions up to a certain order, and <code>:</code> forms interactions.</p>
-<p>If we want arithmetic version instead of the formula-operator version, we must wrap the expression in <code>I()</code>.</p>
+<p>If we want the arithmetic version instead of the formula-operator version, we must wrap the expression in <code>I()</code>.</p>
 <p>For example, to include a quadratic term, we write</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="er">~</span> <span class="fu">I</span>(flipper_length_mm<span class="sc">^</span><span class="dv">2</span>)</span>
@@ -2143,7 +2142,7 @@ Warning
 </section>
 <section id="updating-formulas" class="level2" data-number="10.6">
 <h2 data-number="10.6" class="anchored" data-anchor-id="updating-formulas"><span class="header-section-number">10.6</span> Updating Formulas</h2>
-<p>Sometimes we want to adjust an existing formula instead of rewriting it from scratch. The function <code>update()</code> makes this easy. It is especially useful when experimenting <em>changes</em> to a baseline specification.</p>
+<p>Sometimes we want to adjust an existing formula instead of rewriting it from scratch. The function <code>update()</code> makes this easy. It is especially useful when experimenting with <em>changes</em> to a baseline specification.</p>
 <p>For example, suppose we start with a model of <code>bill_length_mm</code> on <code>flipper_length_mm</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> bill_length_mm <span class="sc">~</span> flipper_length_mm</span>

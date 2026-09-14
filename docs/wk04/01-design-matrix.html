@@ -342,14 +342,8 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../wk06/03-censoring.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Censoring</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../wk06/04-duration-models.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Duration Models</span></span></a>
+  <a href="../wk06/03-ordered-logit.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Ordered Logit</span></span></a>
   </div>
 </li>
       </ul>
@@ -366,19 +360,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../wk07/01-metrop.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Metropolis</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Metropolis</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../wk07/02-stan.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Stan</span></span></a>
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Stan</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../wk07/03-brms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">{brms}</span></span></a>
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">{brms}</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk07/04-multinomial-logit.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Multinomial Logit</span></span></a>
   </div>
 </li>
       </ul>
@@ -436,14 +436,14 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../appendicies/ordered.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">H</span>&nbsp; <span class="chapter-title">Ordered Logit</span></span></a>
+  <a href="../appendicies/censoring.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">H</span>&nbsp; <span class="chapter-title">Censoring</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../appendicies/unordered.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">I</span>&nbsp; <span class="chapter-title">Multinomial Logit</span></span></a>
+  <a href="../appendicies/duration-models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">I</span>&nbsp; <span class="chapter-title">Duration Models</span></span></a>
   </div>
 </li>
       </ul>
@@ -501,14 +501,14 @@ window.Quarto = {
 <h2 data-number="9.1" class="anchored" data-anchor-id="setup"><span class="header-section-number">9.1</span> Setup</h2>
 <p>We begin with the normal linear model. We assume that <span class="math inline">\(y_i \sim \mathcal{N}(\mu_i, \sigma^2)\)</span>, where <span class="math inline">\(\mu_i = \beta_0 + \beta_1 x_{i1} + \cdots + \beta_k x_{ik}\)</span>.</p>
 <p>This is equivalent to writing <span class="math inline">\(y_i = \beta_0 + \beta_1 x_{i1} + \cdots + \beta_k x_{ik} + \varepsilon_i\)</span> with <span class="math inline">\(\varepsilon_i \sim \mathcal{N}(0, \sigma^2)\)</span>. These two forms are the same. The first emphasizes the probability model, the other looks like the regression equation you know from econometrics.</p>
-<p>If we create a a column vector of coefficients <span class="math inline">\(\beta = [\beta_0, \beta_1, ..., \beta_k]^\top\)</span> and create a matrix <span class="math inline">\(X\)</span> by stacking a column of ones and the predictors side-by-side</p>
+<p>If we create a column vector of coefficients <span class="math inline">\(\beta = [\beta_0, \beta_1, ..., \beta_k]^\top\)</span> and create a matrix <span class="math inline">\(X\)</span> by stacking a column of ones and the predictors side-by-side</p>
 <p><span class="math display">\[
 X =
 \begin{bmatrix}
 1 &amp; x_{11} &amp; x_{12} &amp; \cdots &amp; x_{1k} \\
 1 &amp; x_{21} &amp; x_{22} &amp; \cdots &amp; x_{2k} \\
 \vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
-1 &amp; x_{n1} &amp; x_{n2} &amp; \cdots &amp; x_{nk}
+1 &amp; x_{N1} &amp; x_{N2} &amp; \cdots &amp; x_{Nk}
 \end{bmatrix}
 \]</span></p>
 <p>then the mean for observation <span class="math inline">\(i\)</span> is <span class="math inline">\(\mu_i = X_i \beta\)</span> and the entire vector of means is <span class="math inline">\(\mu = X\beta\)</span>. This matrix <span class="math inline">\(X\)</span> is called the <strong>design matrix</strong>.</p>
@@ -524,7 +524,7 @@ y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \varepsilon_i.
 \]</span></p>
 <p>We can also write this as a row–column product</p>
 <p><span class="math display">\[
-x_i \beta =
+X_i \beta =
 \begin{bmatrix}
 1 &amp; x_{i1} &amp; x_{i2}
 \end{bmatrix}
@@ -546,7 +546,7 @@ X =
 1 &amp; x_{11} &amp; x_{12} \\
 1 &amp; x_{21} &amp; x_{22} \\
 \vdots &amp; \vdots &amp; \vdots \\
-1 &amp; x_{n1} &amp; x_{n2}
+1 &amp; x_{N1} &amp; x_{N2}
 \end{bmatrix},
 \qquad
 X\beta =
@@ -554,10 +554,10 @@ X\beta =
 \beta_0 + \beta_1 x_{11} + \beta_2 x_{12} \\
 \beta_0 + \beta_1 x_{21} + \beta_2 x_{22} \\
 \vdots \\
-\beta_0 + \beta_1 x_{n1} + \beta_2 x_{n2}
+\beta_0 + \beta_1 x_{N1} + \beta_2 x_{N2}
 \end{bmatrix}.
 \]</span></p>
-<p>Each row <span class="math inline">\(X_i\)</span> corresponds to the predictors for observation <span class="math inline">\(i\)</span> and <span class="math inline">\(X_i\beta\)</span> is equivalent to the scalar regression equation for observation <span class="math inline">\(i\)</span>..</p>
+<p>Each row <span class="math inline">\(X_i\)</span> corresponds to the predictors for observation <span class="math inline">\(i\)</span> and <span class="math inline">\(X_i\beta\)</span> is equivalent to the scalar regression equation for observation <span class="math inline">\(i\)</span>.</p>
 </section>
 <section id="general-form-with-k-predictors" class="level3" data-number="9.2.3">
 <h3 data-number="9.2.3" class="anchored" data-anchor-id="general-form-with-k-predictors"><span class="header-section-number">9.2.3</span> General Form with <span class="math inline">\(k\)</span> Predictors</h3>
@@ -583,7 +583,7 @@ X_i =
 <p><span class="math display">\[
 X_i \beta = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_k x_{ik},
 \]</span></p>
-<p>which is exactly the scalar regression equation. Stacking the <span class="math inline">\(n\)</span> rows gives the design matrix <span class="math inline">\(X\)</span> of dimension <span class="math inline">\(n \times (k+1)\)</span>. There is nothing new here; the matrix notation simply collects all the scalar equations into one compact expression.</p>
+<p>which is exactly the scalar regression equation. Stacking the <span class="math inline">\(N\)</span> rows gives the design matrix <span class="math inline">\(X\)</span> of dimension <span class="math inline">\(N \times (k+1)\)</span>. There is nothing new here; the matrix notation simply collects all the scalar equations into one compact expression.</p>
 </section>
 <section id="the-intercept" class="level3" data-number="9.2.4">
 <h3 data-number="9.2.4" class="anchored" data-anchor-id="the-intercept"><span class="header-section-number">9.2.4</span> The Intercept</h3>
@@ -625,7 +625,7 @@ X =
 <li>Differentiating <span class="math inline">\(\mu_i\)</span> with respect to <span class="math inline">\(x_{i1}\)</span> gives <span class="math inline">\(\frac{\partial \mu_i}{\partial x_{i1}} = \beta_1\)</span>.</li>
 <li>Differentiating <span class="math inline">\(\mu_i\)</span> with respect to <span class="math inline">\(x_{i2}\)</span> gives <span class="math inline">\(\frac{\partial \mu_i}{\partial x_{i2}} = \beta_2\)</span>.</li>
 </ul>
-<p>Thus, a one-unit increase in <span class="math inline">\(x_{ij}\)</span> changes <span class="math inline">\(\mu_i\)</span> by <span class="math inline">\(\beta_j\)</span>, holding the other predictor.</p>
+<p>Thus, a one-unit increase in <span class="math inline">\(x_{ij}\)</span> changes <span class="math inline">\(\mu_i\)</span> by <span class="math inline">\(\beta_j\)</span>, holding the other predictor constant.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -714,7 +714,7 @@ X =
 1 &amp; 3.0 &amp; 9.00 &amp; 27.000 &amp; 2.4
 \end{bmatrix}.
 \]</span></p>
-<p>The squared and cubic terms are simply new columns in the design matrix. When fitting the model, the these columns are treated just like any other predictor; they are just more columns in the design matrix.</p>
+<p>The squared and cubic terms are simply new columns in the design matrix. When fitting the model, these columns are treated just like any other predictor; they are just more columns in the design matrix.</p>
 </section>
 <section id="indicator-variables" class="level2" data-number="9.5">
 <h2 data-number="9.5" class="anchored" data-anchor-id="indicator-variables"><span class="header-section-number">9.5</span> Indicator Variables</h2>
@@ -754,7 +754,7 @@ X =
 </section>
 <section id="categorical-variables-with-more-than-two-categories" class="level2" data-number="9.6">
 <h2 data-number="9.6" class="anchored" data-anchor-id="categorical-variables-with-more-than-two-categories"><span class="header-section-number">9.6</span> Categorical Variables with More Than Two Categories</h2>
-<p>We can include categorical variables with more than two categories by creating multiple indicator variables. Suppose that <span class="math inline">\(x_{i1}\)</span> and <span class="math inline">\(x_{i2}\)</span> are numeric variables and our categorical variable has three categories, labeled <span class="math inline">\(A\)</span>, <span class="math inline">\(B\)</span>, and <span class="math inline">\(C\)</span>. We might define <span class="math inline">\(x_{i3}=1\)</span> if the observation is in category <span class="math inline">\(B\)</span> and <span class="math inline">\(0\)</span> otherwise, and <span class="math inline">\(x_{i4}=1\)</span> if the observation is in category <span class="math inline">\(C\)</span> and <span class="math inline">\(0\)</span> otherwise. The the model would be</p>
+<p>We can include categorical variables with more than two categories by creating multiple indicator variables. Suppose that <span class="math inline">\(x_{i1}\)</span> and <span class="math inline">\(x_{i2}\)</span> are numeric variables and our categorical variable has three categories, labeled <span class="math inline">\(A\)</span>, <span class="math inline">\(B\)</span>, and <span class="math inline">\(C\)</span>. We might define <span class="math inline">\(x_{i3}=1\)</span> if the observation is in category <span class="math inline">\(B\)</span> and <span class="math inline">\(0\)</span> otherwise, and <span class="math inline">\(x_{i4}=1\)</span> if the observation is in category <span class="math inline">\(C\)</span> and <span class="math inline">\(0\)</span> otherwise. Then the model would be</p>
 <p><span class="math display">\[
 \mu_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \beta_3 x_{i3} + \beta_4 x_{i4},
 \]</span></p>

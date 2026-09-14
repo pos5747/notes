@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>22&nbsp; {brms} – Modern Probability Modeling</title>
+<title>21&nbsp; {brms} – Modern Probability Modeling</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -64,7 +64,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../appendicies/999-distributions.html" rel="next">
+<link href="../wk07/04-multinomial-logit.html" rel="next">
 <link href="../wk07/02-stan.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -125,7 +125,7 @@ gtag('config', 'G-ZV1MJ9E632', { 'anonymize_ip': true});
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../wk07/01-metrop.html">Week 7</a></li><li class="breadcrumb-item"><a href="../wk07/03-brms.html"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">{brms}</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../wk07/01-metrop.html">Week 7</a></li><li class="breadcrumb-item"><a href="../wk07/03-brms.html"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">{brms}</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -313,14 +313,8 @@ gtag('config', 'G-ZV1MJ9E632', { 'anonymize_ip': true});
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../wk06/03-censoring.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Censoring</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../wk06/04-duration-models.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Duration Models</span></span></a>
+  <a href="../wk06/03-ordered-logit.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Ordered Logit</span></span></a>
   </div>
 </li>
       </ul>
@@ -337,19 +331,25 @@ gtag('config', 'G-ZV1MJ9E632', { 'anonymize_ip': true});
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../wk07/01-metrop.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Metropolis</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Metropolis</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../wk07/02-stan.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Stan</span></span></a>
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Stan</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../wk07/03-brms.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">{brms}</span></span></a>
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">{brms}</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk07/04-multinomial-logit.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Multinomial Logit</span></span></a>
   </div>
 </li>
       </ul>
@@ -407,14 +407,14 @@ gtag('config', 'G-ZV1MJ9E632', { 'anonymize_ip': true});
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../appendicies/ordered.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">H</span>&nbsp; <span class="chapter-title">Ordered Logit</span></span></a>
+  <a href="../appendicies/censoring.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">H</span>&nbsp; <span class="chapter-title">Censoring</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../appendicies/unordered.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">I</span>&nbsp; <span class="chapter-title">Multinomial Logit</span></span></a>
+  <a href="../appendicies/duration-models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">I</span>&nbsp; <span class="chapter-title">Duration Models</span></span></a>
   </div>
 </li>
       </ul>
@@ -429,11 +429,11 @@ gtag('config', 'G-ZV1MJ9E632', { 'anonymize_ip': true});
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#the-turnout-example" id="toc-the-turnout-example" class="nav-link active" data-scroll-target="#the-turnout-example"><span class="header-section-number">22.1</span> The <code>turnout</code> example</a></li>
-  <li><a href="#the-flexibility-of-mcmc-and-brm" id="toc-the-flexibility-of-mcmc-and-brm" class="nav-link" data-scroll-target="#the-flexibility-of-mcmc-and-brm"><span class="header-section-number">22.2</span> The flexibility of MCMC and <code>brm()</code></a>
+  <li><a href="#the-turnout-example" id="toc-the-turnout-example" class="nav-link active" data-scroll-target="#the-turnout-example"><span class="header-section-number">21.1</span> The <code>turnout</code> example</a></li>
+  <li><a href="#the-flexibility-of-mcmc-and-brm" id="toc-the-flexibility-of-mcmc-and-brm" class="nav-link" data-scroll-target="#the-flexibility-of-mcmc-and-brm"><span class="header-section-number">21.2</span> The flexibility of MCMC and <code>brm()</code></a>
   <ul class="collapse">
-  <li><a href="#modeling-smooth-relationships" id="toc-modeling-smooth-relationships" class="nav-link" data-scroll-target="#modeling-smooth-relationships"><span class="header-section-number">22.2.1</span> Modeling “smooth” relationships</a></li>
-  <li><a href="#awkwardly-scaled-variables" id="toc-awkwardly-scaled-variables" class="nav-link" data-scroll-target="#awkwardly-scaled-variables"><span class="header-section-number">22.2.2</span> Awkwardly scaled variables</a></li>
+  <li><a href="#modeling-smooth-relationships" id="toc-modeling-smooth-relationships" class="nav-link" data-scroll-target="#modeling-smooth-relationships"><span class="header-section-number">21.2.1</span> Modeling “smooth” relationships</a></li>
+  <li><a href="#awkwardly-scaled-variables" id="toc-awkwardly-scaled-variables" class="nav-link" data-scroll-target="#awkwardly-scaled-variables"><span class="header-section-number">21.2.2</span> Awkwardly scaled variables</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -441,9 +441,9 @@ gtag('config', 'G-ZV1MJ9E632', { 'anonymize_ip': true});
 <!-- main -->
 <main class="content page-columns page-full" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../wk07/01-metrop.html">Week 7</a></li><li class="breadcrumb-item"><a href="../wk07/03-brms.html"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">{brms}</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../wk07/01-metrop.html">Week 7</a></li><li class="breadcrumb-item"><a href="../wk07/03-brms.html"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">{brms}</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">{brms}</span></h1>
+<h1 class="title"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">{brms}</span></h1>
 </div>
 
 
@@ -467,8 +467,8 @@ gtag('config', 'G-ZV1MJ9E632', { 'anonymize_ip': true});
 </div>
 <p>{brms} offers very flexible options for specifying your models and works with {marginaleffects}. We can use it for almost any application, though for simple <code>lm()</code> or <code>glm()</code> fits, it isn’t needed.</p>
 <p>See <code>?brms::brm</code> for the details. There are numerous tutorials available for specific models.</p>
-<section id="the-turnout-example" class="level2 page-columns page-full" data-number="22.1">
-<h2 data-number="22.1" class="anchored" data-anchor-id="the-turnout-example"><span class="header-section-number">22.1</span> The <code>turnout</code> example</h2>
+<section id="the-turnout-example" class="level2 page-columns page-full" data-number="21.1">
+<h2 data-number="21.1" class="anchored" data-anchor-id="the-turnout-example"><span class="header-section-number">21.1</span> The <code>turnout</code> example</h2>
 <p>Here’s the syntax for our ususal logistic regression model.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load only the turnout data frame and hard-code rescaled variables</span></span>
@@ -761,10 +761,10 @@ Comparison: 0.5 - -0.5</code></pre>
 </div>
 </div>
 </section>
-<section id="the-flexibility-of-mcmc-and-brm" class="level2" data-number="22.2">
-<h2 data-number="22.2" class="anchored" data-anchor-id="the-flexibility-of-mcmc-and-brm"><span class="header-section-number">22.2</span> The flexibility of MCMC and <code>brm()</code></h2>
-<section id="modeling-smooth-relationships" class="level3" data-number="22.2.1">
-<h3 data-number="22.2.1" class="anchored" data-anchor-id="modeling-smooth-relationships"><span class="header-section-number">22.2.1</span> Modeling “smooth” relationships</h3>
+<section id="the-flexibility-of-mcmc-and-brm" class="level2" data-number="21.2">
+<h2 data-number="21.2" class="anchored" data-anchor-id="the-flexibility-of-mcmc-and-brm"><span class="header-section-number">21.2</span> The flexibility of MCMC and <code>brm()</code></h2>
+<section id="modeling-smooth-relationships" class="level3" data-number="21.2.1">
+<h3 data-number="21.2.1" class="anchored" data-anchor-id="modeling-smooth-relationships"><span class="header-section-number">21.2.1</span> Modeling “smooth” relationships</h3>
 <p>To illustrate the power of MCMC and <code>brm()</code>, we can imagine fitting a smooth curve for age. The details are not important for now, but this isn’t an easy task in our usual framework. But it’s straightfoward with Bayesian MCMC via <code>brm()</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># smooth relationship between age and voting--notice the s()</span></span>
@@ -789,8 +789,8 @@ Comparison: 0.5 - -0.5</code></pre>
 </div>
 </div>
 </section>
-<section id="awkwardly-scaled-variables" class="level3" data-number="22.2.2">
-<h3 data-number="22.2.2" class="anchored" data-anchor-id="awkwardly-scaled-variables"><span class="header-section-number">22.2.2</span> Awkwardly scaled variables</h3>
+<section id="awkwardly-scaled-variables" class="level3" data-number="21.2.2">
+<h3 data-number="21.2.2" class="anchored" data-anchor-id="awkwardly-scaled-variables"><span class="header-section-number">21.2.2</span> Awkwardly scaled variables</h3>
 <p>Also, <code>brm()</code> has no trouble with the variables on their original scales. The original scales poses a insurmountable hurdle for our <code>metrop()</code> sampler.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># smooth relationship between age and voting--notice the s()</span></span>
@@ -1241,12 +1241,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="../wk07/02-stan.html" class="pagination-link" aria-label="Stan">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Stan</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Stan</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../appendicies/999-distributions.html" class="pagination-link" aria-label="Common Distributions">
-        <span class="nav-page-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Common Distributions</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../wk07/04-multinomial-logit.html" class="pagination-link" aria-label="Multinomial Logit">
+        <span class="nav-page-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Multinomial Logit</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

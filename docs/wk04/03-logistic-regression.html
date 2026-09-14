@@ -362,14 +362,8 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../wk06/03-censoring.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Censoring</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../wk06/04-duration-models.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Duration Models</span></span></a>
+  <a href="../wk06/03-ordered-logit.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Ordered Logit</span></span></a>
   </div>
 </li>
       </ul>
@@ -386,19 +380,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../wk07/01-metrop.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Metropolis</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Metropolis</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../wk07/02-stan.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Stan</span></span></a>
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Stan</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../wk07/03-brms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">{brms}</span></span></a>
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">{brms}</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk07/04-multinomial-logit.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Multinomial Logit</span></span></a>
   </div>
 </li>
       </ul>
@@ -456,14 +456,14 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../appendicies/ordered.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">H</span>&nbsp; <span class="chapter-title">Ordered Logit</span></span></a>
+  <a href="../appendicies/censoring.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">H</span>&nbsp; <span class="chapter-title">Censoring</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../appendicies/unordered.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">I</span>&nbsp; <span class="chapter-title">Multinomial Logit</span></span></a>
+  <a href="../appendicies/duration-models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">I</span>&nbsp; <span class="chapter-title">Duration Models</span></span></a>
   </div>
 </li>
       </ul>
@@ -482,7 +482,7 @@ window.Quarto = {
   <li><a href="#turnout-data-set" id="toc-turnout-data-set" class="nav-link" data-scroll-target="#turnout-data-set"><span class="header-section-number">11.1</span> <code>turnout</code> data set</a>
   <ul class="collapse">
   <li><a href="#the-logit-model" id="toc-the-logit-model" class="nav-link" data-scroll-target="#the-logit-model"><span class="header-section-number">11.1.1</span> The Logit Model</a></li>
-  <li><a href="#fitting-with-optim" id="toc-fitting-with-optim" class="nav-link" data-scroll-target="#fitting-with-optim"><span class="header-section-number">11.1.2</span> Fitting with `optim()</a></li>
+  <li><a href="#fitting-with-optim" id="toc-fitting-with-optim" class="nav-link" data-scroll-target="#fitting-with-optim"><span class="header-section-number">11.1.2</span> Fitting with <code>optim()</code></a></li>
   </ul></li>
   <li><a href="#interpretation" id="toc-interpretation" class="nav-link" data-scroll-target="#interpretation"><span class="header-section-number">11.2</span> Interpretation</a>
   <ul class="collapse">
@@ -522,34 +522,34 @@ window.Quarto = {
 <li>Binary outcomes are categorical outcome variables with exactly two categories, such as whether or not someone voted, whether two countries are at war, and so on.</li>
 <li>In mathematical theory, it’s helpful to code the binary variables as <span class="math inline">\(y_i \in \{0, 1\}\)</span>, with one representing “an event” and zero representing “a non-event.” In R, it’s probably better to have proper factors and labels, though the 0/1 coding is common and works well.</li>
 <li>In generic language, we’ll say that <span class="math inline">\(y_i = 1\)</span> means that “an event has occurred” and <span class="math inline">\(y_i = 0\)</span> means that “an event has not occurred.”</li>
-<li>This allows us to talk about the “probability of an event” (e.g., the probability of war, etc)</li>
+<li>This allows us to talk about the “probability of an event” (e.g., the probability of war, etc.)</li>
 </ul>
 <section id="the-linear-probability-model" class="level3 page-columns page-full" data-number="11.0.1">
 <h3 data-number="11.0.1" class="anchored" data-anchor-id="the-linear-probability-model"><span class="header-section-number">11.0.1</span> The Linear Probability Model</h3>
-<p>The normal model cannot describe a binary outcome well, becasue it doesn’t make much conceptual sense to model 0s and 1s as following a normal distribution. That said, we can use the linear model (i.e., OLS) with binary outcome variables.</p>
+<p>The normal model cannot describe a binary outcome well, because it doesn’t make much conceptual sense to model 0s and 1s as following a normal distribution. That said, we can use the linear model (i.e., OLS) with binary outcome variables.</p>
 <ul>
-<li>Recall that we the linear model is represented by the equation <span class="math inline">\(E(y_i) = X_i\beta\)</span>.</li>
+<li>Recall that the linear model is represented by the equation <span class="math inline">\(E(y_i) = X_i\beta\)</span>.</li>
 <li>It is important to note that a probability is just a particular kind of expected value—a probability is an expected value of a binary variable.</li>
-<li>Since <span class="math inline">\(y_i\)</span> is binary, the <span class="math inline">\(E(y_i) = \Pr(y_i = 1) = \Pr(y_i)\)</span>, giving us <span class="math inline">\(\Pr(y_i) = X_i\beta\)</span>.</li>
+<li>Since <span class="math inline">\(y_i\)</span> is binary, <span class="math inline">\(E(y_i) = \Pr(y_i = 1) = \Pr(y_i)\)</span>, giving us <span class="math inline">\(\Pr(y_i) = X_i\beta\)</span>.</li>
 </ul>
 <p>The LPM has two advantages:</p>
 <ol type="1">
-<li>It’s is <em>very</em> easy to estimate (i.e., OLS; <span class="math inline">\(\hat{\beta} = (X'X)^{-1}X'y\)</span>).</li>
-<li>It is easy to interpret (i.e., a one unit change in <span class="math inline">\(x_j\)</span> leads to a <span class="math inline">\(\hat{\beta_j}\)</span> unit increase in <span class="math inline">\(\Pr(y)\)</span>).</li>
+<li>It’s <em>very</em> easy to estimate (i.e., OLS; <span class="math inline">\(\hat{\beta} = (X'X)^{-1}X'y\)</span>).</li>
+<li>It is easy to interpret (i.e., a one unit change in <span class="math inline">\(x_j\)</span> leads to a <span class="math inline">\(\hat{\beta}_j\)</span> unit increase in <span class="math inline">\(\Pr(y)\)</span>).</li>
 </ol>
 <p>The LPM has several disadvantages:</p>
 <ol type="1">
 <li><strong>Unbounded Predictions</strong> Because the potential values for the explanatory variables are unbounded, you can obtain predicted probabilities above one and below zero. Of course, these predictions make no sense.</li>
-<li><strong>Conditional Heteroskedasticity</strong> The normal-linear model assumes a constant variance <span class="math inline">\(\sigma^2\)</span>. However, it is impossible to have homoskedastic residuals of a binary outcome if the probability of an event varies. Specifically, if <span class="math inline">\(y_i\)</span> is binary, then <span class="math inline">\(\text{Var}(y_i) = \Pr(y_i)[1 - \Pr(y_i)]\)</span>, which, for the LPM, equals <span class="math inline">\(X_i\beta(1 - X_i\beta)\)</span>. (Non-zero coefficients imply heteroskedasticity.)</li>
-<li><strong>Non-Normal Errors</strong> Normal errors implies that the residuals can take on any value along the real line, with values closer to zero being more likely and errors outside three standard deviations being quite unlikely. However, if <span class="math inline">\(y_i\)</span> is binary, then the residual can take on only two values: <span class="math inline">\(-Pr(y_i)\)</span> or <span class="math inline">\(1 - Pr(y_i)\)</span>.</li>
-<li><strong>Functional Form</strong> Theoretically, you’d probably expect explanatory variables to have smaller effects as <span class="math inline">\(Pr(y_i)\)</span> approaches zero or one (called “compression,” see <span class="citation" data-cites="Berry2010">Berry, DeMeritt, and Esarey (<a href="#ref-Berry2010" role="doc-biblioref">2010</a>)</span> and <span class="citation" data-cites="Rainey2015">Rainey (<a href="#ref-Rainey2015" role="doc-biblioref">2015</a>)</span>). The LPM assumes that the effects are constant.</li>
+<li><strong>Conditional Heteroskedasticity</strong> The normal-linear model assumes a constant variance <span class="math inline">\(\sigma^2\)</span>. However, it is impossible to have homoskedastic residuals of a binary outcome if the probability of an event varies. Specifically, if <span class="math inline">\(y_i\)</span> is binary, then <span class="math inline">\(\operatorname{Var}(y_i) = \Pr(y_i)[1 - \Pr(y_i)]\)</span>, which, for the LPM, equals <span class="math inline">\(X_i\beta(1 - X_i\beta)\)</span>. (Non-zero coefficients imply heteroskedasticity.)</li>
+<li><strong>Non-Normal Errors</strong> Normal errors implies that the residuals can take on any value along the real line, with values closer to zero being more likely and errors outside three standard deviations being quite unlikely. However, if <span class="math inline">\(y_i\)</span> is binary, then the residual can take on only two values: <span class="math inline">\(-\Pr(y_i)\)</span> or <span class="math inline">\(1 - \Pr(y_i)\)</span>.</li>
+<li><strong>Functional Form</strong> Theoretically, you’d probably expect explanatory variables to have smaller effects as <span class="math inline">\(\Pr(y_i)\)</span> approaches zero or one (called “compression,” see <span class="citation" data-cites="Berry2010">Berry, DeMeritt, and Esarey (<a href="#ref-Berry2010" role="doc-biblioref">2010</a>)</span> and <span class="citation" data-cites="Rainey2015">Rainey (<a href="#ref-Rainey2015" role="doc-biblioref">2015</a>)</span>). The LPM assumes that the effects are constant.</li>
 </ol>
 <div class="no-row-height column-margin column-container"><div id="ref-Rainey2015" class="csl-entry" role="listitem">
 Rainey, Carlisle. 2015. <span>“Compression and Conditional Effects: A Product Term Is Essential When Using Logistic Regression to Test for Interaction.”</span> <em>Political Science Research and Methods</em> 4 (3): 621–39. <a href="https://doi.org/10.1017/psrm.2015.59">https://doi.org/10.1017/psrm.2015.59</a>.
 </div></div></section>
 <section id="turnout-data-set" class="level2 page-columns page-full" data-number="11.1">
 <h2 data-number="11.1" class="anchored" data-anchor-id="turnout-data-set"><span class="header-section-number">11.1</span> <code>turnout</code> data set</h2>
-<p>As an intial simple example, let’s use the <code>turnout</code> data set from the old {Zelig} package. {Zelig} has been replaced with {clarify}, but thankful jrnold saved Zelig’s example data in the package <a href="https://github.com/jrnold/ZeligData">{ZeligData}</a>.</p>
+<p>As an initial simple example, let’s use the <code>turnout</code> data set from the old {Zelig} package. {Zelig} has been replaced with {clarify}, but thankful jrnold saved Zelig’s example data in the package <a href="https://github.com/jrnold/ZeligData">{ZeligData}</a>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install jrnold's package from github</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"jrnold/ZeligData"</span>)</span>
@@ -568,7 +568,7 @@ $ income  &lt;dbl&gt; 3.3458, 1.8561, 0.6304, 3.4183, 2.7852, 2.3866, 4.2857, 9.
 $ vote    &lt;int&gt; 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1,…</code></pre>
 </div>
 </div>
-<p>We can fit use use least squares to fit a linear probability model to these data, treating the binary 0/1 <code>vote</code> variable as numeric.</p>
+<p>We can use least squares to fit a linear probability model to these data, treating the binary 0/1 <code>vote</code> variable as numeric.</p>
 <p>Because we now have a response <code>y</code> and a design matrix <code>X</code> we have to be a little careful that the handling of <code>y</code> and <code>X</code> are consistent (e.g., dropping rows with missing data). Using <code>model.frame()</code> <em>before</em> using <code>model.matrix()</code> is the proper way to do this. The canonical pipeline is to feed the formula and the data frame through <code>model.frame()</code> → <code>model.matrix()</code> → <code>model.response()</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit linear probability model</span></span>
@@ -612,7 +612,7 @@ residual sd = 0.41, R-Squared = 0.11</code></pre>
 </div>
 </div></div><p>We have modeled <span class="math inline">\(\pi = X\beta\)</span>, so we can compute <span class="math inline">\(\hat{\pi} = X\hat{\beta}\)</span>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># mu-hat</span></span>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># pi-hat</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>pi_hat <span class="ot">&lt;-</span> X<span class="sc">%*%</span>beta_hat</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>This gives us some “unusual” probabilities.</p>
@@ -641,8 +641,8 @@ residual sd = 0.41, R-Squared = 0.11</code></pre>
 <h3 data-number="11.1.1" class="anchored" data-anchor-id="the-logit-model"><span class="header-section-number">11.1.1</span> The Logit Model</h3>
 <p>As an initial effort to handle the “non-normal” distribution of the data, we might then use the Bernoulli model <span class="math inline">\(y_i \sim \text{Bernoulli}(\pi_i)\)</span>, where <span class="math inline">\(\pi_i = X_i\beta\)</span>.</p>
 <p>However, <span class="math inline">\(\pi_i = X_i\beta\)</span> has a <em>big</em> problem: <span class="math inline">\(X_i\beta\)</span> might be less than zero or greater than one. This renders the approach unworkable.</p>
-<p>To suitably link the bounded parameter <span class="math inline">\(\pi_i\)</span> and with the unbounded linear predictor <span class="math inline">\(X_i\beta\)</span>, we use the “inverse link function.” The inverse link function wraps around the linear predictor and forces its values into the desired domain.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
-<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;Many of the “disadvantages” of the LPM above follow from the fact that the linear predictor <span class="math inline">\(\mu = X\beta\)</span> is unbounded. For the normal model, the inverse link function is <strong>not necessary</strong> because the parameter of interest <span class="math inline">\(\mu\)</span> is unbounded and maps to the entire real line. But for other models, the key parameter has a restricted domain. In the case of the Bernoulli distribution, <span class="math inline">\(\pi_i \in [0, 1] \subset \mathbb{R}\)</span>.</p></div><div id="fn2"><p><sup>2</sup>&nbsp;This is not the only choice. Probit models, for example, use the standard normal cdf for the inverse link function.</p></div><div id="fn3"><p><sup>3</sup>&nbsp;It’s also the cdf of the standard logistic distribution.</p></div><div id="fn4"><p><sup>4</sup>&nbsp;We could equivalently talk about “link functions” rather than “<em>inverse</em> link functions.” The link function would expand the bounded parameter to the entire real line; the <em>inverse</em> link function compresses the unbounded <span class="math inline">\(X_i \beta\)</span> into the parameter’s bounds.</p></div></div><p>For the Bernoulli distribution, we might use the inverse link function <span class="math inline">\(g^{-1}(x) = \frac{e^x}{1 + e^x}\)</span>.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> This is called the “inverse logit” and it has an “S”-shape.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> It’s job is to map <span class="math inline">\(X\beta\)</span> into <span class="math inline">\([0, 1]\)</span>.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
+<p>To suitably link the bounded parameter <span class="math inline">\(\pi_i\)</span> with the unbounded linear predictor <span class="math inline">\(X_i\beta\)</span>, we use the “inverse link function.” The inverse link function wraps around the linear predictor and forces its values into the desired domain.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;Many of the “disadvantages” of the LPM above follow from the fact that the linear predictor <span class="math inline">\(\mu = X\beta\)</span> is unbounded. For the normal model, the inverse link function is <strong>not necessary</strong> because the parameter of interest <span class="math inline">\(\mu\)</span> is unbounded and maps to the entire real line. But for other models, the key parameter has a restricted domain. In the case of the Bernoulli distribution, <span class="math inline">\(\pi_i \in [0, 1] \subset \mathbb{R}\)</span>.</p></div><div id="fn2"><p><sup>2</sup>&nbsp;This is not the only choice. Probit models, for example, use the standard normal cdf for the inverse link function.</p></div><div id="fn3"><p><sup>3</sup>&nbsp;It’s also the cdf of the standard logistic distribution.</p></div><div id="fn4"><p><sup>4</sup>&nbsp;We could equivalently talk about “link functions” rather than “<em>inverse</em> link functions.” The link function would expand the bounded parameter to the entire real line; the <em>inverse</em> link function compresses the unbounded <span class="math inline">\(X_i \beta\)</span> into the parameter’s bounds.</p></div></div><p>For the Bernoulli distribution, we might use the inverse link function <span class="math inline">\(g^{-1}(x) = \frac{e^x}{1 + e^x}\)</span>.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> This is called the “inverse logit” and it has an “S”-shape.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> Its job is to map <span class="math inline">\(X\beta\)</span> into <span class="math inline">\([0, 1]\)</span>.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
 <p>We can plot the inverse logit to see how it works.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>inv_logit <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
@@ -665,18 +665,18 @@ residual sd = 0.41, R-Squared = 0.11</code></pre>
 <p>Hint: The inverse-logit function is the cdf of the standard logistic distribution, so you can just use <code>plogis()</code> in R, rather than hard-coding the <code>inv_logit()</code> function I create above.</p>
 <p>We can write the model this way.</p>
 <p><span class="math display">\[
-y_i \sim \text{Bernoulli}(\pi_i)\text{, where } \pi_i = \text{logit}^{-1}(X_i\beta).
+y_i \sim \text{Bernoulli}(\pi_i)\text{, where } \pi_i = \operatorname{logit}^{-1}(X_i\beta).
 \]</span></p>
 <p>This is logistic regression or the logit model. We can fit this model using maximum likelihood.</p>
 </section>
 <section id="fitting-with-optim" class="level3 page-columns page-full" data-number="11.1.2">
-<h3 data-number="11.1.2" class="anchored" data-anchor-id="fitting-with-optim"><span class="header-section-number">11.1.2</span> Fitting with `optim()</h3>
+<h3 data-number="11.1.2" class="anchored" data-anchor-id="fitting-with-optim"><span class="header-section-number">11.1.2</span> Fitting with <code>optim()</code></h3>
 <p>To develop the log-likelihood of the logit model, we start with the Bernoulli likelihood from before.</p>
 <p><span class="math display">\[
-f(y; \beta) = L(\beta) = \prod_{i = 1}^{N}\pi_i^{y_i} (1 - \pi_i)^{(1 - y_i)}\text{, where } \pi_i = \text{logit}^{-1}(X_i\beta)
+f(y; \beta) = L(\beta) = \prod_{i = 1}^{N}\pi_i^{y_i} (1 - \pi_i)^{(1 - y_i)}\text{, where } \pi_i = \operatorname{logit}^{-1}(X_i\beta)
 \]</span> Taking the log, we have</p>
 <p><span class="math display">\[
-\log L(\beta) = \sum_{i = 1}^{N} y_i \log \pi_i +  \sum_{i = 1}^{N}(1 - y_i) \log(1 - \pi_i)\text{, where } \pi_i = \text{logit}^{-1}(X_i\beta)
+\ell(\beta) = \sum_{i = 1}^{N} y_i \log \pi_i +  \sum_{i = 1}^{N}(1 - y_i) \log(1 - \pi_i)\text{, where } \pi_i = \operatorname{logit}^{-1}(X_i\beta)
 \]</span></p>
 <p>We can program this into R for use in <code>optim()</code>.</p>
 <div class="cell">
@@ -687,7 +687,7 @@ f(y; \beta) = L(\beta) = \prod_{i = 1}^{N}\pi_i^{y_i} (1 - \pi_i)^{(1 - y_i)}\te
 <span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(ll)</span>
 <span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>The tricky part about using <code>optim()</code> here is not the log-likelihood function, but setting up <code>X</code> and <code>y</code>. The code below creates the outcome vector <span class="math inline">\(y\)</span> and the matrix <span class="math inline">\(X\)</span> of explanatory variables (with a leading columns of 1s).</p>
+<p>The tricky part about using <code>optim()</code> here is not the log-likelihood function, but setting up <code>X</code> and <code>y</code>.</p>
 <p>We already made <code>X</code> and <code>y</code> above, so we can use <code>optim()</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>par_start <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">ncol</span>(X))</span>
@@ -778,8 +778,8 @@ $var_hat
 <p>But the inverse link function makes our life considerably more complicated. In the linear model, the effect of a one-unit change in <span class="math inline">\(x_j\)</span> was simply <span class="math inline">\(\beta_j\)</span>. <em>This is no longer the case.</em></p>
 <section id="effects-are-not-constant" class="level3 page-columns page-full" data-number="11.2.1">
 <h3 data-number="11.2.1" class="anchored" data-anchor-id="effects-are-not-constant"><span class="header-section-number">11.2.1</span> Effects are not constant</h3>
-<p>To see how the inverse link function changes things, we can take the first derivative of <span class="math inline">\(\pi\)</span> with respect to <span class="math inline">\(\x_1\)</span>.</p>
-<p>Recall that <span class="math inline">\(\pi_i = \mathrm{logit}^{-1}(X_i\beta)\)</span>. To keep this derivative simple, we’ll break it into three parts: (i) first, find <span class="math inline">\(\frac{\partial \pi_i}{\partial \eta_i}\)</span>, then find <span class="math inline">\(\frac{\partial \eta_i}{\partial x_{i1}}\)</span>, and then use the chain rule <span class="math inline">\(\frac{\partial \pi_i}{\partial x_{i1}} = \frac{\partial \pi_i}{\partial \eta_i}\cdot \frac{\partial \eta_i}{\partial x_{i1}}\)</span>.</p>
+<p>To see how the inverse link function changes things, we can take the first derivative of <span class="math inline">\(\pi\)</span> with respect to <span class="math inline">\(x_1\)</span>.</p>
+<p>Recall that <span class="math inline">\(\pi_i = \operatorname{logit}^{-1}(X_i\beta)\)</span>. To keep this derivative simple, we’ll break it into three parts: (i) first, find <span class="math inline">\(\frac{\partial \pi_i}{\partial \eta_i}\)</span>, then find <span class="math inline">\(\frac{\partial \eta_i}{\partial x_{i1}}\)</span>, and then use the chain rule <span class="math inline">\(\frac{\partial \pi_i}{\partial x_{i1}} = \frac{\partial \pi_i}{\partial \eta_i}\cdot \frac{\partial \eta_i}{\partial x_{i1}}\)</span>.</p>
 <p><strong>Step 1:</strong> <span class="math inline">\(\frac{\partial \pi_i}{\partial \eta_i}\)</span></p>
 <p><span class="math display">\[
 \begin{aligned}
@@ -794,8 +794,7 @@ $var_hat
   &amp;= \pi_i\,(1-\pi_i)
   &amp;\qquad&amp; \text{substitute \(\pi_i = \frac{e^{\eta_i}}{1+e^{\eta_i}}\)} \\[10pt]
   \end{aligned}
-\]</span><br>
-</p>
+\]</span></p>
 <p><strong>Step 2:</strong> <span class="math inline">\(\frac{\partial \eta_i}{\partial x_{i1}}\)</span></p>
 <p><span class="math display">\[
 \begin{aligned}
@@ -809,21 +808,21 @@ $var_hat
 \begin{aligned}
 \frac{\partial \pi_i}{\partial x_{i1}}
   &amp;= \frac{\partial \pi_i}{\partial \eta_i}\cdot \frac{\partial \eta_i}{\partial x_{i1}}
-   \;=\; \pi_i(1-\pi_i)\,\beta_1 = \left[ \text{logit}^{-1}(X_i\beta) \right] \cdot \left[1 - \text{logit}^{-1}(X_i\beta) \right] \cdot \beta_1
+   \;=\; \pi_i(1-\pi_i)\,\beta_1 = \left[ \operatorname{logit}^{-1}(X_i\beta) \right] \cdot \left[1 - \operatorname{logit}^{-1}(X_i\beta) \right] \cdot \beta_1
 \end{aligned}
 \]</span></p>
-<p>The marginal effect of <span class="math inline">\(x_{i1}\)</span> on the probability of an event is <strong>not constant</strong>. It depends on the value of <span class="math inline">\(x_1\)</span> *and all the other <span class="math inline">\(x\)</span>s*!</p>
-<p>To see this clearly, we can assume the logit model <span class="math inline">\(\Pr(y) = \operatorname{logit}^{-1}(-4 + x_1 + x_2)\)</span> and plot <span class="math inline">\(\Pr(y)\)</span> as <span class="math inline">\(x_1\)</span> varies for different values of <span class="math inline">\(x_2\)</span>. Notice that the marginal effect <span class="math inline">\(\frac{\partial \Pr(y)}{\partial x_1}\)</span> varies *depending on the value of <span class="math inline">\(x_2\)</span>. Remember, there are no product terms in this model. However, the effect of the variables are interactive, at least on <span class="math inline">\(\Pr(y)\)</span>.</p>
+<p>The marginal effect of <span class="math inline">\(x_{i1}\)</span> on the probability of an event is <strong>not constant</strong>. It depends on the value of <span class="math inline">\(x_1\)</span> <em>and all the other <span class="math inline">\(x\)</span>s</em>!</p>
+<p>To see this clearly, we can assume the logit model <span class="math inline">\(\Pr(y) = \operatorname{logit}^{-1}(-4 + x_1 + x_2)\)</span> and plot <span class="math inline">\(\Pr(y)\)</span> as <span class="math inline">\(x_1\)</span> varies for different values of <span class="math inline">\(x_2\)</span>. Notice that the marginal effect <span class="math inline">\(\frac{\partial \Pr(y)}{\partial x_1}\)</span> varies <em>depending on the value of <span class="math inline">\(x_2\)</span></em>. Remember, there are no product terms in this model. However, the effects of the variables are interactive, at least on <span class="math inline">\(\Pr(y)\)</span>.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
-<p>This figure is a variant Panel A of Figure 2 on p.&nbsp;252 of <span class="citation" data-cites="Berry2010">Berry, DeMeritt, and Esarey (<a href="#ref-Berry2010" role="doc-biblioref">2010</a>)</span>.</p>
+<p>This figure is a variant of Panel A of Figure 2 on p.&nbsp;252 of <span class="citation" data-cites="Berry2010">Berry, DeMeritt, and Esarey (<a href="#ref-Berry2010" role="doc-biblioref">2010</a>)</span>.</p>
 <p><img src="images/clipboard-1632969731.png" class="img-fluid" style="width:90.0%"></p>
 </div></div><div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="03-logistic-regression_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="720"></p>
-<figcaption>This figure illustrates that interaction arises even when the model has no product term. The model is <span class="math inline">\(\Pr(y) = \operatorname{logit}^{-1}(-4 + x_1 + x_2)\)</span> with no <span class="math inline">\(x_1x_2\)</span> term. Each curve plots <span class="math inline">\(\Pr(y)\)</span> as a function of <span class="math inline">\(x_1\)</span> for three fixed values of <span class="math inline">\(x_2 \in \{0,1,2\}\)</span>. Because the inverse-logit link compresses probabilities toward 0 and 1, the marginal effect of <span class="math inline">\(x_1\)</span> on <span class="math inline">\(\Pr(y)\)</span>, <span class="math inline">\(\frac{\partial \Pr(y)}{\partial x_1} = \Pr(y)\bigl(1-\Pr(y)\bigr)\)</span>, depends on the value of <span class="math inline">\(x_2\)</span>. Points and labels indicate selected derivatives. For example, at <span class="math inline">\(x_1 \approx 4.51\)</span> the marginal effect is <span class="math inline">\(\partial \Pr(y)/\partial x_1 \approx .234\)</span> when <span class="math inline">\(x_2=0\)</span> and <span class="math inline">\(\approx .070\)</span> when <span class="math inline">\(x_2=2\)</span>.</figcaption>
+<figcaption>This figure illustrates that interaction arises even when the model has no product term. The model is <span class="math inline">\(\Pr(y) = \operatorname{logit}^{-1}(-4 + x_1 + x_2)\)</span> with no <span class="math inline">\(x_1x_2\)</span> term. Each curve plots <span class="math inline">\(\Pr(y)\)</span> as a function of <span class="math inline">\(x_1\)</span> for three fixed values of <span class="math inline">\(x_2 \in \{0,1,2\}\)</span>. Because the inverse-logit link compresses probabilities toward 0 and 1, the marginal effect of <span class="math inline">\(x_1\)</span> on <span class="math inline">\(\Pr(y)\)</span>, <span class="math inline">\(\frac{\partial \Pr(y)}{\partial x_1} = \Pr(y)\bigl(1-\Pr(y)\bigr)\)</span>, depends on the value of <span class="math inline">\(x_2\)</span>. Points and labels indicate selected derivatives. For example, at <span class="math inline">\(x_1 \approx 4.51\)</span> the marginal effect is <span class="math inline">\(\partial \Pr(y)/\partial x_1 \approx .234\)</span> when <span class="math inline">\(x_2=0\)</span> and <span class="math inline">\(\approx .069\)</span> when <span class="math inline">\(x_2=2\)</span>.</figcaption>
 </figure>
 </div>
 </div>
@@ -831,11 +830,11 @@ $var_hat
 </section>
 <section id="two-quantities-of-interest" class="level3 page-columns page-full" data-number="11.2.2">
 <h3 data-number="11.2.2" class="anchored" data-anchor-id="two-quantities-of-interest"><span class="header-section-number">11.2.2</span> Two Quantities of Interest</h3>
-<p>Given that the coefficients are directly interpretable, we can focus on other, simpler quantities of interest.</p>
-<p>We have to core quantities of interest:</p>
+<p>Given that the coefficients are not directly interpretable, we can focus on other, simpler quantities of interest.</p>
+<p>We have two core quantities of interest:</p>
 <ol type="1">
 <li><strong>expected value</strong> <span class="math inline">\(E(y \mid X_c)\)</span>. The expected value of the outcome <span class="math inline">\(y\)</span> given a particular, <strong>c</strong>hosen covariate <span class="math inline">\(X_c\)</span>. Here, <span class="math inline">\(X_c\)</span> is a <span class="math inline">\(1 \times (k + 1)\)</span> row matrix that contains particular values for <span class="math inline">\(x_1, x_2, ..., x_k\)</span>.</li>
-<li><strong>first difference</strong> <span class="math inline">\(E(y \mid X_{hi}) - E(y \mid X_{lo})\)</span>. The first difference is the difference between two expected values. First, we find an expected value of the outcome <span class="math inline">\(y\)</span> given a particular covariates <span class="math inline">\(X_{lo}\)</span>, where one covariate is set to a “low” value of interest. Second, we find an expected value given covariates <span class="math inline">\(X_{hi}\)</span>, where that same covariate is changed to a “high” value of interest and the others are left unchanged.</li>
+<li><strong>first difference</strong> <span class="math inline">\(E(y \mid X_{hi}) - E(y \mid X_{lo})\)</span>. The first difference is the difference between two expected values. First, we find an expected value of the outcome <span class="math inline">\(y\)</span> given particular covariates <span class="math inline">\(X_{lo}\)</span>, where one covariate is set to a “low” value of interest. Second, we find an expected value given covariates <span class="math inline">\(X_{hi}\)</span>, where that same covariate is changed to a “high” value of interest and the others are left unchanged.</li>
 </ol>
 <p>As possible, I borrow my language around “quantities of interest”, including “expected values” and “first differences” from <span class="citation" data-cites="King2000">King, Tomz, and Wittenberg (<a href="#ref-King2000" role="doc-biblioref">2000</a>)</span>, which has been hugely influential in political science.</p>
 <div class="no-row-height column-margin column-container"><div id="ref-King2000" class="csl-entry" role="listitem">
@@ -861,12 +860,12 @@ King, Gary, Michael Tomz, and Jason Wittenberg. 2000. <span>“Making the Most o
 <span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>ev_hat <span class="ot">&lt;-</span> <span class="fu">ev_fn</span>(fit<span class="sc">$</span>beta_hat, X_c)</span>
 <span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a><span class="co"># delta method</span></span>
-<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(numDeriv)  <span class="co"># for grad</span></span>
-<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>grad <span class="ot">&lt;-</span> <span class="fu">grad</span>(</span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(numDeriv)  <span class="co"># for grad()</span></span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>grad_ev <span class="ot">&lt;-</span> <span class="fu">grad</span>(</span>
 <span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">func =</span> ev_fn, <span class="co"># what function are we taking the derivative of?</span></span>
 <span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> fit<span class="sc">$</span>beta_hat, <span class="co"># what variable(s) are we taking the derivative w.r.t.?</span></span>
 <span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">X =</span> X_c)  <span class="co"># what other values are needed?</span></span>
-<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>se_ev_hat <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(grad <span class="sc">%*%</span> fit<span class="sc">$</span>var_hat <span class="sc">%*%</span> grad)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>se_ev_hat <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(grad_ev <span class="sc">%*%</span> fit<span class="sc">$</span>var_hat <span class="sc">%*%</span> grad_ev)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="expected-value-for-many-cases" class="level4 page-columns page-full" data-number="11.2.2.2">
@@ -895,11 +894,11 @@ King, Gary, Michael Tomz, and Jason Wittenberg. 2000. <span>“Making the Most o
 <span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>  ev_hat[i] <span class="ot">&lt;-</span> <span class="fu">ev_fn</span>(fit<span class="sc">$</span>beta_hat, X_c[i, ])</span>
 <span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># delta method</span></span>
-<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>  grad <span class="ot">&lt;-</span> <span class="fu">grad</span>(</span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>  grad_ev <span class="ot">&lt;-</span> <span class="fu">grad</span>(</span>
 <span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">func =</span> ev_fn, <span class="co"># what function are we taking the derivative of?</span></span>
 <span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> fit<span class="sc">$</span>beta_hat, <span class="co"># what variable(s) are we taking the derivative w.r.t.?</span></span>
 <span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">X =</span> X_c[i, ])  <span class="co"># what other values are needed?</span></span>
-<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>  se_ev_hat[i] <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(grad <span class="sc">%*%</span> fit<span class="sc">$</span>var_hat <span class="sc">%*%</span> grad)</span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>  se_ev_hat[i] <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(grad_ev <span class="sc">%*%</span> fit<span class="sc">$</span>var_hat <span class="sc">%*%</span> grad_ev)</span>
 <span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a><span class="co"># put X_c, qi estimates, and se estimates in data frame</span></span>
@@ -989,12 +988,12 @@ $ se_ev_hat &lt;dbl&gt; 0.02562903, 0.02480870, 0.02399725, 0.02319621, 0.022407
 <span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>fd_hat <span class="ot">&lt;-</span> <span class="fu">fd_fn</span>(fit<span class="sc">$</span>beta_hat, X_hi, X_lo)</span>
 <span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a><span class="co"># delta method</span></span>
-<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a>grad <span class="ot">&lt;-</span> <span class="fu">grad</span>(</span>
+<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a>grad_fd <span class="ot">&lt;-</span> <span class="fu">grad</span>(</span>
 <span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">func =</span> fd_fn, </span>
 <span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> fit<span class="sc">$</span>beta_hat, </span>
 <span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">hi =</span> X_hi,</span>
 <span id="cb24-27"><a href="#cb24-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">lo =</span> X_lo)  </span>
-<span id="cb24-28"><a href="#cb24-28" aria-hidden="true" tabindex="-1"></a>se_fd_hat <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(grad <span class="sc">%*%</span> fit<span class="sc">$</span>var_hat <span class="sc">%*%</span> grad)</span>
+<span id="cb24-28"><a href="#cb24-28" aria-hidden="true" tabindex="-1"></a>se_fd_hat <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(grad_fd <span class="sc">%*%</span> fit<span class="sc">$</span>var_hat <span class="sc">%*%</span> grad_fd)</span>
 <span id="cb24-29"><a href="#cb24-29" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb24-30"><a href="#cb24-30" aria-hidden="true" tabindex="-1"></a><span class="co"># estimated fd</span></span>
 <span id="cb24-31"><a href="#cb24-31" aria-hidden="true" tabindex="-1"></a>fd_hat</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1042,7 +1041,7 @@ Warning
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> vote <span class="sc">~</span> age <span class="sc">+</span> educate <span class="sc">+</span> income <span class="sc">+</span> race</span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(f, <span class="at">data =</span> turnout, <span class="at">family =</span> binomial)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>We’ll later see how to use {marginal effects} to compute quantities of interest. But for now, realize that we can find the coefficient estimates with <code>coef()</code> and the estimated covariance matrix with <code>vcov()</code>. We can use these to manually obtain estimates of quantities of interest and their standard errors without marginal effects.</p>
+<p>We’ll later see how to use {marginaleffects} to compute quantities of interest. But for now, realize that we can find the coefficient estimates with <code>coef()</code> and the estimated covariance matrix with <code>vcov()</code>. We can use these to manually obtain estimates of quantities of interest and their standard errors without {marginaleffects}.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>beta_hat <span class="ot">&lt;-</span> <span class="fu">coef</span>(fit)</span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>v_hat <span class="ot">&lt;-</span> <span class="fu">vcov</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1057,7 +1056,7 @@ Warning
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Software to automatically handle computations is <em>really</em> valuable. When users write their own code to handle basic, common calculations (e.g., using <code>optim()</code> to fit a logit model), they run a huge risk of introducing errors. Well-tested, widely-used software written by actual programmers has far fewer bugs that single-use code written by substantive researchers. That said, it is really easy to <em>misunderstand</em> what “easy-to-use” software is actually doing. For example, documentation uses the term “marginal effect” inconsistently. And model fitting functions sometimes use unexpected parameterizations. Without paying careful attention, it’s easy to incorrectly use well-tested software. When you are first learning a software package, it’s important to check that you are computing what you think you are computing (e.g., a rate, not a mean; a instantaneous effect, not a discrete effect).</p>
+<p>Software to automatically handle computations is <em>really</em> valuable. When users write their own code to handle basic, common calculations (e.g., using <code>optim()</code> to fit a logit model), they run a huge risk of introducing errors. Well-tested, widely-used software written by actual programmers has far fewer bugs than single-use code written by substantive researchers. That said, it is really easy to <em>misunderstand</em> what “easy-to-use” software is actually doing. For example, documentation uses the term “marginal effect” inconsistently. And model fitting functions sometimes use unexpected parameterizations. Without paying careful attention, it’s easy to incorrectly use well-tested software. When you are first learning a software package, it’s important to check that you are computing what you think you are computing (e.g., a rate, not a mean; an instantaneous effect, not a discrete effect).</p>
 </div>
 </div>
 </section>

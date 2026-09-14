@@ -342,14 +342,8 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../wk06/03-censoring.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Censoring</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../wk06/04-duration-models.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Duration Models</span></span></a>
+  <a href="../wk06/03-ordered-logit.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Ordered Logit</span></span></a>
   </div>
 </li>
       </ul>
@@ -366,19 +360,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../wk07/01-metrop.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Metropolis</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Metropolis</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../wk07/02-stan.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Stan</span></span></a>
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Stan</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../wk07/03-brms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">{brms}</span></span></a>
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">{brms}</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk07/04-multinomial-logit.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Multinomial Logit</span></span></a>
   </div>
 </li>
       </ul>
@@ -436,14 +436,14 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../appendicies/ordered.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">H</span>&nbsp; <span class="chapter-title">Ordered Logit</span></span></a>
+  <a href="../appendicies/censoring.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">H</span>&nbsp; <span class="chapter-title">Censoring</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../appendicies/unordered.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">I</span>&nbsp; <span class="chapter-title">Multinomial Logit</span></span></a>
+  <a href="../appendicies/duration-models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">I</span>&nbsp; <span class="chapter-title">Duration Models</span></span></a>
   </div>
 </li>
       </ul>
@@ -531,15 +531,18 @@ window.Quarto = {
 </tr>
 <tr class="odd">
 <td>Function</td>
-<td><code>lm()</code> or <code>glm(..., family = guassian)</code></td>
+<td><code>lm()</code> or <code>glm(..., family = gaussian)</code></td>
 </tr>
 <tr class="even">
 <td>Parameterization notes</td>
 <td>Parameterized as expected</td>
 </tr>
+<tr class="odd">
+<td>Alternatives</td>
+<td><span class="math inline">\(t\)</span> regression</td>
+</tr>
 </tbody>
 </table>
-<div class="line-block">Alternatives | <span class="math inline">\(t\)</span> regression |</div>
 </section>
 <section id="logit" class="level3" data-number="12.1.2">
 <h3 data-number="12.1.2" class="anchored" data-anchor-id="logit"><span class="header-section-number">12.1.2</span> Logit</h3>
@@ -561,15 +564,15 @@ window.Quarto = {
 </tr>
 <tr class="even">
 <td>Model</td>
-<td><span class="math inline">\(y_i \sim \text{Bernoulli}(\pi_i)\)</span>, where <span class="math inline">\(\pi_i = \text{logit}^{-1}(X_i \beta)\)</span></td>
+<td><span class="math inline">\(y_i \sim \text{Bernoulli}(\pi_i)\)</span>, where <span class="math inline">\(\pi_i = \operatorname{logit}^{-1}(X_i \beta)\)</span></td>
 </tr>
 <tr class="odd">
 <td>Expected value</td>
-<td><span class="math inline">\(\hat{\mu} = \hat{\pi} = \text{logit}^{-1}(X_c \hat{\beta})\)</span></td>
+<td><span class="math inline">\(\hat{\mu} = \hat{\pi} = \operatorname{logit}^{-1}(X_c \hat{\beta})\)</span></td>
 </tr>
 <tr class="even">
 <td>First difference</td>
-<td><span class="math inline">\(\hat{\Delta} = \hat{\pi}_{hi} - \hat{\pi}_{lo} = \text{logit}^{-1}(X_{hi} \hat{\beta}) - \text{logit}^{-1}(X_{lo} \hat{\beta})\)</span></td>
+<td><span class="math inline">\(\hat{\Delta} = \hat{\pi}_{hi} - \hat{\pi}_{lo} = \operatorname{logit}^{-1}(X_{hi} \hat{\beta}) - \operatorname{logit}^{-1}(X_{lo} \hat{\beta})\)</span></td>
 </tr>
 <tr class="odd">
 <td>Function</td>
@@ -668,7 +671,7 @@ window.Quarto = {
 </tr>
 <tr class="even">
 <td>Parameterization notes</td>
-<td>The base R density function <code>dweibull(x, shape, scale)</code> uses the standard shape–scale parameterization. However, <code>survreg()</code> uses parameterization in terms of <span class="math inline">\(\lambda\)</span> and <span class="math inline">\(\sigma\)</span>, where <code>shape</code> <span class="math inline">\(= \frac{1}{\sigma}\)</span> and <code>scale</code> = <span class="math inline">\(\exp(X_i \beta)\)</span> The two forms are equivalent after reparameterization. To clarify, the log-likelihood used by <code>survreg()</code> is below.</td>
+<td>The base R density function <code>dweibull(x, shape, scale)</code> uses the standard shape–scale parameterization. However, <code>survreg()</code> uses parameterization in terms of <span class="math inline">\(\lambda\)</span> and <span class="math inline">\(\sigma\)</span>, where <code>shape</code> <span class="math inline">\(= \frac{1}{\sigma}\)</span> and <code>scale</code> <span class="math inline">\(= \exp(X_i \beta)\)</span>. The two forms are equivalent after reparameterization. To clarify, the log-likelihood used by <code>survreg()</code> is below.</td>
 </tr>
 <tr class="odd">
 <td>Alternatives</td>
@@ -686,7 +689,7 @@ window.Quarto = {
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  eta <span class="ot">&lt;-</span> X <span class="sc">%*%</span> beta</span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># transform parameters</span></span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  k <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">/</span> sigma               <span class="co"># Weibull shape</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  lambda <span class="ot">&lt;-</span> <span class="fu">exp</span>(eta)           <span class="co"># Weibull scal</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  lambda <span class="ot">&lt;-</span> <span class="fu">exp</span>(eta)           <span class="co"># Weibull scale</span></span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  ll <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">dweibull</span>(y, <span class="at">shape =</span> k, <span class="at">scale =</span> lambda, <span class="at">log =</span> <span class="cn">TRUE</span>))</span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(ll)</span>

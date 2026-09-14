@@ -11,31 +11,31 @@ But sometimes we care about **binary outcomes**.
 -   Binary outcomes are categorical outcome variables with exactly two categories, such as whether or not someone voted, whether two countries are at war, and so on.
 -   In mathematical theory, it's helpful to code the binary variables as $y_i \in \{0, 1\}$, with one representing "an event" and zero representing "a non-event." In R, it's probably better to have proper factors and labels, though the 0/1 coding is common and works well.
 -   In generic language, we'll say that $y_i = 1$ means that "an event has occurred" and $y_i = 0$ means that "an event has not occurred."
--   This allows us to talk about the "probability of an event" (e.g., the probability of war, etc)
+-   This allows us to talk about the "probability of an event" (e.g., the probability of war, etc.)
 
 ### The Linear Probability Model
 
-The normal model cannot describe a binary outcome well, becasue it doesn't make much conceptual sense to model 0s and 1s as following a normal distribution. That said, we can use the linear model (i.e., OLS) with binary outcome variables.
+The normal model cannot describe a binary outcome well, because it doesn't make much conceptual sense to model 0s and 1s as following a normal distribution. That said, we can use the linear model (i.e., OLS) with binary outcome variables.
 
--   Recall that we the linear model is represented by the equation $E(y_i) = X_i\beta$.
+-   Recall that the linear model is represented by the equation $E(y_i) = X_i\beta$.
 -   It is important to note that a probability is just a particular kind of expected value---a probability is an expected value of a binary variable.
--   Since $y_i$ is binary, the $E(y_i) = \Pr(y_i = 1) = \Pr(y_i)$, giving us $\Pr(y_i) = X_i\beta$.
+-   Since $y_i$ is binary, $E(y_i) = \Pr(y_i = 1) = \Pr(y_i)$, giving us $\Pr(y_i) = X_i\beta$.
 
 The LPM has two advantages:
 
-1.  It's is *very* easy to estimate (i.e., OLS; $\hat{\beta} = (X'X)^{-1}X'y$).
-2.  It is easy to interpret (i.e., a one unit change in $x_j$ leads to a $\hat{\beta_j}$ unit increase in $\Pr(y)$).
+1.  It's *very* easy to estimate (i.e., OLS; $\hat{\beta} = (X'X)^{-1}X'y$).
+2.  It is easy to interpret (i.e., a one unit change in $x_j$ leads to a $\hat{\beta}_j$ unit increase in $\Pr(y)$).
 
 The LPM has several disadvantages:
 
 1.  **Unbounded Predictions** Because the potential values for the explanatory variables are unbounded, you can obtain predicted probabilities above one and below zero. Of course, these predictions make no sense.
-2.  **Conditional Heteroskedasticity** The normal-linear model assumes a constant variance $\sigma^2$. However, it is impossible to have homoskedastic residuals of a binary outcome if the probability of an event varies. Specifically, if $y_i$ is binary, then $\text{Var}(y_i) = \Pr(y_i)[1 - \Pr(y_i)]$, which, for the LPM, equals $X_i\beta(1 - X_i\beta)$. (Non-zero coefficients imply heteroskedasticity.)
-3.  **Non-Normal Errors** Normal errors implies that the residuals can take on any value along the real line, with values closer to zero being more likely and errors outside three standard deviations being quite unlikely. However, if $y_i$ is binary, then the residual can take on only two values: $-Pr(y_i)$ or $1 - Pr(y_i)$.
-4.  **Functional Form** Theoretically, you'd probably expect explanatory variables to have smaller effects as $Pr(y_i)$ approaches zero or one (called "compression," see @Berry2010 and @Rainey2015). The LPM assumes that the effects are constant.
+2.  **Conditional Heteroskedasticity** The normal-linear model assumes a constant variance $\sigma^2$. However, it is impossible to have homoskedastic residuals of a binary outcome if the probability of an event varies. Specifically, if $y_i$ is binary, then $\operatorname{Var}(y_i) = \Pr(y_i)[1 - \Pr(y_i)]$, which, for the LPM, equals $X_i\beta(1 - X_i\beta)$. (Non-zero coefficients imply heteroskedasticity.)
+3.  **Non-Normal Errors** Normal errors implies that the residuals can take on any value along the real line, with values closer to zero being more likely and errors outside three standard deviations being quite unlikely. However, if $y_i$ is binary, then the residual can take on only two values: $-\Pr(y_i)$ or $1 - \Pr(y_i)$.
+4.  **Functional Form** Theoretically, you'd probably expect explanatory variables to have smaller effects as $\Pr(y_i)$ approaches zero or one (called "compression," see @Berry2010 and @Rainey2015). The LPM assumes that the effects are constant.
 
 ## `turnout` data set
 
-As an intial simple example, let's use the `turnout` data set from the old {Zelig} package. {Zelig} has been replaced with {clarify}, but thankful jrnold saved Zelig's example data in the package [{ZeligData}](https://github.com/jrnold/ZeligData).
+As an initial simple example, let's use the `turnout` data set from the old {Zelig} package. {Zelig} has been replaced with {clarify}, but thankful jrnold saved Zelig's example data in the package [{ZeligData}](https://github.com/jrnold/ZeligData).
 
 ```{r}
 # install jrnold's package from github
@@ -47,7 +47,7 @@ turnout <- ZeligData::turnout  # see ?ZeligData::turnout for details
 glimpse(turnout)
 ```
 
-We can fit use use least squares to fit a linear probability model to these data, treating the binary 0/1 `vote` variable as numeric.
+We can use least squares to fit a linear probability model to these data, treating the binary 0/1 `vote` variable as numeric.
 
 Because we now have a response `y` and a design matrix `X` we have to be a little careful that the handling of `y` and `X` are consistent (e.g., dropping rows with missing data). Using `model.frame()` *before* using `model.matrix()` is the proper way to do this. The canonical pipeline is to feed the formula and the data frame through `model.frame()` → `model.matrix()` → `model.response()`.
 
@@ -77,7 +77,7 @@ arm::display(fit)
 We have modeled $\pi = X\beta$, so we can compute $\hat{\pi} = X\hat{\beta}$.
 
 ```{r}
-# mu-hat
+# pi-hat
 pi_hat <- X%*%beta_hat
 ```
 
@@ -95,11 +95,11 @@ As an initial effort to handle the "non-normal" distribution of the data, we mig
 
 However, $\pi_i = X_i\beta$ has a *big* problem: $X_i\beta$ might be less than zero or greater than one. This renders the approach unworkable.
 
-To suitably link the bounded parameter $\pi_i$ and with the unbounded linear predictor $X_i\beta$, we use the "inverse link function." The inverse link function wraps around the linear predictor and forces its values into the desired domain.[^03-logistic-regression-1]
+To suitably link the bounded parameter $\pi_i$ with the unbounded linear predictor $X_i\beta$, we use the "inverse link function." The inverse link function wraps around the linear predictor and forces its values into the desired domain.[^03-logistic-regression-1]
 
 [^03-logistic-regression-1]: Many of the "disadvantages" of the LPM above follow from the fact that the linear predictor $\mu = X\beta$ is unbounded. For the normal model, the inverse link function is **not necessary** because the parameter of interest $\mu$ is unbounded and maps to the entire real line. But for other models, the key parameter has a restricted domain. In the case of the Bernoulli distribution, $\pi_i \in [0, 1] \subset \mathbb{R}$.
 
-For the Bernoulli distribution, we might use the inverse link function $g^{-1}(x) = \frac{e^x}{1 + e^x}$.[^03-logistic-regression-2] This is called the "inverse logit" and it has an "S"-shape.[^03-logistic-regression-3] It's job is to map $X\beta$ into $[0, 1]$.[^03-logistic-regression-4]
+For the Bernoulli distribution, we might use the inverse link function $g^{-1}(x) = \frac{e^x}{1 + e^x}$.[^03-logistic-regression-2] This is called the "inverse logit" and it has an "S"-shape.[^03-logistic-regression-3] Its job is to map $X\beta$ into $[0, 1]$.[^03-logistic-regression-4]
 
 [^03-logistic-regression-2]: This is not the only choice. Probit models, for example, use the standard normal cdf for the inverse link function.
 
@@ -126,21 +126,21 @@ Hint: The inverse-logit function is the cdf of the standard logistic distributio
 We can write the model this way.
 
 $$
-y_i \sim \text{Bernoulli}(\pi_i)\text{, where } \pi_i = \text{logit}^{-1}(X_i\beta).
+y_i \sim \text{Bernoulli}(\pi_i)\text{, where } \pi_i = \operatorname{logit}^{-1}(X_i\beta).
 $$
 
 This is logistic regression or the logit model. We can fit this model using maximum likelihood.
 
-### Fitting with `optim()
+### Fitting with `optim()`
 
 To develop the log-likelihood of the logit model, we start with the Bernoulli likelihood from before.
 
 $$
-f(y; \beta) = L(\beta) = \prod_{i = 1}^{N}\pi_i^{y_i} (1 - \pi_i)^{(1 - y_i)}\text{, where } \pi_i = \text{logit}^{-1}(X_i\beta)
+f(y; \beta) = L(\beta) = \prod_{i = 1}^{N}\pi_i^{y_i} (1 - \pi_i)^{(1 - y_i)}\text{, where } \pi_i = \operatorname{logit}^{-1}(X_i\beta)
 $$ Taking the log, we have
 
 $$
-\log L(\beta) = \sum_{i = 1}^{N} y_i \log \pi_i +  \sum_{i = 1}^{N}(1 - y_i) \log(1 - \pi_i)\text{, where } \pi_i = \text{logit}^{-1}(X_i\beta)
+\ell(\beta) = \sum_{i = 1}^{N} y_i \log \pi_i +  \sum_{i = 1}^{N}(1 - y_i) \log(1 - \pi_i)\text{, where } \pi_i = \operatorname{logit}^{-1}(X_i\beta)
 $$
 
 We can program this into R for use in `optim()`.
@@ -154,7 +154,7 @@ logit_ll <- function(beta, y, X) {
 }
 ```
 
-The tricky part about using `optim()` here is not the log-likelihood function, but setting up `X` and `y`. The code below creates the outcome vector $y$ and the matrix $X$ of explanatory variables (with a leading columns of 1s).
+The tricky part about using `optim()` here is not the log-likelihood function, but setting up `X` and `y`.
 
 We already made `X` and `y` above, so we can use `optim()`.
 
@@ -224,9 +224,9 @@ But the inverse link function makes our life considerably more complicated. In t
 
 ### Effects are not constant
 
-To see how the inverse link function changes things, we can take the first derivative of $\pi$ with respect to $\x_1$.
+To see how the inverse link function changes things, we can take the first derivative of $\pi$ with respect to $x_1$.
 
-Recall that $\pi_i = \mathrm{logit}^{-1}(X_i\beta)$. To keep this derivative simple, we'll break it into three parts: (i) first, find $\frac{\partial \pi_i}{\partial \eta_i}$, then find $\frac{\partial \eta_i}{\partial x_{i1}}$, and then use the chain rule $\frac{\partial \pi_i}{\partial x_{i1}} = \frac{\partial \pi_i}{\partial \eta_i}\cdot \frac{\partial \eta_i}{\partial x_{i1}}$.
+Recall that $\pi_i = \operatorname{logit}^{-1}(X_i\beta)$. To keep this derivative simple, we'll break it into three parts: (i) first, find $\frac{\partial \pi_i}{\partial \eta_i}$, then find $\frac{\partial \eta_i}{\partial x_{i1}}$, and then use the chain rule $\frac{\partial \pi_i}{\partial x_{i1}} = \frac{\partial \pi_i}{\partial \eta_i}\cdot \frac{\partial \eta_i}{\partial x_{i1}}$.
 
 **Step 1:** $\frac{\partial \pi_i}{\partial \eta_i}$
 
@@ -243,7 +243,7 @@ $$
   &= \pi_i\,(1-\pi_i)
   &\qquad& \text{substitute \(\pi_i = \frac{e^{\eta_i}}{1+e^{\eta_i}}\)} \\[10pt]
   \end{aligned}
-$$\
+$$
 
 **Step 2:** $\frac{\partial \eta_i}{\partial x_{i1}}$
 
@@ -261,16 +261,16 @@ $$
 \begin{aligned}
 \frac{\partial \pi_i}{\partial x_{i1}}
   &= \frac{\partial \pi_i}{\partial \eta_i}\cdot \frac{\partial \eta_i}{\partial x_{i1}}
-   \;=\; \pi_i(1-\pi_i)\,\beta_1 = \left[ \text{logit}^{-1}(X_i\beta) \right] \cdot \left[1 - \text{logit}^{-1}(X_i\beta) \right] \cdot \beta_1
+   \;=\; \pi_i(1-\pi_i)\,\beta_1 = \left[ \operatorname{logit}^{-1}(X_i\beta) \right] \cdot \left[1 - \operatorname{logit}^{-1}(X_i\beta) \right] \cdot \beta_1
 \end{aligned}
 $$
 
-The marginal effect of $x_{i1}$ on the probability of an event is **not constant**. It depends on the value of $x_1$ \*and all the other $x$s*!
+The marginal effect of $x_{i1}$ on the probability of an event is **not constant**. It depends on the value of $x_1$ *and all the other $x$s*!
 
-To see this clearly, we can assume the logit model $\Pr(y) = \operatorname{logit}^{-1}(-4 + x_1 + x_2)$ and plot $\Pr(y)$ as $x_1$ varies for different values of $x_2$. Notice that the marginal effect $\frac{\partial \Pr(y)}{\partial x_1}$ varies *depending on the value of $x_2$. Remember, there are no product terms in this model. However, the effect of the variables are interactive, at least on $\Pr(y)$.
+To see this clearly, we can assume the logit model $\Pr(y) = \operatorname{logit}^{-1}(-4 + x_1 + x_2)$ and plot $\Pr(y)$ as $x_1$ varies for different values of $x_2$. Notice that the marginal effect $\frac{\partial \Pr(y)}{\partial x_1}$ varies *depending on the value of $x_2$*. Remember, there are no product terms in this model. However, the effects of the variables are interactive, at least on $\Pr(y)$.
 
 ::: {.column-margin}
-This figure is a variant Panel A of Figure 2 on p. 252 of @Berry2010.
+This figure is a variant of Panel A of Figure 2 on p. 252 of @Berry2010.
 
 ![](images/clipboard-1632969731.png){width="90%"}
 :::
@@ -278,7 +278,7 @@ This figure is a variant Panel A of Figure 2 on p. 252 of @Berry2010.
 
 ```{r}
 #| echo: false
-#| fig-cap: 'This figure illustrates that interaction arises even when the model has no product term. The model is $\Pr(y) = \operatorname{logit}^{-1}(-4 + x_1 + x_2)$ with no $x_1x_2$ term. Each curve plots $\Pr(y)$ as a function of $x_1$ for three fixed values of $x_2 \in \{0,1,2\}$. Because the inverse-logit link compresses probabilities toward 0 and 1, the marginal effect of $x_1$ on $\Pr(y)$, $\frac{\partial \Pr(y)}{\partial x_1} = \Pr(y)\bigl(1-\Pr(y)\bigr)$, depends on the value of $x_2$. Points and labels indicate selected derivatives. For example, at $x_1 \approx 4.51$ the marginal effect is $\partial \Pr(y)/\partial x_1 \approx .234$ when $x_2=0$ and $\approx .070$ when $x_2=2$.'
+#| fig-cap: 'This figure illustrates that interaction arises even when the model has no product term. The model is $\Pr(y) = \operatorname{logit}^{-1}(-4 + x_1 + x_2)$ with no $x_1x_2$ term. Each curve plots $\Pr(y)$ as a function of $x_1$ for three fixed values of $x_2 \in \{0,1,2\}$. Because the inverse-logit link compresses probabilities toward 0 and 1, the marginal effect of $x_1$ on $\Pr(y)$, $\frac{\partial \Pr(y)}{\partial x_1} = \Pr(y)\bigl(1-\Pr(y)\bigr)$, depends on the value of $x_2$. Points and labels indicate selected derivatives. For example, at $x_1 \approx 4.51$ the marginal effect is $\partial \Pr(y)/\partial x_1 \approx .234$ when $x_2=0$ and $\approx .069$ when $x_2=2$.'
 #| fig-height: 5
 #| fig-width: 7.5
 
@@ -355,12 +355,12 @@ ggplot(df, aes(x, p)) +
 
 ### Two Quantities of Interest
 
-Given that the coefficients are directly interpretable, we can focus on other, simpler quantities of interest.
+Given that the coefficients are not directly interpretable, we can focus on other, simpler quantities of interest.
 
-We have to core quantities of interest:
+We have two core quantities of interest:
 
 1. **expected value** $E(y \mid X_c)$. The expected value of the outcome $y$ given a particular, **c**hosen covariate $X_c$. Here, $X_c$ is a $1 \times (k + 1)$ row matrix that contains particular values for $x_1, x_2, ..., x_k$. 
-1. **first difference** $E(y \mid X_{hi}) - E(y \mid X_{lo})$. The first difference is the difference between two expected values. First, we find an expected value of the outcome $y$ given a particular covariates $X_{lo}$, where one covariate is set to a "low" value of interest. Second, we find an expected value given covariates $X_{hi}$, where that same covariate is changed to a "high" value of interest and the others are left unchanged.
+1. **first difference** $E(y \mid X_{hi}) - E(y \mid X_{lo})$. The first difference is the difference between two expected values. First, we find an expected value of the outcome $y$ given particular covariates $X_{lo}$, where one covariate is set to a "low" value of interest. Second, we find an expected value given covariates $X_{hi}$, where that same covariate is changed to a "high" value of interest and the others are left unchanged.
 
 As possible, I borrow my language around "quantities of interest", including "expected values" and "first differences" from @King2000, which has been hugely influential in political science.
 
@@ -386,12 +386,12 @@ ev_fn <- function(beta, X) {
 ev_hat <- ev_fn(fit$beta_hat, X_c)
 
 # delta method
-library(numDeriv)  # for grad
-grad <- grad(
+library(numDeriv)  # for grad()
+grad_ev <- grad(
   func = ev_fn, # what function are we taking the derivative of?
   x = fit$beta_hat, # what variable(s) are we taking the derivative w.r.t.?
   X = X_c)  # what other values are needed?
-se_ev_hat <- sqrt(grad %*% fit$var_hat %*% grad)
+se_ev_hat <- sqrt(grad_ev %*% fit$var_hat %*% grad_ev)
 ```
 
 #### Expected value for many cases
@@ -420,11 +420,11 @@ for (i in 1:nrow(X_c)) {
   ev_hat[i] <- ev_fn(fit$beta_hat, X_c[i, ])
   
   # delta method
-  grad <- grad(
+  grad_ev <- grad(
     func = ev_fn, # what function are we taking the derivative of?
     x = fit$beta_hat, # what variable(s) are we taking the derivative w.r.t.?
     X = X_c[i, ])  # what other values are needed?
-  se_ev_hat[i] <- sqrt(grad %*% fit$var_hat %*% grad)
+  se_ev_hat[i] <- sqrt(grad_ev %*% fit$var_hat %*% grad_ev)
 }
 
 # put X_c, qi estimates, and se estimates in data frame
@@ -493,12 +493,12 @@ fd_fn <- function(beta, hi, lo) {
 fd_hat <- fd_fn(fit$beta_hat, X_hi, X_lo)
 
 # delta method
-grad <- grad(
+grad_fd <- grad(
   func = fd_fn, 
   x = fit$beta_hat, 
   hi = X_hi,
   lo = X_lo)  
-se_fd_hat <- sqrt(grad %*% fit$var_hat %*% grad)
+se_fd_hat <- sqrt(grad_fd %*% fit$var_hat %*% grad_fd)
 
 # estimated fd
 fd_hat
@@ -529,7 +529,7 @@ fit <- glm(f, data = turnout, family = binomial)
 
 ```
 
-We'll later see how to use {marginal effects} to compute quantities of interest. But for now, realize that we can find the coefficient estimates with `coef()` and the estimated covariance matrix with `vcov()`. We can use these to manually obtain estimates of quantities of interest and their standard errors without marginal effects. 
+We'll later see how to use {marginaleffects} to compute quantities of interest. But for now, realize that we can find the coefficient estimates with `coef()` and the estimated covariance matrix with `vcov()`. We can use these to manually obtain estimates of quantities of interest and their standard errors without {marginaleffects}. 
 
 ```{r}
 beta_hat <- coef(fit)
@@ -538,7 +538,7 @@ v_hat <- vcov(fit)
 
 ::: callout-warning
 
-Software to automatically handle computations is *really* valuable. When users write their own code to handle basic, common calculations (e.g., using `optim()` to fit a logit model), they run a huge risk of introducing errors. Well-tested, widely-used software written by actual programmers has far fewer bugs that single-use code written by substantive researchers. That said, it is really easy to *misunderstand* what "easy-to-use" software is actually doing. For example, documentation uses the term "marginal effect" inconsistently. And model fitting functions sometimes use unexpected parameterizations. Without paying careful attention, it's easy to incorrectly use well-tested software. When you are first learning a software package, it's important to check that you are computing what you think you are computing (e.g., a rate, not a mean; a instantaneous effect, not a discrete effect).
+Software to automatically handle computations is *really* valuable. When users write their own code to handle basic, common calculations (e.g., using `optim()` to fit a logit model), they run a huge risk of introducing errors. Well-tested, widely-used software written by actual programmers has far fewer bugs than single-use code written by substantive researchers. That said, it is really easy to *misunderstand* what "easy-to-use" software is actually doing. For example, documentation uses the term "marginal effect" inconsistently. And model fitting functions sometimes use unexpected parameterizations. Without paying careful attention, it's easy to incorrectly use well-tested software. When you are first learning a software package, it's important to check that you are computing what you think you are computing (e.g., a rate, not a mean; an instantaneous effect, not a discrete effect).
 
 :::
 

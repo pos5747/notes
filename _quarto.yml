@@ -45,16 +45,16 @@ book:
       - wk05/02-ic.qmd
       - wk05/03-zero-inflation.qmd
     - part: "Week 6"
-      chapters: 
+      chapters:
         - wk06/01-bayes.qmd
         - wk06/02-rejection-sampling.qmd
-        - wk06/03-censoring.qmd
-        - wk06/04-duration-models.qmd
+        - wk06/03-ordered-logit.qmd
     - part: "Week 7"
-      chapters: 
+      chapters:
         - wk07/01-metrop.qmd
         - wk07/02-stan.qmd
         - wk07/03-brms.qmd
+        - wk07/04-multinomial-logit.qmd
   appendices:
     - appendicies/999-distributions.qmd
     - wk01/frac-exp-log.qmd
@@ -63,8 +63,8 @@ book:
     - wk01/matrices.qmd
     - wk01/probability.qmd
     - wk04/05-glm.qmd
-    - appendicies/ordered.qmd
-    - appendicies/unordered.qmd
+    - appendicies/censoring.qmd
+    - appendicies/duration-models.qmd
     #- wk01/hypothesis-testing.qmd
 
 bibliography: references.bib

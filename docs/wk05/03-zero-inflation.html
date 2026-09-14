@@ -342,14 +342,8 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../wk06/03-censoring.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Censoring</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../wk06/04-duration-models.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Duration Models</span></span></a>
+  <a href="../wk06/03-ordered-logit.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Ordered Logit</span></span></a>
   </div>
 </li>
       </ul>
@@ -366,19 +360,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../wk07/01-metrop.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Metropolis</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Metropolis</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../wk07/02-stan.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Stan</span></span></a>
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Stan</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../wk07/03-brms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">{brms}</span></span></a>
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">{brms}</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk07/04-multinomial-logit.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Multinomial Logit</span></span></a>
   </div>
 </li>
       </ul>
@@ -436,14 +436,14 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../appendicies/ordered.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">H</span>&nbsp; <span class="chapter-title">Ordered Logit</span></span></a>
+  <a href="../appendicies/censoring.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">H</span>&nbsp; <span class="chapter-title">Censoring</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../appendicies/unordered.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">I</span>&nbsp; <span class="chapter-title">Multinomial Logit</span></span></a>
+  <a href="../appendicies/duration-models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">I</span>&nbsp; <span class="chapter-title">Duration Models</span></span></a>
   </div>
 </li>
       </ul>
@@ -581,11 +581,11 @@ z_i \cdot \log\big( \pi_i + (1 - \pi_i) f(0; \mu_i, \theta) \big)
 (1 - z_i) \cdot \big[ \log(1 - \pi_i) + \log f(y_i; \mu_i, \theta) \big]
 \Bigg\}.
 \]</span></p>
-<p>We can imagine that <span class="math inline">\(\pi_i = \text{logit}^{-1}(Z\gamma)\)</span> and <span class="math inline">\(\mu_i = \exp(X\beta)\)</span>, with <span class="math inline">\(\theta\)</span> modeled as in a standard negative binomial regression.</p>
+<p>We can imagine that <span class="math inline">\(\pi_i = \operatorname{logit}^{-1}(Z\gamma)\)</span> and <span class="math inline">\(\mu_i = \exp(X\beta)\)</span>, with <span class="math inline">\(\theta\)</span> modeled as in a standard negative binomial regression.</p>
 </section>
 <section id="in-r" class="level3" data-number="15.1.4">
 <h3 data-number="15.1.4" class="anchored" data-anchor-id="in-r"><span class="header-section-number">15.1.4</span> In R</h3>
-<p>We can fit the zero-inflated negative binomial using the <code>glmmTMB()</code> function in R. Create the design matrix X with <code>formula</code> (for <span class="math inline">\(\mu_i = \exp (X\beta)\)</span>) and the design matrix <code>Z</code> with <code>ziformula</code> (for <span class="math inline">\(\pi_i = \text{logit}^{-1} (Z\gamma)\)</span>). The family <code>nbinom2</code> specifies the negative binomial with variance <span class="math inline">\(\mu + \mu^2/\theta\)</span> (which matrix <code>MASS::glm.nb()</code>)</p>
+<p>We can fit the zero-inflated negative binomial using the <code>glmmTMB()</code> function in R. Create the design matrix X with <code>formula</code> (for <span class="math inline">\(\mu_i = \exp (X\beta)\)</span>) and the design matrix <code>Z</code> with <code>ziformula</code> (for <span class="math inline">\(\pi_i = \operatorname{logit}^{-1} (Z\gamma)\)</span>). The family <code>nbinom2</code> specifies the negative binomial with variance <span class="math inline">\(\mu + \mu^2/\theta\)</span> (which matrix <code>MASS::glm.nb()</code>)</p>
 <ul>
 <li><code>glmmTMB()</code> has a <code>simulate()</code> method to simulate from the predictive distribution.</li>
 <li><code>glmTMB()</code> works well with {marginaleffects}.</li>
@@ -629,8 +629,8 @@ z_i \cdot \log\big( \pi_i + (1 - \pi_i) f(0; \mu_i, \theta) \big)
 </div>
 </div>
 </section>
-<section id="pi_i-textlogit-1xbeta" class="level4" data-number="15.1.4.2">
-<h4 data-number="15.1.4.2" class="anchored" data-anchor-id="pi_i-textlogit-1xbeta"><span class="header-section-number">15.1.4.2</span> <span class="math inline">\(\pi_i = \text{logit}^{-1}(X\beta)\)</span></h4>
+<section id="pi_i-operatornamelogit-1xbeta" class="level4" data-number="15.1.4.2">
+<h4 data-number="15.1.4.2" class="anchored" data-anchor-id="pi_i-operatornamelogit-1xbeta"><span class="header-section-number">15.1.4.2</span> <span class="math inline">\(\pi_i = \operatorname{logit}^{-1}(X\beta)\)</span></h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># formulas</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> operations <span class="sc">~</span> lower <span class="sc">+</span> vendors <span class="sc">+</span> budget <span class="sc">+</span> population</span>

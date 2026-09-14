@@ -1,2 +1,0 @@
-# Approximate Posterior Simulation
-

@@ -44,7 +44,7 @@ Stan was designed to overcome these limitations. It uses gradients of the log-po
 Consider our usual logistic regression model.
 
 $$
-y_i \sim \text{Bernoulli}(\pi_i), \quad \pi_i = \text{logit}^{-1} \left( X_i \beta \right).
+y_i \sim \text{Bernoulli}(\pi_i), \quad \pi_i = \operatorname{logit}^{-1} \left( X_i \beta \right).
 $$
 
 We'll assume weakly informative priors (i.e., variance = 25). Because the scale of the variables affects the interpretation of the priors, it's common to rescale variables to have a common scale (e.g., SD of 0.5, SD of 1, or range of 1). For example, a prior with an SD of 5 is more or less informative depending on whether income is dollars or thousands of dollars---the coefficient is 1000x larger in the latter case.

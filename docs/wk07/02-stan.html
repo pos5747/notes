@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>21&nbsp; Stan – Modern Probability Modeling</title>
+<title>20&nbsp; Stan – Modern Probability Modeling</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -174,7 +174,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../wk07/01-metrop.html">Week 7</a></li><li class="breadcrumb-item"><a href="../wk07/02-stan.html"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Stan</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../wk07/01-metrop.html">Week 7</a></li><li class="breadcrumb-item"><a href="../wk07/02-stan.html"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Stan</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -362,14 +362,8 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../wk06/03-censoring.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Censoring</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../wk06/04-duration-models.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Duration Models</span></span></a>
+  <a href="../wk06/03-ordered-logit.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Ordered Logit</span></span></a>
   </div>
 </li>
       </ul>
@@ -386,19 +380,25 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../wk07/01-metrop.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Metropolis</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Metropolis</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../wk07/02-stan.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Stan</span></span></a>
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Stan</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../wk07/03-brms.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">{brms}</span></span></a>
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">{brms}</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk07/04-multinomial-logit.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Multinomial Logit</span></span></a>
   </div>
 </li>
       </ul>
@@ -456,14 +456,14 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../appendicies/ordered.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">H</span>&nbsp; <span class="chapter-title">Ordered Logit</span></span></a>
+  <a href="../appendicies/censoring.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">H</span>&nbsp; <span class="chapter-title">Censoring</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../appendicies/unordered.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">I</span>&nbsp; <span class="chapter-title">Multinomial Logit</span></span></a>
+  <a href="../appendicies/duration-models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">I</span>&nbsp; <span class="chapter-title">Duration Models</span></span></a>
   </div>
 </li>
       </ul>
@@ -478,27 +478,27 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#logistic-regression-model" id="toc-logistic-regression-model" class="nav-link active" data-scroll-target="#logistic-regression-model"><span class="header-section-number">21.1</span> Logistic Regression Model</a></li>
-  <li><a href="#stan-model" id="toc-stan-model" class="nav-link" data-scroll-target="#stan-model"><span class="header-section-number">21.2</span> Stan Model</a></li>
-  <li><a href="#data-for-stan" id="toc-data-for-stan" class="nav-link" data-scroll-target="#data-for-stan"><span class="header-section-number">21.3</span> Data for Stan</a></li>
-  <li><a href="#rstan" id="toc-rstan" class="nav-link" data-scroll-target="#rstan"><span class="header-section-number">21.4</span> <code>rstan</code></a></li>
-  <li><a href="#cmdstanr" id="toc-cmdstanr" class="nav-link" data-scroll-target="#cmdstanr"><span class="header-section-number">21.5</span> <code>cmdstanr</code></a></li>
-  <li><a href="#diagnostics" id="toc-diagnostics" class="nav-link" data-scroll-target="#diagnostics"><span class="header-section-number">21.6</span> Diagnostics</a>
+  <li><a href="#logistic-regression-model" id="toc-logistic-regression-model" class="nav-link active" data-scroll-target="#logistic-regression-model"><span class="header-section-number">20.1</span> Logistic Regression Model</a></li>
+  <li><a href="#stan-model" id="toc-stan-model" class="nav-link" data-scroll-target="#stan-model"><span class="header-section-number">20.2</span> Stan Model</a></li>
+  <li><a href="#data-for-stan" id="toc-data-for-stan" class="nav-link" data-scroll-target="#data-for-stan"><span class="header-section-number">20.3</span> Data for Stan</a></li>
+  <li><a href="#rstan" id="toc-rstan" class="nav-link" data-scroll-target="#rstan"><span class="header-section-number">20.4</span> <code>rstan</code></a></li>
+  <li><a href="#cmdstanr" id="toc-cmdstanr" class="nav-link" data-scroll-target="#cmdstanr"><span class="header-section-number">20.5</span> <code>cmdstanr</code></a></li>
+  <li><a href="#diagnostics" id="toc-diagnostics" class="nav-link" data-scroll-target="#diagnostics"><span class="header-section-number">20.6</span> Diagnostics</a>
   <ul class="collapse">
-  <li><a href="#bayesplot" id="toc-bayesplot" class="nav-link" data-scroll-target="#bayesplot"><span class="header-section-number">21.6.1</span> {bayesplot}</a></li>
-  <li><a href="#shinystan" id="toc-shinystan" class="nav-link" data-scroll-target="#shinystan"><span class="header-section-number">21.6.2</span> {ShinyStan}</a></li>
+  <li><a href="#bayesplot" id="toc-bayesplot" class="nav-link" data-scroll-target="#bayesplot"><span class="header-section-number">20.6.1</span> {bayesplot}</a></li>
+  <li><a href="#shinystan" id="toc-shinystan" class="nav-link" data-scroll-target="#shinystan"><span class="header-section-number">20.6.2</span> {ShinyStan}</a></li>
   </ul></li>
-  <li><a href="#quantities-of-interest" id="toc-quantities-of-interest" class="nav-link" data-scroll-target="#quantities-of-interest"><span class="header-section-number">21.7</span> Quantities of Interest</a></li>
-  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">21.8</span> Summary</a></li>
+  <li><a href="#quantities-of-interest" id="toc-quantities-of-interest" class="nav-link" data-scroll-target="#quantities-of-interest"><span class="header-section-number">20.7</span> Quantities of Interest</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">20.8</span> Summary</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content page-columns page-full" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../wk07/01-metrop.html">Week 7</a></li><li class="breadcrumb-item"><a href="../wk07/02-stan.html"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Stan</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../wk07/01-metrop.html">Week 7</a></li><li class="breadcrumb-item"><a href="../wk07/02-stan.html"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Stan</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Stan</span></h1>
+<h1 class="title"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Stan</span></h1>
 </div>
 
 
@@ -530,19 +530,19 @@ Hoffman, Matthew D., and Andrew Gelman. 2014. <span>“The No-u-Turn Sampler: Ad
 <div class="no-row-height column-margin column-container"><div class="margin-aside">
 <p>Before Stan, Bayesian modeling in R was typically done using <strong>BUGS</strong> or <strong>JAGS</strong>, which relied on Gibbs sampling and Metropolis-within-Gibbs updates. These samplers were intuitive and easy to use but often slow to converge, especially for correlated or high-dimensional parameters.</p>
 <p>Stan was designed to overcome these limitations. It uses gradients of the log-posterior to navigate the parameter space more efficiently, improving both speed and accuracy.</p>
-</div></div><section id="logistic-regression-model" class="level2" data-number="21.1">
-<h2 data-number="21.1" class="anchored" data-anchor-id="logistic-regression-model"><span class="header-section-number">21.1</span> Logistic Regression Model</h2>
+</div></div><section id="logistic-regression-model" class="level2" data-number="20.1">
+<h2 data-number="20.1" class="anchored" data-anchor-id="logistic-regression-model"><span class="header-section-number">20.1</span> Logistic Regression Model</h2>
 <p>Consider our usual logistic regression model.</p>
 <p><span class="math display">\[
-y_i \sim \text{Bernoulli}(\pi_i), \quad \pi_i = \text{logit}^{-1} \left( X_i \beta \right).
+y_i \sim \text{Bernoulli}(\pi_i), \quad \pi_i = \operatorname{logit}^{-1} \left( X_i \beta \right).
 \]</span></p>
 <p>We’ll assume weakly informative priors (i.e., variance = 25). Because the scale of the variables affects the interpretation of the priors, it’s common to rescale variables to have a common scale (e.g., SD of 0.5, SD of 1, or range of 1). For example, a prior with an SD of 5 is more or less informative depending on whether income is dollars or thousands of dollars—the coefficient is 1000x larger in the latter case.</p>
 <p><span class="math display">\[
 \beta \sim \mathcal{N}(0, 5^2 I).
 \]</span></p>
 </section>
-<section id="stan-model" class="level2 page-columns page-full" data-number="21.2">
-<h2 data-number="21.2" class="anchored" data-anchor-id="stan-model"><span class="header-section-number">21.2</span> Stan Model</h2>
+<section id="stan-model" class="level2 page-columns page-full" data-number="20.2">
+<h2 data-number="20.2" class="anchored" data-anchor-id="stan-model"><span class="header-section-number">20.2</span> Stan Model</h2>
 <p>To use Stan, we need to represent the model in Stan’s syntax.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
 <div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;Stan is a <em>declarative</em> modeling language: you describe the <strong>data</strong> you have, the <strong>parameters</strong> you don’t know, and the <strong>probabilistic relationships</strong> (priors and likelihood) that connect them. Stan then draws samples from the posterior using HMC.</p></div></div><p>Stan’s <a href="https://mc-stan.org">documentation</a> is excellent. They have a <a href="https://mc-stan.org/docs/stan-users-guide/">user’s guide</a>, a <a href="https://mc-stan.org/docs/reference-manual/">reference manual</a>, several <a href="https://mc-stan.org/learn-stan/tutorials.html">tutorials</a>, and many <a href="https://mc-stan.org/learn-stan/case-studies.html">case-studies</a>.</p>
 <p>Each Stan model has three main blocks.</p>
@@ -573,8 +573,8 @@ y_i \sim \text{Bernoulli}(\pi_i), \quad \pi_i = \text{logit}^{-1} \left( X_i \be
 <span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  y ~ bernoulli_logit(X * beta);     <span class="co">// logistic regression likelihood</span></span>
 <span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="data-for-stan" class="level2" data-number="21.3">
-<h2 data-number="21.3" class="anchored" data-anchor-id="data-for-stan"><span class="header-section-number">21.3</span> Data for Stan</h2>
+<section id="data-for-stan" class="level2" data-number="20.3">
+<h2 data-number="20.3" class="anchored" data-anchor-id="data-for-stan"><span class="header-section-number">20.3</span> Data for Stan</h2>
 <p>We can use the same turnout data and formula from the Metropolis chapter.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load only the turnout data frame</span></span>
@@ -630,8 +630,8 @@ $ rs_income  &lt;dbl&gt; -0.09566, -0.35915, -0.57595, -0.08284, -0.19482, -0.26
 <span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="fu">writeLines</span>(stan_code, <span class="at">con =</span> <span class="st">'logit.stan'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="rstan" class="level2" data-number="21.4">
-<h2 data-number="21.4" class="anchored" data-anchor-id="rstan"><span class="header-section-number">21.4</span> <code>rstan</code></h2>
+<section id="rstan" class="level2" data-number="20.4">
+<h2 data-number="20.4" class="anchored" data-anchor-id="rstan"><span class="header-section-number">20.4</span> <code>rstan</code></h2>
 <p>The {rstan} package allows us to compile and run Stan models directly inside R.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstan)</span>
@@ -655,21 +655,21 @@ $ rs_income  &lt;dbl&gt; -0.09566, -0.35915, -0.57595, -0.08284, -0.19482, -0.26
 post-warmup draws per chain=2000, total post-warmup draws=8000.
 
         mean se_mean   sd  2.5%  25%  50%  75% 97.5% n_eff Rhat
-beta[1] 1.06       0 0.14  0.78 0.96 1.06 1.16  1.34  4596    1
-beta[2] 1.00       0 0.12  0.77 0.92 1.00 1.08  1.24  6057    1
-beta[3] 1.19       0 0.14  0.92 1.10 1.19 1.28  1.46  5686    1
-beta[4] 1.00       0 0.15  0.71 0.90 1.00 1.11  1.31  6289    1
-beta[5] 0.25       0 0.15 -0.03 0.16 0.25 0.35  0.54  4763    1
+beta[1] 1.06       0 0.14  0.79 0.97 1.06 1.16  1.35  4541    1
+beta[2] 1.00       0 0.12  0.76 0.91 1.00 1.08  1.25  6160    1
+beta[3] 1.19       0 0.14  0.93 1.09 1.19 1.28  1.46  6020    1
+beta[4] 1.01       0 0.16  0.71 0.90 1.00 1.11  1.31  6359    1
+beta[5] 0.25       0 0.15 -0.06 0.15 0.25 0.35  0.54  4646    1
 
-Samples were drawn using NUTS(diag_e) at Wed Oct  8 12:51:46 2025.
+Samples were drawn using NUTS(diag_e) at Mon Sep 14 11:41:27 2026.
 For each parameter, n_eff is a crude measure of effective sample size,
 and Rhat is the potential scale reduction factor on split chains (at 
 convergence, Rhat=1).</code></pre>
 </div>
 </div>
 </section>
-<section id="cmdstanr" class="level2" data-number="21.5">
-<h2 data-number="21.5" class="anchored" data-anchor-id="cmdstanr"><span class="header-section-number">21.5</span> <code>cmdstanr</code></h2>
+<section id="cmdstanr" class="level2" data-number="20.5">
+<h2 data-number="20.5" class="anchored" data-anchor-id="cmdstanr"><span class="header-section-number">20.5</span> <code>cmdstanr</code></h2>
 <p>The {cmdstanr} package interfaces with the CmdStan engine outside R. It compiles quickly and provides clear diagnostic output. This is slightly more tedious to set up and maintain, but is preferred to {rstan}.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cmdstanr)</span>
@@ -689,13 +689,13 @@ convergence, Rhat=1).</code></pre>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>fit_cmd<span class="sc">$</span><span class="fu">summary</span>(<span class="at">variables =</span> <span class="st">"beta"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 10
-  variable  mean median    sd   mad     q5   q95  rhat ess_bulk ess_tail
-  &lt;chr&gt;    &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
-1 beta[1]  1.06   1.06  0.138 0.136 0.837  1.29   1.00    4575.    4750.
-2 beta[2]  0.997  0.997 0.121 0.122 0.802  1.20   1.00    5755.    4801.
-3 beta[3]  1.19   1.18  0.134 0.133 0.970  1.41   1.00    5891.    6005.
-4 beta[4]  1.01   1.01  0.155 0.154 0.755  1.26   1.00    5964.    5457.
-5 beta[5]  0.252  0.254 0.144 0.144 0.0130 0.482  1.00    4601.    4779.</code></pre>
+  variable  mean median    sd   mad      q5   q95  rhat ess_bulk ess_tail
+  &lt;chr&gt;    &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
+1 beta[1]  1.07   1.07  0.141 0.141 0.838   1.30   1.00    4580.    4749.
+2 beta[2]  0.994  0.992 0.122 0.121 0.796   1.20   1.00    6150.    5310.
+3 beta[3]  1.19   1.19  0.137 0.136 0.963   1.41   1.00    5512.    4635.
+4 beta[4]  1.01   1.01  0.153 0.150 0.755   1.26   1.00    6170.    4874.
+5 beta[5]  0.246  0.245 0.148 0.149 0.00498 0.490  1.00    4766.    5011.</code></pre>
 </div>
 </div>
 <p>Both interfaces fit the same model and return similar results. Either is fine! I recommend {cmdstanr}, though it is <em>slightly</em> more work to get started.</p>
@@ -731,8 +731,8 @@ convergence, Rhat=1).</code></pre>
 </tbody>
 </table>
 </section>
-<section id="diagnostics" class="level2" data-number="21.6">
-<h2 data-number="21.6" class="anchored" data-anchor-id="diagnostics"><span class="header-section-number">21.6</span> Diagnostics</h2>
+<section id="diagnostics" class="level2" data-number="20.6">
+<h2 data-number="20.6" class="anchored" data-anchor-id="diagnostics"><span class="header-section-number">20.6</span> Diagnostics</h2>
 <p>Stan reports two essentials:</p>
 <ul>
 <li><span class="math inline">\(\hat{R}\)</span>: near 1 indicates convergence across chains.</li>
@@ -745,19 +745,19 @@ convergence, Rhat=1).</code></pre>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>draws_beta <span class="ot">&lt;-</span> fit_cmd<span class="sc">$</span><span class="fu">draws</span>(<span class="at">variables =</span> <span class="st">"beta"</span>)  <span class="co"># draws array</span></span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">rhat</span>(draws_beta)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 1.18</code></pre>
+<pre><code>[1] 1.17</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ess_bulk</span>(draws_beta)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 5.91</code></pre>
+<pre><code>[1] 5.95</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ess_tail</span>(draws_beta)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 12</code></pre>
 </div>
 </div>
-<section id="bayesplot" class="level3" data-number="21.6.1">
-<h3 data-number="21.6.1" class="anchored" data-anchor-id="bayesplot"><span class="header-section-number">21.6.1</span> {bayesplot}</h3>
+<section id="bayesplot" class="level3" data-number="20.6.1">
+<h3 data-number="20.6.1" class="anchored" data-anchor-id="bayesplot"><span class="header-section-number">20.6.1</span> {bayesplot}</h3>
 <p>The {bayesplot} packages offers many useful functions for visualizing the simulations. There are three examples below, but there are many more useful tools in {bayesplot}. Again, the <a href="https://mc-stan.org/bayesplot/">documentation</a> is excellent.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load packages</span></span>
@@ -792,8 +792,8 @@ convergence, Rhat=1).</code></pre>
 </div>
 </div>
 </section>
-<section id="shinystan" class="level3" data-number="21.6.2">
-<h3 data-number="21.6.2" class="anchored" data-anchor-id="shinystan"><span class="header-section-number">21.6.2</span> {ShinyStan}</h3>
+<section id="shinystan" class="level3" data-number="20.6.2">
+<h3 data-number="20.6.2" class="anchored" data-anchor-id="shinystan"><span class="header-section-number">20.6.2</span> {ShinyStan}</h3>
 <p>The <strong>ShinyStan</strong> app provides an interactive dashboard for convergence diagnostics, traceplots, divergences, and posterior summaries.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># launching a GUI is interactive; keep this non-evaluated by default</span></span>
@@ -809,8 +809,8 @@ convergence, Rhat=1).</code></pre>
 <p>You can inspect <span class="math inline">\(\hat{R}\)</span>, ESS, and visual diagnostics interactively without additional coding.</p>
 </section>
 </section>
-<section id="quantities-of-interest" class="level2" data-number="21.7">
-<h2 data-number="21.7" class="anchored" data-anchor-id="quantities-of-interest"><span class="header-section-number">21.7</span> Quantities of Interest</h2>
+<section id="quantities-of-interest" class="level2" data-number="20.7">
+<h2 data-number="20.7" class="anchored" data-anchor-id="quantities-of-interest"><span class="header-section-number">20.7</span> Quantities of Interest</h2>
 <p>We have simulations of <span class="math inline">\(\beta\)</span>. We can summarize these with means, medians, SDs, quantiles, etc. The {posterior} package offers many useful function for working with the simulations from {rstan} and {cmdstanr}. Again, the documentation for {posterior} is excellent. Here, we can use the <code>as_draws_matrix()</code> function to extract the MCMC samples from <code>fit_rstan</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># put the simulations of the coefficients into a matrix</span></span>
@@ -820,12 +820,12 @@ convergence, Rhat=1).</code></pre>
 <pre><code># A draws_matrix: 6 iterations, 1 chains, and 6 variables
     variable
 draw beta[1] beta[2] beta[3] beta[4] beta[5]  lp__
-   1    1.41    1.31     1.6    0.82  -0.024 -1020
-   2    1.35    1.07     1.2    1.17  -0.066 -1015
-   3    0.91    0.94     1.1    1.01   0.429 -1013
-   4    0.96    0.96     1.1    0.87   0.281 -1013
-   5    0.92    0.93     1.0    1.16   0.450 -1014
-   6    1.12    0.90     1.1    0.96   0.024 -1016</code></pre>
+   1    1.21    1.06     1.2    0.88   0.089 -1014
+   2    1.21    1.07     1.3    0.96   0.175 -1014
+   3    1.00    0.88     1.1    0.90   0.186 -1014
+   4    1.08    0.84     1.1    0.76   0.272 -1016
+   5    0.99    0.96     1.2    0.87   0.193 -1014
+   6    1.11    0.89     1.1    0.91   0.369 -1018</code></pre>
 </div>
 </div>
 <p>This has an extra column for <code>lp__</code> so let’s grab <em>only</em> the first five columns. Notice that the <code>draw</code> is a rowname, not a column.</p>
@@ -837,12 +837,12 @@ draw beta[1] beta[2] beta[3] beta[4] beta[5]  lp__
 <pre><code># A draws_matrix: 6 iterations, 1 chains, and 5 variables
     variable
 draw beta[1] beta[2] beta[3] beta[4] beta[5]
-   1    1.41    1.31     1.6    0.82  -0.024
-   2    1.35    1.07     1.2    1.17  -0.066
-   3    0.91    0.94     1.1    1.01   0.429
-   4    0.96    0.96     1.1    0.87   0.281
-   5    0.92    0.93     1.0    1.16   0.450
-   6    1.12    0.90     1.1    0.96   0.024</code></pre>
+   1    1.21    1.06     1.2    0.88   0.089
+   2    1.21    1.07     1.3    0.96   0.175
+   3    1.00    0.88     1.1    0.90   0.186
+   4    1.08    0.84     1.1    0.76   0.272
+   5    0.99    0.96     1.2    0.87   0.193
+   6    1.11    0.89     1.1    0.91   0.369</code></pre>
 </div>
 </div>
 <p>To compute a first difference, transform draws using the invariance principle.</p>
@@ -881,8 +881,8 @@ draw beta[1] beta[2] beta[3] beta[4] beta[5]
 </div>
 </div>
 </section>
-<section id="summary" class="level2" data-number="21.8">
-<h2 data-number="21.8" class="anchored" data-anchor-id="summary"><span class="header-section-number">21.8</span> Summary</h2>
+<section id="summary" class="level2" data-number="20.8">
+<h2 data-number="20.8" class="anchored" data-anchor-id="summary"><span class="header-section-number">20.8</span> Summary</h2>
 <p>There are three important points to remember.</p>
 <p><strong>Stan as modern MCMC</strong><br>
 Stan automates MCMC using a hyper-optimized version of HMC. It efficiently samples from posteriors that are otherwise difficult to explore.</p>
@@ -1318,12 +1318,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="../wk07/01-metrop.html" class="pagination-link" aria-label="Metropolis">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Metropolis</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Metropolis</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="../wk07/03-brms.html" class="pagination-link" aria-label="\{brms\}">
-        <span class="nav-page-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">{brms}</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">{brms}</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

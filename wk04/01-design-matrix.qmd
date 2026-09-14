@@ -11,7 +11,7 @@ We begin with the normal linear model. We assume that $y_i \sim \mathcal{N}(\mu_
 
 This is equivalent to writing $y_i = \beta_0 + \beta_1 x_{i1} + \cdots + \beta_k x_{ik} + \varepsilon_i$ with $\varepsilon_i \sim \mathcal{N}(0, \sigma^2)$. These two forms are the same. The first emphasizes the probability model, the other looks like the regression equation you know from econometrics.  
 
-If we create a a column vector of coefficients $\beta = [\beta_0, \beta_1, ..., \beta_k]^\top$ and create a matrix $X$ by stacking a column of ones and the predictors side-by-side
+If we create a column vector of coefficients $\beta = [\beta_0, \beta_1, ..., \beta_k]^\top$ and create a matrix $X$ by stacking a column of ones and the predictors side-by-side
 
 $$
 X =
@@ -19,7 +19,7 @@ X =
 1 & x_{11} & x_{12} & \cdots & x_{1k} \\
 1 & x_{21} & x_{22} & \cdots & x_{2k} \\
 \vdots & \vdots & \vdots & \ddots & \vdots \\
-1 & x_{n1} & x_{n2} & \cdots & x_{nk}
+1 & x_{N1} & x_{N2} & \cdots & x_{Nk}
 \end{bmatrix}
 $$
 
@@ -40,7 +40,7 @@ $$
 We can also write this as a row–column product
 
 $$
-x_i \beta =
+X_i \beta =
 \begin{bmatrix}
 1 & x_{i1} & x_{i2}
 \end{bmatrix}
@@ -64,7 +64,7 @@ X =
 1 & x_{11} & x_{12} \\
 1 & x_{21} & x_{22} \\
 \vdots & \vdots & \vdots \\
-1 & x_{n1} & x_{n2}
+1 & x_{N1} & x_{N2}
 \end{bmatrix},
 \qquad
 X\beta =
@@ -72,11 +72,11 @@ X\beta =
 \beta_0 + \beta_1 x_{11} + \beta_2 x_{12} \\
 \beta_0 + \beta_1 x_{21} + \beta_2 x_{22} \\
 \vdots \\
-\beta_0 + \beta_1 x_{n1} + \beta_2 x_{n2}
+\beta_0 + \beta_1 x_{N1} + \beta_2 x_{N2}
 \end{bmatrix}.
 $$
 
-Each row $X_i$ corresponds to the predictors for observation $i$ and $X_i\beta$ is equivalent to the scalar regression equation for observation $i$..
+Each row $X_i$ corresponds to the predictors for observation $i$ and $X_i\beta$ is equivalent to the scalar regression equation for observation $i$.
 
 ### General Form with $k$ Predictors
 
@@ -108,7 +108,7 @@ $$
 X_i \beta = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_k x_{ik},
 $$
 
-which is exactly the scalar regression equation. Stacking the $n$ rows gives the design matrix $X$ of dimension $n \times (k+1)$. There is nothing new here; the matrix notation simply collects all the scalar equations into one compact expression.
+which is exactly the scalar regression equation. Stacking the $N$ rows gives the design matrix $X$ of dimension $N \times (k+1)$. There is nothing new here; the matrix notation simply collects all the scalar equations into one compact expression.
 
 ### The Intercept
 
@@ -152,7 +152,7 @@ Suppose $\mu_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2}$.
 - Differentiating $\mu_i$ with respect to $x_{i1}$ gives $\frac{\partial \mu_i}{\partial x_{i1}} = \beta_1$. 
 - Differentiating $\mu_i$ with respect to $x_{i2}$ gives $\frac{\partial \mu_i}{\partial x_{i2}} = \beta_2$. 
 
-Thus, a one-unit increase in $x_{ij}$ changes $\mu_i$ by $\beta_j$, holding the other predictor.
+Thus, a one-unit increase in $x_{ij}$ changes $\mu_i$ by $\beta_j$, holding the other predictor constant.
 
 
 ::: callout-note
@@ -247,7 +247,7 @@ X =
 \end{bmatrix}.
 $$
 
-The squared and cubic terms are simply new columns in the design matrix. When fitting the model, the these columns are treated just like any other predictor; they are just more columns in the design matrix.
+The squared and cubic terms are simply new columns in the design matrix. When fitting the model, these columns are treated just like any other predictor; they are just more columns in the design matrix.
 
 ## Indicator Variables
 
@@ -293,7 +293,7 @@ The indicator variable is treated just like any other predictor; it is just anot
 
 ## Categorical Variables with More Than Two Categories
 
-We can include categorical variables with more than two categories by creating multiple indicator variables. Suppose that $x_{i1}$ and $x_{i2}$ are numeric variables and our categorical variable has three categories, labeled $A$, $B$, and $C$. We might define $x_{i3}=1$ if the observation is in category $B$ and $0$ otherwise, and $x_{i4}=1$ if the observation is in category $C$ and $0$ otherwise. The the model would be
+We can include categorical variables with more than two categories by creating multiple indicator variables. Suppose that $x_{i1}$ and $x_{i2}$ are numeric variables and our categorical variable has three categories, labeled $A$, $B$, and $C$. We might define $x_{i3}=1$ if the observation is in category $B$ and $0$ otherwise, and $x_{i4}=1$ if the observation is in category $C$ and $0$ otherwise. Then the model would be
 
 $$
 \mu_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \beta_3 x_{i3} + \beta_4 x_{i4}, 

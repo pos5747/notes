@@ -21,9 +21,8 @@ We can extend the ideas from the last chapter on logistic regression to a larger
 | Model            | $y_i \sim \mathcal{N}(\mu_i, \sigma^2)$, where $\mu_i = X_i \beta$         |
 | Expected value   | $\hat{\mu} = X_c \hat{\beta}$ for chosen row $X_c$                         |
 | First difference | $\hat{\Delta} = \hat{\mu}_{hi} - \hat{\mu}_{lo} = X_{hi} \hat{\beta} - X_{lo} \hat{\beta}$ for chosen rows $X_{hi}$ and $X_{lo}$ |
-| Function     | `lm()` or `glm(..., family = guassian)`                  |
+| Function     | `lm()` or `glm(..., family = gaussian)`                  |
 | Parameterization notes | Parameterized as expected |
-
 | Alternatives     | $t$ regression                   |
 
 
@@ -33,9 +32,9 @@ We can extend the ideas from the last chapter on logistic regression to a larger
 | Component        | Expression                                                                 |
 |------------------|-----------------------------------------------------------------------------|
 | Outcome          | Binary                                                                      |
-| Model            | $y_i \sim \text{Bernoulli}(\pi_i)$, where $\pi_i = \text{logit}^{-1}(X_i \beta)$   |
-| Expected value   | $\hat{\mu} = \hat{\pi} = \text{logit}^{-1}(X_c \hat{\beta})$  |
-| First difference | $\hat{\Delta} = \hat{\pi}_{hi} - \hat{\pi}_{lo} = \text{logit}^{-1}(X_{hi} \hat{\beta}) - \text{logit}^{-1}(X_{lo} \hat{\beta})$ |
+| Model            | $y_i \sim \text{Bernoulli}(\pi_i)$, where $\pi_i = \operatorname{logit}^{-1}(X_i \beta)$   |
+| Expected value   | $\hat{\mu} = \hat{\pi} = \operatorname{logit}^{-1}(X_c \hat{\beta})$  |
+| First difference | $\hat{\Delta} = \hat{\pi}_{hi} - \hat{\pi}_{lo} = \operatorname{logit}^{-1}(X_{hi} \hat{\beta}) - \operatorname{logit}^{-1}(X_{lo} \hat{\beta})$ |
 | Function     | `glm(..., family = binomial)`                  |
 | Parameterization notes | Parameterized as expected |
 | Alternatives     | Probit                                                                      |
@@ -65,7 +64,7 @@ It's harder to choose a *default* model for duration data. We've got lots of com
 | Expected value   | $\hat{\mu} = \hat{\lambda} \, \Gamma(1 + 1/k)$ for chosen row $X_c$ <br> *(the Gamma function $\Gamma(\cdot)$ adjusts the mean away from the scale $\lambda$ depending on shape $k$)* |
 | First difference | $\hat{\Delta} = \hat{\mu}_{hi} - \hat{\mu}_{lo} = \hat{\lambda}_{hi}\,\Gamma(1+1/k) - \hat{\lambda}_{lo}\,\Gamma(1+1/k)$ |
 | Function         | `survreg(..., dist = "weibull")` in **survival** package for fitting models; `dweibull()` for densities; note differences in parameterization, though.                   |
-| Parameterization notes | The base R density function `dweibull(x, shape, scale)` uses the standard shape–scale parameterization. However, `survreg()` uses parameterization in terms of $\lambda$ and $\sigma$, where `shape` $= \frac{1}{\sigma}$ and  `scale` = $\exp(X_i \beta)$ The two forms are equivalent after reparameterization. To clarify, the log-likelihood used by `survreg()` is below.
+| Parameterization notes | The base R density function `dweibull(x, shape, scale)` uses the standard shape–scale parameterization. However, `survreg()` uses parameterization in terms of $\lambda$ and $\sigma$, where `shape` $= \frac{1}{\sigma}$ and `scale` $= \exp(X_i \beta)$. The two forms are equivalent after reparameterization. To clarify, the log-likelihood used by `survreg()` is below. |
 | Alternatives     | Exponential (special case of Weibull with $k = 1$); log-normal; gamma, generalized gamma, gompertz, semiparametric Cox proportional hazards          |
 
 ```{r}
@@ -78,7 +77,7 @@ weibull_ll <- function(theta, y, X) {
   eta <- X %*% beta
   # transform parameters
   k <- 1 / sigma               # Weibull shape
-  lambda <- exp(eta)           # Weibull scal
+  lambda <- exp(eta)           # Weibull scale
 
   ll <- sum(dweibull(y, shape = k, scale = lambda, log = TRUE))
   return(ll)
