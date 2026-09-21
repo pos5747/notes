@@ -674,9 +674,9 @@ $ vote    &lt;int&gt; 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1
 </div>
 </div>
 <p>These coefficients are not particularly interpretable, so we might want to compute quantities of interest.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
-<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;In political science, <span class="citation" data-cites="King2000">King, Tomz, and Wittenberg (<a href="#ref-King2000" role="doc-biblioref">2000</a>)</span> prompted the focus on more interpretable quantities and I often borrow their langauge.</p><div id="ref-King2000" class="csl-entry" role="listitem">
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;In political science, <span class="citation" data-cites="King2000">King, Tomz, and Wittenberg (<a href="#ref-King2000" role="doc-biblioref">2000</a>)</span> prompted the focus on more interpretable quantities and I often borrow their language.</p><div id="ref-King2000" class="csl-entry" role="listitem">
 King, Gary, Michael Tomz, and Jason Wittenberg. 2000. <span>“Making the Most of Statistical Analyses: Improving Interpretation and Presentation.”</span> <em>American Journal of Political Science</em> 44: 341–55. <a href="http://gking.harvard.edu/files/abs/making-abs.shtml">http://gking.harvard.edu/files/abs/making-abs.shtml</a>.
-</div></div></div><p>We have learned that we can use the invariance property and the delta method as a very general way to compute almost any quantity of interest. The {marginaleffects} package in R exploits this generally to compute many quantities of interest, especially those that are involve <span class="math inline">\(E(Y)\)</span>–like the commonly used expected value and first difference.</p>
+</div></div></div><p>We have learned that we can use the invariance property and the delta method as a very general way to compute almost any quantity of interest. The {marginaleffects} package in R exploits this generality to compute many quantities of interest, especially those that involve <span class="math inline">\(E(y)\)</span>–like the commonly used expected value and first difference.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(marginaleffects)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -684,7 +684,7 @@ King, Gary, Michael Tomz, and Jason Wittenberg. 2000. <span>“Making the Most o
 <section id="expected-value-predictions" class="level2" data-number="13.1">
 <h2 data-number="13.1" class="anchored" data-anchor-id="expected-value-predictions"><span class="header-section-number">13.1</span> Expected value → <code>predictions()</code></h2>
 <p>Reminder: expected value = <span class="math inline">\(E(y \mid X_c)\)</span>, where <span class="math inline">\(X_c\)</span> is a carefully chosen covariate vector.</p>
-<p>By default, <code>predictions()</code> generates an expected value for every row in the observed dataset. These expected vaues are stored in the <code>estimate</code> column of the output and it includes other commonly used values like the upper and lower bounds of the 95% confidence interval.</p>
+<p>By default, <code>predictions()</code> generates an expected value for every row in the observed dataset. These expected values are stored in the <code>estimate</code> column of the output and it includes other commonly used values like the upper and lower bounds of the 95% confidence interval.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>ev <span class="ot">&lt;-</span> <span class="fu">predictions</span>(fit)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(ev)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -708,14 +708,14 @@ $ df        &lt;dbl&gt; Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, I
 </section>
 <section id="first-difference-comparisons" class="level2" data-number="13.2">
 <h2 data-number="13.2" class="anchored" data-anchor-id="first-difference-comparisons"><span class="header-section-number">13.2</span> First difference → <code>comparisons()</code></h2>
-<p>Reminder: first difference = <span class="math inline">\(E(y \mid X_{hi}) - E(y \mid X_{lo})\)</span>, where <span class="math inline">\(X_{hi}\)</span> and <span class="math inline">\(X_{lo}\)</span> are a carefully chosen covariate vectors that fix on covariate of interest at a high value and low value respectively.</p>
-<p>B<code>comparisons()</code> computes these first differences</p>
+<p>Reminder: first difference = <span class="math inline">\(E(y \mid X_{hi}) - E(y \mid X_{lo})\)</span>, where <span class="math inline">\(X_{hi}\)</span> and <span class="math inline">\(X_{lo}\)</span> are carefully chosen covariate vectors that fix one covariate of interest at a high value and low value respectively.</p>
+<p><code>comparisons()</code> computes these first differences.</p>
 <ol type="1">
 <li>Q: But what variable does it vary by default? A: All of them, one at a time! You’ll usually want to pick one.</li>
 <li>Q: And what are the high and low values? A: It depends, but something somewhat reasonable. You’ll almost always want to specify the one you want.</li>
 </ol>
 <p>By default, <code>comparisons()</code> computes a first difference varying <em>each</em> variable from a low to a high value, while fixing every other variable to the observed values.</p>
-<p>These expected values are stored in the <code>estimate</code> column of the output and it includes other commonly used values like the upper and lower bounds of the 95% confidence interval.</p>
+<p>These first differences are stored in the <code>estimate</code> column of the output and it includes other commonly used values like the upper and lower bounds of the 95% confidence interval.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>fd <span class="ot">&lt;-</span> <span class="fu">comparisons</span>(fit)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(fd)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -757,20 +757,18 @@ $ predicted    &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N
   race       0           2000</code></pre>
 </div>
 </div>
-<p>Thus, by default, <code>comparisons()</code> gives us a data frame with the observed data repeated several times for several difference first differences. This is a reasonable default behavior, but we’ll almost always want to compute something more specific (and avoid computing things we don’t need).</p>
+<p>Thus, by default, <code>comparisons()</code> gives us a data frame with the observed data repeated several times for several different first differences. This is a reasonable default behavior, but we’ll almost always want to compute something more specific (and avoid computing things we don’t need).</p>
 </section>
 <section id="framework" class="level2 page-columns page-full" data-number="13.3">
 <h2 data-number="13.3" class="anchored" data-anchor-id="framework"><span class="header-section-number">13.3</span> Framework</h2>
 <p>When we call <code>predictions()</code> or <code>comparisons()</code>, we are always making three choices: (1) the <strong>quantity</strong> we want, (2) the <strong>grid</strong> of predictor values where we want it, and (3) whether or not to <strong>aggregate</strong> across units (the idea of “aggregation” is new to us). These choices determine the estimand, and it is important to be explicit in writing and thinking.</p>
 <p>Here’s how <span class="citation" data-cites="me">Arel-Bundock, Greifer, and Heiss (<a href="#ref-me" role="doc-biblioref">2024</a>)</span> describe these choices:</p>
-<div class="no-row-height column-margin column-container"><div id="ref-me" class="csl-entry" role="listitem">
-Arel-Bundock, Vincent, Noah Greifer, and Andrew Heiss. 2024. <span>“How to Interpret Statistical Models Using Marginaleffects for r and Python.”</span> <em>Journal of Statistical Software</em> 111 (9). <a href="https://doi.org/10.18637/jss.v111.i09">https://doi.org/10.18637/jss.v111.i09</a>.
-</div></div><ol type="1">
+<div class="no-row-height column-margin column-container"></div><ol type="1">
 <li><em>Quantity</em>: What is the quantity of interest? Do we want to report a expected value or a comparison of expected values (difference, ratio, derivative, etc.)?</li>
 <li><em>Grid</em>: What predictor values are we interested in? Do we want to report estimates for the units in our dataset, or for hypothetical or representative individuals?</li>
 <li><em>Aggregation</em>: Do we report estimates for every observation in the grid or a global summary?</li>
 </ol>
-<section id="quantity" class="level3" data-number="13.3.1">
+<section id="quantity" class="level3 page-columns page-full" data-number="13.3.1">
 <h3 data-number="13.3.1" class="anchored" data-anchor-id="quantity"><span class="header-section-number">13.3.1</span> Quantity</h3>
 <p>First, we must choose our quantity of interest. Most generally, it can be “whatever we want.” But {marginaleffects} is <em>slightly</em> restrictive.</p>
 <section id="what-scale" class="level4" data-number="13.3.1.1">
@@ -816,20 +814,22 @@ Type: link</code></pre>
 </div>
 </div>
 </section>
-<section id="prediction-or-comparison" class="level4" data-number="13.3.1.2">
+<section id="prediction-or-comparison" class="level4 page-columns page-full" data-number="13.3.1.2">
 <h4 data-number="13.3.1.2" class="anchored" data-anchor-id="prediction-or-comparison"><span class="header-section-number">13.3.1.2</span> Prediction or comparison?</h4>
 <p>Second, we must choose whether we want a prediction or a comparison. We make this choice by using <code>predictions()</code> or <code>comparisons()</code>.</p>
-<p>Arel-Bundock et al.&nbsp;(2025) define a prediction as:</p>
-<blockquote class="blockquote">
+<p><span class="citation" data-cites="me">Arel-Bundock, Greifer, and Heiss (<a href="#ref-me" role="doc-biblioref">2024</a>)</span> define a prediction as:</p>
+<div class="no-row-height column-margin column-container"><div id="ref-me" class="csl-entry" role="listitem">
+Arel-Bundock, Vincent, Noah Greifer, and Andrew Heiss. 2024. <span>“How to Interpret Statistical Models Using Marginaleffects for r and Python.”</span> <em>Journal of Statistical Software</em> 111 (9). <a href="https://doi.org/10.18637/jss.v111.i09">https://doi.org/10.18637/jss.v111.i09</a>.
+</div></div><blockquote class="blockquote">
 <p>Predictions are the outcomes predicted by a fitted model on a specified scale for a given combination of values of the predictor variables, such as their observed values, their means, or factor levels.</p>
 </blockquote>
-<p>Borrowing language from King et al.&nbsp;(2000), I refer the {marginaleffects}’s “prediction” as an “expected value.”</p>
-<p>They define a comparison as:</p>
+<p>Borrowing language from <span class="citation" data-cites="King2000">King, Tomz, and Wittenberg (<a href="#ref-King2000" role="doc-biblioref">2000</a>)</span>, I refer to {marginaleffects}’s “prediction” as an “expected value.”</p>
+<div class="no-row-height column-margin column-container"></div><p>They define a comparison as:</p>
 <blockquote class="blockquote">
 <p>Comparisons are functions of two or more predictions. Examples of comparisons include contrasts, differences, risk ratios, odds, lift, etc.</p>
 </blockquote>
-<p>The “first difference” from King et al.&nbsp;(2000) is an example of a comparison–a “difference” in the quote above.</p>
-</section>
+<p>The “first difference” from <span class="citation" data-cites="King2000">King, Tomz, and Wittenberg (<a href="#ref-King2000" role="doc-biblioref">2000</a>)</span> is an example of a comparison–a “difference” in the quote above.</p>
+<div class="no-row-height column-margin column-container"></div></section>
 <section id="what-to-compare" class="level4" data-number="13.3.1.3">
 <h4 data-number="13.3.1.3" class="anchored" data-anchor-id="what-to-compare"><span class="header-section-number">13.3.1.3</span> What to compare?</h4>
 <p>Third, if we choose to compare, we need to choose what to compare. This involves two choices.</p>
@@ -849,12 +849,12 @@ $ rowid        &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
 $ term         &lt;chr&gt; "age", "age", "age", "age", "age", "age", "age", "age", "…
 $ contrast     &lt;chr&gt; "+10", "+10", "+10", "+10", "+10", "+10", "+10", "+10", "…
 $ estimate     &lt;dbl&gt; 0.027360732, 0.058480001, 0.069607780, 0.067373982, 0.063…
-$ std.error    &lt;dbl&gt; 0.002096085, 0.006680299, 0.008968105, 0.008750418, 0.008…
-$ statistic    &lt;dbl&gt; 13.053255, 8.754100, 7.761704, 7.699516, 7.286021, 14.409…
-$ p.value      &lt;dbl&gt; 6.088899e-39, 2.057388e-18, 8.379572e-15, 1.365825e-14, 3…
-$ s.value      &lt;dbl&gt; 126.94901, 58.75389, 46.76204, 46.05722, 41.51041, 153.95…
-$ conf.low     &lt;dbl&gt; 0.023252481, 0.045386857, 0.052030616, 0.050223478, 0.046…
-$ conf.high    &lt;dbl&gt; 0.03146898, 0.07157315, 0.08718494, 0.08452449, 0.0805266…
+$ std.error    &lt;dbl&gt; 0.002096085, 0.006680299, 0.008968107, 0.008750418, 0.008…
+$ statistic    &lt;dbl&gt; 13.053253, 8.754100, 7.761703, 7.699516, 7.286020, 14.409…
+$ p.value      &lt;dbl&gt; 6.089057e-39, 2.057388e-18, 8.379678e-15, 1.365825e-14, 3…
+$ s.value      &lt;dbl&gt; 126.94898, 58.75389, 46.76203, 46.05722, 41.51040, 153.95…
+$ conf.low     &lt;dbl&gt; 0.023252480, 0.045386857, 0.052030613, 0.050223478, 0.046…
+$ conf.high    &lt;dbl&gt; 0.03146898, 0.07157315, 0.08718495, 0.08452449, 0.0805266…
 $ race         &lt;fct&gt; white, white, white, white, white, white, white, white, w…
 $ age          &lt;int&gt; 60, 51, 24, 38, 25, 67, 40, 56, 32, 75, 46, 52, 22, 60, 2…
 $ educate      &lt;dbl&gt; 14, 10, 12, 8, 12, 12, 12, 10, 12, 16, 15, 12, 12, 12, 14…
@@ -875,10 +875,10 @@ $ term         &lt;chr&gt; "age", "age", "age", "age", "age", "age", "age", "age
 $ contrast     &lt;chr&gt; "90 - 18", "90 - 18", "90 - 18", "90 - 18", "90 - 18", "9…
 $ estimate     &lt;dbl&gt; 0.25841282, 0.41140255, 0.39295205, 0.42083720, 0.3332314…
 $ std.error    &lt;dbl&gt; 0.02716613, 0.04374691, 0.04168724, 0.04639905, 0.0351402…
-$ statistic    &lt;dbl&gt; 9.512315, 9.404151, 9.426195, 9.069954, 9.482914, 9.48784…
-$ p.value      &lt;dbl&gt; 1.864654e-21, 5.245209e-21, 4.252375e-21, 1.190675e-19, 2…
-$ s.value      &lt;dbl&gt; 68.86158, 67.36949, 67.67222, 62.86485, 68.45434, 68.5226…
-$ conf.low     &lt;dbl&gt; 0.20516818, 0.32566018, 0.31124656, 0.32989674, 0.2643579…
+$ statistic    &lt;dbl&gt; 9.512315, 9.404151, 9.426194, 9.069954, 9.482914, 9.48784…
+$ p.value      &lt;dbl&gt; 1.864661e-21, 5.245209e-21, 4.252379e-21, 1.190677e-19, 2…
+$ s.value      &lt;dbl&gt; 68.86158, 67.36949, 67.67222, 62.86485, 68.45435, 68.5225…
+$ conf.low     &lt;dbl&gt; 0.20516817, 0.32566018, 0.31124656, 0.32989674, 0.2643579…
 $ conf.high    &lt;dbl&gt; 0.3116575, 0.4971449, 0.4746575, 0.5117777, 0.4021050, 0.…
 $ race         &lt;fct&gt; white, white, white, white, white, white, white, white, w…
 $ age          &lt;int&gt; 60, 51, 24, 38, 25, 67, 40, 56, 32, 75, 46, 52, 22, 60, 2…
@@ -899,10 +899,10 @@ $ rowid        &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
 $ term         &lt;chr&gt; "age", "age", "age", "age", "age", "age", "age", "age", "…
 $ contrast     &lt;chr&gt; "Q3 - Q1", "Q3 - Q1", "Q3 - Q1", "Q3 - Q1", "Q3 - Q1", "Q…
 $ estimate     &lt;dbl&gt; 0.11549285, 0.18099237, 0.17383559, 0.18445762, 0.1487362…
-$ std.error    &lt;dbl&gt; 0.013478609, 0.022433678, 0.021368981, 0.023404006, 0.018…
-$ statistic    &lt;dbl&gt; 8.568603, 8.067886, 8.134950, 7.881455, 8.258313, 8.23494…
-$ p.value      &lt;dbl&gt; 1.047476e-17, 7.152553e-16, 4.121079e-16, 3.235905e-15, 1…
-$ s.value      &lt;dbl&gt; 56.40586, 50.31239, 51.10783, 48.13475, 52.58773, 52.3056…
+$ std.error    &lt;dbl&gt; 0.013478610, 0.022433678, 0.021368981, 0.023404006, 0.018…
+$ statistic    &lt;dbl&gt; 8.568603, 8.067887, 8.134950, 7.881455, 8.258312, 8.23494…
+$ p.value      &lt;dbl&gt; 1.047481e-17, 7.152540e-16, 4.121077e-16, 3.235905e-15, 1…
+$ s.value      &lt;dbl&gt; 56.40585, 50.31239, 51.10783, 48.13475, 52.58772, 52.3056…
 $ conf.low     &lt;dbl&gt; 0.08907526, 0.13702317, 0.13195316, 0.13858662, 0.1134363…
 $ conf.high    &lt;dbl&gt; 0.14191044, 0.22496157, 0.21571803, 0.23032863, 0.1840361…
 $ race         &lt;fct&gt; white, white, white, white, white, white, white, white, w…
@@ -914,7 +914,7 @@ $ predicted_lo &lt;dbl&gt; 0.7589574, 0.5450262, 0.5780504, 0.5264779, 0.6673926
 $ predicted_hi &lt;dbl&gt; 0.8744502, 0.7260185, 0.7518860, 0.7109355, 0.8161288, 0.…
 $ predicted    &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># high = 1 SD above; low = 1 SD below</span></span>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># high = 1 SD above the mean; low = 1 SD below the mean</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">comparisons</span>(fit, <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">age =</span> <span class="st">"2sd"</span>)) <span class="sc">|&gt;</span></span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -924,12 +924,12 @@ $ rowid        &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
 $ term         &lt;chr&gt; "age", "age", "age", "age", "age", "age", "age", "age", "…
 $ contrast     &lt;chr&gt; "(x + sd) - (x - sd)", "(x + sd) - (x - sd)", "(x + sd) -…
 $ estimate     &lt;dbl&gt; 0.14399385, 0.22469520, 0.21587670, 0.22897272, 0.1849871…
-$ std.error    &lt;dbl&gt; 0.016766207, 0.027487650, 0.026217808, 0.028668738, 0.022…
+$ std.error    &lt;dbl&gt; 0.016766206, 0.027487649, 0.026217808, 0.028668738, 0.022…
 $ statistic    &lt;dbl&gt; 8.588338, 8.174406, 8.233972, 7.986843, 8.325331, 8.30893…
-$ p.value      &lt;dbl&gt; 8.823623e-18, 2.973280e-16, 1.811059e-16, 1.384381e-15, 8…
-$ s.value      &lt;dbl&gt; 56.65333, 51.57879, 52.29402, 49.35968, 53.40079, 53.2013…
+$ p.value      &lt;dbl&gt; 8.823606e-18, 2.973275e-16, 1.811059e-16, 1.384379e-15, 8…
+$ s.value      &lt;dbl&gt; 56.65334, 51.57880, 52.29402, 49.35968, 53.40079, 53.2013…
 $ conf.low     &lt;dbl&gt; 0.11113269, 0.17082040, 0.16449074, 0.17278302, 0.1414371…
-$ conf.high    &lt;dbl&gt; 0.17685502, 0.27857000, 0.26726266, 0.28516241, 0.2285371…
+$ conf.high    &lt;dbl&gt; 0.17685501, 0.27857000, 0.26726266, 0.28516241, 0.2285371…
 $ race         &lt;fct&gt; white, white, white, white, white, white, white, white, w…
 $ age          &lt;int&gt; 60, 51, 24, 38, 25, 67, 40, 56, 32, 75, 46, 52, 22, 60, 2…
 $ educate      &lt;dbl&gt; 14, 10, 12, 8, 12, 12, 12, 10, 12, 16, 15, 12, 12, 12, 14…
@@ -937,6 +937,31 @@ $ income       &lt;dbl&gt; 3.3458, 1.8561, 0.6304, 3.4183, 2.7852, 2.3866, 4.285
 $ vote         &lt;int&gt; 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, …
 $ predicted_lo &lt;dbl&gt; 0.7418547, 0.5222984, 0.5556273, 0.5036674, 0.6468164, 0.…
 $ predicted_hi &lt;dbl&gt; 0.8858485, 0.7469936, 0.7715040, 0.7326401, 0.8318036, 0.…
+$ predicted    &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># high = maximum; low = minimum</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">comparisons</span>(fit, <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">age =</span> <span class="st">"minmax"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 2,000
+Columns: 18
+$ rowid        &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17…
+$ term         &lt;chr&gt; "age", "age", "age", "age", "age", "age", "age", "age", "…
+$ contrast     &lt;chr&gt; "Max - Min", "Max - Min", "Max - Min", "Max - Min", "Max …
+$ estimate     &lt;dbl&gt; 0.27163004, 0.43418129, 0.41426778, 0.44444377, 0.3506065…
+$ std.error    &lt;dbl&gt; 0.02796885, 0.04479511, 0.04272860, 0.04767037, 0.0359954…
+$ statistic    &lt;dbl&gt; 9.711876, 9.692604, 9.695328, 9.323271, 9.740293, 9.75082…
+$ p.value      &lt;dbl&gt; 2.683513e-22, 3.241573e-22, 3.156214e-22, 1.128073e-20, 2…
+$ s.value      &lt;dbl&gt; 71.65830, 71.38572, 71.42422, 66.26470, 72.06117, 72.2108…
+$ conf.low     &lt;dbl&gt; 0.21681209, 0.34638448, 0.33052127, 0.35101157, 0.2800566…
+$ conf.high    &lt;dbl&gt; 0.3264480, 0.5219781, 0.4980143, 0.5378760, 0.4211564, 0.…
+$ race         &lt;fct&gt; white, white, white, white, white, white, white, white, w…
+$ age          &lt;int&gt; 60, 51, 24, 38, 25, 67, 40, 56, 32, 75, 46, 52, 22, 60, 2…
+$ educate      &lt;dbl&gt; 14, 10, 12, 8, 12, 12, 12, 10, 12, 16, 15, 12, 12, 12, 14…
+$ income       &lt;dbl&gt; 3.3458, 1.8561, 0.6304, 3.4183, 2.7852, 2.3866, 4.2857, 9…
+$ vote         &lt;int&gt; 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, …
+$ predicted_lo &lt;dbl&gt; 0.6791811, 0.4461184, 0.4794652, 0.4277713, 0.5743093, 0.…
+$ predicted_hi &lt;dbl&gt; 0.9508112, 0.8802997, 0.8937330, 0.8722151, 0.9249158, 0.…
 $ predicted    &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…</code></pre>
 </div>
 </div>
@@ -948,11 +973,11 @@ $ predicted    &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N
 <p>We can specify the comparison we want with the <code>comparison</code> argument to <code>comparisons()</code>. The default is <code>"difference"</code> and that’s usually a good choice.</p>
 <p>We can find the <code>"ratio"</code> rather than the <code>"difference"</code> by using <code>comparison = "ratio"</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">#  high = 18; low = 90; comparison = ratio</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">comparisons</span>(fit, </span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">age =</span> <span class="fu">c</span>(<span class="dv">18</span>, <span class="dv">90</span>)), </span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">comparison =</span> <span class="st">"ratio"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co">#  high = 90; low = 18; comparison = ratio</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">comparisons</span>(fit, </span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">age =</span> <span class="fu">c</span>(<span class="dv">18</span>, <span class="dv">90</span>)), </span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">comparison =</span> <span class="st">"ratio"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 2,000
 Columns: 18
@@ -961,9 +986,9 @@ $ term         &lt;chr&gt; "age", "age", "age", "age", "age", "age", "age", "age
 $ contrast     &lt;chr&gt; "90 / 18", "90 / 18", "90 / 18", "90 / 18", "90 / 18", "9…
 $ estimate     &lt;dbl&gt; 1.377065, 1.907903, 1.807637, 1.968052, 1.573325, 1.61143…
 $ std.error    &lt;dbl&gt; 0.05108134, 0.15618248, 0.13648145, 0.18325488, 0.0849123…
-$ statistic    &lt;dbl&gt; 26.958270, 12.215858, 13.244560, 10.739426, 18.528813, 17…
-$ p.value      &lt;dbl&gt; 4.563059e-160, 2.557872e-34, 4.851146e-40, 6.645656e-27, …
-$ s.value      &lt;dbl&gt; 529.31849, 111.59061, 130.59880, 86.95965, 252.19243, 224…
+$ statistic    &lt;dbl&gt; 26.958269, 12.215858, 13.244560, 10.739425, 18.528815, 17…
+$ p.value      &lt;dbl&gt; 4.563194e-160, 2.557872e-34, 4.851152e-40, 6.645670e-27, …
+$ s.value      &lt;dbl&gt; 529.31845, 111.59061, 130.59880, 86.95964, 252.19247, 224…
 $ conf.low     &lt;dbl&gt; 1.276947, 1.601791, 1.540138, 1.608879, 1.406900, 1.43068…
 $ conf.high    &lt;dbl&gt; 1.477182, 2.214015, 2.075136, 2.327225, 1.739750, 1.79219…
 $ race         &lt;fct&gt; white, white, white, white, white, white, white, white, w…
@@ -976,13 +1001,13 @@ $ predicted_hi &lt;dbl&gt; 0.9437405, 0.8645374, 0.8794975, 0.8555630, 0.9144578
 $ predicted    &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…</code></pre>
 </div>
 </div>
-<p>We can also supply our own function <code>\(hi, lo) {...}</code>. I think the percent change <code>\(hi, lo) (hi/lo) - 1)</code> is good. This is also known as “lift” and we can use <code>comparison = "lift"</code> instead.</p>
+<p>We can also supply our own function <code>\(hi, lo) {...}</code>. I think the percent change <code>\(hi, lo) (hi/lo) - 1</code> is good. This is also known as “lift” and we can use <code>comparison = "lift"</code> instead.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co">#  high = 18; low = 90; comparison = custom (percent change)</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">comparisons</span>(fit, </span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">age =</span> <span class="fu">c</span>(<span class="dv">18</span>, <span class="dv">90</span>)), </span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">comparison =</span> \(hi, lo) (hi<span class="sc">/</span>lo) <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co">#  high = 90; low = 18; comparison = custom (percent change)</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">comparisons</span>(fit, </span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">age =</span> <span class="fu">c</span>(<span class="dv">18</span>, <span class="dv">90</span>)), </span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">comparison =</span> \(hi, lo) (hi<span class="sc">/</span>lo) <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 2,000
 Columns: 18
@@ -992,9 +1017,9 @@ $ contrast     &lt;chr&gt; "custom", "custom", "custom", "custom", "custom", "cu
 $ estimate     &lt;dbl&gt; 0.37706459, 0.90790306, 0.80763680, 0.96805211, 0.5733248…
 $ std.error    &lt;dbl&gt; 0.05108134, 0.15618248, 0.13648145, 0.18325488, 0.0849123…
 $ statistic    &lt;dbl&gt; 7.381650, 5.813092, 5.917557, 5.282545, 6.751962, 6.62993…
-$ p.value      &lt;dbl&gt; 1.563395e-13, 6.132948e-09, 3.267581e-09, 1.274016e-07, 1…
-$ s.value      &lt;dbl&gt; 42.54038, 27.28077, 28.18913, 22.90411, 35.99663, 34.7934…
-$ conf.low     &lt;dbl&gt; 0.27694700, 0.60179103, 0.54013807, 0.60887915, 0.4068997…
+$ p.value      &lt;dbl&gt; 1.563399e-13, 6.132948e-09, 3.267582e-09, 1.274017e-07, 1…
+$ s.value      &lt;dbl&gt; 42.54038, 27.28077, 28.18913, 22.90411, 35.99664, 34.7934…
+$ conf.low     &lt;dbl&gt; 0.27694700, 0.60179103, 0.54013807, 0.60887914, 0.4068997…
 $ conf.high    &lt;dbl&gt; 0.4771822, 1.2140151, 1.0751355, 1.3272251, 0.7397500, 0.…
 $ predicted    &lt;dbl&gt; 0.8775302, 0.6786731, 0.5290410, 0.5755400, 0.6286173, 0.…
 $ race         &lt;fct&gt; white, white, white, white, white, white, white, white, w…
@@ -1008,18 +1033,18 @@ $ predicted_hi &lt;dbl&gt; 0.9437405, 0.8645374, 0.8794975, 0.8555630, 0.9144578
 </div>
 </section>
 </section>
-<section id="grid" class="level3" data-number="13.3.2">
+<section id="grid" class="level3 page-columns page-full" data-number="13.3.2">
 <h3 data-number="13.3.2" class="anchored" data-anchor-id="grid"><span class="header-section-number">13.3.2</span> Grid</h3>
 <p>Next, we need to decide where to compute these predictions or comparisons. In most cases, the values of the non-focal variables matter, so we have to make a choice about these other variables.</p>
 <p>By default, <code>predictions()</code> and <code>comparisons()</code> use the observed data, returning one value for each row. However, this isn’t always what we want.</p>
 <p>To help us create the grid we want, {marginaleffects} has a powerful <code>datagrid()</code> function.</p>
-<p>For example, we can supply <code>newdata = datagrid(type = "mean_or_mode")</code> to <code>predictions()</code>. This computes the prediction for a “typical case” has numeric variables equal to the mean and factor variables equal to their mode.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predictions</span>(fit, <span class="at">newdata =</span> <span class="fu">datagrid</span>(<span class="at">type =</span> <span class="st">"mean_or_mode"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>For example, we can supply <code>newdata = datagrid(grid_type = "mean_or_mode")</code> to <code>predictions()</code>. This computes the prediction for a “typical case” that has numeric variables equal to their mean and factor variables equal to their mode.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn2"><p><sup>2</sup>&nbsp;For integer variables like <code>age</code>, {marginaleffects} rounds the mean to the nearest integer (45.3 becomes 45).</p></div></div><div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predictions</span>(fit, <span class="at">newdata =</span> <span class="fu">datagrid</span>(<span class="at">grid_type =</span> <span class="st">"mean_or_mode"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 1
-Columns: 13
+Columns: 12
 $ rowid     &lt;dbl&gt; 1
 $ estimate  &lt;dbl&gt; 0.7858649
 $ p.value   &lt;dbl&gt; 1.387065e-92
@@ -1031,14 +1056,13 @@ $ educate   &lt;dbl&gt; 12.06675
 $ income    &lt;dbl&gt; 3.88664
 $ race      &lt;fct&gt; white
 $ vote      &lt;int&gt; 1
-$ type      &lt;chr&gt; "mean_or_mode"
 $ df        &lt;dbl&gt; Inf</code></pre>
 </div>
 </div>
 <p>If we instead supply <code>age = 18:90</code> to <code>datagrid()</code> then it will create a grid that varies age from 18 to 90 while fixing the other variables at their <code>mean_or_mode</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predictions</span>(fit, <span class="at">newdata =</span> <span class="fu">datagrid</span>(<span class="at">age =</span> <span class="dv">18</span><span class="sc">:</span><span class="dv">90</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predictions</span>(fit, <span class="at">newdata =</span> <span class="fu">datagrid</span>(<span class="at">age =</span> <span class="dv">18</span><span class="sc">:</span><span class="dv">90</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 73
 Columns: 12
@@ -1056,6 +1080,21 @@ $ age       &lt;int&gt; 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 
 $ df        &lt;dbl&gt; Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, …</code></pre>
 </div>
 </div>
+<p>Because <code>predictions()</code> returns a data frame, we can plot the result. Here is the expected probability of voting across ages, with a 95% confidence interval.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>ev_age <span class="ot">&lt;-</span> <span class="fu">predictions</span>(fit, <span class="at">newdata =</span> <span class="fu">datagrid</span>(<span class="at">age =</span> <span class="dv">18</span><span class="sc">:</span><span class="dv">90</span>))</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ev_age, <span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> estimate, <span class="at">ymin =</span> conf.low, <span class="at">ymax =</span> conf.high)) <span class="sc">+</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01-marginaleffects_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1071,12 +1110,12 @@ Tip
 </div>
 <p>We can use the same logic with comparisons. We can compute the first difference of a focal variable while systematically varying another variable (e.g., <code>educate</code> or <code>race</code>) and fixing the other variables at their <code>"mean_or_mode"</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># first difference of moving age from 18 to 90 for respondents with </span></span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   12, 14, and 16 years of education</span></span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="fu">comparisons</span>(fit, </span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">age =</span> <span class="fu">c</span>(<span class="dv">18</span>, <span class="dv">90</span>)), </span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">newdata =</span> <span class="fu">datagrid</span>(<span class="at">educate =</span> <span class="fu">c</span>(<span class="dv">12</span>, <span class="dv">14</span>, <span class="dv">16</span>))) <span class="sc">|&gt;</span></span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># first difference of moving age from 18 to 90 for respondents with </span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   12, 14, and 16 years of education</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="fu">comparisons</span>(fit, </span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">age =</span> <span class="fu">c</span>(<span class="dv">18</span>, <span class="dv">90</span>)), </span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">newdata =</span> <span class="fu">datagrid</span>(<span class="at">educate =</span> <span class="fu">c</span>(<span class="dv">12</span>, <span class="dv">14</span>, <span class="dv">16</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 3
 Columns: 18
@@ -1086,8 +1125,8 @@ $ contrast     &lt;chr&gt; "90 - 18", "90 - 18", "90 - 18"
 $ estimate     &lt;dbl&gt; 0.3007122, 0.2430060, 0.1902606
 $ std.error    &lt;dbl&gt; 0.03213503, 0.02560497, 0.02112214
 $ statistic    &lt;dbl&gt; 9.357771, 9.490580, 9.007636
-$ p.value      &lt;dbl&gt; 8.143638e-21, 2.297518e-21, 2.105455e-19
-$ s.value      &lt;dbl&gt; 66.73482, 68.56041, 62.04250
+$ p.value      &lt;dbl&gt; 8.143676e-21, 2.297524e-21, 2.105455e-19
+$ s.value      &lt;dbl&gt; 66.73481, 68.56041, 62.04250
 $ conf.low     &lt;dbl&gt; 0.2377287, 0.1928212, 0.1488619
 $ conf.high    &lt;dbl&gt; 0.3636957, 0.2931908, 0.2316592
 $ age          &lt;int&gt; 45, 45, 45
@@ -1099,12 +1138,12 @@ $ predicted_lo &lt;dbl&gt; 0.6278227, 0.7056094, 0.7730163
 $ predicted_hi &lt;dbl&gt; 0.9285349, 0.9486155, 0.9632768
 $ predicted    &lt;dbl&gt; NA, NA, NA</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># first difference of moving age from 18 to 90 for white respondents </span></span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   and for non-white respondents</span></span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="fu">comparisons</span>(fit, </span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">age =</span> <span class="fu">c</span>(<span class="dv">18</span>, <span class="dv">90</span>)), </span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">newdata =</span> <span class="fu">datagrid</span>(<span class="at">race =</span> unique)) <span class="sc">|&gt;</span></span>
-<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># first difference of moving age from 18 to 90 for white respondents </span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   and for non-white respondents</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="fu">comparisons</span>(fit, </span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">age =</span> <span class="fu">c</span>(<span class="dv">18</span>, <span class="dv">90</span>)), </span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">newdata =</span> <span class="fu">datagrid</span>(<span class="at">race =</span> unique)) <span class="sc">|&gt;</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 2
 Columns: 18
@@ -1114,8 +1153,8 @@ $ contrast     &lt;chr&gt; "90 - 18", "90 - 18"
 $ estimate     &lt;dbl&gt; 0.3404720, 0.2987511
 $ std.error    &lt;dbl&gt; 0.03832429, 0.03189213
 $ statistic    &lt;dbl&gt; 8.883975, 9.367549
-$ p.value      &lt;dbl&gt; 6.451296e-19, 7.423628e-21
-$ s.value      &lt;dbl&gt; 60.42704, 66.86837
+$ p.value      &lt;dbl&gt; 6.451301e-19, 7.423654e-21
+$ s.value      &lt;dbl&gt; 60.42704, 66.86836
 $ conf.low     &lt;dbl&gt; 0.2653578, 0.2362437
 $ conf.high    &lt;dbl&gt; 0.4155862, 0.3612585
 $ age          &lt;int&gt; 45, 45
@@ -1128,13 +1167,14 @@ $ predicted_hi &lt;dbl&gt; 0.9109528, 0.9293090
 $ predicted    &lt;dbl&gt; NA, NA</code></pre>
 </div>
 </div>
+<p>Notice that the last example gives <code>datagrid()</code> a function (<code>unique</code>) rather than values. <code>datagrid()</code> applies the function to the variable, so <code>race = unique</code> gives us every level of <code>race</code>. Other useful functions are <code>range</code> (the minimum and maximum) and <code>median</code>. If we name more than one variable, <code>datagrid()</code> creates every combination of their values. For example, <code>datagrid(age = range, race = unique)</code> has four rows.</p>
 </section>
 <section id="aggregation" class="level3 page-columns page-full" data-number="13.3.3">
 <h3 data-number="13.3.3" class="anchored" data-anchor-id="aggregation"><span class="header-section-number">13.3.3</span> Aggregation</h3>
 <p>Finally, we need to decide what to do with the collection of estimates from the grid. For example, by default, <code>comparisons</code> returns a first difference for every row in the data set.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>fd <span class="ot">&lt;-</span> <span class="fu">comparisons</span>(fit, <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">age =</span> <span class="fu">c</span>(<span class="dv">18</span>, <span class="dv">90</span>))) <span class="sc">|&gt;</span></span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>fd <span class="ot">&lt;-</span> <span class="fu">comparisons</span>(fit, <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">age =</span> <span class="fu">c</span>(<span class="dv">18</span>, <span class="dv">90</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 2,000
 Columns: 18
@@ -1143,10 +1183,10 @@ $ term         &lt;chr&gt; "age", "age", "age", "age", "age", "age", "age", "age
 $ contrast     &lt;chr&gt; "90 - 18", "90 - 18", "90 - 18", "90 - 18", "90 - 18", "9…
 $ estimate     &lt;dbl&gt; 0.25841282, 0.41140255, 0.39295205, 0.42083720, 0.3332314…
 $ std.error    &lt;dbl&gt; 0.02716613, 0.04374691, 0.04168724, 0.04639905, 0.0351402…
-$ statistic    &lt;dbl&gt; 9.512315, 9.404151, 9.426195, 9.069954, 9.482914, 9.48784…
-$ p.value      &lt;dbl&gt; 1.864654e-21, 5.245209e-21, 4.252375e-21, 1.190675e-19, 2…
-$ s.value      &lt;dbl&gt; 68.86158, 67.36949, 67.67222, 62.86485, 68.45434, 68.5226…
-$ conf.low     &lt;dbl&gt; 0.20516818, 0.32566018, 0.31124656, 0.32989674, 0.2643579…
+$ statistic    &lt;dbl&gt; 9.512315, 9.404151, 9.426194, 9.069954, 9.482914, 9.48784…
+$ p.value      &lt;dbl&gt; 1.864661e-21, 5.245209e-21, 4.252379e-21, 1.190677e-19, 2…
+$ s.value      &lt;dbl&gt; 68.86158, 67.36949, 67.67222, 62.86485, 68.45435, 68.5225…
+$ conf.low     &lt;dbl&gt; 0.20516817, 0.32566018, 0.31124656, 0.32989674, 0.2643579…
 $ conf.high    &lt;dbl&gt; 0.3116575, 0.4971449, 0.4746575, 0.5117777, 0.4021050, 0.…
 $ race         &lt;fct&gt; white, white, white, white, white, white, white, white, w…
 $ age          &lt;int&gt; 60, 51, 24, 38, 25, 67, 40, 56, 32, 75, 46, 52, 22, 60, 2…
@@ -1160,28 +1200,28 @@ $ predicted    &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N
 </div>
 <p>We could plot these.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>scatter <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(fd, <span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> estimate, <span class="at">size =</span> income, <span class="at">color =</span> educate)) <span class="sc">+</span></span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(race)) <span class="sc">+</span></span>
-<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">shape =</span> <span class="dv">19</span>, <span class="at">alpha =</span> <span class="fl">0.25</span>)</span>
-<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>hist <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(fd, <span class="fu">aes</span>(<span class="at">x =</span> estimate)) <span class="sc">+</span> </span>
-<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>()</span>
-<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
-<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>scatter <span class="sc">/</span> hist</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>scatter <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(fd, <span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> estimate, <span class="at">size =</span> income, <span class="at">color =</span> educate)) <span class="sc">+</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(race)) <span class="sc">+</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">shape =</span> <span class="dv">19</span>, <span class="at">alpha =</span> <span class="fl">0.25</span>)</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>hist <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(fd, <span class="fu">aes</span>(<span class="at">x =</span> estimate)) <span class="sc">+</span> </span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>()</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>scatter <span class="sc">/</span> hist</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="01-marginaleffects_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="01-marginaleffects_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
-<p>It’s really useful to summarize the heterogeneity of the effects from your model. This is one of the great strengths of parametric modeling—it allows a much richer set of quantities of interest.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
-<div class="no-row-height column-margin column-container"><div id="fn2"><p><sup>2</sup>&nbsp;There’s also some cost—you do need to assume that your parametric model is a good model.</p></div></div><p>But ultimately it’s helpful to combine these many estimates into a single summary of “the effect.” It’s common to average the comparisons. If you have a collection of comparisons that you want to average, then you can use <code>avg_comparisons()</code> rather than <code>comparisons()</code>. <code>avg_comparisons()</code> will average the comparisons produced by <code>comparisons()</code> and compute the correct SE (using the delta method, again).</p>
+<p>It’s really useful to summarize the heterogeneity of the effects from your model. This is one of the great strengths of parametric modeling—it allows a much richer set of quantities of interest.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn3"><p><sup>3</sup>&nbsp;There’s also some cost—you do need to assume that your parametric model is a good model.</p></div></div><p>But ultimately it’s helpful to combine these many estimates into a single summary of “the effect.” It’s common to average the comparisons. If you have a collection of comparisons that you want to average, then you can use <code>avg_comparisons()</code> rather than <code>comparisons()</code>. <code>avg_comparisons()</code> will average the comparisons produced by <code>comparisons()</code> and compute the correct SE (using the delta method, again).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">avg_comparisons</span>(fit, <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">age =</span> <span class="fu">c</span>(<span class="dv">18</span>, <span class="dv">90</span>))) <span class="sc">|&gt;</span></span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">avg_comparisons</span>(fit, <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">age =</span> <span class="fu">c</span>(<span class="dv">18</span>, <span class="dv">90</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 1
 Columns: 9
@@ -1190,44 +1230,72 @@ $ contrast  &lt;chr&gt; "90 - 18"
 $ estimate  &lt;dbl&gt; 0.2994053
 $ std.error &lt;dbl&gt; 0.03039745
 $ statistic &lt;dbl&gt; 9.849684
-$ p.value   &lt;dbl&gt; 6.875961e-23
-$ s.value   &lt;dbl&gt; 73.62278
+$ p.value   &lt;dbl&gt; 6.875958e-23
+$ s.value   &lt;dbl&gt; 73.62279
 $ conf.low  &lt;dbl&gt; 0.2398274
 $ conf.high &lt;dbl&gt; 0.3589832</code></pre>
+</div>
+</div>
+<p><code>avg_predictions()</code> does the same for expected values.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">avg_predictions</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ Estimate Std. Error    z Pr(&gt;|z|)   S 2.5 % 97.5 %
+    0.746    0.00914 81.6   &lt;0.001 Inf 0.728  0.764
+
+Type: response</code></pre>
+</div>
+</div>
+<p>The <code>by</code> argument averages within groups rather than across the whole grid. For example, we can average the first differences separately for white and non-white respondents.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">avg_comparisons</span>(fit, </span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">age =</span> <span class="fu">c</span>(<span class="dv">18</span>, <span class="dv">90</span>)), </span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">by =</span> <span class="st">"race"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+   race Estimate Std. Error    z Pr(&gt;|z|)    S 2.5 % 97.5 %
+ others    0.357     0.0361 9.90   &lt;0.001 74.3 0.287  0.428
+ white     0.289     0.0299 9.69   &lt;0.001 71.4 0.231  0.348
+
+Term: age
+Type: response
+Comparison: 90 - 18</code></pre>
 </div>
 </div>
 </section>
 </section>
 <section id="average-case-or-observed-value" class="level2 page-columns page-full" data-number="13.4">
 <h2 data-number="13.4" class="anchored" data-anchor-id="average-case-or-observed-value"><span class="header-section-number">13.4</span> Average Case or Observed Value</h2>
-<p>When trying to find representative summary of “the effect” from non-linear model in which the effects vary, <span class="citation" data-cites="hanmer2013">Hanmer and Ozan Kalkan (<a href="#ref-hanmer2013" role="doc-biblioref">2013</a>)</span> note that there are two approaches.</p>
+<p>When trying to find a representative summary of “the effect” from a non-linear model in which the effects vary, <span class="citation" data-cites="hanmer2013">Hanmer and Ozan Kalkan (<a href="#ref-hanmer2013" role="doc-biblioref">2013</a>)</span> note that there are two approaches.</p>
 <div class="no-row-height column-margin column-container"><div id="ref-hanmer2013" class="csl-entry" role="listitem">
 Hanmer, Michael J., and Kerem Ozan Kalkan. 2013. <span>“Behind the Curve: Clarifying the Best Approach to Calculating Predicted Probabilities and Marginal Effects from Limited Dependent Variable Models.”</span> <em>American Journal of Political Science</em> 57 (1): 263–77. <a href="https://doi.org/10.1111/j.1540-5907.2012.00602.x">https://doi.org/10.1111/j.1540-5907.2012.00602.x</a>.
 </div></div><ul>
-<li>The <em>average case</em> approach tries to identify a typical case and compute the effect for that case. The <em>observed value</em> approach computes the effect for all cases and then averages those effects.</li>
+<li>The <em>average case</em> approach tries to identify a typical case and compute the effect for that case.</li>
+<li>The <em>observed value</em> approach computes the effect for all cases and then averages those effects.</li>
 </ul>
 <p>In many cases the two approaches give similar estimates, but these are <em>different estimands</em> and sometimes the estimates meaningfully diverge. <span class="citation" data-cites="beger2025">Radean and Beger (<a href="#ref-beger2025" role="doc-biblioref">2025</a>)</span> discuss potential differences.</p>
 <div class="no-row-height column-margin column-container"><div id="ref-beger2025" class="csl-entry" role="listitem">
 Radean, Marius, and Andreas Beger. 2025. <span>“Not-so-Average After All: Individual Vs. Aggregate Effects in Substantive Research.”</span> <em>Journal of Peace Research</em>. <a href="https://repository.essex.ac.uk/40373/">https://repository.essex.ac.uk/40373/</a>.
 </div></div><p>It is easy to compute either estimand using {marginaleffects}.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># avg. case approach</span></span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="fu">avg_comparisons</span>(fit, </span>
-<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>                <span class="co"># set the "other" values to their means or modes</span></span>
-<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">newdata =</span> <span class="fu">datagrid</span>(<span class="at">type =</span> <span class="st">"mean_or_mode"</span>),</span>
-<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">age =</span> <span class="fu">c</span>(<span class="dv">18</span>, <span class="dv">90</span>))) <span class="sc">|&gt;</span></span>
-<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># avg. case approach</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="fu">avg_comparisons</span>(fit, </span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>                <span class="co"># set the "other" values to their means or modes</span></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">newdata =</span> <span class="fu">datagrid</span>(<span class="at">grid_type =</span> <span class="st">"mean_or_mode"</span>),</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">age =</span> <span class="fu">c</span>(<span class="dv">18</span>, <span class="dv">90</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 1
-Columns: 19
+Columns: 18
 $ rowid        &lt;int&gt; 1
 $ term         &lt;chr&gt; "age"
 $ contrast     &lt;chr&gt; "90 - 18"
 $ estimate     &lt;dbl&gt; 0.2987511
 $ std.error    &lt;dbl&gt; 0.03189213
 $ statistic    &lt;dbl&gt; 9.367549
-$ p.value      &lt;dbl&gt; 7.423628e-21
-$ s.value      &lt;dbl&gt; 66.86837
+$ p.value      &lt;dbl&gt; 7.423654e-21
+$ s.value      &lt;dbl&gt; 66.86836
 $ conf.low     &lt;dbl&gt; 0.2362437
 $ conf.high    &lt;dbl&gt; 0.3612585
 $ age          &lt;int&gt; 45
@@ -1235,14 +1303,13 @@ $ educate      &lt;dbl&gt; 12.06675
 $ income       &lt;dbl&gt; 3.88664
 $ race         &lt;fct&gt; white
 $ vote         &lt;int&gt; 1
-$ type         &lt;chr&gt; "mean_or_mode"
 $ predicted_lo &lt;dbl&gt; 0.6305579
 $ predicted_hi &lt;dbl&gt; 0.929309
 $ predicted    &lt;dbl&gt; NA</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># observed value approach</span></span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="fu">avg_comparisons</span>(fit, <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">age =</span> <span class="fu">c</span>(<span class="dv">18</span>, <span class="dv">90</span>))) <span class="sc">|&gt;</span></span>
-<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co"># observed value approach</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="fu">avg_comparisons</span>(fit, <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">age =</span> <span class="fu">c</span>(<span class="dv">18</span>, <span class="dv">90</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 1
 Columns: 9
@@ -1251,8 +1318,8 @@ $ contrast  &lt;chr&gt; "90 - 18"
 $ estimate  &lt;dbl&gt; 0.2994053
 $ std.error &lt;dbl&gt; 0.03039745
 $ statistic &lt;dbl&gt; 9.849684
-$ p.value   &lt;dbl&gt; 6.875961e-23
-$ s.value   &lt;dbl&gt; 73.62278
+$ p.value   &lt;dbl&gt; 6.875958e-23
+$ s.value   &lt;dbl&gt; 73.62279
 $ conf.low  &lt;dbl&gt; 0.2398274
 $ conf.high &lt;dbl&gt; 0.3589832</code></pre>
 </div>

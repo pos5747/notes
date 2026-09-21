@@ -505,8 +505,10 @@ window.Quarto = {
 </header>
 
 
-<p>Suppose we are modeling Holland’s (2015) enforcement operations in Santiago. We have two immediate choices.</p>
-<ol type="1">
+<p>Suppose we are modeling Holland’s <span class="citation" data-cites="Holland2015">(<a href="#ref-Holland2015" role="doc-biblioref">2015</a>)</span> enforcement operations in Santiago. We have two immediate choices.</p>
+<div class="no-row-height column-margin column-container"><div id="ref-Holland2015" class="csl-entry" role="listitem">
+Holland, Alisha C. 2015. <span>“The Distributive Politics of Enforcement.”</span> <em>American Journal of Political Science</em> 59 (2): 357–71. <a href="https://doi.org/10.1111/ajps.12125">https://doi.org/10.1111/ajps.12125</a>.
+</div></div><ol type="1">
 <li>Poisson regression: the simplest regression model for count outcomes, but usually avoided because the Poisson distribution assumes the mean equals the variance.</li>
 <li>Negative binomial regression. Slightly more complicated model, but usually preferred as a default because it allows for <em>overdispersion</em> so that the variance is greater than the mean.</li>
 </ol>
@@ -530,7 +532,8 @@ window.Quarto = {
 </div>
 <section id="predictive-distributions" class="level2" data-number="14.1">
 <h2 data-number="14.1" class="anchored" data-anchor-id="predictive-distributions"><span class="header-section-number">14.1</span> Predictive distributions</h2>
-<p>To guide our choice between the relative strengthos of these models, predictive distributions are <em>excellent</em>. In my mind, they are one of the most useful tools for model checking.</p>
+<p>To guide our choice between the relative strengths of these models, predictive distributions are <em>excellent</em>. In my mind, they are one of the most useful tools for model checking.</p>
+<p>So far, we’ve simulated from the predictive distribution by hand (e.g., with <code>rpois()</code> or <code>rnbinom()</code>, giving each observation its own <span class="math inline">\(\hat{\lambda}_i\)</span> or <span class="math inline">\(\hat{\mu}_i\)</span>). The <code>simulate()</code> function does this for us. It takes a fitted model and draws each fake observation from that observation’s own fitted distribution. The <code>nsim</code> argument sets the number of fake data sets, and <code>simulate()</code> returns a data frame with one column per fake data set (<code>sim_1</code>, <code>sim_2</code>, and so on). <code>simulate()</code> works for models fit with <code>glm()</code>, <code>MASS::glm.nb()</code>, and <code>glmmTMB()</code> (among many others), so from here on we’ll use it rather than building the simulations by hand.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate from predictive distribution for poisson</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>pois_sims <span class="ot">&lt;-</span> <span class="fu">simulate</span>(pois_fit, <span class="at">nsim =</span> <span class="dv">5</span>)</span>
@@ -578,7 +581,7 @@ window.Quarto = {
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate</span>(name, <span class="at">into =</span> <span class="fu">c</span>(<span class="st">"type"</span>, <span class="st">"sim_id"</span>), <span class="at">sep =</span> <span class="st">"_"</span>, <span class="at">remove =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
 <span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> value)) <span class="sc">+</span> </span>
 <span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(name)) <span class="sc">+</span></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">center =</span> <span class="dv">0</span>, <span class="at">width =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">center =</span> <span class="dv">0</span>, <span class="at">binwidth =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -635,7 +638,7 @@ window.Quarto = {
 <span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate</span>(name, <span class="at">into =</span> <span class="fu">c</span>(<span class="st">"type"</span>, <span class="st">"sim_id"</span>), <span class="at">sep =</span> <span class="st">"_"</span>, <span class="at">remove =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
 <span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> value)) <span class="sc">+</span> </span>
 <span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(name)) <span class="sc">+</span></span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">center =</span> <span class="dv">0</span>, <span class="at">width =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">center =</span> <span class="dv">0</span>, <span class="at">binwidth =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -648,32 +651,33 @@ window.Quarto = {
 </section>
 <section id="information-criteria" class="level2 page-columns page-full" data-number="14.2">
 <h2 data-number="14.2" class="anchored" data-anchor-id="information-criteria"><span class="header-section-number">14.2</span> Information criteria</h2>
-<p>We can use <strong>information</strong> criteria for a similar purpose, but they are much similar.</p>
+<p>We can use <strong>information</strong> criteria for a similar purpose, but they are much simpler.</p>
 <p>Information criteria have the following general structure:</p>
 <p><span class="math display">\[
 -2 \ell(\hat{\theta}) + [\text{constant}\times k ]
 \]</span></p>
-<p>Here, <span class="math inline">\(\ell(\hat{\theta}) = \log L(\hat{\theta})\)</span> is the maximized log-likelihood function (not the <span class="math inline">\(\hat{\theta}\)</span>, but the value of <span class="math inline">\(\log L\)</span> itself <em>at</em> <span class="math inline">\(\hat{\theta}\)</span>), <span class="math inline">\(k\)</span> is the <em>total</em> number of parameters (including intercept, variance, scale, etc.), and <span class="math inline">\(\text{constant}\)</span> is a constant term that varies across information criteria.</p>
+<p>Here, <span class="math inline">\(\ell(\hat{\theta}) = \log L(\hat{\theta})\)</span> is the maximized log-likelihood function (not the <span class="math inline">\(\hat{\theta}\)</span>, but the value of <span class="math inline">\(\ell\)</span> itself <em>at</em> <span class="math inline">\(\hat{\theta}\)</span>), <span class="math inline">\(k\)</span> is the <em>total</em> number of parameters (including intercept, variance, scale, etc.), and <span class="math inline">\(\text{constant}\)</span> is a constant term that varies across information criteria.</p>
 <p>The two most common information criteria are:</p>
 <ol type="1">
-<li><strong>Akaike Information Criterion (AIC)</strong> <span class="math inline">\(= -2 \log L(\hat{\theta}) + [2 \times k]\)</span></li>
-<li><strong>Bayesian Information Criterion (BIC)</strong> <span class="math inline">\(= -2 \log L(\hat{\theta}) + [\log(n) \times k]\)</span></li>
+<li><strong>Akaike Information Criterion (AIC)</strong> <span class="math inline">\(= -2 \ell(\hat{\theta}) + [2 \times k]\)</span></li>
+<li><strong>Bayesian Information Criterion (BIC)</strong> <span class="math inline">\(= -2 \ell(\hat{\theta}) + [\log(N) \times k]\)</span></li>
 </ol>
+<p>Here, <span class="math inline">\(N\)</span> is the number of observations.</p>
 <p>The AIC and BIC have a deep and detailed theoretical development—the choice of constant is not at all arbitrary. I don’t reproduce the theory here, but instead mention a few practical points.</p>
 <ul>
 <li>The <em>magnitude</em> of the IC is generally not of interest. Instead, focus on the <em>difference</em> in the IC between models.</li>
-<li>Both the the AIC and the BIC work to identify the “best” model, but in two difference senses:
+<li>Both the AIC and the BIC work to identify the “best” model, but in two different senses:
 <ul>
-<li>The AIC roughly compares the observed and predictive distributions are tries to identify the best match.</li>
+<li>The AIC roughly compares the observed and predictive distributions and tries to identify the best match.</li>
 <li>The BIC roughly identifies the model with the highest posterior probability—the most likely model to have generated the data.</li>
 </ul></li>
-<li>Both AIC and BIC penalize adding parameters. That is, in order to improve the IC, a more complex model must improve the fit enough to offset the additional penalty. That said, the BIC imposes a larger penalty for <span class="math inline">\(n \geq 8\)</span>.</li>
+<li>Both AIC and BIC penalize adding parameters. That is, in order to improve the IC, a more complex model must improve the fit enough to offset the additional penalty. That said, the BIC imposes a larger penalty for <span class="math inline">\(N \geq 8\)</span>.</li>
 </ul>
-<p>The table below from <span class="citation" data-cites="raftery1995">Raftery (<a href="#ref-raftery1995" role="doc-biblioref">1995</a>)</span> summarizes a rough interpretation of the magnitude of differences between BICs below (and the same applies for AICs as well.</p>
+<p>The table below from <span class="citation" data-cites="raftery1995">Raftery (<a href="#ref-raftery1995" role="doc-biblioref">1995</a>)</span> summarizes a rough interpretation of the magnitude of differences between BICs (and the same applies for AICs as well).</p>
 <div class="no-row-height column-margin column-container"><div id="ref-raftery1995" class="csl-entry" role="listitem">
 Raftery, Adrian E. 1995. <span>“Bayesian Model Selection in Social Research.”</span> <em>Sociological Methodology</em> 25: 111. <a href="https://doi.org/10.2307/271063">https://doi.org/10.2307/271063</a>.
 </div></div><p><img src="img/raftery1995-table.png" class="img-fluid"></p>
-<p>To compute the AIC and BIC, we have the easy-to-use <code>AIC()</code> and <code>BIC()</code> functions.</p>
+<p>To compute the AIC and BIC, we have the easy-to-use <code>AIC()</code> and <code>BIC()</code> functions. The <code>df</code> column of the output is <span class="math inline">\(k\)</span>, the number of parameters.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(pois_fit, nb_fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -690,7 +694,7 @@ pois_fit  5 234.4223
 nb_fit    6 142.8430</code></pre>
 </div>
 </div>
-<p>To ease interpretation, we can convert these AIC and BIC to weights. Raftery argues that we can interprete these as the probability that each model is correct (assuming the correct model is in the set).</p>
+<p>To ease interpretation, we can convert these AIC and BIC to weights. Raftery argues that we can interpret these as the probability that each model is correct (assuming the correct model is in the set and that we start with equal prior probability on each model).</p>
 <p><img src="img/raftery-1995-post-prob.png" class="img-fluid"></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">BIC</span>(pois_fit, nb_fit) <span class="sc">|&gt;</span></span>
@@ -702,7 +706,7 @@ pois_fit  5 234.4223 91.57931 1.299588e-20
 nb_fit    6 142.8430  0.00000 1.000000e+00</code></pre>
 </div>
 </div>
-<p>We can do something similar with the AIC. I refer to these as “Akaike weights.” See <span class="citation" data-cites="wagenmakers2004">Wagenmakers and Farrell (<a href="#ref-wagenmakers2004" role="doc-biblioref">2004</a>)</span> for more on this. As with BIC, we shouldn’t take these weight too seriously, but they do give us an idea of how much the IC like each model.</p>
+<p>We can do something similar with the AIC. I refer to these as “Akaike weights.” See <span class="citation" data-cites="wagenmakers2004">Wagenmakers and Farrell (<a href="#ref-wagenmakers2004" role="doc-biblioref">2004</a>)</span> for more on this. As with BIC, we shouldn’t take these weights too seriously, but they do give us an idea of how much the IC likes each model.</p>
 <div class="no-row-height column-margin column-container"><div id="ref-wagenmakers2004" class="csl-entry" role="listitem">
 Wagenmakers, Eric‐Jan, and Simon Farrell. 2004. <span>“AIC Model Selection Using Akaike Weights.”</span> <em>Psychonomic Bulletin &amp; Review</em> 11 (1): 192–96. <a href="https://doi.org/10.3758/BF03206482">https://doi.org/10.3758/BF03206482</a>.
 </div></div><div class="cell">

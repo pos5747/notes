@@ -54,7 +54,27 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -468,7 +488,8 @@ window.Quarto = {
   <li><a href="#marginaleffects" id="toc-marginaleffects" class="nav-link" data-scroll-target="#marginaleffects"><span class="header-section-number">15.1.6</span> {marginaleffects}</a></li>
   </ul></li>
   <li><a href="#poisson-case" id="toc-poisson-case" class="nav-link" data-scroll-target="#poisson-case"><span class="header-section-number">15.2</span> Poisson case</a></li>
-  <li><a href="#other-cases" id="toc-other-cases" class="nav-link" data-scroll-target="#other-cases"><span class="header-section-number">15.3</span> Other cases</a></li>
+  <li><a href="#hurdle-models" id="toc-hurdle-models" class="nav-link" data-scroll-target="#hurdle-models"><span class="header-section-number">15.3</span> Hurdle models</a></li>
+  <li><a href="#other-cases" id="toc-other-cases" class="nav-link" data-scroll-target="#other-cases"><span class="header-section-number">15.4</span> Other cases</a></li>
   </ul>
 </nav>
     </div>
@@ -494,8 +515,10 @@ window.Quarto = {
 </header>
 
 
-<p>In a prior chapter, we used a negative binomial regression to model the number of enforcement operations in Holland’s (2015) data.</p>
-<div class="cell">
+<p>In a prior chapter, we used a negative binomial regression to model the number of enforcement operations in Holland’s <span class="citation" data-cites="Holland2015">(<a href="#ref-Holland2015" role="doc-biblioref">2015</a>)</span> data.</p>
+<div class="no-row-height column-margin column-container"><div id="ref-Holland2015" class="csl-entry" role="listitem">
+Holland, Alisha C. 2015. <span>“The Distributive Politics of Enforcement.”</span> <em>American Journal of Political Science</em> 59 (2): 357–71. <a href="https://doi.org/10.1111/ajps.12125">https://doi.org/10.1111/ajps.12125</a>.
+</div></div><div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load data</span></span>
@@ -530,25 +553,29 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>Notice that the negative binomial model as too many large values. I have a subtle intuition that the negative binomial is struggling to simultaneously capture the (1) mean, (2) the large spike at zero, and (3) the relative absence of large values.</p>
-<p>To address this, we might add a component to the model to inflated the number of zeros relative to the usual negative binomial distribution.</p>
+<p>Notice that the negative binomial model has too many large values. I have a subtle intuition that the negative binomial is struggling to simultaneously capture the (1) mean, (2) the large spike at zero, and (3) the relative absence of large values.</p>
+<p>To address this, we might add a component to the model to inflate the number of zeros relative to the usual negative binomial distribution.</p>
 <p>It is fairly common for count data to have lots of zeros. We can imagine this substantively by thinking of two different processes. One process determines whether the observation is at risk of any events <em>at all</em>. Another process determines the number of events, which might still be zero.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
-<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;This “two process” motivation is simply a story to motivate the model—don’t take it too literally, especially when interpreting parameter estimates.</p></div></div><p>We can model as excess of zeros using a zero-inflation model. A zero-inflation model has two steps. In the first step, we have a logit model that determines whether the observation will equal zero or be a draw from some distribution.</p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;This “two process” motivation is simply a story to motivate the model—don’t take it too literally, especially when interpreting parameter estimates.</p></div></div><p>We can model an excess of zeros using a zero-inflation model. A zero-inflation model has two steps.</p>
+<ol type="1">
+<li>In the first step, we have a logit model that determines whether the observation will equal zero or be a draw from some distribution.</li>
+<li>In the second step, we take the draw from some distribution if needed.</li>
+</ol>
 <section id="negative-binomial-case" class="level2 page-columns page-full" data-number="15.1">
 <h2 data-number="15.1" class="anchored" data-anchor-id="negative-binomial-case"><span class="header-section-number">15.1</span> Negative Binomial case</h2>
 <p>Let’s first consider zero-inflation in the negative binomial. How could we model an excess of zeros for an NB baseline distribution?</p>
 <section id="pmf" class="level3 page-columns page-full" data-number="15.1.1">
 <h3 data-number="15.1.1" class="anchored" data-anchor-id="pmf"><span class="header-section-number">15.1.1</span> pmf</h3>
 <p>Let <span class="math inline">\(f(y_i; \mu_i, \theta)\)</span> denote the pmf of a negative binomial distribution with mean <span class="math inline">\(\mu_i\)</span> and dispersion <span class="math inline">\(\theta\)</span>.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> We assume that observation <span class="math inline">\(i\)</span> comes from</p>
-<div class="no-row-height column-margin column-container"><div id="fn2"><p><sup>2</sup>&nbsp;This the <code>nbinom2</code> parameterization with overdispersion parameter <span class="math inline">\(\theta\)</span>, where <span class="math inline">\(\text{Var}(Y_i) = \mu_i + \mu_i^2/\theta\)</span>).</p></div></div><p><span class="math display">\[
+<div class="no-row-height column-margin column-container"><div id="fn2"><p><sup>2</sup>&nbsp;This is the <code>nbinom2</code> parameterization with overdispersion parameter <span class="math inline">\(\theta\)</span>, where <span class="math inline">\(\operatorname{Var}(y_i) = \mu_i + \mu_i^2/\theta\)</span>.</p></div></div><p><span class="math display">\[
 y_i \sim
 \begin{cases}
 0 &amp; \text{with probability } \pi_i, \\
-\text{NB}(\mu_i, \theta) &amp; \text{with probability } 1 - \pi_i,
+\text{NegBin}(\mu_i, \theta) &amp; \text{with probability } 1 - \pi_i,
 \end{cases}
 \]</span></p>
 <p>where <span class="math inline">\(\pi_i \in (0,1)\)</span> is the probability of a <em>structural zero</em>. The remaining values follow the usual negative binomial distribution.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
-<div class="no-row-height column-margin column-container"><div id="fn3"><p><sup>3</sup>&nbsp;Important note: even in an observation is not a structure zero, it still might equal zero, because the negative binomial has positive probability on zero as well. So there are <em>two ways</em> to get a zero.</p></div></div><p>Equivalently, the pmf of <span class="math inline">\(y_i\)</span> can be written as</p>
+<div class="no-row-height column-margin column-container"><div id="fn3"><p><sup>3</sup>&nbsp;Important note: even if an observation is not a structural zero, it still might equal zero, because the negative binomial has positive probability on zero as well. So there are <em>two ways</em> to get a zero.</p></div></div><p>Equivalently, the pmf of <span class="math inline">\(y_i\)</span> can be written as</p>
 <p><span class="math display">\[
 f(y_i; \pi_i, \mu_i, \theta) =
 \begin{cases}
@@ -559,13 +586,13 @@ f(y_i; \pi_i, \mu_i, \theta) =
 </section>
 <section id="likelihood" class="level3" data-number="15.1.2">
 <h3 data-number="15.1.2" class="anchored" data-anchor-id="likelihood"><span class="header-section-number">15.1.2</span> Likelihood</h3>
-<p>Create an indicator variable <span class="math inline">\(z_i = \mathbf{1}(y_i = 0)\)</span> that equals one if <span class="math inline">\(y_i = 0\)</span> and zero otherwise. Then for independent <span class="math inline">\(y_1, \dots, y_n\)</span>, the likelihood is</p>
+<p>Create an indicator variable <span class="math inline">\(d_i = \mathbf{1}(y_i = 0)\)</span> that equals one if <span class="math inline">\(y_i = 0\)</span> and zero otherwise. Then for independent <span class="math inline">\(y_1, \dots, y_N\)</span>, the likelihood is</p>
 <p><span class="math display">\[
 L(\pi, \mu, \theta) =
-\prod_{i=1}^n \Bigg\{
-\big[ \pi_i + (1 - \pi_i) f(0; \mu_i, \theta) \big]^{z_i}
+\prod_{i=1}^N \Bigg\{
+\big[ \pi_i + (1 - \pi_i) f(0; \mu_i, \theta) \big]^{d_i}
 \cdot
-\big[ (1 - \pi_i) f(y_i; \mu_i, \theta) \big]^{1 - z_i}
+\big[ (1 - \pi_i) f(y_i; \mu_i, \theta) \big]^{1 - d_i}
 \Bigg\}.
 \]</span></p>
 </section>
@@ -574,21 +601,21 @@ L(\pi, \mu, \theta) =
 <p>Taking logs, the log-likelihood is</p>
 <p><span class="math display">\[
 \ell(\pi, \mu, \theta) =
-\sum_{i=1}^n
+\sum_{i=1}^N
 \Bigg\{
-z_i \cdot \log\big( \pi_i + (1 - \pi_i) f(0; \mu_i, \theta) \big)
+d_i \cdot \log\big( \pi_i + (1 - \pi_i) f(0; \mu_i, \theta) \big)
 +
-(1 - z_i) \cdot \big[ \log(1 - \pi_i) + \log f(y_i; \mu_i, \theta) \big]
+(1 - d_i) \cdot \big[ \log(1 - \pi_i) + \log f(y_i; \mu_i, \theta) \big]
 \Bigg\}.
 \]</span></p>
-<p>We can imagine that <span class="math inline">\(\pi_i = \operatorname{logit}^{-1}(Z\gamma)\)</span> and <span class="math inline">\(\mu_i = \exp(X\beta)\)</span>, with <span class="math inline">\(\theta\)</span> modeled as in a standard negative binomial regression.</p>
+<p>We can imagine that <span class="math inline">\(\pi_i = \operatorname{logit}^{-1}(Z_i\gamma)\)</span> and <span class="math inline">\(\mu_i = \exp(X_i\beta)\)</span>, with <span class="math inline">\(\theta\)</span> modeled as in a standard negative binomial regression.</p>
 </section>
 <section id="in-r" class="level3" data-number="15.1.4">
 <h3 data-number="15.1.4" class="anchored" data-anchor-id="in-r"><span class="header-section-number">15.1.4</span> In R</h3>
-<p>We can fit the zero-inflated negative binomial using the <code>glmmTMB()</code> function in R. Create the design matrix X with <code>formula</code> (for <span class="math inline">\(\mu_i = \exp (X\beta)\)</span>) and the design matrix <code>Z</code> with <code>ziformula</code> (for <span class="math inline">\(\pi_i = \operatorname{logit}^{-1} (Z\gamma)\)</span>). The family <code>nbinom2</code> specifies the negative binomial with variance <span class="math inline">\(\mu + \mu^2/\theta\)</span> (which matrix <code>MASS::glm.nb()</code>)</p>
+<p>We can fit the zero-inflated negative binomial using the <code>glmmTMB()</code> function in R. Create the design matrix <code>X</code> with <code>formula</code> (for <span class="math inline">\(\mu_i = \exp (X_i\beta)\)</span>) and the design matrix <code>Z</code> with <code>ziformula</code> (for <span class="math inline">\(\pi_i = \operatorname{logit}^{-1} (Z_i\gamma)\)</span>). The family <code>nbinom2</code> specifies the negative binomial with variance <span class="math inline">\(\mu + \mu^2/\theta\)</span> (which matches <code>MASS::glm.nb()</code>).</p>
 <ul>
 <li><code>glmmTMB()</code> has a <code>simulate()</code> method to simulate from the predictive distribution.</li>
-<li><code>glmTMB()</code> works well with {marginaleffects}.</li>
+<li><code>glmmTMB()</code> works well with {marginaleffects}.</li>
 </ul>
 <section id="constant-pi" class="level4" data-number="15.1.4.1">
 <h4 data-number="15.1.4.1" class="anchored" data-anchor-id="constant-pi"><span class="header-section-number">15.1.4.1</span> Constant <span class="math inline">\(\pi\)</span></h4>
@@ -628,55 +655,64 @@ z_i \cdot \log\big( \pi_i + (1 - \pi_i) f(0; \mu_i, \theta) \big)
 </div>
 </div>
 </div>
-</section>
-<section id="pi_i-operatornamelogit-1xbeta" class="level4" data-number="15.1.4.2">
-<h4 data-number="15.1.4.2" class="anchored" data-anchor-id="pi_i-operatornamelogit-1xbeta"><span class="header-section-number">15.1.4.2</span> <span class="math inline">\(\pi_i = \operatorname{logit}^{-1}(X\beta)\)</span></h4>
+<p>Notice that this looks just like the negative binomial model. The estimated probability of a structural zero is essentially zero, so the model collapses to the negative binomial.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># formulas</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> operations <span class="sc">~</span> lower <span class="sc">+</span> vendors <span class="sc">+</span> budget <span class="sc">+</span> population</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>zi_f <span class="ot">&lt;-</span>  <span class="er">~</span> lower <span class="sc">+</span> vendors <span class="sc">+</span> budget <span class="sc">+</span> population</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># zinb regression</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>zinb2_fit <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> f,  </span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">ziformula =</span> zi_f, <span class="co"># 🆕 model zi using covariates</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> nbinom2,  </span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> sant</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># estimated probability of a structural zero</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plogis</span>(<span class="fu">fixef</span>(zinb_fit)<span class="sc">$</span>zi)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> (Intercept) 
+2.080873e-09 </code></pre>
+</div>
+</div>
+</section>
+<section id="pi_i-operatornamelogit-1z_igamma" class="level4" data-number="15.1.4.2">
+<h4 data-number="15.1.4.2" class="anchored" data-anchor-id="pi_i-operatornamelogit-1z_igamma"><span class="header-section-number">15.1.4.2</span> <span class="math inline">\(\pi_i = \operatorname{logit}^{-1}(Z_i\gamma)\)</span></h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># formulas</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> operations <span class="sc">~</span> lower <span class="sc">+</span> vendors <span class="sc">+</span> budget <span class="sc">+</span> population</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>zi_f <span class="ot">&lt;-</span>  <span class="er">~</span> lower <span class="sc">+</span> vendors <span class="sc">+</span> budget <span class="sc">+</span> population</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># zinb regression</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>zinb2_fit <span class="ot">&lt;-</span> <span class="fu">glmmTMB</span>(</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> f,  </span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">ziformula =</span> zi_f, <span class="co"># 🆕 model zi using covariates</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> nbinom2,  </span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> sant</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Then we can use <code>simulate()</code> to simulate from the predictive distribution and plot it in the usual way.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate from predictive distribution</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>zinb2_sims <span class="ot">&lt;-</span> <span class="fu">simulate</span>(zinb2_fit, <span class="at">nsim =</span> <span class="dv">5</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># plot</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_cols</span>(sant, zinb2_sims) <span class="sc">|&gt;</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(operations, <span class="fu">starts_with</span>(<span class="st">"sim_"</span>))) <span class="sc">|&gt;</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate</span>(name, <span class="at">into =</span> <span class="fu">c</span>(<span class="st">"type"</span>, <span class="st">"sim_id"</span>), <span class="at">sep =</span> <span class="st">"_"</span>, <span class="at">remove =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> value)) <span class="sc">+</span> </span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(name)) <span class="sc">+</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">center =</span> <span class="dv">0</span>, <span class="at">binwidth =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate from predictive distribution</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>zinb2_sims <span class="ot">&lt;-</span> <span class="fu">simulate</span>(zinb2_fit, <span class="at">nsim =</span> <span class="dv">5</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># plot</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_cols</span>(sant, zinb2_sims) <span class="sc">|&gt;</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(operations, <span class="fu">starts_with</span>(<span class="st">"sim_"</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate</span>(name, <span class="at">into =</span> <span class="fu">c</span>(<span class="st">"type"</span>, <span class="st">"sim_id"</span>), <span class="at">sep =</span> <span class="st">"_"</span>, <span class="at">remove =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> value)) <span class="sc">+</span> </span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(name)) <span class="sc">+</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">center =</span> <span class="dv">0</span>, <span class="at">binwidth =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="03-zero-inflation_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="03-zero-inflation_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
-<p>The predictive distributions for both ZINB models look much better. Because the zero-inflated part of the model handles the spike at zero, the negative binomial part of the model can better match the remainder of the distribution.</p>
+<p>The predictive distribution for the ZINB model with covariates looks much better. Because the zero-inflated part of the model handles the spike at zero, the negative binomial part of the model can better match the remainder of the distribution.</p>
 </section>
 </section>
 <section id="ic" class="level3" data-number="15.1.5">
 <h3 data-number="15.1.5" class="anchored" data-anchor-id="ic"><span class="header-section-number">15.1.5</span> IC</h3>
 <p>The BIC likes the ZINB model with covariates best, and the model with<em>out</em> zero-inflation is a close second.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">BIC</span>(nb_fit, zinb_fit, zinb2_fit) <span class="sc">|&gt;</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">diff_min =</span> BIC <span class="sc">-</span> <span class="fu">min</span>(BIC),</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">post_prob =</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)<span class="sc">/</span><span class="fu">sum</span>(<span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">BIC</span>(nb_fit, zinb_fit, zinb2_fit) <span class="sc">|&gt;</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">diff_min =</span> BIC <span class="sc">-</span> <span class="fu">min</span>(BIC),</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">post_prob =</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)<span class="sc">/</span><span class="fu">sum</span>(<span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>          df      BIC  diff_min  post_prob
 nb_fit     6 142.8430 0.5379471 0.40320644
@@ -686,9 +722,9 @@ zinb2_fit 11 142.3051 0.0000000 0.52764423</code></pre>
 </div>
 <p>The AIC likes the ZINB model with covariates best and the other two models aren’t particularly close.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(nb_fit, zinb_fit, zinb2_fit) <span class="sc">|&gt;</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">diff_min =</span> AIC <span class="sc">-</span> <span class="fu">min</span>(AIC),</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">akaike_weights =</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)<span class="sc">/</span><span class="fu">sum</span>(<span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(nb_fit, zinb_fit, zinb2_fit) <span class="sc">|&gt;</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">diff_min =</span> AIC <span class="sc">-</span> <span class="fu">min</span>(AIC),</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">akaike_weights =</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)<span class="sc">/</span><span class="fu">sum</span>(<span class="fu">exp</span>(<span class="sc">-</span><span class="fl">0.5</span><span class="sc">*</span>diff_min)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>          df      AIC diff_min akaike_weights
 nb_fit     6 133.6848  8.16975    0.016446724
@@ -699,10 +735,10 @@ zinb2_fit 11 125.5151  0.00000    0.977502864</code></pre>
 </section>
 <section id="marginaleffects" class="level3" data-number="15.1.6">
 <h3 data-number="15.1.6" class="anchored" data-anchor-id="marginaleffects"><span class="header-section-number">15.1.6</span> {marginaleffects}</h3>
-<p>We can use the <code>avg_comparisons()</code> function to compute the average first difference as we move <code>lower</code> from its min to its max, averaging across the observed values of all the other covariates.</p>
+<p>We can use the <code>avg_comparisons()</code> function to compute the average first difference as we move <code>lower</code> from its min to its max, averaging across the observed values of all the other covariates. For the zero-inflated models, {marginaleffects} works with the expected value of <span class="math inline">\(y_i\)</span> itself, <span class="math inline">\(E(y_i) = (1 - \pi_i)\,\mu_i\)</span>, which combines both parts of the model.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># compute avg. fd</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">avg_comparisons</span>(nb_fit, <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">lower =</span> <span class="st">"minmax"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># compute avg. fd</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">avg_comparisons</span>(nb_fit, <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">lower =</span> <span class="st">"minmax"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
  Estimate Std. Error      z Pr(&gt;|z|)   S 2.5 % 97.5 %
@@ -712,7 +748,7 @@ Term: lower
 Type: response
 Comparison: Max - Min</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">avg_comparisons</span>(zinb_fit, <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">lower =</span> <span class="st">"minmax"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">avg_comparisons</span>(zinb_fit, <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">lower =</span> <span class="st">"minmax"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
  Estimate Std. Error      z Pr(&gt;|z|)   S 2.5 % 97.5 %
@@ -722,7 +758,7 @@ Term: lower
 Type: response
 Comparison: Max - Min</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">avg_comparisons</span>(zinb2_fit, <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">lower =</span> <span class="st">"minmax"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">avg_comparisons</span>(zinb2_fit, <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">lower =</span> <span class="st">"minmax"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
  Estimate Std. Error      z Pr(&gt;|z|)   S 2.5 % 97.5 %
@@ -736,29 +772,30 @@ Comparison: Max - Min</code></pre>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># compute avg. fd</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>nb_fd <span class="ot">&lt;-</span> <span class="fu">avg_comparisons</span>(nb_fit, <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">lower =</span> <span class="st">"minmax"</span>))</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>zinb_fd <span class="ot">&lt;-</span> <span class="fu">avg_comparisons</span>(zinb_fit, <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">lower =</span> <span class="st">"minmax"</span>))</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>zinb2_fd <span class="ot">&lt;-</span> <span class="fu">avg_comparisons</span>(zinb2_fit, <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">lower =</span> <span class="st">"minmax"</span>))</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co"># plot</span></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(<span class="st">"NB"</span> <span class="ot">=</span> nb_fd, </span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>     <span class="st">"ZINB; no covariates"</span> <span class="ot">=</span> zinb_fd,</span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>     <span class="st">"ZINB; w/ covariates"</span> <span class="ot">=</span> zinb2_fd) <span class="sc">|&gt;</span></span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(<span class="at">.id =</span> <span class="st">"model"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> estimate, <span class="at">xmin =</span> conf.low, <span class="at">xmax =</span> conf.high,</span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>             <span class="at">y =</span> model)) <span class="sc">+</span> </span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbarh</span>() <span class="sc">+</span> </span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># compute avg. fd</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>nb_fd <span class="ot">&lt;-</span> <span class="fu">avg_comparisons</span>(nb_fit, <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">lower =</span> <span class="st">"minmax"</span>))</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>zinb_fd <span class="ot">&lt;-</span> <span class="fu">avg_comparisons</span>(zinb_fit, <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">lower =</span> <span class="st">"minmax"</span>))</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>zinb2_fd <span class="ot">&lt;-</span> <span class="fu">avg_comparisons</span>(zinb2_fit, <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">lower =</span> <span class="st">"minmax"</span>))</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="co"># plot</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(<span class="st">"NB"</span> <span class="ot">=</span> nb_fd, </span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>     <span class="st">"ZINB; no covariates"</span> <span class="ot">=</span> zinb_fd,</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>     <span class="st">"ZINB; w/ covariates"</span> <span class="ot">=</span> zinb2_fd) <span class="sc">|&gt;</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(<span class="at">.id =</span> <span class="st">"model"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> estimate, <span class="at">xmin =</span> conf.low, <span class="at">xmax =</span> conf.high,</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>             <span class="at">y =</span> model)) <span class="sc">+</span> </span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="at">orientation =</span> <span class="st">"y"</span>, <span class="at">width =</span> <span class="fl">0.2</span>) <span class="sc">+</span> </span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="03-zero-inflation_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="03-zero-inflation_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
+<p>Notice that all three intervals include zero. The negative binomial and the ZINB with constant <span class="math inline">\(\pi\)</span> give the same estimate (about <span class="math inline">\(-13\)</span> operations). The ZINB with covariates gives an estimate less than half as large (about <span class="math inline">\(-5.7\)</span>) and a much narrower interval.</p>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -776,11 +813,16 @@ Warning
 </section>
 <section id="poisson-case" class="level2" data-number="15.2">
 <h2 data-number="15.2" class="anchored" data-anchor-id="poisson-case"><span class="header-section-number">15.2</span> Poisson case</h2>
-<p>We could similarly use a zero-inflated Poisson. It follows the same logic. But it seems very usual in practice to have zero-inflation without over-dispersion, so I’ll just mention the possibility.</p>
+<p>We could similarly use a zero-inflated Poisson. It follows the same logic. The zero-inflated negative binomial is often a safer default because it also allows overdispersion in the count part, so I’ll just mention the possibility.</p>
 </section>
-<section id="other-cases" class="level2" data-number="15.3">
-<h2 data-number="15.3" class="anchored" data-anchor-id="other-cases"><span class="header-section-number">15.3</span> Other cases</h2>
+<section id="hurdle-models" class="level2" data-number="15.3">
+<h2 data-number="15.3" class="anchored" data-anchor-id="hurdle-models"><span class="header-section-number">15.3</span> Hurdle models</h2>
+<p>A close alternative is a <em>hurdle</em> model. It also uses a logit model for zero versus positive, but it draws the positive counts from a zero-truncated distribution, so <em>every</em> zero comes from the logit step. <code>glmmTMB()</code> fits these too (e.g., <code>family = truncated_nbinom2</code> with a <code>ziformula</code>).</p>
+</section>
+<section id="other-cases" class="level2" data-number="15.4">
+<h2 data-number="15.4" class="anchored" data-anchor-id="other-cases"><span class="header-section-number">15.4</span> Other cases</h2>
 <p>We can easily extend this logic to other distributions as well. For example, we might imagine that some variables, like trade (in dollars) between two countries, might have a continuous distribution with a spike at zero. In this case, we could imagine a zero-inflated normal, for example.</p>
+
 
 
 </section>

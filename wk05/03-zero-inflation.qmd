@@ -12,7 +12,7 @@ library(marginaleffects)
 ```
 
 
-In a prior chapter, we used a negative binomial regression to model the number of enforcement operations in Holland's (2015) data. 
+In a prior chapter, we used a negative binomial regression to model the number of enforcement operations in Holland's [-@Holland2015] data. 
 
 ```{r}
 #| message: false
@@ -45,13 +45,16 @@ bind_cols(sant, nb_sims) |>
  
 ```
 
-Notice that the negative binomial model as too many large values. I have a subtle intuition that the negative binomial is struggling to simultaneously capture the (1) mean, (2) the large spike at zero, and (3) the relative absence of large values.
+Notice that the negative binomial model has too many large values. I have a subtle intuition that the negative binomial is struggling to simultaneously capture the (1) mean, (2) the large spike at zero, and (3) the relative absence of large values.
 
-To address this, we might add a component to the model to inflated the number of zeros relative to the usual negative binomial distribution. 
+To address this, we might add a component to the model to inflate the number of zeros relative to the usual negative binomial distribution. 
 
 It is fairly common for count data to have lots of zeros. We can imagine this substantively by thinking of two different processes. One process determines whether the observation is at risk of any events *at all*. Another process determines the number of events, which might still be zero.^[This "two process" motivation is simply a story to motivate the model---don't take it too literally, especially when interpreting parameter estimates.]
 
-We can model as excess of zeros using a zero-inflation model. A zero-inflation model has two steps. In the first step, we have a logit model that determines whether the observation will equal zero or be a draw from some distribution.
+We can model an excess of zeros using a zero-inflation model. A zero-inflation model has two steps. 
+
+1. In the first step, we have a logit model that determines whether the observation will equal zero or be a draw from some distribution.
+2. In the second step, we take the draw from some distribution if needed.
 
 ## Negative Binomial case
 
@@ -59,17 +62,17 @@ Let's first consider zero-inflation in the negative binomial. How could we model
 
 ### pmf
 
-Let $f(y_i; \mu_i, \theta)$ denote the pmf of a negative binomial distribution with mean $\mu_i$ and dispersion $\theta$.^[This the `nbinom2` parameterization with overdispersion parameter $\theta$, where $\text{Var}(Y_i) = \mu_i + \mu_i^2/\theta$).] We assume that observation $i$ comes from
+Let $f(y_i; \mu_i, \theta)$ denote the pmf of a negative binomial distribution with mean $\mu_i$ and dispersion $\theta$.^[This is the `nbinom2` parameterization with overdispersion parameter $\theta$, where $\operatorname{Var}(y_i) = \mu_i + \mu_i^2/\theta$.] We assume that observation $i$ comes from
 
 $$
 y_i \sim 
 \begin{cases}
 0 & \text{with probability } \pi_i, \\
-\text{NB}(\mu_i, \theta) & \text{with probability } 1 - \pi_i,
+\text{NegBin}(\mu_i, \theta) & \text{with probability } 1 - \pi_i,
 \end{cases}
 $$
 
-where $\pi_i \in (0,1)$ is the probability of a *structural zero*. The remaining values follow the usual negative binomial distribution.^[Important note: even in an observation is not a structure zero, it still might equal zero, because the negative binomial has positive probability on zero as well. So there are *two ways* to get a zero.]
+where $\pi_i \in (0,1)$ is the probability of a *structural zero*. The remaining values follow the usual negative binomial distribution.^[Important note: even if an observation is not a structural zero, it still might equal zero, because the negative binomial has positive probability on zero as well. So there are *two ways* to get a zero.]
 
 Equivalently, the pmf of $y_i$ can be written as
 
@@ -83,14 +86,14 @@ $$
 
 ### Likelihood
 
-Create an indicator variable $z_i = \mathbf{1}(y_i = 0)$ that equals one if $y_i = 0$ and zero otherwise. Then for independent $y_1, \dots, y_n$, the likelihood is
+Create an indicator variable $d_i = \mathbf{1}(y_i = 0)$ that equals one if $y_i = 0$ and zero otherwise. Then for independent $y_1, \dots, y_N$, the likelihood is
 
 $$
 L(\pi, \mu, \theta) = 
-\prod_{i=1}^n \Bigg\{
-\big[ \pi_i + (1 - \pi_i) f(0; \mu_i, \theta) \big]^{z_i}
+\prod_{i=1}^N \Bigg\{
+\big[ \pi_i + (1 - \pi_i) f(0; \mu_i, \theta) \big]^{d_i}
 \cdot
-\big[ (1 - \pi_i) f(y_i; \mu_i, \theta) \big]^{1 - z_i}
+\big[ (1 - \pi_i) f(y_i; \mu_i, \theta) \big]^{1 - d_i}
 \Bigg\}.
 $$
 
@@ -100,22 +103,22 @@ Taking logs, the log-likelihood is
 
 $$
 \ell(\pi, \mu, \theta) =
-\sum_{i=1}^n
+\sum_{i=1}^N
 \Bigg\{
-z_i \cdot \log\big( \pi_i + (1 - \pi_i) f(0; \mu_i, \theta) \big)
+d_i \cdot \log\big( \pi_i + (1 - \pi_i) f(0; \mu_i, \theta) \big)
 +
-(1 - z_i) \cdot \big[ \log(1 - \pi_i) + \log f(y_i; \mu_i, \theta) \big]
+(1 - d_i) \cdot \big[ \log(1 - \pi_i) + \log f(y_i; \mu_i, \theta) \big]
 \Bigg\}.
 $$
 
-We can imagine that $\pi_i = \operatorname{logit}^{-1}(Z\gamma)$ and $\mu_i = \exp(X\beta)$, with $\theta$ modeled as in a standard negative binomial regression.
+We can imagine that $\pi_i = \operatorname{logit}^{-1}(Z_i\gamma)$ and $\mu_i = \exp(X_i\beta)$, with $\theta$ modeled as in a standard negative binomial regression.
 
 ### In R
 
-We can fit the zero-inflated negative binomial using the `glmmTMB()` function in R. Create the design matrix X with `formula` (for $\mu_i = \exp (X\beta)$) and the design matrix `Z` with `ziformula` (for $\pi_i = \operatorname{logit}^{-1} (Z\gamma)$). The family `nbinom2` specifies the negative binomial with variance $\mu + \mu^2/\theta$ (which matrix `MASS::glm.nb()`)
+We can fit the zero-inflated negative binomial using the `glmmTMB()` function in R. Create the design matrix `X` with `formula` (for $\mu_i = \exp (X_i\beta)$) and the design matrix `Z` with `ziformula` (for $\pi_i = \operatorname{logit}^{-1} (Z_i\gamma)$). The family `nbinom2` specifies the negative binomial with variance $\mu + \mu^2/\theta$ (which matches `MASS::glm.nb()`).
 
 - `glmmTMB()` has a `simulate()` method to simulate from the predictive distribution.
-- `glmTMB()` works well with {marginaleffects}.
+- `glmmTMB()` works well with {marginaleffects}.
 
 #### Constant $\pi$
 
@@ -152,7 +155,14 @@ bind_cols(sant, zinb_sims) |>
   geom_histogram(center = 0, binwidth = 1)
 ```
 
-#### $\pi_i = \operatorname{logit}^{-1}(X\beta)$
+Notice that this looks just like the negative binomial model. The estimated probability of a structural zero is essentially zero, so the model collapses to the negative binomial.
+
+```{r}
+# estimated probability of a structural zero
+plogis(fixef(zinb_fit)$zi)
+```
+
+#### $\pi_i = \operatorname{logit}^{-1}(Z_i\gamma)$
 
 ```{r}
 #| message: false
@@ -187,7 +197,7 @@ bind_cols(sant, zinb2_sims) |>
   geom_histogram(center = 0, binwidth = 1)
 ```
 
-The predictive distributions for both ZINB models look much better. Because the zero-inflated part of the model handles the spike at zero, the negative binomial part of the model can better match the remainder of the distribution.
+The predictive distribution for the ZINB model with covariates looks much better. Because the zero-inflated part of the model handles the spike at zero, the negative binomial part of the model can better match the remainder of the distribution.
 
 ### IC
 
@@ -209,7 +219,7 @@ AIC(nb_fit, zinb_fit, zinb2_fit) |>
 
 ### \{marginaleffects\}
 
-We can use the `avg_comparisons()` function to compute the average first difference as we move `lower` from its min to its max, averaging across the observed values of all the other covariates.
+We can use the `avg_comparisons()` function to compute the average first difference as we move `lower` from its min to its max, averaging across the observed values of all the other covariates. For the zero-inflated models, {marginaleffects} works with the expected value of $y_i$ itself, $E(y_i) = (1 - \pi_i)\,\mu_i$, which combines both parts of the model.
 
 ```{r}
 # compute avg. fd
@@ -232,9 +242,11 @@ list("NB" = nb_fd,
   bind_rows(.id = "model") |>
   ggplot(aes(x = estimate, xmin = conf.low, xmax = conf.high,
              y = model)) + 
-  geom_errorbarh() + 
+  geom_errorbar(orientation = "y", width = 0.2) + 
   geom_point()
 ```
+
+Notice that all three intervals include zero. The negative binomial and the ZINB with constant $\pi$ give the same estimate (about $-13$ operations). The ZINB with covariates gives an estimate less than half as large (about $-5.7$) and a much narrower interval.
 
 ::: callout-warning
 It's worth pointing out that the `sant` dataset only has 34 observations and the zero-inflated negative binomial model with covariates has 11 parameters. This is small enough that we might worry about asymptotic approximations.
@@ -242,7 +254,11 @@ It's worth pointing out that the `sant` dataset only has 34 observations and the
 
 ## Poisson case
 
-We could similarly use a zero-inflated Poisson. It follows the same logic. But it seems very usual in practice to have zero-inflation without over-dispersion, so I'll just mention the possibility.
+We could similarly use a zero-inflated Poisson. It follows the same logic. The zero-inflated negative binomial is often a safer default because it also allows overdispersion in the count part, so I'll just mention the possibility.
+
+## Hurdle models
+
+A close alternative is a *hurdle* model. It also uses a logit model for zero versus positive, but it draws the positive counts from a zero-truncated distribution, so *every* zero comes from the logit step. `glmmTMB()` fits these too (e.g., `family = truncated_nbinom2` with a `ziformula`).
 
 ## Other cases
 

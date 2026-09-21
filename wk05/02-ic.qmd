@@ -1,6 +1,6 @@
 # Information Criteria
 
-Suppose we are modeling Holland's (2015) enforcement operations in Santiago. We have two immediate choices.
+Suppose we are modeling Holland's [-@Holland2015] enforcement operations in Santiago. We have two immediate choices.
 
 1. Poisson regression: the simplest regression model for count outcomes, but usually avoided because the Poisson distribution assumes the mean equals the variance.
 1. Negative binomial regression. Slightly more complicated model, but usually preferred as a default because it allows for *overdispersion* so that the variance is greater than the mean.
@@ -27,7 +27,9 @@ nb_fit <- MASS::glm.nb(f, data = sant)
 
 ## Predictive distributions
 
-To guide our choice between the relative strengthos of these models, predictive distributions are *excellent*. In my mind, they are one of the most useful tools for model checking.
+To guide our choice between the relative strengths of these models, predictive distributions are *excellent*. In my mind, they are one of the most useful tools for model checking.
+
+So far, we've simulated from the predictive distribution by hand (e.g., with `rpois()` or `rnbinom()`, giving each observation its own $\hat{\lambda}_i$ or $\hat{\mu}_i$). The `simulate()` function does this for us. It takes a fitted model and draws each fake observation from that observation's own fitted distribution. The `nsim` argument sets the number of fake data sets, and `simulate()` returns a data frame with one column per fake data set (`sim_1`, `sim_2`, and so on). `simulate()` works for models fit with `glm()`, `MASS::glm.nb()`, and `glmmTMB()` (among many others), so from here on we'll use it rather than building the simulations by hand.
 
 ```{r}
 # simulate from predictive distribution for poisson
@@ -58,7 +60,7 @@ bind_cols(sant, pois_sims) |>
   separate(name, into = c("type", "sim_id"), sep = "_", remove = FALSE) |>
   ggplot(aes(x = value)) + 
   facet_wrap(vars(name)) +
-  geom_histogram(center = 0, width = 1)
+  geom_histogram(center = 0, binwidth = 1)
 ```
 
 ```{r}
@@ -90,12 +92,12 @@ bind_cols(sant, nb_sims) |>
   separate(name, into = c("type", "sim_id"), sep = "_", remove = FALSE) |>
   ggplot(aes(x = value)) + 
   facet_wrap(vars(name)) +
-  geom_histogram(center = 0, width = 1)
+  geom_histogram(center = 0, binwidth = 1)
 ```
 
 ## Information criteria
 
-We can use **information** criteria for a similar purpose, but they are much similar.
+We can use **information** criteria for a similar purpose, but they are much simpler.
 
 Information criteria have the following general structure:
 
@@ -103,26 +105,28 @@ $$
 -2 \ell(\hat{\theta}) + [\text{constant}\times k ]
 $$
 
-Here, $\ell(\hat{\theta}) = \log L(\hat{\theta})$ is the maximized log-likelihood function (not the $\hat{\theta}$, but the value of $\log L$ itself *at* $\hat{\theta}$), $k$ is the *total* number of parameters (including intercept, variance, scale, etc.), and $\text{constant}$ is a constant term that varies across information criteria.
+Here, $\ell(\hat{\theta}) = \log L(\hat{\theta})$ is the maximized log-likelihood function (not the $\hat{\theta}$, but the value of $\ell$ itself *at* $\hat{\theta}$), $k$ is the *total* number of parameters (including intercept, variance, scale, etc.), and $\text{constant}$ is a constant term that varies across information criteria.
 
 The two most common information criteria are:
 
-1.  **Akaike Information Criterion (AIC)** $= -2 \log L(\hat{\theta}) + [2 \times k]$
-2.  **Bayesian Information Criterion (BIC)** $= -2 \log L(\hat{\theta}) + [\log(n) \times k]$
+1.  **Akaike Information Criterion (AIC)** $= -2 \ell(\hat{\theta}) + [2 \times k]$
+2.  **Bayesian Information Criterion (BIC)** $= -2 \ell(\hat{\theta}) + [\log(N) \times k]$
+
+Here, $N$ is the number of observations.
 
 The AIC and BIC have a deep and detailed theoretical development---the choice of constant is not at all arbitrary. I don't reproduce the theory here, but instead mention a few practical points.
 
 -   The *magnitude* of the IC is generally not of interest. Instead, focus on the *difference* in the IC between models.
--   Both the the AIC and the BIC work to identify the "best" model, but in two difference senses:
-    -   The AIC roughly compares the observed and predictive distributions are tries to identify the best match.
+-   Both the AIC and the BIC work to identify the "best" model, but in two different senses:
+    -   The AIC roughly compares the observed and predictive distributions and tries to identify the best match.
     -   The BIC roughly identifies the model with the highest posterior probability---the most likely model to have generated the data.
--   Both AIC and BIC penalize adding parameters. That is, in order to improve the IC, a more complex model must improve the fit enough to offset the additional penalty. That said, the BIC imposes a larger penalty for $n \geq 8$.
+-   Both AIC and BIC penalize adding parameters. That is, in order to improve the IC, a more complex model must improve the fit enough to offset the additional penalty. That said, the BIC imposes a larger penalty for $N \geq 8$.
 
-The table below from @raftery1995 summarizes a rough interpretation of the magnitude of differences between BICs below (and the same applies for AICs as well.
+The table below from @raftery1995 summarizes a rough interpretation of the magnitude of differences between BICs (and the same applies for AICs as well).
 
 ![](img/raftery1995-table.png)
 
-To compute the AIC and BIC, we have the easy-to-use `AIC()` and `BIC()` functions.
+To compute the AIC and BIC, we have the easy-to-use `AIC()` and `BIC()` functions. The `df` column of the output is $k$, the number of parameters.
 
 ```{r}
 AIC(pois_fit, nb_fit)
@@ -133,7 +137,7 @@ AIC(pois_fit, nb_fit)
 BIC(pois_fit, nb_fit)
 ```
 
-To ease interpretation, we can convert these AIC and BIC to weights. Raftery argues that we can interprete these as the probability that each model is correct (assuming the correct model is in the set).
+To ease interpretation, we can convert these AIC and BIC to weights. Raftery argues that we can interpret these as the probability that each model is correct (assuming the correct model is in the set and that we start with equal prior probability on each model).
 
 ![](img/raftery-1995-post-prob.png)
 
@@ -144,7 +148,7 @@ BIC(pois_fit, nb_fit) |>
 ```
 
 
-We can do something similar with the AIC. I refer to these as "Akaike weights." See @wagenmakers2004 for more on this. As with BIC, we shouldn't take these weight too seriously, but they do give us an idea of how much the IC like each model. 
+We can do something similar with the AIC. I refer to these as "Akaike weights." See @wagenmakers2004 for more on this. As with BIC, we shouldn't take these weights too seriously, but they do give us an idea of how much the IC likes each model. 
 
 ```{r}
 AIC(pois_fit, nb_fit) |>

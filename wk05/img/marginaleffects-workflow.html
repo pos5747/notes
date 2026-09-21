@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The {marginaleffects} workflow</title>
+<style>
+  @page { size: 1600px 1080px; margin: 0; }
+  html, body { margin: 0; padding: 0; background: #fff; }
+  body {
+    font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #111; font-size: 14px; line-height: 1.35;
+    -webkit-font-smoothing: antialiased;
+  }
+  code, pre, .mono {
+    font-family: Menlo, "SF Mono", Consolas, monospace;
+    font-size: 13px;
+  }
+  code {
+    background: #f1f1f1; border-radius: 3px; padding: 0 4px;
+    white-space: nowrap;
+  }
+  code.wrap { white-space: pre-wrap; }
+  pre { margin: 0; background: #f1f1f1; border-radius: 4px; padding: 5px 6px; line-height: 1.4; }
+
+  #canvas { width: 1600px; height: 1080px; box-sizing: border-box; padding: 34px 26px 30px 26px; background: #fff; position: relative; overflow: hidden; }
+
+  /* ---- title ---- */
+  h1 { font-size: 30px; font-weight: 700; margin: 0 0 4px 0; line-height: 1.1; letter-spacing: -0.01em; }
+  .subtitle { font-size: 17px; color: #666; margin: 0 0 22px 0; }
+
+  /* ---- main band ---- */
+  .band { display: flex; align-items: stretch; }
+  .card { box-sizing: border-box; border: 1px solid #cfcfcf; border-left-width: 6px; border-radius: 6px; display: flex; flex-direction: column; background: #fff; overflow: hidden; }
+  .card .hd { box-sizing: border-box; height: 70px; padding: 9px 12px 8px 12px; border-bottom: 1px solid #ddd; }
+  .card .hd .name { font-size: 19px; font-weight: 700; line-height: 1.15; }
+  .card .hd .q { font-size: 14px; color: #444; margin-top: 2px; }
+  .card .bd { padding: 8px 12px 10px 12px; display: flex; flex-direction: column; flex: 1; }
+  .card .out { margin-top: auto; padding-top: 8px; border-top: 1px dashed #cfcfcf; }
+  .sec { margin-bottom: 9px; }
+  .sec:last-child { margin-bottom: 0; }
+  .lab { display: inline-block; font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #555; margin-right: 4px; }
+  .small { font-size: 13px; color: #666; }
+  .note { font-size: 13px; color: #555; margin-top: 4px; }
+  .tip { font-size: 13px; color: #555; font-style: italic; }
+
+  /* neutral (fit, output) */
+  .c-fit { border-color: #cfcfcf; border-left-color: #8a8a8a; width: 240px; align-self: flex-start; }
+  .c-fit .hd { background: #ececec; }
+  .c-quant { border-left-color: #3b6ea5; width: 462px; }
+  .c-quant .hd { background: #dbe7f5; }
+  .c-quant .bd { padding-right: 8px; }
+  .c-grid { border-left-color: #3f8a4a; width: 290px; }
+  .c-grid .hd { background: #dcefdc; }
+  .c-agg { border-left-color: #c8722a; width: 240px; }
+  .c-agg .hd { background: #fbe8d3; }
+  .c-out { border-left-color: #6f5a9c; width: 244px; }
+  .c-out .hd { background: #e9e2f3; }
+
+  .arrow { width: 18px; display: flex; align-items: center; justify-content: center; color: #999; font-size: 20px; flex: none; }
+
+  /* sub-choice blocks in the Quantity card */
+  .sub { padding: 6px 0 7px 0; border-bottom: 1px solid #e6e6e6; }
+  .sub:last-of-type { border-bottom: none; }
+  .sub .st { font-weight: 700; font-size: 14px; margin-bottom: 2px; }
+  .sub .st .k { display: inline-block; min-width: 16px; color: #3b6ea5; }
+
+  /* compact key/value tables */
+  table.kv { border-collapse: collapse; width: 100%; }
+  table.kv td { padding: 1px 6px 1px 0; vertical-align: top; font-size: 13px; }
+  table.kv.nw td { white-space: nowrap; }
+  table.kv td:last-child { padding-right: 0; }
+  table.kv td.r { text-align: right; white-space: nowrap; }
+  table.kv td.n { color: #444; }
+
+  table.rows { border-collapse: collapse; width: 100%; margin-top: 3px; }
+  table.rows td { padding: 2px 0; vertical-align: top; font-size: 13px; border-top: 1px solid #eee; }
+  table.rows td .cnt { float: right; white-space: nowrap; padding-left: 8px; font-weight: 600; }
+  table.rows td code { white-space: pre-wrap; padding: 0 3px; }
+  table.rows td .paren { color: #666; font-weight: 400; display: block; font-size: 13px; }
+
+  /* ---- bottom band ---- */
+  .bottom { margin-top: 22px; border-top: 2px solid #ddd; padding-top: 14px; }
+  .bottom h2 { font-size: 20px; font-weight: 700; margin: 0 0 10px 0; }
+  .call { display: flex; align-items: flex-start; gap: 28px; }
+  .call table.ann { border-collapse: collapse; }
+  .call table.ann td { padding: 0 0 7px 0; vertical-align: top; }
+  .call table.ann td.code { font-family: Menlo, "SF Mono", Consolas, monospace; font-size: 15px; white-space: pre; padding-right: 18px; line-height: 24px; }
+  .call table.ann td.tags { padding-left: 4px; line-height: 24px; }
+  .u { border-bottom: 3px solid; padding-bottom: 1px; }
+  .u-fit  { border-color: #8a8a8a; }
+  .u-q    { border-color: #3b6ea5; }
+  .u-g    { border-color: #3f8a4a; }
+  .u-a    { border-color: #c8722a; }
+  .tag { display: inline-flex; align-items: center; height: 24px; margin: 0 10px 0 0; font-size: 13px; white-space: nowrap; vertical-align: top; }
+  .tag .pill { display: inline-block; padding: 1px 7px; border-radius: 3px; font-weight: 700; margin-right: 6px; border: 1px solid transparent; }
+  .tag.t-fit .pill { background: #ececec; border-color: #8a8a8a; }
+  .tag.t-q   .pill { background: #dbe7f5; border-color: #3b6ea5; }
+  .tag.t-g   .pill { background: #dcefdc; border-color: #3f8a4a; }
+  .tag.t-a   .pill { background: #fbe8d3; border-color: #c8722a; }
+  .tag .arg { font-family: Menlo, "SF Mono", Consolas, monospace; font-size: 13px; margin-right: 5px; }
+
+  .result { border: 1px solid #cfcfcf; border-left: 6px solid #6f5a9c; border-radius: 6px; padding: 10px 14px 12px 14px; background: #fff; flex: none; }
+  .result .rt { font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+  .result table { border-collapse: collapse; }
+  .result th, .result td { font-family: Menlo, "SF Mono", Consolas, monospace; font-size: 13px; padding: 3px 12px 3px 0; text-align: left; }
+  .result th { font-weight: 400; color: #666; border-bottom: 1px solid #ddd; }
+  .result td:last-child, .result th:last-child { padding-right: 0; }
+</style>
+</head>
+<body>
+<div id="canvas">
+
+  <h1>The {marginaleffects} workflow</h1>
+  <p class="subtitle">Every call makes three choices — quantity, grid, aggregation — and every call returns one data frame.</p>
+
+  <div class="band">
+
+    <!-- ============ FIT ============ -->
+    <div class="card c-fit">
+      <div class="hd"><div class="name">Fit the model</div><div class="q">Estimate the coefficients</div></div>
+      <div class="bd">
+        <div class="sec">
+          <span class="lab">In</span>
+          <div style="margin-top:3px"><code>turnout</code> <span class="small">(2000 respondents)</span></div>
+          <pre style="margin-top:5px">f &lt;- vote ~ age +
+  educate + income + race
+fit &lt;- glm(f,
+  data = turnout,
+  family = binomial)</pre>
+        </div>
+        <div class="out">
+          <span class="lab">Out</span>
+          <div><code>fit</code> — the coefficient estimates β̂ and their variance matrix.</div>
+          <div class="note">Coefficients aren't interpretable on their own → compute quantities of interest (invariance property + delta method).</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow">→</div>
+
+    <!-- ============ 1 · QUANTITY ============ -->
+    <div class="card c-quant">
+      <div class="hd"><div class="name">1 · Quantity</div><div class="q">What do we compute?</div></div>
+      <div class="bd">
+
+        <div class="sub" style="padding-top:0">
+          <div class="st"><span class="k">a</span> Scale &nbsp;·&nbsp; <span class="lab">In</span><code>type =</code></div>
+          <div><span class="lab">Default</span> probability scale.
+            <span class="small">(<code>comparisons()</code> uses <code>"response"</code>; <code>predictions()</code> uses <code>"invlink(link)"</code> — same estimates, CI built on the link scale.)</span></div>
+          <div><span class="lab">Other</span> <code>"link"</code> — linear predictor scale (rarely)</div>
+        </div>
+
+        <div class="sub">
+          <div class="st"><span class="k">b</span> Prediction or comparison?</div>
+          <div><span class="lab">In</span> which function you call</div>
+          <table class="kv">
+            <tr><td><code>predictions()</code></td><td class="n">→ expected value, E(y | X)</td></tr>
+            <tr><td><code>comparisons()</code></td><td class="n">→ a comparison of two expected values, hi vs. lo</td></tr>
+          </table>
+          <div class="small">No default — you pick.</div>
+        </div>
+
+        <div class="sub">
+          <div class="st"><span class="k">c</span> What to compare <span class="small" style="font-weight:400">(comparisons only)</span> &nbsp;·&nbsp; <span class="lab">In</span><code>variables =</code></div>
+          <div><span class="lab">Default</span> every variable, one at a time:</div>
+          <table class="kv nw">
+            <tr><td>numeric</td><td class="n">observed → observed + 1</td><td class="r"><code>+1</code></td></tr>
+            <tr><td>factor</td><td class="n">reference → each other level</td><td class="r"><code>white - others</code></td></tr>
+          </table>
+          <div style="margin-top:3px"><span class="lab">Other</span> <span class="small">focal variable <code>age</code>; contrast label at right</span></div>
+          <table class="kv nw">
+            <tr><td><code>list(age = 10)</code></td><td class="n">age → age + 10</td><td class="r"><code>+10</code></td></tr>
+            <tr><td><code>list(age = c(18, 90))</code></td><td class="n">18 → 90</td><td class="r"><code>90 - 18</code></td></tr>
+            <tr><td><code>list(age = "iqr")</code></td><td class="n">25th → 75th %ile</td><td class="r"><code>Q3 - Q1</code></td></tr>
+            <tr><td><code>list(age = "2sd")</code></td><td class="n">−1 SD → +1 SD</td><td class="r"><code>(x + sd) - (x - sd)</code></td></tr>
+          </table>
+        </div>
+
+        <div class="sub">
+          <div class="st"><span class="k">d</span> How to compare &nbsp;·&nbsp; <span class="lab">In</span><code>comparison =</code></div>
+          <table class="kv">
+            <tr><td><span class="lab">Default</span></td><td><code>"difference"</code></td><td class="n">hi − lo</td></tr>
+            <tr><td><span class="lab">Other</span></td><td><code>"ratio"</code></td><td class="n">hi / lo</td></tr>
+            <tr><td></td><td><code>"lift"</code></td><td class="n">(hi − lo) / lo</td></tr>
+            <tr><td></td><td colspan="2"><code>\(hi, lo) (hi / lo) - 1</code> <span class="n">custom function</span></td></tr>
+          </table>
+        </div>
+
+        <div class="out">
+          <span class="lab">Out</span>
+          <div>A recipe for <b>one number per covariate row</b> — e.g., “Pr(vote) at age 90 minus Pr(vote) at age 18.”</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow">→</div>
+
+    <!-- ============ 2 · GRID ============ -->
+    <div class="card c-grid">
+      <div class="hd"><div class="name">2 · Grid</div><div class="q">Where do we compute it?</div></div>
+      <div class="bd">
+        <div class="sec"><span class="lab">In</span> <code>newdata =</code></div>
+        <div class="sec">
+          <span class="lab">Default</span> the observed data → one row per respondent
+          <span class="small">(2000 rows)</span>
+        </div>
+        <div class="sec">
+          <div><span class="lab">Other</span> built with <code>datagrid()</code>. <span class="small">Unspecified variables sit at their mean (mode for factors).</span></div>
+          <table class="kv" style="margin-top:4px">
+            <tr><td colspan="2"><code>datagrid(type = "mean_or_mode")</code></td></tr>
+            <tr><td class="n" style="padding-left:12px">the typical case</td><td class="r">1 row</td></tr>
+            <tr><td colspan="2" style="padding-top:4px"><code>datagrid(age = 18:90)</code></td></tr>
+            <tr><td class="n" style="padding-left:12px">vary age, fix the others</td><td class="r">73 rows</td></tr>
+            <tr><td colspan="2" style="padding-top:4px"><code>datagrid(educate = c(12, 14, 16))</code></td></tr>
+            <tr><td class="n" style="padding-left:12px">vary educate</td><td class="r">3 rows</td></tr>
+            <tr><td colspan="2" style="padding-top:4px"><code>datagrid(race = unique)</code></td></tr>
+            <tr><td class="n" style="padding-left:12px">vary race</td><td class="r">2 rows</td></tr>
+          </table>
+        </div>
+        <div class="out">
+          <span class="lab">Out</span>
+          <div>A table of covariate rows; the quantity is computed <b>once per row</b>.</div>
+          <div class="tip" style="margin-top:4px">Tip: inspect the output to see the grid you actually used.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow">→</div>
+
+    <!-- ============ 3 · AGGREGATION ============ -->
+    <div class="card c-agg">
+      <div class="hd"><div class="name">3 · Aggregation</div><div class="q">One estimate per row, or a summary?</div></div>
+      <div class="bd">
+        <div class="sec"><span class="lab">In</span> which function you call</div>
+        <div class="sec">
+          <div><span class="lab">Default</span> <code>predictions()</code> / <code>comparisons()</code></div>
+          <div class="note">Keep every row: one estimate per grid row, per contrast. Good for showing heterogeneity — plot them.</div>
+        </div>
+        <div class="sec">
+          <div><span class="lab">Other</span> <code>avg_predictions()</code> / <code>avg_comparisons()</code></div>
+          <div class="note">Average the rows into one estimate; SE by the delta method (not <code>mean()</code> of the estimates' SEs).</div>
+        </div>
+        <div class="sec">
+          <div style="font-weight:700; font-size:13px">Two named estimands <span style="font-weight:400; color:#666">(Hanmer &amp; Kalkan 2013)</span></div>
+          <div class="note" style="margin-top:3px"><b>Average case</b> = typical-case grid, then average (trivially, of 1 row)</div>
+          <pre style="margin-top:3px">avg_comparisons(fit,
+ newdata = datagrid(
+  type = "mean_or_mode"),
+ variables = ...)</pre>
+          <div class="note" style="margin-top:6px"><b>Observed value</b> = observed-data grid, then average the 2000</div>
+          <pre style="margin-top:3px">avg_comparisons(fit,
+ variables = ...)</pre>
+        </div>
+        <div class="out">
+          <span class="lab">Out</span>
+          <div>The rows to report.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow">→</div>
+
+    <!-- ============ OUTPUT ============ -->
+    <div class="card c-out">
+      <div class="hd"><div class="name">Output</div><div class="q">Always a data frame</div></div>
+      <div class="bd">
+        <div class="sec">
+          <span class="lab">Columns</span>
+          <table class="kv" style="margin-top:3px">
+            <tr><td class="n">identity</td><td><code>term</code>, <code>contrast</code> <span class="small">(comparisons only)</span></td></tr>
+            <tr><td class="n">estimate</td><td><code>estimate</code>, <code>std.error</code>, <code>conf.low</code>, <code>conf.high</code> <span class="small">(95% by default)</span></td></tr>
+            <tr><td class="n">grid</td><td><code>rowid</code>, <code>age</code>, <code>educate</code>, <code>income</code>, <code>race</code> <span class="small">(row-level output only — dropped after <code>avg_*()</code>)</span></td></tr>
+          </table>
+        </div>
+        <div class="sec">
+          <span class="lab">How many rows?</span>
+          <table class="rows">
+            <tr><td><span class="cnt">2000</span><code>predictions(fit)</code></td></tr>
+            <tr><td><span class="cnt">8000</span><code>comparisons(fit)</code><span class="paren">2000 × 4 contrasts</span></td></tr>
+            <tr><td><span class="cnt">2000</span><code>comparisons(fit,
+  variables =
+    list(age = c(18, 90)))</code></td></tr>
+            <tr><td><span class="cnt">1</span><code>… newdata = datagrid(
+    type = "mean_or_mode")</code></td></tr>
+            <tr><td><span class="cnt">1</span><code>avg_comparisons(fit,
+  variables =
+    list(age = c(18, 90)))</code></td></tr>
+          </table>
+        </div>
+        <div class="out">
+          <div style="font-weight:700">rows = grid rows × contrasts, or one per contrast after <code>avg_</code>.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============ BOTTOM BAND ============ -->
+  <div class="bottom">
+    <h2>One call, all three choices</h2>
+    <div class="call">
+      <table class="ann">
+        <tr>
+          <td class="code"><span class="u u-a">avg_</span><span class="u u-q">comparisons</span>(<span class="u u-fit">fit</span>,</td>
+          <td class="tags">
+            <span class="tag t-a"><span class="pill">3 · Aggregation</span><span class="arg">avg_</span> average the rows</span>
+            <span class="tag t-q"><span class="pill">1 · Quantity</span><span class="arg">comparisons</span> a comparison, not a prediction</span>
+            <span class="tag t-fit"><span class="pill">Fit</span><span class="arg">fit</span> the model</span>
+          </td>
+        </tr>
+        <tr>
+          <td class="code">                <span class="u u-q">type = "response"</span>,</td>
+          <td class="tags"><span class="tag t-q"><span class="pill">1 · Quantity</span><span class="arg">type</span> scale (probability)</span></td>
+        </tr>
+        <tr>
+          <td class="code">                <span class="u u-q">variables = list(age = c(18, 90))</span>,</td>
+          <td class="tags"><span class="tag t-q"><span class="pill">1 · Quantity</span><span class="arg">variables</span> what to compare: age 18 → 90</span></td>
+        </tr>
+        <tr>
+          <td class="code">                <span class="u u-q">comparison = "difference"</span>,</td>
+          <td class="tags"><span class="tag t-q"><span class="pill">1 · Quantity</span><span class="arg">comparison</span> how to compare: hi − lo</span></td>
+        </tr>
+        <tr>
+          <td class="code">                <span class="u u-g">newdata = datagrid(type = "mean_or_mode")</span>)</td>
+          <td class="tags"><span class="tag t-g"><span class="pill">2 · Grid</span><span class="arg">newdata</span> where: the typical case</span></td>
+        </tr>
+      </table>
+
+      <div class="result">
+        <div class="rt">→ 1 row</div>
+        <table>
+          <tr><th>term</th><th>contrast</th><th>estimate</th><th>conf.low</th><th>conf.high</th></tr>
+          <tr><td>age</td><td>90 - 18</td><td>0.299</td><td>0.236</td><td>0.361</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

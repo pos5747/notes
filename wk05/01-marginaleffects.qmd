@@ -27,9 +27,9 @@ fit <- glm(f, data = turnout, family = binomial)
 modelsummary::modelsummary(fit, gof_map = NA)
 ```
 
-These coefficients are not particularly interpretable, so we might want to compute quantities of interest.^[In political science, @King2000 prompted the focus on more interpretable quantities and I often borrow their langauge.]
+These coefficients are not particularly interpretable, so we might want to compute quantities of interest.^[In political science, @King2000 prompted the focus on more interpretable quantities and I often borrow their language.]
 
-We have learned that we can use the invariance property and the delta method as a very general way to compute almost any quantity of interest. The {marginaleffects} package in R exploits this generally to compute many quantities of interest, especially those that are involve $E(Y)$--like the commonly used expected value and first difference. 
+We have learned that we can use the invariance property and the delta method as a very general way to compute almost any quantity of interest. The {marginaleffects} package in R exploits this generality to compute many quantities of interest, especially those that involve $E(y)$--like the commonly used expected value and first difference. 
 
 ```{r}
 library(marginaleffects)
@@ -41,7 +41,7 @@ We'll focus on two main functions from {marginaleffects}: `predictions()` and `c
 
 Reminder: expected value = $E(y \mid X_c)$, where $X_c$ is a carefully chosen covariate vector.
 
-By default, `predictions()` generates an expected value for every row in the observed dataset. These expected vaues are stored in the `estimate` column of the output and it includes other commonly used values like the upper and lower bounds of the 95% confidence interval.
+By default, `predictions()` generates an expected value for every row in the observed dataset. These expected values are stored in the `estimate` column of the output and it includes other commonly used values like the upper and lower bounds of the 95% confidence interval.
 
 ```{r}
 ev <- predictions(fit)
@@ -50,16 +50,16 @@ glimpse(ev)
 
 ## First difference → `comparisons()`
 
-Reminder: first difference = $E(y \mid X_{hi}) - E(y \mid X_{lo})$, where $X_{hi}$ and $X_{lo}$ are a carefully chosen covariate vectors that fix on covariate of interest at a high value and low value respectively.
+Reminder: first difference = $E(y \mid X_{hi}) - E(y \mid X_{lo})$, where $X_{hi}$ and $X_{lo}$ are carefully chosen covariate vectors that fix one covariate of interest at a high value and low value respectively.
 
-B`comparisons()` computes these first differences
+`comparisons()` computes these first differences.
 
 1. Q: But what variable does it vary by default? A: All of them, one at a time! You'll usually want to pick one.
 1. Q: And what are the high and low values? A: It depends, but something somewhat reasonable. You'll almost always want to specify the one you want.
 
 By default, `comparisons()` computes a first difference varying *each* variable from a low to a high value, while fixing every other variable to the observed values. 
 
-These expected values are stored in the `estimate` column of the output and it includes other commonly used values like the upper and lower bounds of the 95% confidence interval.
+These first differences are stored in the `estimate` column of the output and it includes other commonly used values like the upper and lower bounds of the 95% confidence interval.
 
 ```{r}
 fd <- comparisons(fit)
@@ -73,11 +73,11 @@ glimpse(fd)
 table(fd$term, fd$contrast)
 ```
 
-Thus, by default, `comparisons()` gives us a data frame with the observed data repeated several times for several difference first differences. This is a reasonable default behavior, but we'll almost always want to compute something more specific (and avoid computing things we don't need).
+Thus, by default, `comparisons()` gives us a data frame with the observed data repeated several times for several different first differences. This is a reasonable default behavior, but we'll almost always want to compute something more specific (and avoid computing things we don't need).
 
 ## Framework
 
-When we call `predictions()` or `comparisons()`, we are always making three choices: (1) the **quantity** we want, (2) the **grid** of predictor values where we want it, and (3) whether or not to **aggregate** across units (the idea of "aggregation" is new to us). These choices determine the estimand, and it is important to be explicit in writing and  thinking.
+When we call `predictions()` or `comparisons()`, we are always making three choices: (1) the **quantity** we want, (2) the **grid** of predictor values where we want it, and (3) whether or not to **aggregate** across units (the idea of "aggregation" is new to us). These choices determine the estimand, and it is important to be explicit in writing and thinking.
 
 Here's how @me describe these choices:
 
@@ -107,20 +107,20 @@ predictions(fit, type = "link")
 
 Second, we must choose whether we want a prediction or a comparison. We make this choice by using `predictions()` or `comparisons()`.
 
-Arel-Bundock et al. (2025) define a prediction as: 
+@me define a prediction as: 
 
 > Predictions are the outcomes predicted by a fitted model on a specified scale for
 a given combination of values of the predictor variables, such as their observed
 values, their means, or factor levels.
 
-Borrowing language from King et al. (2000), I refer the {marginaleffects}'s "prediction" as an "expected value."
+Borrowing language from @King2000, I refer to {marginaleffects}'s "prediction" as an "expected value."
 
 They define a comparison as: 
 
 > Comparisons are functions of two or more predictions. Examples of comparisons
 include contrasts, differences, risk ratios, odds, lift, etc.
 
-The "first difference" from King et al. (2000) is an example of a comparison--a "difference" in the quote above.
+The "first difference" from @King2000 is an example of a comparison--a "difference" in the quote above.
 
 #### What to compare?
 
@@ -144,8 +144,12 @@ comparisons(fit, variables = list(age = c(18, 90))) |>
 comparisons(fit, variables = list(age = "iqr")) |>
   glimpse()
 
-# high = 1 SD above; low = 1 SD below
+# high = 1 SD above the mean; low = 1 SD below the mean
 comparisons(fit, variables = list(age = "2sd")) |>
+  glimpse()
+
+# high = maximum; low = minimum
+comparisons(fit, variables = list(age = "minmax")) |>
   glimpse()
 ```
 
@@ -160,17 +164,17 @@ We can specify the comparison we want with the `comparison` argument to `compari
 We can find the `"ratio"` rather than the `"difference"` by using `comparison = "ratio"`.
 
 ```{r}
-#  high = 18; low = 90; comparison = ratio
+#  high = 90; low = 18; comparison = ratio
 comparisons(fit, 
             variables = list(age = c(18, 90)), 
             comparison = "ratio") |>
   glimpse()
 ```
 
-We can also supply our own function `\(hi, lo) {...}`. I think the percent change `\(hi, lo) (hi/lo) - 1)` is good. This is also known as "lift" and we can use `comparison = "lift"` instead.
+We can also supply our own function `\(hi, lo) {...}`. I think the percent change `\(hi, lo) (hi/lo) - 1` is good. This is also known as "lift" and we can use `comparison = "lift"` instead.
 
 ```{r}
-#  high = 18; low = 90; comparison = custom (percent change)
+#  high = 90; low = 18; comparison = custom (percent change)
 comparisons(fit, 
             variables = list(age = c(18, 90)), 
             comparison = \(hi, lo) (hi/lo) - 1) |>
@@ -185,10 +189,10 @@ By default, `predictions()` and `comparisons()` use the observed data, returning
 
 To help us create the grid we want, {marginaleffects} has a powerful `datagrid()` function.
 
-For example, we can supply `newdata = datagrid(type = "mean_or_mode")` to `predictions()`. This computes the prediction for a "typical case" has numeric variables equal to the mean and factor variables equal to their mode.
+For example, we can supply `newdata = datagrid(grid_type = "mean_or_mode")` to `predictions()`. This computes the prediction for a "typical case" that has numeric variables equal to their mean and factor variables equal to their mode.^[For integer variables like `age`, {marginaleffects} rounds the mean to the nearest integer (45.3 becomes 45).]
 
 ```{r}
-predictions(fit, newdata = datagrid(type = "mean_or_mode")) |>
+predictions(fit, newdata = datagrid(grid_type = "mean_or_mode")) |>
   glimpse()
 ```
 If we instead supply `age = 18:90` to `datagrid()` then it will create a grid that varies age from 18 to 90 while fixing the other variables at their `mean_or_mode`. 
@@ -196,6 +200,16 @@ If we instead supply `age = 18:90` to `datagrid()` then it will create a grid th
 ```{r}
 predictions(fit, newdata = datagrid(age = 18:90)) |>
   glimpse()
+```
+
+Because `predictions()` returns a data frame, we can plot the result. Here is the expected probability of voting across ages, with a 95% confidence interval.
+
+```{r}
+ev_age <- predictions(fit, newdata = datagrid(age = 18:90))
+
+ggplot(ev_age, aes(x = age, y = estimate, ymin = conf.low, ymax = conf.high)) +
+  geom_ribbon(alpha = 0.3) +
+  geom_line()
 ```
 
 ::: callout-tip
@@ -219,6 +233,9 @@ comparisons(fit,
             newdata = datagrid(race = unique)) |>
   glimpse()
 ```
+
+Notice that the last example gives `datagrid()` a function (`unique`) rather than values. `datagrid()` applies the function to the variable, so `race = unique` gives us every level of `race`. Other useful functions are `range` (the minimum and maximum) and `median`. If we name more than one variable, `datagrid()` creates every combination of their values. For example, `datagrid(age = range, race = unique)` has four rows.
+
 ### Aggregation
 
 Finally, we need to decide what to do with the collection of estimates from the grid. For example, by default, `comparisons` returns a first difference for every row in the data set.
@@ -250,12 +267,26 @@ avg_comparisons(fit, variables = list(age = c(18, 90))) |>
   glimpse()
 ```
 
+`avg_predictions()` does the same for expected values.
+
+```{r}
+avg_predictions(fit)
+```
+
+The `by` argument averages within groups rather than across the whole grid. For example, we can average the first differences separately for white and non-white respondents.
+
+```{r}
+avg_comparisons(fit, 
+                variables = list(age = c(18, 90)), 
+                by = "race")
+```
+
 ## Average Case or Observed Value
 
-When trying to find representative summary of "the effect" from non-linear model in which the effects vary, @hanmer2013 note that there are two approaches. 
+When trying to find a representative summary of "the effect" from a non-linear model in which the effects vary, @hanmer2013 note that there are two approaches. 
 
 - The *average case* approach tries to identify a typical case and compute the effect for that case. 
-The *observed value* approach computes the effect for all cases and then averages those effects.
+- The *observed value* approach computes the effect for all cases and then averages those effects.
 
 In many cases the two approaches give similar estimates, but these are *different estimands* and sometimes the estimates meaningfully diverge. @beger2025 discuss potential differences.
 
@@ -265,7 +296,7 @@ It is easy to compute either estimand using {marginaleffects}.
 # avg. case approach
 avg_comparisons(fit, 
                 # set the "other" values to their means or modes
-                newdata = datagrid(type = "mean_or_mode"),
+                newdata = datagrid(grid_type = "mean_or_mode"),
                 variables = list(age = c(18, 90))) |>
   glimpse()
 
