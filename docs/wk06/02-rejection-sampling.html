@@ -502,11 +502,11 @@ window.Quarto = {
 <li>Metropolis</li>
 <li>Hamiltonian Monte Carlo</li>
 </ol>
-<p>The algorithms start simple and intuitive and build in complexity. A deep dive on HMC–especially the hyper-optimized version used by Stan–is beyond the scope of this course. That said, HMC via Stan and it universe of enablers in R have made posterior simulation almost trivial.</p>
+<p>The algorithms start simple and intuitive and build in complexity. A deep dive on HMC–especially the hyper-optimized version used by Stan–is beyond the scope of this course. That said, HMC via Stan and its universe of enablers in R have made posterior simulation almost trivial.</p>
 <section id="equivalence" class="level2 page-columns page-full" data-number="17.1">
 <h2 data-number="17.1" class="anchored" data-anchor-id="equivalence"><span class="header-section-number">17.1</span> Equivalence</h2>
 <p>Before jumping into sampling algorithms, let’s demonstrate the correspondence between sampling and closed-form results.</p>
-<p>In the case of the toothpaste cap, problem we have a Bernoulli model, beta prior, and beta posterior from the previous chapter. For the prior, let’s suppose <span class="math inline">\(\alpha = 3\)</span> and <span class="math inline">\(\beta = 15\)</span>. Regardless of the summary we are interested in (e.g., mean, SD, percentiles), we can work with the closed-form result or simulations to obtain the same answer. Notice that even for this very simple closed-form result, the simulations perhaps easier to work with!</p>
+<p>In the case of the toothpaste cap problem, we have a Bernoulli model, beta prior, and beta posterior from the previous chapter. For the prior, let’s suppose <span class="math inline">\(\alpha = 3\)</span> and <span class="math inline">\(\beta = 15\)</span>. Regardless of the summary we are interested in (e.g., mean, SD, percentiles), we can work with the closed-form result or simulations to obtain the same answer. Notice that even for this very simple closed-form result, the simulations are perhaps easier to work with!</p>
 <p>It’s trivial for us to simulate from the beta posterior using the <code>rbeta()</code> function.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> And the summaries we might want are easy to compute using closed-form results. Let’s compare the two approaches.</p>
 <div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;This makes it a good first example, since the correspondence between <code>rbeta()</code> and <code>dbeta()</code> is obvious. In more interesting cases, the simulation will be harder.</p></div></div><div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># prior parameters</span></span>
@@ -536,7 +536,7 @@ window.Quarto = {
 </div>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(pi_tilde)  <span class="co"># posterior sim</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.06543861</code></pre>
+<pre><code>[1] 0.06557157</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># posterior sd</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sqrt</span>((a1 <span class="sc">*</span> b1) <span class="sc">/</span> ((a1 <span class="sc">+</span> b1)<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> (a1 <span class="sc">+</span> b1 <span class="sc">+</span> <span class="dv">1</span>))) <span class="co"># closed form</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -545,7 +545,7 @@ window.Quarto = {
 </div>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sd</span>(pi_tilde)  <span class="co"># posterior sim</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.01901066</code></pre>
+<pre><code>[1] 0.01900274</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># posterior 5th percentile</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">qbeta</span>(<span class="fl">0.05</span>, <span class="at">shape1 =</span> a1, <span class="at">shape2 =</span> b1)  <span class="co"># closed form</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -555,7 +555,7 @@ window.Quarto = {
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(pi_tilde, <span class="at">probs =</span> <span class="fl">0.05</span>)  <span class="co"># posterior sims</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        5% 
-0.03742531 </code></pre>
+0.03751649 </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># posterior 95th percentile</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">qbeta</span>(<span class="fl">0.95</span>, <span class="at">shape1 =</span> a1, <span class="at">shape2 =</span> b1)  <span class="co"># closed form</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -565,13 +565,13 @@ window.Quarto = {
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(pi_tilde, <span class="at">probs =</span> <span class="fl">0.95</span>)  <span class="co"># posterior sims</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       95% 
-0.09936871 </code></pre>
+0.09946974 </code></pre>
 </div>
 </div>
 </section>
 <section id="a-bayesian-invariance-property" class="level2 page-columns page-full" data-number="17.2">
 <h2 data-number="17.2" class="anchored" data-anchor-id="a-bayesian-invariance-property"><span class="header-section-number">17.2</span> A Bayesian Invariance Property</h2>
-<p>For ML estimators, we have the invariance property. The invariance property allows us to freely transform our ML estimates. But can we say something similar about Bayesian point estimates, like the posterior mean? <em>Kinda</em>, but it works slightly differently.</p>
+<p>For ML estimators, we have the invariance property (<a href="../wk02/01-maximum-likelihood.html#thm-ml-invariance" class="quarto-xref">Theorem&nbsp;<span>1.2</span></a>). The invariance property allows us to freely transform our ML estimates. But can we say something similar about Bayesian point estimates, like the posterior mean? <em>Kinda</em>, but it works slightly differently.</p>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p><strong>Invariance Property of ML Estimators.</strong> Suppose an ML estimator <span class="math inline">\(\hat{\theta}\)</span> of <span class="math inline">\(\theta\)</span> as in <a href="../wk02/01-maximum-likelihood.html#def-mle" class="quarto-xref">Definition&nbsp;<span>1.1</span></a> and a quantity of interest <span class="math inline">\(\tau = \tau(\theta)\)</span> for any function <span class="math inline">\(\tau\)</span>. The ML estimate <span class="math inline">\(\hat{\tau}\)</span> of <span class="math inline">\(\tau = \tau(\theta)\)</span> is <span class="math inline">\(\tau(\hat{\theta})\)</span>.</p>
@@ -601,10 +601,10 @@ Cannot transform posterior mean
 <h3 data-number="17.2.2" class="anchored" data-anchor-id="the-correct-way"><span class="header-section-number">17.2.2</span> The Correct Way</h3>
 <p>Instead of transforming the posterior mean, you need to <em>transform the simulations</em>, then take the mean.</p>
 <div id="thm-bayes-invariance" class="theorem">
-<p><span class="theorem-title"><strong>Theorem 17.1 (Simulation-Based Invariance Property of Posterior Distributions)</strong></span> Suppose <span class="math inline">\(\{\tilde{\theta}^{(s)}\}_{s=1}^S\)</span> are posterior simulations of <span class="math inline">\(\theta\)</span>. Let <span class="math inline">\(\tau = \tau(\theta)\)</span> be a quantity of interest for any function <span class="math inline">\(\tau\)</span>. Then posterior simulations of <span class="math inline">\(\tau\)</span> can be obtained by applying <span class="math inline">\(\tau\)</span> to each draw <span class="math inline">\(\tilde{\theta}^{(s)}\)</span> so that <span class="math inline">\(\tilde{\tau}^{(s)} = \tau \left( \tilde{\theta}^{(s)} \right)\)</span>. Summaries of the posterior distribution of <span class="math inline">\(\tau\)</span> (e.g., mean, median, credible intervals) are obtained by summarizing the transformed draws <span class="math inline">\(\{\tilde{\tau}^{(s)}\}_{s=1}^S\)</span>.</p>
+<p><span class="theorem-title"><strong>Theorem 17.1 (Simulation-Based Invariance Property of Posterior Distributions)</strong></span> Suppose <span class="math inline">\(\{\tilde{\theta}^{(s)}\}_{s=1}^S\)</span> are simulations from the posterior distribution <span class="math inline">\(f(\theta \mid y)\)</span>. Let <span class="math inline">\(\tau = \tau(\theta)\)</span> be a quantity of interest for any function <span class="math inline">\(\tau\)</span>. Then applying <span class="math inline">\(\tau\)</span> to each draw, so that <span class="math inline">\(\tilde{\tau}^{(s)} = \tau \left( \tilde{\theta}^{(s)} \right)\)</span>, gives simulations <span class="math inline">\(\{\tilde{\tau}^{(s)}\}_{s=1}^S\)</span> from the posterior distribution of <span class="math inline">\(\tau\)</span>. Summaries of the posterior distribution of <span class="math inline">\(\tau\)</span> (e.g., mean, median, SD, credible intervals) are obtained by summarizing the transformed draws <span class="math inline">\(\{\tilde{\tau}^{(s)}\}_{s=1}^S\)</span>. That is, transform each draw first, then summarize.</p>
 </div>
-<p>Importantly, if you transform the posterior mean of the parameter, you no longer have posterior mean. (Same for the median.) Instead, you must transform <em>each simulation</em> before taking the mean.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
-<div class="no-row-height column-margin column-container"><div id="fn3"><p><sup>3</sup>&nbsp;This difference will usually be small, but Jensen’s inequality still applies.</p></div></div><p>We can illustrate the the wrong way (average then transform) and the right way (transform then average). If we compute the odds (of success) <span class="math inline">\(\pi/(1 - \pi)\)</span>, then the right way and wrong way give similar answers.</p>
+<p>Importantly, if you transform the posterior mean of the parameter, you no longer have a posterior mean. (The same is true of the median and the endpoints of a percentile interval, unless <span class="math inline">\(\tau\)</span> is strictly increasing or strictly decreasing. For a monotonic <span class="math inline">\(\tau\)</span> like the odds <span class="math inline">\(\pi/(1 - \pi)\)</span>, percentiles pass through the transformation, so <span class="math inline">\(\tau\)</span> of the posterior median <em>is</em> the posterior median of <span class="math inline">\(\tau\)</span>.) Instead, you must transform <em>each simulation</em> before taking the mean.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn3"><p><sup>3</sup>&nbsp;This difference will usually be small, but Jensen’s inequality still applies.</p></div></div><p>We can illustrate the wrong way (average then transform) and the right way (transform then average). If we compute the odds (of success) <span class="math inline">\(\pi/(1 - \pi)\)</span>, then the right way and wrong way give similar answers.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># find posterior mean of pi</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>mean_pi <span class="ot">&lt;-</span> <span class="fu">mean</span>(pi_tilde)</span>
@@ -612,27 +612,27 @@ Cannot transform posterior mean
 <span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># wrong way; can't transform posterior means</span></span>
 <span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>mean_pi<span class="sc">/</span>(<span class="dv">1</span> <span class="sc">-</span> mean_pi)  <span class="co"># NOT the posterior mean of the odds</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.07002067</code></pre>
+<pre><code>[1] 0.07017292</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># right way; transform then average</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>odds_tilde <span class="ot">&lt;-</span> pi_tilde<span class="sc">/</span>(<span class="dv">1</span> <span class="sc">-</span> pi_tilde)</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(odds_tilde) <span class="co"># the posterior mean of the odds</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.07046881</code></pre>
+<pre><code>[1] 0.07062091</code></pre>
 </div>
 </div>
 <p>But if we compute the odds <em>of failure</em> <span class="math inline">\((1 - \pi)/\pi\)</span>, then we get noticeably different answers.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># wrong way; can't transform posterior means</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>(<span class="dv">1</span> <span class="sc">-</span> mean_pi)<span class="sc">/</span>(mean_pi)  <span class="co"># NOT the posterior mean of the odds</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>(<span class="dv">1</span> <span class="sc">-</span> mean_pi)<span class="sc">/</span>(mean_pi)  <span class="co"># NOT the posterior mean of the odds of failure</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 14.2815</code></pre>
+<pre><code>[1] 14.25051</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># right way; transform then average</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>odds_of_failure_tilde <span class="ot">&lt;-</span> (<span class="dv">1</span> <span class="sc">-</span> pi_tilde)<span class="sc">/</span>pi_tilde</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(odds_of_failure_tilde) <span class="co"># the posterior mean of the odds</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(odds_of_failure_tilde) <span class="co"># the posterior mean of the odds of failure</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 15.71027</code></pre>
+<pre><code>[1] 15.66926</code></pre>
 </div>
 </div>
 
@@ -660,24 +660,24 @@ Cannot transform posterior mean
 </section>
 <section id="rejection-sampling" class="level2 page-columns page-full" data-number="17.3">
 <h2 data-number="17.3" class="anchored" data-anchor-id="rejection-sampling"><span class="header-section-number">17.3</span> Rejection Sampling</h2>
-<p>For more difficult posteriors, we can use algorithms designed to sample from complicated distributions. Most algorithms, including Stan’s hyper-optimized<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> implementation of HMC, use a form of reject.</p>
+<p>For more difficult posteriors, we can use algorithms designed to sample from complicated distributions. Most algorithms, including Stan’s hyper-optimized<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> implementation of HMC, use a form of rejection.</p>
 <div class="no-row-height column-margin column-container"><div id="fn4"><p><sup>4</sup>&nbsp;My description; not a technical term.</p></div><div id="fn5"><p><sup>5</sup>&nbsp;This rejection sampling is rarely useful in practice. It turns out that Stan has made most sampling easy. But the rejection algorithm does highlight the intuition of more complicated algorithms that Stan uses.</p></div></div><p>To highlight how rejection can help us sample from complicated distributions, let’s look at a simple <em>rejection algorithm</em> that relies <em>entirely</em> on rejection.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></p>
 <p><strong>Algorithm:</strong> Rejection Sampling</p>
 
 <div class="no-row-height column-margin column-container"><div class="margin-aside">
-<p>To make the rejection algorithm simple, I’ve written it to apply specifically to the posterior for the Bernoulli model, which has support <span class="math inline">\([0, 1]\)</span>. The target density doesn’t need to be a posterior and can have support other than <span class="math inline">\([0, 1]\)</span>. The proposal distribution doesn’t have to be uniform. The key is that <span class="math inline">\(M\)</span> is larger than the maximum of the target distribution and draws are accepted with probability <span class="math inline">\(f(z)/M\)</span>.</p>
+<p>To make the rejection algorithm simple, I’ve written it to apply specifically to the posterior for the Bernoulli model, which has support <span class="math inline">\([0, 1]\)</span>. The target density doesn’t need to be a posterior and can have support other than <span class="math inline">\([0, 1]\)</span>. The proposal distribution doesn’t have to be uniform. The key is that <span class="math inline">\(M\)</span> is larger than the maximum of the target density and, with a uniform proposal, draws are accepted with probability <span class="math inline">\(f(z)/M\)</span>.</p>
 </div></div><p><em>Inputs:</em></p>
 <ul>
 <li>The <em>unnormalized</em> posterior distribution <span class="math inline">\(f(\pi \mid y)\)</span> on [0,1].<br>
 </li>
 <li>Desired number of draws <span class="math inline">\(S\)</span>.<br>
 </li>
-<li>An envelope constant <span class="math inline">\(M\)</span> that is larger than <span class="math inline">\(f(\pi)\)</span> for all <span class="math inline">\(\pi\)</span>. For our simple 1D cases, we can plot the posterior and select <span class="math inline">\(M\)</span> visually. We could also use use <code>optim()</code> to find the posterior mode.</li>
+<li>An envelope constant <span class="math inline">\(M\)</span> that is larger than <span class="math inline">\(f(\pi \mid y)\)</span> for all <span class="math inline">\(\pi\)</span>. For our simple 1D cases, we can plot the posterior and select <span class="math inline">\(M\)</span> visually. We could also use <code>optim()</code> to find the posterior mode.</li>
 </ul>
 <p><em>Algorithm</em>:</p>
 <ol type="1">
 <li><strong>Initialize:</strong> Set <span class="math inline">\(s=1\)</span>.</li>
-<li><strong>Repeat until <span class="math inline">\(s=S\)</span>:</strong>
+<li><strong>Repeat while <span class="math inline">\(s \le S\)</span>:</strong>
 <ol type="a">
 <li>Propose <span class="math inline">\(z \sim \text{uniform}(0,1)\)</span>.<br>
 </li>
@@ -689,10 +689,10 @@ Cannot transform posterior mean
 </ul></li>
 </ol></li>
 </ol>
-<p><em>Output:</em> Independent samples <span class="math inline">\(\pi^{(1)}, \pi^{(2)}, \dots, \pi^{(B)}\)</span> from <span class="math inline">\(f(\pi \mid y)\)</span>.</p>
+<p><em>Output:</em> Independent samples <span class="math inline">\(\pi^{(1)}, \pi^{(2)}, \dots, \pi^{(S)}\)</span> from <span class="math inline">\(f(\pi \mid y)\)</span>.</p>
 <section id="beta4-10-example" class="level3 page-columns page-full" data-number="17.3.1">
 <h3 data-number="17.3.1" class="anchored" data-anchor-id="beta4-10-example"><span class="header-section-number">17.3.1</span> Beta(4, 10) Example</h3>
-<p>The figure below shows the logic of the rejection algorithm assuming a <span class="math inline">\(\pi \sim \text{beta}(4, 10)\)</span> target distribution. We set <span class="math inline">\(M = 4\)</span> visually, but notice that we could set it at to 3.5 as well. We’ll generate proposals from a uniform distribution, but <em>accept</em> those proposals a different rates depending on the posterior density <em>at that proposal.</em></p>
+<p>The figure below shows the logic of the rejection algorithm assuming a <span class="math inline">\(\pi \sim \text{beta}(4, 10)\)</span> target distribution. We set <span class="math inline">\(M = 4\)</span> visually, but notice that we could set it to 3.5 as well. We’ll generate proposals from a uniform distribution, but <em>accept</em> those proposals at different rates depending on the posterior density <em>at that proposal.</em></p>
 <div class="cell">
 <div class="cell-output-display">
 <div>
@@ -727,7 +727,7 @@ Cannot transform posterior mean
 <span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a>    u <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">1</span>)</span>
 <span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a>    <span class="co"># C: Accept or reject</span></span>
-<span id="cb27-24"><a href="#cb27-24" aria-hidden="true" tabindex="-1"></a>    fz <span class="ot">&lt;-</span> <span class="fu">f</span>(z) <span class="co"># compute once, for effeciency</span></span>
+<span id="cb27-24"><a href="#cb27-24" aria-hidden="true" tabindex="-1"></a>    fz <span class="ot">&lt;-</span> <span class="fu">f</span>(z) <span class="co"># compute once, for efficiency</span></span>
 <span id="cb27-25"><a href="#cb27-25" aria-hidden="true" tabindex="-1"></a>    </span>
 <span id="cb27-26"><a href="#cb27-26" aria-hidden="true" tabindex="-1"></a>      <span class="do">## scenario 1: u &lt;= f(z)/M  →  Accept</span></span>
 <span id="cb27-27"><a href="#cb27-27" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (u <span class="sc">&lt;=</span> fz <span class="sc">/</span> M) {</span>
@@ -787,7 +787,7 @@ Cannot transform posterior mean
 </div></div></div>
 <p>To develop our intuition, we can plot both the accepted samples and the rejected values on the same histogram. Notice two things.</p>
 <ol type="1">
-<li>First, when combined—looking at stacked the red and blue bars—the histogram is uniform. This is because the proposals are from a uniform distribution.</li>
+<li>First, when combined—looking at the stacked red and blue bars—the histogram is uniform. This is because the proposals are from a uniform distribution.</li>
 <li>Second, after removing the rejected values—looking at the blue accepted samples only—the histogram takes on the shape of the target distribution.</li>
 </ol>
 <div class="cell">
@@ -815,16 +815,16 @@ Cannot transform posterior mean
 </div>
 <p>We can use the samples to compute the summaries of interest, like the posterior mean.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="dv">4</span><span class="sc">/</span>(<span class="dv">4</span> <span class="sc">+</span> <span class="dv">10</span>)  <span class="co"># analtical mean.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="dv">4</span><span class="sc">/</span>(<span class="dv">4</span> <span class="sc">+</span> <span class="dv">10</span>)  <span class="co"># analytical mean</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.2857143</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(r<span class="sc">$</span>samples)  <span class="co"># simulation mean</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.286343</code></pre>
+<pre><code>[1] 0.2854999</code></pre>
 </div>
 </div>
-<p>This samples are independent. So while they are more complicated to generate, they work just as well as draws using <code>rbeta()</code>.</p>
+<p>These samples are independent. So while they are more complicated to generate, they work just as well as draws using <code>rbeta()</code>.</p>
 </section>
 <section id="a-weird-example" class="level3 page-columns page-full" data-number="17.3.2">
 <h3 data-number="17.3.2" class="anchored" data-anchor-id="a-weird-example"><span class="header-section-number">17.3.2</span> A Weird Example</h3>
@@ -865,7 +865,7 @@ Cannot transform posterior mean
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># perform sampling</span></span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">rej</span>(f, <span class="dv">10000</span>, <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>We can create a histogram of the posterior distribution, which has a very unusal shape.</p>
+<p>We can create a histogram of the posterior distribution, which has a very unusual shape.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -893,16 +893,16 @@ Cannot transform posterior mean
 <div class="cell">
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(r<span class="sc">$</span>samples)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.3120422</code></pre>
+<pre><code>[1] 0.3103356</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sd</span>(r<span class="sc">$</span>samples)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.1151129</code></pre>
+<pre><code>[1] 0.1142679</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(r<span class="sc">$</span>samples, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.95</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       5%       95% 
-0.1380533 0.5256502 </code></pre>
+0.1360170 0.5247746 </code></pre>
 </div>
 </div>
 

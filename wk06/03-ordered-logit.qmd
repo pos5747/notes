@@ -8,9 +8,9 @@ fig-asp: 0.75
 
 Suppose an ordered outcome $y_i \in \{1, 2, \ldots, J\}$, where $\{1, 2, \ldots, J\}$ correspond to *qualitative labels* that have a natural ordering.
 
-*Example 1.* The ANES asks respondents to place themselves along a 7-point **ideology** scale with positions labeled "extremely liberal," "liberal," "slightly liberal," "moderate/middle of the road," "slightly conservative," "conservative," and "extremely conservative." We typically let 1, 2, 3, 4, 5, 6, and 7. correspond to these seven ordered labels. 
+*Example 1.* The ANES asks respondents to place themselves along a 7-point **ideology** scale with positions labeled "extremely liberal," "liberal," "slightly liberal," "moderate/middle of the road," "slightly conservative," "conservative," and "extremely conservative." We typically let 1, 2, 3, 4, 5, 6, and 7 correspond to these seven ordered labels. 
 
-*Example 2*. The **Political Terror Scale** (PTS) is a country-year measure of state repression. This measure assigns one of five qualitative labels summarizing the amount of state repression to each country-years based on reports from Amnesty International and the U.S. State Department.
+*Example 2*. The **Political Terror Scale** (PTS) is a country-year measure of state repression. This measure assigns one of five qualitative labels summarizing the amount of state repression to each country-year based on reports from Amnesty International and the U.S. State Department.
 
 | Numeric Coding      | Qualitative Label |
 |------------|----------------|
@@ -22,16 +22,18 @@ Suppose an ordered outcome $y_i \in \{1, 2, \ldots, J\}$, where $\{1, 2, \ldots,
 
 ## Ordered Logit
 
-Let linear predictor $\eta_i$ be our usual linear predictor so that $\eta_i = X_i^\beta$, except *without an intercept $\beta_0$.*
+Let linear predictor $\eta_i$ be our usual linear predictor so that $\eta_i = X_i\beta$, except *without an intercept $\beta_0$.*
 
-Now define $J-1$ "cutpoints" $\alpha_1 < \alpha_2 < \cdots < \alpha_{J-1}$ that act as a separate intercept for each category.
+Now define $J-1$ "cutpoints" $\alpha_1 < \alpha_2 < \cdots < \alpha_{J-1}$ that act as a separate intercept for each cumulative probability $\Pr(Y_i \leq j)$.
 
-The **ordered logit** defines the the *cumulative* probabilities as
+The **ordered logit** defines the *cumulative* probabilities as
 
 $$
 \Pr(Y_i \leq j) = \operatorname{logit}^{-1}(\alpha_j - \eta_i),
 \qquad j = 1, \ldots, J-1.
 $$
+
+Because the same $\beta$ appears for every $j$, the ordered logit is also called the **proportional odds** model. The log-odds of falling in category $j$ or below is $\log \left[ \dfrac{\Pr(Y_i \leq j)}{1 - \Pr(Y_i \leq j)} \right] = \alpha_j - \eta_i$, so a one-unit increase in $x_{ik}$ changes the log-odds of $Y_i \leq j$ by $-\beta_k$ (multiplies the odds by $e^{-\beta_k}$) for *every* $j$. Because of the minus sign, a positive $\beta_k$ makes the lower categories less likely and the higher categories more likely. This is the parameterization that `MASS::polr()` (which calls the cutpoints `zeta` and prints them as "Intercepts") and the `cumulative()` family in {brms} use.
 
 Then probabilities for each category are
 
@@ -52,7 +54,7 @@ The figure below shows this graphically for an outcome with four possible values
 - I set the three cutpoints to $\alpha = (-2.5,-1.3,1.3)$. 
 - I set the linear predictor for an example observation to $\eta_i = -1.5$. 
 
-The figure shows how $\alpha$ and $\eta_i$ are translated into $\Pr(y_i = j)$.
+The figure shows how $\alpha$ and $\eta_i$ are translated into $\Pr(Y_i = j)$.
 
 ```{r}
 #| echo: false
@@ -218,140 +220,225 @@ ggplot() +
   theme(legend.position = "none")
 ```
 
-## Example: Party ID by age and race in 2014
+## Example: Approval of President Bush, 1992
 
-As an example, we can model party ID as a function of income.
-
-### `polr()`
-
-First, load a data set I've created with variables party id (`pid`) and income. 
-
-```{r}
-#| message: false
-#| warning: false
-# load data
-anes <- read_csv("data/red-state-pid.csv") |>
-  glimpse()
-```
-
-Notice that the ordinal party ID lables have a numerial prefix as part of the character string. This is helpful to (1) quickly remind us of the order and (2) ensure that the alphabetic order and ordinal rankings of their values are the same. 
-
-Because the dataset is in `.csv` format, `pid` is loaded as a character string, but we can easily convert it to an ordered factor.
+- Data: 1992 ANES Time Series Study [@anes1992], as cleaned by Chris Adolph for his maximum likelihood course; the model and the codebook are his Problem Set 4 [@adolph2025].
+- Outcome: approval of President Bush's job performance, four categories.
+- Predictors: opposition to using military force (1–5), distance between the respondent's ideology and Bush's (0–6), evaluation of the economy over the past year (1 = much better … 5 = much worse), party ID (−3 strong Democrat … 3 strong Republican), years of education.
+- Ordered *probit*, as in the problem set: `method = "probit"`.
+- 750 respondents; 558 complete on these variables.
 
 ```{r}
-#| message: false
-#| warning: false
-# load data
-anes <- read_csv("https://pos5747.github.io/data/red-state-pid.csv") |>
-  mutate(pid = factor(pid, ordered = TRUE)) |>
-  glimpse()
-
-# examine levels of ordinal variable
-levels(anes$pid)
-```
-Because of the numbers I included in the prefix, the default *alphabetical* ordering is *exactly the ordering we want.*
-
-```{r}
-# fit ordered logit model
-library(MASS)  # be wary of conflicts with filter() and select()
-fit <- polr(pid ~ income, data = anes, Hess = TRUE)
-
-# summarize fit
-summary(fit)
-```
-
-### Probabilities with \{marginaleffects\}
-
-To interpret the coefficients, we can compute the probability of falling into each category as age varies from 18 to 89 years.
-
-```{r}
-#| fig-asp: 0.5
-
-# use {marginaleffects}
+library(tidyverse)
+library(MASS)  # masks dplyr::select()
 library(marginaleffects)
-p <- predictions(fit, 
-            newdata = datagrid(income = unique)) |>
+
+# load data
+approval <- read_csv("data/bush-approval-1992.csv") |>
+  mutate(bush_approval = factor(bush_approval, ordered = TRUE)) |>
   glimpse()
-ggplot(p, aes(x = income, y = estimate, color = group)) + 
-  geom_point() + 
-  geom_line()
+
+# check the order of the outcome
+levels(approval$bush_approval)
+
+# fit ordered probit
+fit_approval <- polr(bush_approval ~ military_force + ideology_distance +
+                       economy + party_id + education,
+                     data = approval, method = "probit", Hess = TRUE)
+summary(fit_approval)
 ```
 
-### Computing cumulative probabilities
-
-However, the probabilities above are somewhat awkward to interpret. As the middle categories shrink, it isn't immediately clear what categories are growing as a result. Instead, we can compute an easier-to-interpret *cumulative* probability using `cumsum()` within `arrange()`ed groups. 
+- Positive `party_id` coefficient: higher categories more likely (sign convention above), so Republicans approve more.
+- Negative coefficients: opposing military force, ideological distance from Bush, and a worse economy each move respondents toward disapproval.
+- Cutpoints on the probit scale; not directly interpretable.
 
 ```{r}
 #| fig-asp: 0.5
-cumulative_p <- p %>%
-  arrange(income, group) %>%
-  group_by(income) %>%
-  mutate(cumulative_prob = cumsum(estimate),
-         j = as.integer(group),
-         cdf_label = paste0("Pr(Y ≤ ", group, ")"),
-         cdf_label = reorder(cdf_label, j)) %>%
-  ungroup()
-ggplot(cumulative_p, aes(x = income, y = cumulative_prob, color = cdf_label)) + 
-  geom_line() 
-```
-
-Alternatively, w can use `position = "stack"` with `geom_line()` or `geom_area()` to trick `ggplot()` into plotting the cumulative probabilities for us if we don't want to compute them manually first.
-
-```{r}
-#| fig-asp: 0.5
-ggplot(p, aes(x = income, y = estimate, color = group)) +
-  geom_line(position = "stack")
-
-ggplot(p, aes(x = income, y = estimate, fill = group)) +
-  geom_area(position = "stack")
-```
-
-### Example: The varying relationship across years
-
-We can use a hierarchical variant to model the differences across states. Consistent with Gelman et al.'s "red state, blue state" argument, the changes across income might vary across rich and poor states. 
-
-With that in mind, we allow varying intercepts and slopes across states and model those using state median income.
-
-```{r}
-#| message: false
-#| warning: false
-#| cache: true
-#| results: hide
-# load packages
-library(brms)
-
-# fit same model, but coefs vary across years
-fit <- brm(pid ~ income*rs_state_median_income + (1 + income | state_name), 
-           data = anes, 
-           family = cumulative(),
-           cores = 4, 
-           chains = 4, 
-           backend = "rstan")
-```
-
-Now we can plot the cumulative probabilities for each of the states and see that the effect of income does indeed vary across the states.
-
-```{r}
-#| fig-asp: 2.1
-#| fig-width: 8
-
-# make grid 
-grid <- anes %>%
-  dplyr::select(state_name, state_median_income, rs_state_median_income) %>%
-  distinct() %>%
-  mutate(income = NA) |>
+# probabilities across military_force for strong Democrats and strong Republicans
+p <- predictions(fit_approval,
+                 newdata = datagrid(military_force = 1:5,
+                                    party_id = c(-3, 3))) |>
   glimpse()
 
-# make predictions
-p <- predictions(fit, 
-                 variables = list(income = unique),
-                 newdata = grid) |>
-  mutate(state_name = reorder(state_name, rs_state_median_income)) |>
-  glimpse()
-
-# make plot
-ggplot(p, aes(x = income, y = estimate, fill = group)) +
+ggplot(p, aes(x = military_force, y = estimate, fill = group)) +
   geom_area(position = "stack") +
-  facet_wrap(vars(state_name), ncol = 4)  +
-  scale_fill_brewer(palette = "RdBu", direction = -1)
+  facet_wrap(vars(party_id), labeller = label_both)
 ```
+
+- Other predictors at their means (`datagrid()` default).
+- Strong Democrats: Pr(strongly disapprove) about 0.28 at `military_force = 1`, about 0.77 at 5.
+- Strong Republicans: Pr(strongly approve) about 0.49 at 1, about 0.09 at 5.
+
+### Computing cumulative probabilities {#cumulative-probabilities}
+
+- The model is defined through $\Pr(Y_i \leq j)$; `predictions()` returns $\Pr(Y_i = j)$, one row per category.
+
+```{r}
+# cumulative probabilities: Pr(Y <= j) and Pr(Y >= j)
+cumulative_p <- p |>
+  arrange(party_id, military_force, group) |>                # <1>
+  group_by(party_id, military_force) |>                      # <2>
+  mutate(pr_le = cumsum(estimate),                           # <3>
+         pr_ge = 1 - lag(cumsum(estimate), default = 0)) |>  # <4>
+  ungroup()
+
+# one grid point: strong Democrats at military_force = 3
+cumulative_p |>
+  filter(party_id == -3, military_force == 3) |>
+  dplyr::select(group, estimate, pr_le, pr_ge)
+```
+1. Sort the categories into their order within each grid point, so the running sum accumulates from category 1 upward.
+2. One running sum per grid point, i.e., per combination of `party_id` and `military_force`.
+3. $\Pr(Y_i \leq j)$: the running sum $\Pr(Y_i = 1) + \cdots + \Pr(Y_i = j)$.
+4. $\Pr(Y_i \geq j) = 1 - \Pr(Y_i \leq j - 1)$: `lag()` shifts the running sum down one category, and `default = 0` covers $j = 1$.
+
+- $\Pr(Y_i \leq J)$ and $\Pr(Y_i \geq 1)$ are always 1; drop them before plotting.
+
+```{r}
+#| fig-asp: 0.5
+# plot Pr(Y <= j) for j = 1, 2, 3
+cumulative_p |>
+  filter(group != "4. Strongly approve") |>
+  ggplot(aes(x = military_force, y = pr_le, color = group)) +
+  geom_line() +
+  geom_point() +
+  facet_wrap(vars(party_id), labeller = label_both) +
+  labs(y = "Pr(Y <= j)")
+```
+
+- Strong Democrats at `military_force = 3`: Pr(strongly disapprove) 0.54, Pr(disapprove or worse) 0.83, Pr(approve or worse) 0.99.
+- Each curve is one cutpoint: $\Pr(Y_i \leq j) = \Phi(\alpha_j - \eta_i)$ here (probit), so the three curves move together as $\eta_i$ changes. That is the proportional-odds (parallel) structure.
+- The stacked `geom_area()` above draws the same curves, but *upper-tail*: `position = "stack"` puts the first level on top, so the boundary above band $j$ is $\Pr(Y_i \geq j)$, not $\Pr(Y_i \leq j)$. At `military_force = 3` for strong Democrats the boundaries sit at 0.46, 0.17, and 0.01, the `pr_ge` column. `position_stack(reverse = TRUE)` puts level 1 at the bottom and makes the boundaries $\Pr(Y_i \leq j)$.
+
+## Example: Working mothers, GSS 1977 and 1989
+
+- Data: General Social Survey, 1977 and 1989 [@gss2019]; the `ordwarm2` data of @long1997 [ch. 5] and @longfreese2014 [ch. 7].
+- Outcome: agreement with "A working mother can establish just as warm and secure a relationship with her children as a mother who does not work," four categories.
+- Predictors: survey year, gender, race, age, years of education, occupational prestige.
+- Ordered logit, Long & Freese's specification.
+- 2,293 respondents, no missing values.
+
+```{r}
+library(tidyverse)
+library(MASS)  # masks dplyr::select()
+library(marginaleffects)
+
+# load data
+warm <- read_csv("data/working-mothers-gss.csv") |>
+  mutate(warm = factor(warm, ordered = TRUE)) |>
+  glimpse()
+
+# check the order of the outcome
+levels(warm$warm)
+
+# fit ordered logit
+fit_warm <- polr(warm ~ factor(year) + gender + race + age + education + prestige,
+                 data = warm, Hess = TRUE)
+summary(fit_warm)
+```
+
+- Matches Long & Freese: `factor(year)1989` 0.52, `genderMale` −0.73, `raceWhite` −0.39, `age` −0.02, `education` 0.07, `prestige` 0.006.
+- Men, whites, and older respondents less likely to agree; 1989 respondents and the more educated more likely.
+
+```{r}
+#| fig-asp: 0.5
+# probabilities across age, by gender
+p <- predictions(fit_warm,
+                 newdata = datagrid(age = 18:89,
+                                    gender = unique)) |>
+  glimpse()
+
+ggplot(p, aes(x = age, y = estimate, fill = group)) +
+  geom_area(position = "stack") +
+  facet_wrap(vars(gender))
+```
+
+- Year and race at their modes, education and prestige at their means.
+- Women: Pr(strongly agree) about 0.26 at age 20, about 0.09 at 80.
+- Men: Pr(strongly disagree) about 0.12 at 20, about 0.34 at 80.
+- Band boundaries are $\Pr(Y_i \geq j)$ (first level stacked on top).
+
+```{r}
+#| fig-asp: 0.5
+# cumulative probabilities Pr(Y <= j), then plot j = 1, 2, 3
+cumulative_p <- p |>
+  arrange(gender, age, group) |>
+  group_by(gender, age) |>
+  mutate(pr_le = cumsum(estimate)) |>
+  ungroup()
+
+cumulative_p |>
+  filter(group != "4. Strongly agree") |>
+  ggplot(aes(x = age, y = pr_le, color = group)) +
+  geom_line() +
+  facet_wrap(vars(gender)) +
+  labs(y = "Pr(Y <= j)")
+```
+
+- Three parallel curves per panel, one per cutpoint; men's curves sit above women's (less agreement).
+
+## Example: Political ideology by party and gender
+
+- Data: Table 6.7 of @agresti2007 [sec. 6.2.2], a 2 × 2 × 5 table from the General Social Survey (no year given), expanded to one row per respondent (N = 835); the party-only version is the UVA StatLab tutorial [@ford2015].
+- Outcome: political ideology, five categories from very liberal to very conservative.
+- Predictors: party (Democrat, Republican) and gender.
+- Ordered logit; Agresti's cumulative logit (proportional odds) model.
+
+```{r}
+library(tidyverse)
+library(MASS)  # masks dplyr::select()
+library(marginaleffects)
+
+# load data
+ideology <- read_csv("data/ideology-party-gender.csv") |>
+  mutate(ideology = factor(ideology, ordered = TRUE)) |>
+  glimpse()
+
+# check the order of the outcome
+levels(ideology$ideology)
+
+# fit ordered logit
+fit_ideology <- polr(ideology ~ party + gender,
+                     data = ideology, Hess = TRUE)
+summary(fit_ideology)
+```
+
+- Agresti fits party alone and reports 0.975 (SE 0.129) [@agresti2007, p. 183]; with gender added, `partyRepublican` 0.96 (SE 0.13) and `genderMale` 0.12 (SE 0.13).
+- Republicans much more conservative; gender difference small and uncertain.
+
+```{r}
+#| fig-asp: 0.5
+# probabilities for the four groups
+p <- predictions(fit_ideology,
+                 newdata = datagrid(party = unique,
+                                    gender = unique)) |>
+  glimpse()
+
+ggplot(p, aes(x = party, y = estimate, fill = group)) +
+  geom_col() +
+  facet_wrap(vars(gender))
+```
+
+- Both predictors binary, so `x` takes two values. `geom_area()` needs a numeric `x` and draws nothing for a character `x`; `geom_col()` stacks the same probabilities as columns.
+- Women: Pr(very conservative) about 0.11 for Democrats, about 0.25 for Republicans.
+- Column boundaries are $\Pr(Y_i \geq j)$ (first level stacked on top), as in the two figures above.
+
+```{r}
+#| fig-asp: 0.5
+# cumulative probabilities Pr(Y <= j), then plot j = 1, ..., 4
+cumulative_p <- p |>
+  arrange(gender, party, group) |>
+  group_by(gender, party) |>
+  mutate(pr_le = cumsum(estimate)) |>
+  ungroup()
+
+cumulative_p |>
+  filter(group != "5. Very conservative") |>
+  ggplot(aes(x = party, y = pr_le, color = group, group = group)) +
+  geom_line() +
+  geom_point() +
+  facet_wrap(vars(gender)) +
+  labs(y = "Pr(Y <= j)")
+```
+
+- Every cumulative probability drops from Democrats to Republicans by the same log-odds shift, 0.96.

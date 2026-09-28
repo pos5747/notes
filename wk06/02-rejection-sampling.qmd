@@ -9,13 +9,13 @@ In this course, we'll look at four samplers:
 1. Metropolis
 1. Hamiltonian Monte Carlo
 
-The algorithms start simple and intuitive and build in complexity. A deep dive on HMC--especially the hyper-optimized version used by Stan--is beyond the scope of this course. That said, HMC via Stan and it universe of enablers in R have made posterior simulation almost trivial.
+The algorithms start simple and intuitive and build in complexity. A deep dive on HMC--especially the hyper-optimized version used by Stan--is beyond the scope of this course. That said, HMC via Stan and its universe of enablers in R have made posterior simulation almost trivial.
 
 ## Equivalence
 
 Before jumping into sampling algorithms, let's demonstrate the correspondence between sampling and closed-form results. 
 
-In the case of the toothpaste cap, problem we have a Bernoulli model, beta prior, and beta posterior from the previous chapter. For the prior, let's suppose $\alpha = 3$ and $\beta = 15$. Regardless of the summary we are interested in (e.g., mean, SD, percentiles), we can work with the closed-form result or simulations to obtain the same answer. Notice that even for this very simple closed-form result, the simulations perhaps easier to work with!
+In the case of the toothpaste cap problem, we have a Bernoulli model, beta prior, and beta posterior from the previous chapter. For the prior, let's suppose $\alpha = 3$ and $\beta = 15$. Regardless of the summary we are interested in (e.g., mean, SD, percentiles), we can work with the closed-form result or simulations to obtain the same answer. Notice that even for this very simple closed-form result, the simulations are perhaps easier to work with!
 
 It's trivial for us to simulate from the beta posterior using the `rbeta()` function.^[This makes it a good first example, since the correspondence between `rbeta()` and `dbeta()` is obvious. In more interesting cases, the simulation will be harder.] And the summaries we might want are easy to compute using closed-form results. Let's compare the two approaches.
 
@@ -57,9 +57,9 @@ qbeta(0.95, shape1 = a1, shape2 = b1)  # closed form
 quantile(pi_tilde, probs = 0.95)  # posterior sims
 ```
 
-## A Bayesian Invariance Property
+## A Bayesian Invariance Property {#a-bayesian-invariance-property}
 
-For ML estimators, we have the invariance property. The invariance property allows us to freely transform our ML estimates. But can we say something similar about Bayesian point estimates, like the posterior mean? *Kinda*, but it works slightly differently.
+For ML estimators, we have the invariance property (@thm-ml-invariance). The invariance property allows us to freely transform our ML estimates. But can we say something similar about Bayesian point estimates, like the posterior mean? *Kinda*, but it works slightly differently.
 
 ::: {.column-margin}
 
@@ -95,12 +95,12 @@ Instead of transforming the posterior mean, you need to *transform the simulatio
 
 ## Simulation-Based Invariance Property of Posterior Distributions
 
-Suppose $\{\tilde{\theta}^{(s)}\}_{s=1}^S$ are posterior simulations of $\theta$. Let $\tau = \tau(\theta)$ be a quantity of interest for any function $\tau$. Then posterior simulations of $\tau$ can be obtained by applying $\tau$ to each draw $\tilde{\theta}^{(s)}$ so that $\tilde{\tau}^{(s)} = \tau \left( \tilde{\theta}^{(s)} \right)$. Summaries of the posterior distribution of $\tau$ (e.g., mean, median, credible intervals) are obtained by summarizing the transformed draws $\{\tilde{\tau}^{(s)}\}_{s=1}^S$.
+Suppose $\{\tilde{\theta}^{(s)}\}_{s=1}^S$ are simulations from the posterior distribution $f(\theta \mid y)$. Let $\tau = \tau(\theta)$ be a quantity of interest for any function $\tau$. Then applying $\tau$ to each draw, so that $\tilde{\tau}^{(s)} = \tau \left( \tilde{\theta}^{(s)} \right)$, gives simulations $\{\tilde{\tau}^{(s)}\}_{s=1}^S$ from the posterior distribution of $\tau$. Summaries of the posterior distribution of $\tau$ (e.g., mean, median, SD, credible intervals) are obtained by summarizing the transformed draws $\{\tilde{\tau}^{(s)}\}_{s=1}^S$. That is, transform each draw first, then summarize.
 :::
 
-Importantly, if you transform the posterior mean of the parameter, you no longer have posterior mean. (Same for the median.) Instead, you must transform *each simulation* before taking the mean.^[This difference will usually be small, but Jensen's inequality still applies.]
+Importantly, if you transform the posterior mean of the parameter, you no longer have a posterior mean. (The same is true of the median and the endpoints of a percentile interval, unless $\tau$ is strictly increasing or strictly decreasing. For a monotonic $\tau$ like the odds $\pi/(1 - \pi)$, percentiles pass through the transformation, so $\tau$ of the posterior median *is* the posterior median of $\tau$.) Instead, you must transform *each simulation* before taking the mean.^[This difference will usually be small, but Jensen's inequality still applies.]
 
-We can illustrate the the wrong way (average then transform) and the right way (transform then average). If we compute the odds (of success) $\pi/(1 - \pi)$, then the right way and wrong way give similar answers.
+We can illustrate the wrong way (average then transform) and the right way (transform then average). If we compute the odds (of success) $\pi/(1 - \pi)$, then the right way and wrong way give similar answers.
 
 ```{r}
 # find posterior mean of pi
@@ -117,11 +117,11 @@ mean(odds_tilde) # the posterior mean of the odds
 But if we compute the odds *of failure* $(1 - \pi)/\pi$, then we get noticeably different answers.
 ```{r}
 # wrong way; can't transform posterior means
-(1 - mean_pi)/(mean_pi)  # NOT the posterior mean of the odds
+(1 - mean_pi)/(mean_pi)  # NOT the posterior mean of the odds of failure
 
 # right way; transform then average
 odds_of_failure_tilde <- (1 - pi_tilde)/pi_tilde
-mean(odds_of_failure_tilde) # the posterior mean of the odds
+mean(odds_of_failure_tilde) # the posterior mean of the odds of failure
 ```
 
 ::: {.column-margin}
@@ -137,37 +137,37 @@ hist(odds_of_failure_tilde)
 
 ## Rejection Sampling
 
-For more difficult posteriors, we can use algorithms designed to sample from complicated distributions. Most algorithms, including Stan's hyper-optimized^[My description; not a technical term.] implementation of HMC, use a form of reject.
+For more difficult posteriors, we can use algorithms designed to sample from complicated distributions. Most algorithms, including Stan's hyper-optimized^[My description; not a technical term.] implementation of HMC, use a form of rejection.
 
 To highlight how rejection can help us sample from complicated distributions, let's look at a simple *rejection algorithm* that relies *entirely* on rejection.^[This rejection sampling is rarely useful in practice. It turns out that Stan has made most sampling easy. But the rejection algorithm does highlight the intuition of more complicated algorithms that Stan uses.]
 
 **Algorithm:** Rejection Sampling
 
 ::: aside
-To make the rejection algorithm simple, I've written it to apply specifically to the posterior for the Bernoulli model, which has support $[0, 1]$. The target density doesn't need to be a posterior and can have support other than $[0, 1]$. The proposal distribution doesn't have to be uniform. The key is that $M$ is larger than the maximum of the target distribution and draws are accepted with probability $f(z)/M$. 
+To make the rejection algorithm simple, I've written it to apply specifically to the posterior for the Bernoulli model, which has support $[0, 1]$. The target density doesn't need to be a posterior and can have support other than $[0, 1]$. The proposal distribution doesn't have to be uniform. The key is that $M$ is larger than the maximum of the target density and, with a uniform proposal, draws are accepted with probability $f(z)/M$. 
 :::
 
 *Inputs:* 
 
 - The *unnormalized* posterior distribution $f(\pi \mid y)$ on [0,1].  
 - Desired number of draws $S$.  
-- An envelope constant $M$ that is larger than $f(\pi)$ for all $\pi$. For our simple 1D cases, we can plot the posterior and select $M$ visually. We could also use use `optim()` to find the posterior mode.
+- An envelope constant $M$ that is larger than $f(\pi \mid y)$ for all $\pi$. For our simple 1D cases, we can plot the posterior and select $M$ visually. We could also use `optim()` to find the posterior mode.
 
 *Algorithm*:
 
 1. **Initialize:** Set $s=1$.
-1. **Repeat until $s=S$:**
+1. **Repeat while $s \le S$:**
    a. Propose $z \sim \text{uniform}(0,1)$.  
    b. Draw $u \sim \text{uniform}(0,1)$. Used to control reject/accept rates.
    c. **Accept–reject step:**  
       - If $u \le \dfrac{f(z)}{M}$, **accept**. Set $\pi^{(s)} = z$ and update $s \leftarrow s+1$. Because $u$ is uniform, this accepts with probability $\dfrac{f(z)}{M}$.
       - Otherwise **reject** $z$ and return to Step 2a.
 
-*Output:* Independent samples $\pi^{(1)}, \pi^{(2)}, \dots, \pi^{(B)}$ from $f(\pi \mid y)$.
+*Output:* Independent samples $\pi^{(1)}, \pi^{(2)}, \dots, \pi^{(S)}$ from $f(\pi \mid y)$.
 
 ### Beta(4, 10) Example
 
-The figure below shows the logic of the rejection algorithm assuming a $\pi \sim \text{beta}(4, 10)$ target distribution. We set $M = 4$ visually, but notice that we could set it at to 3.5 as well. We'll generate proposals from a uniform distribution, but *accept* those proposals a different rates depending on the posterior density *at that proposal.*
+The figure below shows the logic of the rejection algorithm assuming a $\pi \sim \text{beta}(4, 10)$ target distribution. We set $M = 4$ visually, but notice that we could set it to 3.5 as well. We'll generate proposals from a uniform distribution, but *accept* those proposals at different rates depending on the posterior density *at that proposal.*
 
 ```{r "Illustrating rejection sampler"}
 #| echo: false
@@ -341,7 +341,7 @@ rej <- function(f, S, M) {
     u <- runif(1)
 
     # C: Accept or reject
-    fz <- f(z) # compute once, for effeciency
+    fz <- f(z) # compute once, for efficiency
     
       ## scenario 1: u <= f(z)/M  →  Accept
       if (u <= fz / M) {
@@ -409,7 +409,7 @@ ggplot() +
 
 To develop our intuition, we can plot both the accepted samples and the rejected values on the same histogram. Notice two things.
 
-1. First, when combined---looking at stacked the red and blue bars---the histogram is uniform. This is because the proposals are from a uniform distribution. 
+1. First, when combined---looking at the stacked red and blue bars---the histogram is uniform. This is because the proposals are from a uniform distribution. 
 1. Second, after removing the rejected values---looking at the blue accepted samples only---the histogram takes on the shape of the target distribution.
 
 ```{r}
@@ -431,11 +431,11 @@ bind_rows(
 We can use the samples to compute the summaries of interest, like the posterior mean. 
 
 ```{r}
-4/(4 + 10)  # analtical mean.
+4/(4 + 10)  # analytical mean
 mean(r$samples)  # simulation mean
 ```
 
-This samples are independent. So while they are more complicated to generate, they work just as well as draws using `rbeta()`.
+These samples are independent. So while they are more complicated to generate, they work just as well as draws using `rbeta()`.
 
 ### A Weird Example
 
@@ -488,7 +488,7 @@ ggplot() +
 # perform sampling
 r <- rej(f, 10000, 4)
 ```
-We can create a histogram of the posterior distribution, which has a very unusal shape.
+We can create a histogram of the posterior distribution, which has a very unusual shape.
 ```{r}
 #| code-fold: true
 bind_rows(

@@ -54,7 +54,27 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -145,7 +165,7 @@ window.Quarto = {
 <link rel="stylesheet" href="../_styles.css">
 </head>
 
-<body class="nav-sidebar floating">
+<body class="nav-sidebar floating slimcontent">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -460,18 +480,17 @@ window.Quarto = {
   <ul>
   <li><a href="#ordered-outcomes" id="toc-ordered-outcomes" class="nav-link active" data-scroll-target="#ordered-outcomes"><span class="header-section-number">18.1</span> Ordered Outcomes</a></li>
   <li><a href="#ordered-logit" id="toc-ordered-logit" class="nav-link" data-scroll-target="#ordered-logit"><span class="header-section-number">18.2</span> Ordered Logit</a></li>
-  <li><a href="#example-party-id-by-age-and-race-in-2014" id="toc-example-party-id-by-age-and-race-in-2014" class="nav-link" data-scroll-target="#example-party-id-by-age-and-race-in-2014"><span class="header-section-number">18.3</span> Example: Party ID by age and race in 2014</a>
+  <li><a href="#example-approval-of-president-bush-1992" id="toc-example-approval-of-president-bush-1992" class="nav-link" data-scroll-target="#example-approval-of-president-bush-1992"><span class="header-section-number">18.3</span> Example: Approval of President Bush, 1992</a>
   <ul class="collapse">
-  <li><a href="#polr" id="toc-polr" class="nav-link" data-scroll-target="#polr"><span class="header-section-number">18.3.1</span> <code>polr()</code></a></li>
-  <li><a href="#probabilities-with-marginaleffects" id="toc-probabilities-with-marginaleffects" class="nav-link" data-scroll-target="#probabilities-with-marginaleffects"><span class="header-section-number">18.3.2</span> Probabilities with {marginaleffects}</a></li>
-  <li><a href="#computing-cumulative-probabilities" id="toc-computing-cumulative-probabilities" class="nav-link" data-scroll-target="#computing-cumulative-probabilities"><span class="header-section-number">18.3.3</span> Computing cumulative probabilities</a></li>
-  <li><a href="#example-the-varying-relationship-across-years" id="toc-example-the-varying-relationship-across-years" class="nav-link" data-scroll-target="#example-the-varying-relationship-across-years"><span class="header-section-number">18.3.4</span> Example: The varying relationship across years</a></li>
+  <li><a href="#cumulative-probabilities" id="toc-cumulative-probabilities" class="nav-link" data-scroll-target="#cumulative-probabilities"><span class="header-section-number">18.3.1</span> Computing cumulative probabilities</a></li>
   </ul></li>
+  <li><a href="#example-working-mothers-gss-1977-and-1989" id="toc-example-working-mothers-gss-1977-and-1989" class="nav-link" data-scroll-target="#example-working-mothers-gss-1977-and-1989"><span class="header-section-number">18.4</span> Example: Working mothers, GSS 1977 and 1989</a></li>
+  <li><a href="#example-political-ideology-by-party-and-gender" id="toc-example-political-ideology-by-party-and-gender" class="nav-link" data-scroll-target="#example-political-ideology-by-party-and-gender"><span class="header-section-number">18.5</span> Example: Political ideology by party and gender</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content page-columns page-full" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../wk06/01-bayes.html">Week 6</a></li><li class="breadcrumb-item"><a href="../wk06/03-ordered-logit.html"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Ordered Logit</span></a></li></ol></nav>
 <div class="quarto-title">
@@ -495,8 +514,8 @@ window.Quarto = {
 <section id="ordered-outcomes" class="level2" data-number="18.1">
 <h2 data-number="18.1" class="anchored" data-anchor-id="ordered-outcomes"><span class="header-section-number">18.1</span> Ordered Outcomes</h2>
 <p>Suppose an ordered outcome <span class="math inline">\(y_i \in \{1, 2, \ldots, J\}\)</span>, where <span class="math inline">\(\{1, 2, \ldots, J\}\)</span> correspond to <em>qualitative labels</em> that have a natural ordering.</p>
-<p><em>Example 1.</em> The ANES asks respondents to place themselves along a 7-point <strong>ideology</strong> scale with positions labeled “extremely liberal,” “liberal,” “slightly liberal,” “moderate/middle of the road,” “slightly conservative,” “conservative,” and “extremely conservative.” We typically let 1, 2, 3, 4, 5, 6, and 7. correspond to these seven ordered labels.</p>
-<p><em>Example 2</em>. The <strong>Political Terror Scale</strong> (PTS) is a country-year measure of state repression. This measure assigns one of five qualitative labels summarizing the amount of state repression to each country-years based on reports from Amnesty International and the U.S. State Department.</p>
+<p><em>Example 1.</em> The ANES asks respondents to place themselves along a 7-point <strong>ideology</strong> scale with positions labeled “extremely liberal,” “liberal,” “slightly liberal,” “moderate/middle of the road,” “slightly conservative,” “conservative,” and “extremely conservative.” We typically let 1, 2, 3, 4, 5, 6, and 7 correspond to these seven ordered labels.</p>
+<p><em>Example 2</em>. The <strong>Political Terror Scale</strong> (PTS) is a country-year measure of state repression. This measure assigns one of five qualitative labels summarizing the amount of state repression to each country-year based on reports from Amnesty International and the U.S. State Department.</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 42%">
@@ -534,13 +553,14 @@ window.Quarto = {
 </section>
 <section id="ordered-logit" class="level2" data-number="18.2">
 <h2 data-number="18.2" class="anchored" data-anchor-id="ordered-logit"><span class="header-section-number">18.2</span> Ordered Logit</h2>
-<p>Let linear predictor <span class="math inline">\(\eta_i\)</span> be our usual linear predictor so that <span class="math inline">\(\eta_i = X_i^\beta\)</span>, except <em>without an intercept <span class="math inline">\(\beta_0\)</span>.</em></p>
-<p>Now define <span class="math inline">\(J-1\)</span> “cutpoints” <span class="math inline">\(\alpha_1 &lt; \alpha_2 &lt; \cdots &lt; \alpha_{J-1}\)</span> that act as a separate intercept for each category.</p>
-<p>The <strong>ordered logit</strong> defines the the <em>cumulative</em> probabilities as</p>
+<p>Let linear predictor <span class="math inline">\(\eta_i\)</span> be our usual linear predictor so that <span class="math inline">\(\eta_i = X_i\beta\)</span>, except <em>without an intercept <span class="math inline">\(\beta_0\)</span>.</em></p>
+<p>Now define <span class="math inline">\(J-1\)</span> “cutpoints” <span class="math inline">\(\alpha_1 &lt; \alpha_2 &lt; \cdots &lt; \alpha_{J-1}\)</span> that act as a separate intercept for each cumulative probability <span class="math inline">\(\Pr(Y_i \leq j)\)</span>.</p>
+<p>The <strong>ordered logit</strong> defines the <em>cumulative</em> probabilities as</p>
 <p><span class="math display">\[
 \Pr(Y_i \leq j) = \operatorname{logit}^{-1}(\alpha_j - \eta_i),
 \qquad j = 1, \ldots, J-1.
 \]</span></p>
+<p>Because the same <span class="math inline">\(\beta\)</span> appears for every <span class="math inline">\(j\)</span>, the ordered logit is also called the <strong>proportional odds</strong> model. The log-odds of falling in category <span class="math inline">\(j\)</span> or below is <span class="math inline">\(\log \left[ \dfrac{\Pr(Y_i \leq j)}{1 - \Pr(Y_i \leq j)} \right] = \alpha_j - \eta_i\)</span>, so a one-unit increase in <span class="math inline">\(x_{ik}\)</span> changes the log-odds of <span class="math inline">\(Y_i \leq j\)</span> by <span class="math inline">\(-\beta_k\)</span> (multiplies the odds by <span class="math inline">\(e^{-\beta_k}\)</span>) for <em>every</em> <span class="math inline">\(j\)</span>. Because of the minus sign, a positive <span class="math inline">\(\beta_k\)</span> makes the lower categories less likely and the higher categories more likely. This is the parameterization that <code>MASS::polr()</code> (which calls the cutpoints <code>zeta</code> and prints them as “Intercepts”) and the <code>cumulative()</code> family in {brms} use.</p>
 <p>Then probabilities for each category are</p>
 <p><span class="math display">\[
 \begin{align}
@@ -558,7 +578,7 @@ window.Quarto = {
 <li>I set the three cutpoints to <span class="math inline">\(\alpha = (-2.5,-1.3,1.3)\)</span>.</li>
 <li>I set the linear predictor for an example observation to <span class="math inline">\(\eta_i = -1.5\)</span>.</li>
 </ul>
-<p>The figure shows how <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\eta_i\)</span> are translated into <span class="math inline">\(\Pr(y_i = j)\)</span>.</p>
+<p>The figure shows how <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\eta_i\)</span> are translated into <span class="math inline">\(\Pr(Y_i = j)\)</span>.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div>
@@ -569,123 +589,184 @@ window.Quarto = {
 </div>
 </div>
 </section>
-<section id="example-party-id-by-age-and-race-in-2014" class="level2" data-number="18.3">
-<h2 data-number="18.3" class="anchored" data-anchor-id="example-party-id-by-age-and-race-in-2014"><span class="header-section-number">18.3</span> Example: Party ID by age and race in 2014</h2>
-<p>As an example, we can model party ID as a function of income.</p>
-<section id="polr" class="level3" data-number="18.3.1">
-<h3 data-number="18.3.1" class="anchored" data-anchor-id="polr"><span class="header-section-number">18.3.1</span> <code>polr()</code></h3>
-<p>First, load a data set I’ve created with variables party id (<code>pid</code>) and income.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load data</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>anes <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/red-state-pid.csv"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="example-approval-of-president-bush-1992" class="level2 page-columns page-full" data-number="18.3">
+<h2 data-number="18.3" class="anchored" data-anchor-id="example-approval-of-president-bush-1992"><span class="header-section-number">18.3</span> Example: Approval of President Bush, 1992</h2>
+<ul>
+<li>Data: 1992 ANES Time Series Study <span class="citation" data-cites="anes1992">(<a href="#ref-anes1992" role="doc-biblioref">Miller et al. 2016</a>)</span>, as cleaned by Chris Adolph for his maximum likelihood course; the model and the codebook are his Problem Set 4 <span class="citation" data-cites="adolph2025">(<a href="#ref-adolph2025" role="doc-biblioref">Adolph 2025</a>)</span>.</li>
+<li>Outcome: approval of President Bush’s job performance, four categories.</li>
+<li>Predictors: opposition to using military force (1–5), distance between the respondent’s ideology and Bush’s (0–6), evaluation of the economy over the past year (1 = much better … 5 = much worse), party ID (−3 strong Democrat … 3 strong Republican), years of education.</li>
+<li>Ordered <em>probit</em>, as in the problem set: <code>method = "probit"</code>.</li>
+<li>750 respondents; 558 complete on these variables.</li>
+</ul>
+<div class="no-row-height column-margin column-container"><div id="ref-anes1992" class="csl-entry" role="listitem">
+Miller, Warren E., Donald R. Kinder, Steven J. Rosenstone, and University of Michigan. Institute for Social Research. American National Election Studies. 2016. <span>“<span>ANES</span> 1992 Time Series Study.”</span> Inter-university Consortium for Political; Social Research [distributor]. <a href="https://doi.org/10.3886/ICPSR06067.v3">https://doi.org/10.3886/ICPSR06067.v3</a>.
+</div><div id="ref-adolph2025" class="csl-entry" role="listitem">
+Adolph, Christopher. 2025. <span>“Problem Set 4: Modeling Presidential Approval with Ordered Probit.”</span> <span>POLS/CSSS</span> 510: Maximum Likelihood Methods for the Social Sciences, University of Washington, Fall Quarter 2025. <a href="https://faculty.washington.edu/cadolph/mle/510hw4.pdf">https://faculty.washington.edu/cadolph/mle/510hw4.pdf</a>.
+</div></div><div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)  <span class="co"># masks dplyr::select()</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(marginaleffects)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># load data</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>approval <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/bush-approval-1992.csv"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">bush_approval =</span> <span class="fu">factor</span>(bush_approval, <span class="at">ordered =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Rows: 4,596
-Columns: 5
-$ state_name             &lt;chr&gt; "Oklahoma", "Idaho", "Virginia", "California", …
-$ state_median_income    &lt;dbl&gt; 66.1, 81.2, 92.1, 100.1, 97.1, 79.7, 77.5, 100.…
-$ rs_state_median_income &lt;dbl&gt; -0.595342224, -0.010181986, 0.412218451, 0.7222…
-$ income                 &lt;dbl&gt; 1.5, 1.5, 1.5, -0.5, -0.5, -0.5, -0.5, -2.5, 0.…
-$ pid                    &lt;chr&gt; "7. Strong Republican", "4. Independent", "1. S…</code></pre>
+<pre><code>Rows: 750
+Columns: 10
+$ bush_approval     &lt;ord&gt; 4. Strongly approve, 4. Strongly approve, 3. Approve…
+$ military_force    &lt;dbl&gt; 3, 2, 3, 1, 3, 3, 3, 2, 3, 1, 4, 4, 2, 2, 3, 1, 3, 2…
+$ ideology_distance &lt;dbl&gt; 3, 0, 1, 1, NA, NA, NA, 1, 1, 1, 2, NA, 0, 1, NA, 1,…
+$ economy           &lt;dbl&gt; 4, 4, 3, 3, 5, 5, 4, 2, 4, 3, 5, 5, 4, 4, 4, 5, 5, 4…
+$ party_id          &lt;dbl&gt; 2, 3, 3, 3, -2, -3, 2, 3, 2, 1, -3, -2, -2, 3, -3, 2…
+$ education         &lt;dbl&gt; 17, 8, 16, 11, 13, 12, 16, 17, 13, 17, 11, 8, 12, 16…
+$ ideology          &lt;dbl&gt; 3, 6, 6, 6, NA, 4, 6, 7, 6, 7, 2, 5, 3, 5, NA, 5, NA…
+$ gulf_war          &lt;dbl&gt; 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 1…
+$ nonwhite          &lt;dbl&gt; 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0…
+$ vote_1992         &lt;chr&gt; "Bush", "Bush", "Bush", "Clinton", "Clinton", "Clint…</code></pre>
 </div>
-</div>
-<p>Notice that the ordinal party ID lables have a numerial prefix as part of the character string. This is helpful to (1) quickly remind us of the order and (2) ensure that the alphabetic order and ordinal rankings of their values are the same.</p>
-<p>Because the dataset is in <code>.csv</code> format, <code>pid</code> is loaded as a character string, but we can easily convert it to an ordered factor.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load data</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>anes <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"https://pos5747.github.io/data/red-state-pid.csv"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pid =</span> <span class="fu">factor</span>(pid, <span class="at">ordered =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># check the order of the outcome</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(approval<span class="sc">$</span>bush_approval)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Rows: 4,596
-Columns: 5
-$ state_name             &lt;chr&gt; "Oklahoma", "Idaho", "Virginia", "California", …
-$ state_median_income    &lt;dbl&gt; 66.1, 81.2, 92.1, 100.1, 97.1, 79.7, 77.5, 100.…
-$ rs_state_median_income &lt;dbl&gt; -0.595342224, -0.010181986, 0.412218451, 0.7222…
-$ income                 &lt;dbl&gt; 1.5, 1.5, 1.5, -0.5, -0.5, -0.5, -0.5, -2.5, 0.…
-$ pid                    &lt;ord&gt; 7. Strong Republican, 4. Independent, 1. Strong…</code></pre>
+<pre><code>[1] "1. Strongly disapprove" "2. Disapprove"          "3. Approve"            
+[4] "4. Strongly approve"   </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># examine levels of ordinal variable</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(anes<span class="sc">$</span>pid)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "1. Strong Democrat"                "2. Not very strong Democrat"      
-[3] "3. Independent (leans Democrat)"   "4. Independent"                   
-[5] "5. Independent (leans Republican)" "6. Not very strong Republican"    
-[7] "7. Strong Republican"             </code></pre>
-</div>
-</div>
-<p>Because of the numbers I included in the prefix, the default <em>alphabetical</em> ordering is <em>exactly the ordering we want.</em></p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit ordered logit model</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)  <span class="co"># be wary of conflicts with filter() and select()</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">polr</span>(pid <span class="sc">~</span> income, <span class="at">data =</span> anes, <span class="at">Hess =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># summarize fit</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit ordered probit</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>fit_approval <span class="ot">&lt;-</span> <span class="fu">polr</span>(bush_approval <span class="sc">~</span> military_force <span class="sc">+</span> ideology_distance <span class="sc">+</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                       economy <span class="sc">+</span> party_id <span class="sc">+</span> education,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">data =</span> approval, <span class="at">method =</span> <span class="st">"probit"</span>, <span class="at">Hess =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_approval)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Call:
-polr(formula = pid ~ income, data = anes, Hess = TRUE)
+polr(formula = bush_approval ~ military_force + ideology_distance + 
+    economy + party_id + education, data = approval, Hess = TRUE, 
+    method = "probit")
 
 Coefficients:
-          Value Std. Error t value
-income -0.02192    0.01843  -1.189
+                     Value Std. Error t value
+military_force    -0.33189    0.06163  -5.385
+ideology_distance -0.21472    0.03810  -5.636
+economy           -0.35131    0.05696  -6.167
+party_id           0.25743    0.02957   8.707
+education         -0.04055    0.02160  -1.878
 
 Intercepts:
-                                                                Value   
-1. Strong Democrat|2. Not very strong Democrat                   -1.0666
-2. Not very strong Democrat|3. Independent (leans Democrat)      -0.5277
-3. Independent (leans Democrat)|4. Independent                    0.0123
-4. Independent|5. Independent (leans Republican)                  0.2257
-5. Independent (leans Republican)|6. Not very strong Republican   0.7555
-6. Not very strong Republican|7. Strong Republican                1.2820
-                                                                Std. Error
-1. Strong Democrat|2. Not very strong Democrat                    0.0344  
-2. Not very strong Democrat|3. Independent (leans Democrat)       0.0313  
-3. Independent (leans Democrat)|4. Independent                    0.0302  
-4. Independent|5. Independent (leans Republican)                  0.0304  
-5. Independent (leans Republican)|6. Not very strong Republican   0.0324  
-6. Not very strong Republican|7. Strong Republican                0.0365  
-                                                                t value 
-1. Strong Democrat|2. Not very strong Democrat                  -30.9733
-2. Not very strong Democrat|3. Independent (leans Democrat)     -16.8853
-3. Independent (leans Democrat)|4. Independent                    0.4074
-4. Independent|5. Independent (leans Republican)                  7.4259
-5. Independent (leans Republican)|6. Not very strong Republican  23.3255
-6. Not very strong Republican|7. Strong Republican               35.1414
+                                     Value   Std. Error t value
+1. Strongly disapprove|2. Disapprove -4.0804  0.4287    -9.5187
+2. Disapprove|3. Approve             -3.2196  0.4198    -7.6697
+3. Approve|4. Strongly approve       -1.9252  0.4098    -4.6982
 
-Residual Deviance: 16952.51 
-AIC: 16966.51 </code></pre>
+Residual Deviance: 1175.865 
+AIC: 1191.865 
+(192 observations deleted due to missingness)</code></pre>
 </div>
 </div>
-</section>
-<section id="probabilities-with-marginaleffects" class="level3" data-number="18.3.2">
-<h3 data-number="18.3.2" class="anchored" data-anchor-id="probabilities-with-marginaleffects"><span class="header-section-number">18.3.2</span> Probabilities with {marginaleffects}</h3>
-<p>To interpret the coefficients, we can compute the probability of falling into each category as age varies from 18 to 89 years.</p>
+<ul>
+<li>Positive <code>party_id</code> coefficient: higher categories more likely (sign convention above), so Republicans approve more.</li>
+<li>Negative coefficients: opposing military force, ideological distance from Bush, and a worse economy each move respondents toward disapproval.</li>
+<li>Cutpoints on the probit scale; not directly interpretable.</li>
+</ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># use {marginaleffects}</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(marginaleffects)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">predictions</span>(fit, </span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">newdata =</span> <span class="fu">datagrid</span>(<span class="at">income =</span> unique)) <span class="sc">|&gt;</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># probabilities across military_force for strong Democrats and strong Republicans</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">predictions</span>(fit_approval,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">newdata =</span> <span class="fu">datagrid</span>(<span class="at">military_force =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">party_id =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">3</span>, <span class="dv">3</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Rows: 42
-Columns: 12
-$ rowid     &lt;dbl&gt; 1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 6, 1, 2, …
-$ group     &lt;fct&gt; 1. Strong Democrat, 1. Strong Democrat, 1. Strong Democrat, …
-$ estimate  &lt;dbl&gt; 0.24575788, 0.24984362, 0.25397441, 0.25814999, 0.26237009, …
-$ std.error &lt;dbl&gt; 0.011645743, 0.009052789, 0.007085123, 0.006474830, 0.007661…
-$ statistic &lt;dbl&gt; 21.10281, 27.59853, 35.84615, 39.86977, 34.24348, 26.38355, …
-$ p.value   &lt;dbl&gt; 7.495086e-99, 1.158980e-167, 2.111349e-281, 0.000000e+00, 5.…
-$ s.value   &lt;dbl&gt; 325.9649, 554.5491, 932.3836, Inf, 851.2884, 507.1732, 346.8…
-$ conf.low  &lt;dbl&gt; 0.22293264, 0.23210048, 0.24008782, 0.24545956, 0.24735304, …
-$ conf.high &lt;dbl&gt; 0.26858311, 0.26758676, 0.26786100, 0.27084043, 0.27738713, …
-$ pid       &lt;ord&gt; 1. Strong Democrat, 1. Strong Democrat, 1. Strong Democrat, …
-$ income    &lt;dbl&gt; -2.5, -1.5, -0.5, 0.5, 1.5, 2.5, -2.5, -1.5, -0.5, 0.5, 1.5,…
-$ df        &lt;dbl&gt; Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, …</code></pre>
+<pre><code>Rows: 40
+Columns: 15
+$ rowid             &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, …
+$ group             &lt;fct&gt; 1. Strongly disapprove, 1. Strongly disapprove, 1. S…
+$ estimate          &lt;dbl&gt; 0.28302979, 0.01706906, 0.40440036, 0.03700549, 0.53…
+$ std.error         &lt;dbl&gt; 0.056389686, 0.007142304, 0.048524421, 0.010565363, …
+$ statistic         &lt;dbl&gt; 5.019177, 2.389854, 8.333955, 3.502529, 12.744123, 4…
+$ p.value           &lt;dbl&gt; 5.189343e-07, 1.685508e-02, 7.818540e-17, 4.608644e-…
+$ s.value           &lt;dbl&gt; 20.877945, 5.890672, 53.505878, 11.083370, 121.16223…
+$ conf.low          &lt;dbl&gt; 0.172508036, 0.003070403, 0.309294242, 0.016297755, …
+$ conf.high         &lt;dbl&gt; 0.39355154, 0.03106772, 0.49950648, 0.05771322, 0.61…
+$ military_force    &lt;int&gt; 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 1, 1, 2, 2, 3, 3, 4, 4…
+$ party_id          &lt;dbl&gt; -3, 3, -3, 3, -3, 3, -3, 3, -3, 3, -3, 3, -3, 3, -3,…
+$ df                &lt;dbl&gt; Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, In…
+$ economy           &lt;int&gt; 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4…
+$ education         &lt;int&gt; 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, …
+$ ideology_distance &lt;int&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2…</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(p, <span class="fu">aes</span>(<span class="at">x =</span> income, <span class="at">y =</span> estimate, <span class="at">color =</span> group)) <span class="sc">+</span> </span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(p, <span class="fu">aes</span>(<span class="at">x =</span> military_force, <span class="at">y =</span> estimate, <span class="at">fill =</span> group)) <span class="sc">+</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_area</span>(<span class="at">position =</span> <span class="st">"stack"</span>) <span class="sc">+</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(party_id), <span class="at">labeller =</span> label_both)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03-ordered-logit_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li>Other predictors at their means (<code>datagrid()</code> default).</li>
+<li>Strong Democrats: Pr(strongly disapprove) about 0.28 at <code>military_force = 1</code>, about 0.77 at 5.</li>
+<li>Strong Republicans: Pr(strongly approve) about 0.49 at 1, about 0.09 at 5.</li>
+</ul>
+<section id="cumulative-probabilities" class="level3" data-number="18.3.1">
+<h3 data-number="18.3.1" class="anchored" data-anchor-id="cumulative-probabilities"><span class="header-section-number">18.3.1</span> Computing cumulative probabilities</h3>
+<ul>
+<li>The model is defined through <span class="math inline">\(\Pr(Y_i \leq j)\)</span>; <code>predictions()</code> returns <span class="math inline">\(\Pr(Y_i = j)\)</span>, one row per category.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="annotated-cell-6"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-6-1"><a href="#annotated-cell-6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># cumulative probabilities: Pr(Y &lt;= j) and Pr(Y &gt;= j)</span></span>
+<span id="annotated-cell-6-2"><a href="#annotated-cell-6-2" aria-hidden="true" tabindex="-1"></a>cumulative_p <span class="ot">&lt;-</span> p <span class="sc">|&gt;</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-6-3" class="code-annotation-target"><a href="#annotated-cell-6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(party_id, military_force, group) <span class="sc">|&gt;</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-6-4" class="code-annotation-target"><a href="#annotated-cell-6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(party_id, military_force) <span class="sc">|&gt;</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-6-5" class="code-annotation-target"><a href="#annotated-cell-6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pr_le =</span> <span class="fu">cumsum</span>(estimate),</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="4" onclick="event.preventDefault();">4</a><span id="annotated-cell-6-6" class="code-annotation-target"><a href="#annotated-cell-6-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">pr_ge =</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">lag</span>(<span class="fu">cumsum</span>(estimate), <span class="at">default =</span> <span class="dv">0</span>)) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-6-7"><a href="#annotated-cell-6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="annotated-cell-6-8"><a href="#annotated-cell-6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-6-9"><a href="#annotated-cell-6-9" aria-hidden="true" tabindex="-1"></a><span class="co"># one grid point: strong Democrats at military_force = 3</span></span>
+<span id="annotated-cell-6-10"><a href="#annotated-cell-6-10" aria-hidden="true" tabindex="-1"></a>cumulative_p <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-6-11"><a href="#annotated-cell-6-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(party_id <span class="sc">==</span> <span class="sc">-</span><span class="dv">3</span>, military_force <span class="sc">==</span> <span class="dv">3</span>) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-6-12"><a href="#annotated-cell-6-12" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(group, estimate, pr_le, pr_ge)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-6" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-6" data-code-lines="3" data-code-annotation="1">Sort the categories into their order within each grid point, so the running sum accumulates from category 1 upward.</span>
+</dd>
+<dt data-target-cell="annotated-cell-6" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-6" data-code-lines="4" data-code-annotation="2">One running sum per grid point, i.e., per combination of <code>party_id</code> and <code>military_force</code>.</span>
+</dd>
+<dt data-target-cell="annotated-cell-6" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-6" data-code-lines="5" data-code-annotation="3"><span class="math inline">\(\Pr(Y_i \leq j)\)</span>: the running sum <span class="math inline">\(\Pr(Y_i = 1) + \cdots + \Pr(Y_i = j)\)</span>.</span>
+</dd>
+<dt data-target-cell="annotated-cell-6" data-target-annotation="4">4</dt>
+<dd>
+<span data-code-cell="annotated-cell-6" data-code-lines="6" data-code-annotation="4"><span class="math inline">\(\Pr(Y_i \geq j) = 1 - \Pr(Y_i \leq j - 1)\)</span>: <code>lag()</code> shifts the running sum down one category, and <code>default = 0</code> covers <span class="math inline">\(j = 1\)</span>.</span>
+</dd>
+</dl>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 4
+  group                  estimate pr_le  pr_ge
+  &lt;fct&gt;                     &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;
+1 1. Strongly disapprove   0.536  0.536 1     
+2 2. Disapprove            0.293  0.829 0.464 
+3 3. Approve               0.158  0.988 0.171 
+4 4. Strongly approve      0.0124 1     0.0124</code></pre>
+</div>
+</div>
+<ul>
+<li><span class="math inline">\(\Pr(Y_i \leq J)\)</span> and <span class="math inline">\(\Pr(Y_i \geq 1)\)</span> are always 1; drop them before plotting.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot Pr(Y &lt;= j) for j = 1, 2, 3</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>cumulative_p <span class="sc">|&gt;</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(group <span class="sc">!=</span> <span class="st">"4. Strongly approve"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> military_force, <span class="at">y =</span> pr_le, <span class="at">color =</span> group)) <span class="sc">+</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(party_id), <span class="at">labeller =</span> label_both) <span class="sc">+</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Pr(Y &lt;= j)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -694,33 +775,115 @@ $ df        &lt;dbl&gt; Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, I
 </div>
 </div>
 </div>
+<ul>
+<li>Strong Democrats at <code>military_force = 3</code>: Pr(strongly disapprove) 0.54, Pr(disapprove or worse) 0.83, Pr(approve or worse) 0.99.</li>
+<li>Each curve is one cutpoint: <span class="math inline">\(\Pr(Y_i \leq j) = \Phi(\alpha_j - \eta_i)\)</span> here (probit), so the three curves move together as <span class="math inline">\(\eta_i\)</span> changes. That is the proportional-odds (parallel) structure.</li>
+<li>The stacked <code>geom_area()</code> above draws the same curves, but <em>upper-tail</em>: <code>position = "stack"</code> puts the first level on top, so the boundary above band <span class="math inline">\(j\)</span> is <span class="math inline">\(\Pr(Y_i \geq j)\)</span>, not <span class="math inline">\(\Pr(Y_i \leq j)\)</span>. At <code>military_force = 3</code> for strong Democrats the boundaries sit at 0.46, 0.17, and 0.01, the <code>pr_ge</code> column. <code>position_stack(reverse = TRUE)</code> puts level 1 at the bottom and makes the boundaries <span class="math inline">\(\Pr(Y_i \leq j)\)</span>.</li>
+</ul>
 </section>
-<section id="computing-cumulative-probabilities" class="level3" data-number="18.3.3">
-<h3 data-number="18.3.3" class="anchored" data-anchor-id="computing-cumulative-probabilities"><span class="header-section-number">18.3.3</span> Computing cumulative probabilities</h3>
-<p>However, the probabilities above are somewhat awkward to interpret. As the middle categories shrink, it isn’t immediately clear what categories are growing as a result. Instead, we can compute an easier-to-interpret <em>cumulative</em> probability using <code>cumsum()</code> within <code>arrange()</code>ed groups.</p>
+</section>
+<section id="example-working-mothers-gss-1977-and-1989" class="level2 page-columns page-full" data-number="18.4">
+<h2 data-number="18.4" class="anchored" data-anchor-id="example-working-mothers-gss-1977-and-1989"><span class="header-section-number">18.4</span> Example: Working mothers, GSS 1977 and 1989</h2>
+<ul>
+<li>Data: General Social Survey, 1977 and 1989 <span class="citation" data-cites="gss2019">(<a href="#ref-gss2019" role="doc-biblioref">Smith et al. 2019</a>)</span>; the <code>ordwarm2</code> data of <span class="citation" data-cites="long1997">Long (<a href="#ref-long1997" role="doc-biblioref">1997</a>, ch.&nbsp;5)</span> and <span class="citation" data-cites="longfreese2014">Long and Freese (<a href="#ref-longfreese2014" role="doc-biblioref">2014</a>, ch.&nbsp;7)</span>.</li>
+<li>Outcome: agreement with “A working mother can establish just as warm and secure a relationship with her children as a mother who does not work,” four categories.</li>
+<li>Predictors: survey year, gender, race, age, years of education, occupational prestige.</li>
+<li>Ordered logit, Long &amp; Freese’s specification.</li>
+<li>2,293 respondents, no missing values.</li>
+</ul>
+<div class="no-row-height column-margin column-container"><div id="ref-gss2019" class="csl-entry" role="listitem">
+Smith, Tom W., Michael Davern, Jeremy Freese, and Stephen L. Morgan. 2019. <span>“General Social Surveys, 1972–2018 [Machine-Readable Data File].”</span> Chicago: NORC.
+</div><div id="ref-long1997" class="csl-entry" role="listitem">
+Long, J. Scott. 1997. <em>Regression Models for Categorical and Limited Dependent Variables</em>. Vol. 7. Advanced Quantitative Techniques in the Social Sciences. Thousand Oaks, CA: Sage.
+</div><div id="ref-longfreese2014" class="csl-entry" role="listitem">
+Long, J. Scott, and Jeremy Freese. 2014. <em>Regression Models for Categorical Dependent Variables Using <span>Stata</span></em>. 3rd ed. College Station, TX: Stata Press.
+</div></div><div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)  <span class="co"># masks dplyr::select()</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(marginaleffects)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co"># load data</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>warm <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/working-mothers-gss.csv"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">warm =</span> <span class="fu">factor</span>(warm, <span class="at">ordered =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 2,293
+Columns: 7
+$ warm      &lt;ord&gt; 1. Strongly disagree, 1. Strongly disagree, 1. Strongly disa…
+$ year      &lt;dbl&gt; 1977, 1977, 1989, 1977, 1977, 1989, 1977, 1977, 1977, 1977, …
+$ gender    &lt;chr&gt; "Female", "Male", "Male", "Female", "Female", "Male", "Femal…
+$ race      &lt;chr&gt; "White", "White", "White", "White", "White", "White", "White…
+$ age       &lt;dbl&gt; 33, 74, 36, 73, 59, 33, 43, 48, 27, 46, 75, 34, 64, 46, 59, …
+$ education &lt;dbl&gt; 10, 16, 12, 9, 11, 4, 7, 12, 17, 12, 8, 12, 11, 12, 12, 6, 1…
+$ prestige  &lt;dbl&gt; 31, 50, 41, 36, 62, 17, 40, 48, 69, 50, 41, 47, 40, 31, 55, …</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># check the order of the outcome</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(warm<span class="sc">$</span>warm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "1. Strongly disagree" "2. Disagree"          "3. Agree"            
+[4] "4. Strongly agree"   </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit ordered logit</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>fit_warm <span class="ot">&lt;-</span> <span class="fu">polr</span>(warm <span class="sc">~</span> <span class="fu">factor</span>(year) <span class="sc">+</span> gender <span class="sc">+</span> race <span class="sc">+</span> age <span class="sc">+</span> education <span class="sc">+</span> prestige,</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> warm, <span class="at">Hess =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_warm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+polr(formula = warm ~ factor(year) + gender + race + age + education + 
+    prestige, data = warm, Hess = TRUE)
+
+Coefficients:
+                     Value Std. Error t value
+factor(year)1989  0.523912   0.079899   6.557
+genderMale       -0.733309   0.078483  -9.344
+raceWhite        -0.391140   0.118381  -3.304
+age              -0.021666   0.002469  -8.777
+education         0.067176   0.015975   4.205
+prestige          0.006072   0.003293   1.844
+
+Intercepts:
+                                 Value    Std. Error t value 
+1. Strongly disagree|2. Disagree  -2.4654   0.2389   -10.3188
+2. Disagree|3. Agree              -0.6309   0.2333    -2.7042
+3. Agree|4. Strongly agree         1.2618   0.2340     5.3919
+
+Residual Deviance: 5689.825 
+AIC: 5707.825 </code></pre>
+</div>
+</div>
+<ul>
+<li>Matches Long &amp; Freese: <code>factor(year)1989</code> 0.52, <code>genderMale</code> −0.73, <code>raceWhite</code> −0.39, <code>age</code> −0.02, <code>education</code> 0.07, <code>prestige</code> 0.006.</li>
+<li>Men, whites, and older respondents less likely to agree; 1989 respondents and the more educated more likely.</li>
+</ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>cumulative_p <span class="ot">&lt;-</span> p <span class="sc">%&gt;%</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(income, group) <span class="sc">%&gt;%</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(income) <span class="sc">%&gt;%</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">cumulative_prob =</span> <span class="fu">cumsum</span>(estimate),</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">j =</span> <span class="fu">as.integer</span>(group),</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">cdf_label =</span> <span class="fu">paste0</span>(<span class="st">"Pr(Y ≤ "</span>, group, <span class="st">")"</span>),</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">cdf_label =</span> <span class="fu">reorder</span>(cdf_label, j)) <span class="sc">%&gt;%</span></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(cumulative_p, <span class="fu">aes</span>(<span class="at">x =</span> income, <span class="at">y =</span> cumulative_prob, <span class="at">color =</span> cdf_label)) <span class="sc">+</span> </span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="03-ordered-logit_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># probabilities across age, by gender</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">predictions</span>(fit_warm,</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">newdata =</span> <span class="fu">datagrid</span>(<span class="at">age =</span> <span class="dv">18</span><span class="sc">:</span><span class="dv">89</span>,</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">gender =</span> unique)) <span class="sc">|&gt;</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 576
+Columns: 16
+$ rowid     &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 1…
+$ group     &lt;fct&gt; 1. Strongly disagree, 1. Strongly disagree, 1. Strongly disa…
+$ estimate  &lt;dbl&gt; 0.06104151, 0.11921253, 0.06229517, 0.12150629, 0.06357283, …
+$ std.error &lt;dbl&gt; 0.006562767, 0.011012905, 0.006590978, 0.011019420, 0.006619…
+$ statistic &lt;dbl&gt; 9.301184, 10.824803, 9.451581, 11.026560, 9.604216, 11.23184…
+$ p.value   &lt;dbl&gt; 1.388902e-20, 2.626440e-27, 3.337506e-21, 2.845415e-28, 7.67…
+$ s.value   &lt;dbl&gt; 65.96462, 88.29895, 68.02172, 91.50535, 70.14245, 94.82759, …
+$ conf.low  &lt;dbl&gt; 0.04817872, 0.09762763, 0.04937709, 0.09990863, 0.05059931, …
+$ conf.high &lt;dbl&gt; 0.07390429, 0.14079743, 0.07521325, 0.14310396, 0.07654635, …
+$ age       &lt;int&gt; 18, 18, 19, 19, 20, 20, 21, 21, 22, 22, 23, 23, 24, 24, 25, …
+$ gender    &lt;chr&gt; "Female", "Male", "Female", "Male", "Female", "Male", "Femal…
+$ df        &lt;dbl&gt; Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, …
+$ education &lt;int&gt; 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, …
+$ prestige  &lt;int&gt; 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, …
+$ race      &lt;chr&gt; "White", "White", "White", "White", "White", "White", "White…
+$ year      &lt;dbl&gt; 1977, 1977, 1977, 1977, 1977, 1977, 1977, 1977, 1977, 1977, …</code></pre>
 </div>
-</div>
-</div>
-<p>Alternatively, w can use <code>position = "stack"</code> with <code>geom_line()</code> or <code>geom_area()</code> to trick <code>ggplot()</code> into plotting the cumulative probabilities for us if we don’t want to compute them manually first.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(p, <span class="fu">aes</span>(<span class="at">x =</span> income, <span class="at">y =</span> estimate, <span class="at">color =</span> group)) <span class="sc">+</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">position =</span> <span class="st">"stack"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(p, <span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> estimate, <span class="at">fill =</span> group)) <span class="sc">+</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_area</span>(<span class="at">position =</span> <span class="st">"stack"</span>) <span class="sc">+</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(gender))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -728,85 +891,169 @@ $ df        &lt;dbl&gt; Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, I
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(p, <span class="fu">aes</span>(<span class="at">x =</span> income, <span class="at">y =</span> estimate, <span class="at">fill =</span> group)) <span class="sc">+</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_area</span>(<span class="at">position =</span> <span class="st">"stack"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>Year and race at their modes, education and prestige at their means.</li>
+<li>Women: Pr(strongly agree) about 0.26 at age 20, about 0.09 at 80.</li>
+<li>Men: Pr(strongly disagree) about 0.12 at 20, about 0.34 at 80.</li>
+<li>Band boundaries are <span class="math inline">\(\Pr(Y_i \geq j)\)</span> (first level stacked on top).</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># cumulative probabilities Pr(Y &lt;= j), then plot j = 1, 2, 3</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>cumulative_p <span class="ot">&lt;-</span> p <span class="sc">|&gt;</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(gender, age, group) <span class="sc">|&gt;</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(gender, age) <span class="sc">|&gt;</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pr_le =</span> <span class="fu">cumsum</span>(estimate)) <span class="sc">|&gt;</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>cumulative_p <span class="sc">|&gt;</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(group <span class="sc">!=</span> <span class="st">"4. Strongly agree"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> pr_le, <span class="at">color =</span> group)) <span class="sc">+</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(gender)) <span class="sc">+</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Pr(Y &lt;= j)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="03-ordered-logit_files/figure-html/unnamed-chunk-7-2.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="03-ordered-logit_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
+<ul>
+<li>Three parallel curves per panel, one per cutpoint; men’s curves sit above women’s (less agreement).</li>
+</ul>
 </section>
-<section id="example-the-varying-relationship-across-years" class="level3" data-number="18.3.4">
-<h3 data-number="18.3.4" class="anchored" data-anchor-id="example-the-varying-relationship-across-years"><span class="header-section-number">18.3.4</span> Example: The varying relationship across years</h3>
-<p>We can use a hierarchical variant to model the differences across states. Consistent with Gelman et al.’s “red state, blue state” argument, the changes across income might vary across rich and poor states.</p>
-<p>With that in mind, we allow varying intercepts and slopes across states and model those using state median income.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load packages</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(brms)</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co"># fit same model, but coefs vary across years</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">brm</span>(pid <span class="sc">~</span> income<span class="sc">*</span>rs_state_median_income <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">+</span> income <span class="sc">|</span> state_name), </span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">data =</span> anes, </span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">family =</span> <span class="fu">cumulative</span>(),</span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>           <span class="at">cores =</span> <span class="dv">4</span>, </span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>           <span class="at">chains =</span> <span class="dv">4</span>, </span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>           <span class="at">backend =</span> <span class="st">"rstan"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Now we can plot the cumulative probabilities for each of the states and see that the effect of income does indeed vary across the states.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># make grid </span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>grid <span class="ot">&lt;-</span> anes <span class="sc">%&gt;%</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(state_name, state_median_income, rs_state_median_income) <span class="sc">%&gt;%</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">income =</span> <span class="cn">NA</span>) <span class="sc">|&gt;</span></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="example-political-ideology-by-party-and-gender" class="level2 page-columns page-full" data-number="18.5">
+<h2 data-number="18.5" class="anchored" data-anchor-id="example-political-ideology-by-party-and-gender"><span class="header-section-number">18.5</span> Example: Political ideology by party and gender</h2>
+<ul>
+<li>Data: Table 6.7 of <span class="citation" data-cites="agresti2007">Agresti (<a href="#ref-agresti2007" role="doc-biblioref">2007, sec. 6.2.2</a>)</span>, a 2 × 2 × 5 table from the General Social Survey (no year given), expanded to one row per respondent (N = 835); the party-only version is the UVA StatLab tutorial <span class="citation" data-cites="ford2015">(<a href="#ref-ford2015" role="doc-biblioref">Ford 2015</a>)</span>.</li>
+<li>Outcome: political ideology, five categories from very liberal to very conservative.</li>
+<li>Predictors: party (Democrat, Republican) and gender.</li>
+<li>Ordered logit; Agresti’s cumulative logit (proportional odds) model.</li>
+</ul>
+<div class="no-row-height column-margin column-container"><div id="ref-ford2015" class="csl-entry" role="listitem">
+Ford, Clay. 2015. <span>“Fitting and Interpreting a Proportional Odds Model.”</span> University of Virginia Library, StatLab. <a href="https://library.virginia.edu/data/fitting-and-interpreting-a-proportional-odds-model/">https://library.virginia.edu/data/fitting-and-interpreting-a-proportional-odds-model/</a>.
+</div></div><div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)  <span class="co"># masks dplyr::select()</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(marginaleffects)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="co"># load data</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>ideology <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/ideology-party-gender.csv"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ideology =</span> <span class="fu">factor</span>(ideology, <span class="at">ordered =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Rows: 51
-Columns: 4
-$ state_name             &lt;chr&gt; "Oklahoma", "Idaho", "Virginia", "California", …
-$ state_median_income    &lt;dbl&gt; 66.1, 81.2, 92.1, 100.1, 97.1, 79.7, 77.5, 102.…
-$ rs_state_median_income &lt;dbl&gt; -0.595342224, -0.010181986, 0.412218451, 0.7222…
-$ income                 &lt;lgl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</code></pre>
+<pre><code>Rows: 835
+Columns: 3
+$ ideology &lt;ord&gt; 1. Very liberal, 1. Very liberal, 1. Very liberal, 1. Very li…
+$ party    &lt;chr&gt; "Democrat", "Democrat", "Democrat", "Democrat", "Democrat", "…
+$ gender   &lt;chr&gt; "Female", "Female", "Female", "Female", "Female", "Female", "…</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># make predictions</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">predictions</span>(fit, </span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">income =</span> unique),</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">newdata =</span> grid) <span class="sc">|&gt;</span></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">state_name =</span> <span class="fu">reorder</span>(state_name, rs_state_median_income)) <span class="sc">|&gt;</span></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># check the order of the outcome</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(ideology<span class="sc">$</span>ideology)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Rows: 2,142
-Columns: 10
-$ rowid                  &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, …
-$ rowidcf                &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, …
-$ group                  &lt;fct&gt; 1. Strong Democrat, 1. Strong Democrat, 1. Stro…
-$ estimate               &lt;dbl&gt; 0.2458964, 0.2500649, 0.2458744, 0.2647200, 0.2…
-$ conf.low               &lt;dbl&gt; 0.1581084, 0.1774280, 0.1762126, 0.2076182, 0.1…
-$ conf.high              &lt;dbl&gt; 0.3422860, 0.3469930, 0.3274199, 0.3278313, 0.3…
-$ rs_state_median_income &lt;dbl&gt; -0.595342224, -0.010181986, 0.412218451, 0.7222…
-$ state_name             &lt;fct&gt; Oklahoma, Idaho, Virginia, California, Colorado…
-$ income                 &lt;dbl&gt; -2.5, -2.5, -2.5, -2.5, -2.5, -2.5, -2.5, -2.5,…
-$ df                     &lt;dbl&gt; Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, In…</code></pre>
+<pre><code>[1] "1. Very liberal"          "2. Slightly liberal"     
+[3] "3. Moderate"              "4. Slightly conservative"
+[5] "5. Very conservative"    </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># make plot</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(p, <span class="fu">aes</span>(<span class="at">x =</span> income, <span class="at">y =</span> estimate, <span class="at">fill =</span> group)) <span class="sc">+</span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_area</span>(<span class="at">position =</span> <span class="st">"stack"</span>) <span class="sc">+</span></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(state_name), <span class="at">ncol =</span> <span class="dv">4</span>)  <span class="sc">+</span></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"RdBu"</span>, <span class="at">direction =</span> <span class="sc">-</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit ordered logit</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>fit_ideology <span class="ot">&lt;-</span> <span class="fu">polr</span>(ideology <span class="sc">~</span> party <span class="sc">+</span> gender,</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">data =</span> ideology, <span class="at">Hess =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_ideology)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+polr(formula = ideology ~ party + gender, data = ideology, Hess = TRUE)
+
+Coefficients:
+                 Value Std. Error t value
+partyRepublican 0.9636     0.1297  7.4311
+genderMale      0.1169     0.1273  0.9177
+
+Intercepts:
+                                              Value    Std. Error t value 
+1. Very liberal|2. Slightly liberal            -1.4518   0.1226   -11.8373
+2. Slightly liberal|3. Moderate                -0.4583   0.1048    -4.3746
+3. Moderate|4. Slightly conservative            1.2550   0.1142    10.9873
+4. Slightly conservative|5. Very conservative   2.0890   0.1293    16.1587
+
+Residual Deviance: 2474.142 
+AIC: 2486.142 </code></pre>
+</div>
+</div>
+<ul>
+<li>Agresti fits party alone and reports 0.975 (SE 0.129) <span class="citation" data-cites="agresti2007">(<a href="#ref-agresti2007" role="doc-biblioref">Agresti 2007, 183</a>)</span>; with gender added, <code>partyRepublican</code> 0.96 (SE 0.13) and <code>genderMale</code> 0.12 (SE 0.13).</li>
+<li>Republicans much more conservative; gender difference small and uncertain.</li>
+</ul>
+<div class="no-row-height column-margin column-container"><div id="ref-agresti2007" class="csl-entry" role="listitem">
+Agresti, Alan. 2007. <em>An Introduction to Categorical Data Analysis</em>. 2nd ed. Hoboken, NJ: Wiley. <a href="https://doi.org/10.1002/0470114754">https://doi.org/10.1002/0470114754</a>.
+</div></div><div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># probabilities for the four groups</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">predictions</span>(fit_ideology,</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">newdata =</span> <span class="fu">datagrid</span>(<span class="at">party =</span> unique,</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">gender =</span> unique)) <span class="sc">|&gt;</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 20
+Columns: 12
+$ rowid     &lt;int&gt; 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4
+$ group     &lt;fct&gt; 1. Very liberal, 1. Very liberal, 1. Very liberal, 1. Very l…
+$ estimate  &lt;dbl&gt; 0.18971925, 0.17240324, 0.08200121, 0.07362350, 0.19765910, …
+$ std.error &lt;dbl&gt; 0.01885442, 0.01993272, 0.01082473, 0.01015843, 0.01676040, …
+$ statistic &lt;dbl&gt; 10.062324, 8.649260, 7.575357, 7.247526, 11.793218, 10.76420…
+$ p.value   &lt;dbl&gt; 8.106161e-24, 5.183442e-18, 3.581407e-14, 4.244524e-13, 4.23…
+$ s.value   &lt;dbl&gt; 76.70726, 57.42080, 44.66647, 41.09946, 104.22083, 87.34721,…
+$ conf.low  &lt;dbl&gt; 0.15276527, 0.13333584, 0.06078512, 0.05371334, 0.16480931, …
+$ conf.high &lt;dbl&gt; 0.22667322, 0.21147065, 0.10321729, 0.09353366, 0.23050888, …
+$ party     &lt;chr&gt; "Democrat", "Democrat", "Republican", "Republican", "Democra…
+$ gender    &lt;chr&gt; "Female", "Male", "Female", "Male", "Female", "Male", "Femal…
+$ df        &lt;dbl&gt; Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, …</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(p, <span class="fu">aes</span>(<span class="at">x =</span> party, <span class="at">y =</span> estimate, <span class="at">fill =</span> group)) <span class="sc">+</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(gender))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="03-ordered-logit_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="768"></p>
+<p><img src="03-ordered-logit_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
+<ul>
+<li>Both predictors binary, so <code>x</code> takes two values. <code>geom_area()</code> needs a numeric <code>x</code> and draws nothing for a character <code>x</code>; <code>geom_col()</code> stacks the same probabilities as columns.</li>
+<li>Women: Pr(very conservative) about 0.11 for Democrats, about 0.25 for Republicans.</li>
+<li>Column boundaries are <span class="math inline">\(\Pr(Y_i \geq j)\)</span> (first level stacked on top), as in the two figures above.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># cumulative probabilities Pr(Y &lt;= j), then plot j = 1, ..., 4</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>cumulative_p <span class="ot">&lt;-</span> p <span class="sc">|&gt;</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(gender, party, group) <span class="sc">|&gt;</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(gender, party) <span class="sc">|&gt;</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pr_le =</span> <span class="fu">cumsum</span>(estimate)) <span class="sc">|&gt;</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>cumulative_p <span class="sc">|&gt;</span></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(group <span class="sc">!=</span> <span class="st">"5. Very conservative"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> party, <span class="at">y =</span> pr_le, <span class="at">color =</span> group, <span class="at">group =</span> group)) <span class="sc">+</span></span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(gender)) <span class="sc">+</span></span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Pr(Y &lt;= j)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03-ordered-logit_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li>Every cumulative probability drops from Democrats to Republicans by the same log-odds shift, 0.96.</li>
+</ul>
 
 
-</section>
+
 </section>
 
 </main> <!-- /main -->
