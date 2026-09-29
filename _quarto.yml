@@ -5,8 +5,6 @@ project:
   # exercises link to https://pos5747.github.io/notes/readings/<file>.pdf
   resources:
     - readings/
-    # apps/ holds Shinylive exports (R in the browser); published as static files
-    - apps/
   
 freeze: auto  
 
