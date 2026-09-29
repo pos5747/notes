@@ -72,10 +72,11 @@ working_mothers <- ordwarm2 |>
 
 write_csv(working_mothers, file.path(out_dir, "working-mothers-gss.csv"))
 
-# 3. Political ideology by party and gender (Agresti) -----------------------
+# 3. Political ideology by party (Agresti) ----------------------------------
 # Source: the 2 x 2 x 5 table in Agresti's Introduction to Categorical Data
-# Analysis (cumulative logit example), N = 835. The counts are the source of
-# truth; the CSV is the table expanded to one row per respondent.
+# Analysis (Table 6.7), N = 835. The counts are typed in as published, by
+# gender and party; Agresti's model uses party only, so gender is dropped
+# before writing. The CSV is the table expanded to one row per respondent.
 
 ideology_labels <- c("1. Very liberal", "2. Slightly liberal", "3. Moderate",
                      "4. Slightly conservative", "5. Very conservative")
@@ -92,12 +93,13 @@ ideology <- ideology_counts |>
   pivot_longer(n1:n5, names_to = "ideology", values_to = "count") |>
   mutate(ideology = ideology_labels[as.integer(str_remove(ideology, "n"))]) |>
   uncount(count) |>
-  select(ideology, party, gender)
+  select(ideology, party) |>
+  arrange(party, ideology)
 
-write_csv(ideology, file.path(out_dir, "ideology-party-gender.csv"))
+write_csv(ideology, file.path(out_dir, "ideology-party.csv"))
 
 # report ---------------------------------------------------------------------
 cat("wrote to", out_dir, "\n")
 cat("bush-approval-1992.csv:    ", nrow(bush_approval), "rows\n")
 cat("working-mothers-gss.csv:   ", nrow(working_mothers), "rows\n")
-cat("ideology-party-gender.csv: ", nrow(ideology), "rows\n")
+cat("ideology-party.csv:         ", nrow(ideology), "rows\n")

@@ -12,5 +12,3 @@ latex2exp
 RColorBrewer
 MASS
 marginaleffects
-Rcpp
-brms

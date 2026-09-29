@@ -32,7 +32,7 @@ is not part of these examples. It stays here because the exercises and
 | column | raw name | values |
 |---|---|---|
 | `bush_approval` | `bushapp` | `1. Strongly disapprove`, `2. Disapprove`, `3. Approve`, `4. Strongly approve` (raw 0–3; 23 NA) |
-| `military_force` | `milforce` | 1–5, opposition to using military force: 1 = would use force … 5 = would not (8 NA) |
+| `military_force` | `milforce` | 1–5, "how willing should the United States be to use military force to solve international problems?": 1 = extremely willing, 2 = very, 3 = somewhat, 4 = not very, 5 = never willing (8 NA). A general question, not about a specific conflict; ANES cumulative file `VCF0844`. Adolph's codebook says only "opposition to military force: 1 = would use force … 5 = would not" |
 | `ideology_distance` | `rbdist` | 0–6, \|respondent's 7-point ideology − respondent's placement of Bush\| (175 NA) |
 | `economy` | `econ` | 1–5, national economy compared with a year ago: 1 = much better … 5 = much worse (10 NA) |
 | `party_id` | `partyid` | −3 strong Democrat … 0 independent … 3 strong Republican (8 NA) |
@@ -67,23 +67,25 @@ Codebook wording follows Adolph's Problem Set 4 (`https://faculty.washington.edu
 | `education` | `ed` | years of schooling, 0–20 |
 | `prestige` | `prst` | occupational prestige score, 12–82 |
 
-## `ideology-party-gender.csv` — political ideology by party and gender
+## `ideology-party.csv` — political ideology by party
 
 - **Source.** Table 6.7, "Political Ideology by Gender and Political
   Party," in Agresti, *An Introduction to Categorical Data Analysis*, 2nd
   ed. (Wiley, 2007), Section 6.2.2. Agresti's source line reads "Source:
   General Social Survey," with no year. Agresti's text fits ideology on
-  party alone (0.975, SE 0.129); the chapter adds gender.
-- **N = 835**: one row per respondent, expanded from the published cell
-  counts with `tidyr::uncount()`, so `polr()` needs no `weights =`. No
-  missing values.
-- Cell counts (very liberal … very conservative): Female Democrat
-  44/47/118/23/32, Female Republican 18/28/86/39/48, Male Democrat
-  36/34/53/18/23, Male Republican 12/18/62/45/51. Summed over gender:
-  Democrats 80/81/171/41/55, Republicans 30/46/148/84/99.
+  party alone (0.975, SE 0.129), and so does the chapter.
+- **Gender is dropped.** The build script types in the table as published,
+  by gender and party, then keeps only `ideology` and `party`, so the CSV is
+  the table summed over gender.
+- **N = 835**: one row per respondent, expanded from the cell counts with
+  `tidyr::uncount()`, so `polr()` needs no `weights =`. No missing values.
+- Cell counts (very liberal … very conservative), summed over gender:
+  Democrats 80/81/171/41/55, Republicans 30/46/148/84/99. By gender, as
+  published: Female Democrat 44/47/118/23/32, Female Republican
+  18/28/86/39/48, Male Democrat 36/34/53/18/23, Male Republican
+  12/18/62/45/51.
 
 | column | values |
 |---|---|
 | `ideology` | `1. Very liberal`, `2. Slightly liberal`, `3. Moderate`, `4. Slightly conservative`, `5. Very conservative` |
 | `party` | `Democrat`, `Republican` |
-| `gender` | `Female`, `Male` |

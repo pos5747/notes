@@ -222,11 +222,19 @@ ggplot() +
 
 ## Example: Approval of President Bush, 1992
 
-- Data: 1992 ANES Time Series Study [@anes1992], as cleaned by Chris Adolph for his maximum likelihood course; the model and the codebook are his Problem Set 4 [@adolph2025].
-- Outcome: approval of President Bush's job performance, four categories.
-- Predictors: opposition to using military force (1–5), distance between the respondent's ideology and Bush's (0–6), evaluation of the economy over the past year (1 = much better … 5 = much worse), party ID (−3 strong Democrat … 3 strong Republican), years of education.
-- Ordered *probit*, as in the problem set: `method = "probit"`.
+- Data: 1992 ANES Time Series Study [@anes1992].
+- Outcome: approval of President Bush's job performance, four categories: strongly disapprove, disapprove, approve, and strongly approve.
+- Predictors:
+  - `military_force`: how willing the United States should be to use military force to solve international problems, from 1 (extremely willing) to 5 (never willing).
+  - `ideology_distance`: distance between the respondent's ideology and where they place Bush, from 0 (same position) to 6 (opposite ends of the 7-point scale).
+  - `economy`: evaluation of the national economy compared with a year ago, from 1 (much better) to 5 (much worse).
+  - `party_id`: party identification, from −3 (strong Democrat) through 0 (independent) to 3 (strong Republican).
+  - `education`: years of education.
 - 750 respondents; 558 complete on these variables.
+
+::: aside
+This example comes from Chris Adolph's maximum likelihood course. The model and the codebook are described in his Problem Set 4 [@adolph2025]. Adolph fits an ordered *probit* (`method = "probit"` in `polr()`). I fit an ordered logit to match this chapter. 
+:::
 
 ```{r}
 library(tidyverse)
@@ -241,16 +249,18 @@ approval <- read_csv("data/bush-approval-1992.csv") |>
 # check the order of the outcome
 levels(approval$bush_approval)
 
-# fit ordered probit
+# fit ordered logit
 fit_approval <- polr(bush_approval ~ military_force + ideology_distance +
                        economy + party_id + education,
-                     data = approval, method = "probit", Hess = TRUE)
+                     data = approval, Hess = TRUE)
 summary(fit_approval)
 ```
 
-- Positive `party_id` coefficient: higher categories more likely (sign convention above), so Republicans approve more.
-- Negative coefficients: opposing military force, ideological distance from Bush, and a worse economy each move respondents toward disapproval.
-- Cutpoints on the probit scale; not directly interpretable.
+- Positive `party_id` coefficient means that higher categories more likely (sign convention above), so Republicans are more approving.
+- Negative coefficients indicate who is more *disapproving*: 
+   - respondents who are more opposed to military force
+   - respondents who are are ideologically further from Bush
+   - respondent who perceive the economy as worse.
 
 ```{r}
 #| fig-asp: 0.5
@@ -261,17 +271,184 @@ p <- predictions(fit_approval,
   glimpse()
 
 ggplot(p, aes(x = military_force, y = estimate, fill = group)) +
-  geom_area(position = "stack") +
+  geom_area(position = position_stack(reverse = TRUE)) +
   facet_wrap(vars(party_id), labeller = label_both)
 ```
 
 - Other predictors at their means (`datagrid()` default).
-- Strong Democrats: Pr(strongly disapprove) about 0.28 at `military_force = 1`, about 0.77 at 5.
-- Strong Republicans: Pr(strongly approve) about 0.49 at 1, about 0.09 at 5.
+- For strong Democrats: Pr(strongly disapprove) about 0.27 at `military_force = 1` and about 0.78 at `military_force = 5`.
+- For strong Republicans: Pr(strongly approve) about 0.48 at `military_force = 1`, about 0.09 at `military_force = 5`.
+- Interactive version: choose the x-axis and facet predictors below and set the rest; the code under the plot reproduces whatever it draws.
+
+```{r}
+#| include: false
+#| cache: false
+# hand the fit to the interactive figure below (Observable JS);
+# ojs_define() refuses to run inside a cached chunk, hence cache: false
+predictors <- c("military_force", "ideology_distance", "economy",
+                "party_id", "education")
+labels <- c(
+  military_force    = "Opposition to military force (1 = extremely willing … 5 = never willing)",
+  ideology_distance = "Ideological distance from Bush (0 = same position … 6 = opposite ends)",
+  economy           = "National economy vs. a year ago (1 = much better … 5 = much worse)",
+  party_id          = "Party identification (−3 = strong Democrat … 3 = strong Republican)",
+  education         = "Years of education"
+)
+mf <- model.frame(fit_approval)  # the 558 complete cases polr() used
+# base R on purpose: this chunk is not cached, but the library() calls above
+# are, and knitr does not re-attach packages when it serves a chunk from cache
+ol_vars <- data.frame(
+  name   = predictors,
+  min    = sapply(predictors, \(v) min(mf[[v]]), USE.NAMES = FALSE),
+  max    = sapply(predictors, \(v) max(mf[[v]]), USE.NAMES = FALSE),
+  median = sapply(predictors, \(v) round(median(mf[[v]])), USE.NAMES = FALSE),
+  label  = unname(labels[predictors])
+)
+# coefficients and cutpoints go over as strings: ojs_define() rounds numbers
+# to four decimal places (jsonlite's default), enough to move the fourth
+# decimal of a probability; the JS converts them back
+ojs_define(ol_coef   = lapply(coef(fit_approval), as.character),  # lapply() keeps the names
+           ol_zeta   = as.character(fit_approval$zeta),
+           ol_levels = levels(approval$bush_approval),
+           ol_vars   = ol_vars)
+```
+
+```{ojs}
+//| echo: false
+// the fit, handed over by the R chunk above (numbers arrive as strings; see there)
+coef = Object.fromEntries(Object.entries(ol_coef).map(([v, b]) => [v, Number(b)]))
+zeta = ol_zeta.map(Number)
+vars = transpose(ol_vars)                              // one row per predictor
+predictors = vars.map(v => v.name)                     // in the model's order
+info = Object.fromEntries(vars.map(v => [v.name, v]))  // info.party_id.min, .max, .median, .label
+colors = ["#F8766D", "#7CAE00", "#00BFC4", "#C77CFF"]  // ggplot2's default hues for levels 1-4
+seq = (from, to) => Array.from({length: to - from + 1}, (_, i) => from + i)
+wide = (form) => { form.style.setProperty("--label-width", "165px"); return form; }  // room for "ideology_distance"
+```
+
+```{ojs}
+//| echo: false
+// roles: one predictor on the x-axis, at most one in the facets, the rest held fixed
+viewof xVar = wide(Inputs.select(predictors, {value: "military_force", label: "x-axis variable"}))
+
+mutable facetMemory = "party_id"  // the last facet choice, so it survives re-creating the input
+
+viewof facetVar = {
+  const options = ["none", ...predictors.filter(v => v !== xVar)];  // never the current x
+  const last = mutable facetMemory;                                   // read without a reactive dependency
+  const value = options.includes(last) ? last : "none";               // x took the facet's place -> none
+  return wide(Inputs.select(options, {value, label: "Facet variable"}));
+}
+
+rememberFacet = { mutable facetMemory = facetVar; }
+
+// facet values: a checkbox per integer value, min and max checked by default
+viewof facetVals = {
+  if (facetVar === "none") {  // hidden placeholder whose value is an empty selection
+    const none = html`<span></span>`;
+    none.value = [];
+    return none;
+  }
+  const d = info[facetVar];
+  return wide(Inputs.checkbox(seq(d.min, d.max), {value: [d.min, d.max], label: `Facet values (${facetVar})`}));
+}
+
+mutable sliderMemory = ({})  // slider settings by variable, so they survive role changes
+
+// fixed variables: one integer slider each, at the sample median unless set
+viewof fixed = {
+  const fixedVars = predictors.filter(v => v !== xVar && v !== facetVar);
+  const last = mutable sliderMemory;
+  const inputs = Object.fromEntries(fixedVars.map(v => {
+    const d = info[v];
+    const value = last[v] !== undefined ? last[v] : d.median;
+    return [v, wide(Inputs.range([d.min, d.max], {step: 1, value, label: v}))];
+  }));
+  const template = (inputs) => html`<div>
+    <div style="font-weight: 600; margin: 0.75em 0 0.4em">Fixed variables</div>
+    ${fixedVars.map(v => html`<div style="margin-bottom: 0.6em">${inputs[v]}
+      <div style="font-size: 0.8em; color: #777; margin-left: 165px">${info[v].label}</div></div>`)}
+  </div>`;
+  return Inputs.form(inputs, {template});
+}
+
+rememberSliders = { const last = mutable sliderMemory; mutable sliderMemory = {...last, ...fixed}; }
+```
+
+```{ojs}
+//| echo: false
+// the grid: x over its range, one panel per checked facet value, the rest fixed
+facet = (facetVar !== "none" && facetVals.length > 0) ? facetVar : null
+xs = seq(info[xVar].min, info[xVar].max)
+held = Object.fromEntries(predictors.filter(v => v !== xVar && v !== facet)
+  .map(v => [v, fixed[v] !== undefined ? fixed[v] : info[v].median]))  // a facet with nothing checked sits at its median
+
+// ordered-logit probabilities: Pr(y <= j) = logit^-1(zeta_j - eta), differenced across the cutpoints
+probs = {
+  const rows = [];
+  for (const f of (facet ? facetVals : [null])) {
+    for (const x of xs) {
+      const point = {...held, [xVar]: x};
+      if (facet) point[facet] = f;
+      const eta = predictors.reduce((sum, v) => sum + coef[v] * point[v], 0);
+      const cum = [0, ...zeta.map(z => 1 / (1 + Math.exp(-(z - eta)))), 1];
+      ol_levels.forEach((level, j) => rows.push({
+        x, group: level, p: cum[j + 1] - cum[j], facet: facet ? `${facet}: ${f}` : ""
+      }));
+    }
+  }
+  return rows;
+}
+
+// stacked areas; the explicit order puts level 1 at the bottom, as position_stack(reverse = TRUE) does
+Plot.plot({
+  width,
+  height: 320,
+  style: {fontSize: "12px"},
+  x: {label: info[xVar].label, labelAnchor: "center", tickFormat: "d", ticks: xs.length <= 12 ? xs : undefined},
+  y: {label: "Pr(y = j)", domain: [0, 1], grid: true},
+  ...(facet ? {fx: {label: null, domain: facetVals.map(f => `${facet}: ${f}`)}} : {}),
+  color: {domain: ol_levels, range: colors, legend: true},
+  marks: [
+    Plot.areaY(probs, {x: "x", y: "p", fill: "group", order: ol_levels,
+                       ...(facet ? {fx: "facet"} : {})}),
+    Plot.ruleY([0])
+  ]
+})
+```
+
+```{ojs}
+//| echo: false
+// the R code that reproduces the current plot, in the Shiny app's format
+fmt = (x) => {  // 1:5, c(-3, 3), or 2
+  const s = [...new Set(x)].sort((a, b) => a - b);
+  if (s.length === 1) return String(s[0]);
+  if (s.every((v, i) => i === 0 || v - s[i - 1] === 1)) return `${s[0]}:${s[s.length - 1]}`;
+  return `c(${s.join(", ")})`;
+}
+
+codeText = {
+  const args = [[xVar, xs]];                                       // x first, then the facet,
+  if (facet) args.push([facet, facetVals]);                        // then the fixed ones in
+  for (const v of predictors) if (v in held) args.push([v, [held[v]]]);  // the model's order
+  const gridArgs = args.map(([v, vals]) => `${v} = ${fmt(vals)}`).join(",\n" + " ".repeat(36));
+  const plotLines = [`ggplot(p, aes(x = ${xVar}, y = estimate, fill = group)) +`,
+                     `  geom_area(position = position_stack(reverse = TRUE))`];
+  if (facet) {
+    plotLines[1] += " +";
+    plotLines.push(`  facet_wrap(vars(${facet}), labeller = label_both)`);
+  }
+  return ["p <- predictions(fit_approval,",
+          " ".repeat(17) + `newdata = datagrid(${gridArgs}))`,
+          "", ...plotLines].join("\n");
+}
+
+html`<p>R code for this plot:</p><pre><code>${codeText}</code></pre>`
+```
 
 ### Computing cumulative probabilities {#cumulative-probabilities}
 
-- The model is defined through $\Pr(Y_i \leq j)$; `predictions()` returns $\Pr(Y_i = j)$, one row per category.
+- Note that `predictions()` returns $\Pr(Y_i = j)$---there is *one row per category*.
 
 ```{r}
 # cumulative probabilities: Pr(Y <= j) and Pr(Y >= j)
@@ -306,17 +483,26 @@ cumulative_p |>
   labs(y = "Pr(Y <= j)")
 ```
 
-- Strong Democrats at `military_force = 3`: Pr(strongly disapprove) 0.54, Pr(disapprove or worse) 0.83, Pr(approve or worse) 0.99.
-- Each curve is one cutpoint: $\Pr(Y_i \leq j) = \Phi(\alpha_j - \eta_i)$ here (probit), so the three curves move together as $\eta_i$ changes. That is the proportional-odds (parallel) structure.
-- The stacked `geom_area()` above draws the same curves, but *upper-tail*: `position = "stack"` puts the first level on top, so the boundary above band $j$ is $\Pr(Y_i \geq j)$, not $\Pr(Y_i \leq j)$. At `military_force = 3` for strong Democrats the boundaries sit at 0.46, 0.17, and 0.01, the `pr_ge` column. `position_stack(reverse = TRUE)` puts level 1 at the bottom and makes the boundaries $\Pr(Y_i \leq j)$.
+- Strong Democrats at `military_force = 3`: Pr(strongly disapprove) 0.53, Pr(disapprove or worse) 0.83, Pr(approve or worse) 0.98.
+- Each curve is one cutpoint: $\Pr(Y_i \leq j) = \operatorname{logit}^{-1}(\alpha_j - \eta_i)$, so the three curves move together as $\eta_i$ changes. (This is the proportional-odds (parallel) structure.)
+- The stacked `geom_area()` above draws the same curves: `position_stack(reverse = TRUE)` puts the first level at the bottom, so the top edge of band $j$ is $\Pr(Y_i \leq j)$, the `pr_le` column---at `military_force = 3` for strong Democrats, 0.53, 0.83, and 0.98. (ggplot's default, `position = "stack"`, stacks the first level on top, and the edges become $\Pr(Y_i \geq j)$ instead.)
 
 ## Example: Working mothers, GSS 1977 and 1989
 
-- Data: General Social Survey, 1977 and 1989 [@gss2019]; the `ordwarm2` data of @long1997 [ch. 5] and @longfreese2014 [ch. 7].
-- Outcome: agreement with "A working mother can establish just as warm and secure a relationship with her children as a mother who does not work," four categories.
-- Predictors: survey year, gender, race, age, years of education, occupational prestige.
-- Ordered logit, Long & Freese's specification.
+- Data: General Social Survey, 1977 and 1989 [@gss2019].
+- Outcome: agreement with "A working mother can establish just as warm and secure a relationship with her children as a mother who does not work," four categories: strongly disagree, disagree, agree, and strongly agree.
+- Predictors:
+  - `year`: survey year, 1977 or 1989.
+  - `gender`: female or male.
+  - `race`: nonwhite or white.
+  - `age`: age in years, from 18 to 89.
+  - `education`: years of education, from 0 to 20.
+  - `prestige`: occupational prestige score, from 12 to 82 (higher scores are more prestigious occupations).
 - 2,293 respondents, no missing values.
+
+::: aside
+These are the `ordwarm2` data of @long1997 [ch. 5] and @longfreese2014 [ch. 7]. The model below is Long and Freese's ordered logit, and the estimates match theirs.
+:::
 
 ```{r}
 library(tidyverse)
@@ -349,14 +535,14 @@ p <- predictions(fit_warm,
   glimpse()
 
 ggplot(p, aes(x = age, y = estimate, fill = group)) +
-  geom_area(position = "stack") +
+  geom_area(position = position_stack(reverse = TRUE)) +
   facet_wrap(vars(gender))
 ```
 
 - Year and race at their modes, education and prestige at their means.
 - Women: Pr(strongly agree) about 0.26 at age 20, about 0.09 at 80.
 - Men: Pr(strongly disagree) about 0.12 at 20, about 0.34 at 80.
-- Band boundaries are $\Pr(Y_i \geq j)$ (first level stacked on top).
+- Band edges are $\Pr(Y_i \leq j)$ (`reverse = TRUE` stacks the first level at the bottom).
 
 ```{r}
 #| fig-asp: 0.5
@@ -377,12 +563,16 @@ cumulative_p |>
 
 - Three parallel curves per panel, one per cutpoint; men's curves sit above women's (less agreement).
 
-## Example: Political ideology by party and gender
+## Example: Political ideology by party
 
-- Data: Table 6.7 of @agresti2007 [sec. 6.2.2], a 2 × 2 × 5 table from the General Social Survey (no year given), expanded to one row per respondent (N = 835); the party-only version is the UVA StatLab tutorial [@ford2015].
-- Outcome: political ideology, five categories from very liberal to very conservative.
-- Predictors: party (Democrat, Republican) and gender.
-- Ordered logit; Agresti's cumulative logit (proportional odds) model.
+- Data: General Social Survey (no year given), as tabulated in Table 6.7 of @agresti2007 [sec. 6.2.2], summed over gender and expanded to one row per respondent.
+- Outcome: political ideology, five categories: very liberal, slightly liberal, moderate, slightly conservative, and very conservative.
+- Predictor: `party`, Democrat or Republican.
+- 835 respondents, no missing values.
+
+::: aside
+This is Agresti's ordered logit; he calls it a cumulative logit or proportional odds model. The same model is the example in a UVA StatLab tutorial [@ford2015].
+:::
 
 ```{r}
 library(tidyverse)
@@ -390,7 +580,7 @@ library(MASS)  # masks dplyr::select()
 library(marginaleffects)
 
 # load data
-ideology <- read_csv("data/ideology-party-gender.csv") |>
+ideology <- read_csv("data/ideology-party.csv") |>
   mutate(ideology = factor(ideology, ordered = TRUE)) |>
   glimpse()
 
@@ -398,37 +588,36 @@ ideology <- read_csv("data/ideology-party-gender.csv") |>
 levels(ideology$ideology)
 
 # fit ordered logit
-fit_ideology <- polr(ideology ~ party + gender,
+fit_ideology <- polr(ideology ~ party,
                      data = ideology, Hess = TRUE)
 summary(fit_ideology)
 ```
 
-- Agresti fits party alone and reports 0.975 (SE 0.129) [@agresti2007, p. 183]; with gender added, `partyRepublican` 0.96 (SE 0.13) and `genderMale` 0.12 (SE 0.13).
-- Republicans much more conservative; gender difference small and uncertain.
+- Matches Agresti: `partyRepublican` 0.975 (SE 0.129) [@agresti2007, p. 183].
+- Republicans much more conservative.
 
 ```{r}
 #| fig-asp: 0.5
-# probabilities for the four groups
+# probabilities for Democrats and Republicans
 p <- predictions(fit_ideology,
-                 newdata = datagrid(party = unique,
-                                    gender = unique)) |>
+                 newdata = datagrid(party = unique)) |>
   glimpse()
 
 ggplot(p, aes(x = party, y = estimate, fill = group)) +
-  geom_col() +
-  facet_wrap(vars(gender))
+  geom_col()
 ```
 
-- Both predictors binary, so `x` takes two values. `geom_area()` needs a numeric `x` and draws nothing for a character `x`; `geom_col()` stacks the same probabilities as columns.
-- Women: Pr(very conservative) about 0.11 for Democrats, about 0.25 for Republicans.
+- One binary predictor, so `x` takes two values. `geom_area()` needs a numeric `x` and draws nothing for a character `x`; `geom_col()` stacks the same probabilities as columns.
+- Pr(very liberal) about 0.18 for Democrats, about 0.08 for Republicans.
+- Pr(moderate) about the same for both parties, 0.39 and 0.37.
 - Column boundaries are $\Pr(Y_i \geq j)$ (first level stacked on top), as in the two figures above.
 
 ```{r}
 #| fig-asp: 0.5
 # cumulative probabilities Pr(Y <= j), then plot j = 1, ..., 4
 cumulative_p <- p |>
-  arrange(gender, party, group) |>
-  group_by(gender, party) |>
+  arrange(party, group) |>
+  group_by(party) |>
   mutate(pr_le = cumsum(estimate)) |>
   ungroup()
 
@@ -437,8 +626,7 @@ cumulative_p |>
   ggplot(aes(x = party, y = pr_le, color = group, group = group)) +
   geom_line() +
   geom_point() +
-  facet_wrap(vars(gender)) +
   labs(y = "Pr(Y <= j)")
 ```
 
-- Every cumulative probability drops from Democrats to Republicans by the same log-odds shift, 0.96.
+- Every cumulative probability drops from Democrats to Republicans by the same amount on the log-odds scale, 0.97, the `partyRepublican` coefficient.

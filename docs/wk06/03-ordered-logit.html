@@ -131,6 +131,11 @@ function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 gtag('config', 'G-ZV1MJ9E632', { 'anonymize_ip': true});
 </script>
+<script type="module" src="../site_libs/quarto-ojs/quarto-ojs-runtime.js"></script>
+<link href="../site_libs/quarto-ojs/quarto-ojs.css" rel="stylesheet">
+<script type="ojs-define">
+{"contents":[{"name":"ol_coef","value":{"military_force":"-0.560476999522723","ideology_distance":"-0.36441205651746","economy":"-0.596545989253172","party_id":"0.439987162879375","education":"-0.0724445207303604"}},{"name":"ol_zeta","value":["-6.99809863599838","-5.51451288662168","-3.27252086181735"]},{"name":"ol_levels","value":["1. Strongly disapprove","2. Disapprove","3. Approve","4. Strongly approve"]},{"name":"ol_vars","value":{"name":["military_force","ideology_distance","economy","party_id","education"],"min":[1,0,1,-3,2],"max":[5,6,5,3,17],"median":[3,2,4,0,14],"label":["Opposition to military force (1 = extremely willing … 5 = never willing)","Ideological distance from Bush (0 = same position … 6 = opposite ends)","National economy vs. a year ago (1 = much better … 5 = much worse)","Party identification (−3 = strong Democrat … 3 = strong Republican)","Years of education"]}}]}
+</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -485,7 +490,7 @@ window.Quarto = {
   <li><a href="#cumulative-probabilities" id="toc-cumulative-probabilities" class="nav-link" data-scroll-target="#cumulative-probabilities"><span class="header-section-number">18.3.1</span> Computing cumulative probabilities</a></li>
   </ul></li>
   <li><a href="#example-working-mothers-gss-1977-and-1989" id="toc-example-working-mothers-gss-1977-and-1989" class="nav-link" data-scroll-target="#example-working-mothers-gss-1977-and-1989"><span class="header-section-number">18.4</span> Example: Working mothers, GSS 1977 and 1989</a></li>
-  <li><a href="#example-political-ideology-by-party-and-gender" id="toc-example-political-ideology-by-party-and-gender" class="nav-link" data-scroll-target="#example-political-ideology-by-party-and-gender"><span class="header-section-number">18.5</span> Example: Political ideology by party and gender</a></li>
+  <li><a href="#example-political-ideology-by-party" id="toc-example-political-ideology-by-party" class="nav-link" data-scroll-target="#example-political-ideology-by-party"><span class="header-section-number">18.5</span> Example: Political ideology by party</a></li>
   </ul>
 </nav>
     </div>
@@ -592,17 +597,26 @@ window.Quarto = {
 <section id="example-approval-of-president-bush-1992" class="level2 page-columns page-full" data-number="18.3">
 <h2 data-number="18.3" class="anchored" data-anchor-id="example-approval-of-president-bush-1992"><span class="header-section-number">18.3</span> Example: Approval of President Bush, 1992</h2>
 <ul>
-<li>Data: 1992 ANES Time Series Study <span class="citation" data-cites="anes1992">(<a href="#ref-anes1992" role="doc-biblioref">Miller et al. 2016</a>)</span>, as cleaned by Chris Adolph for his maximum likelihood course; the model and the codebook are his Problem Set 4 <span class="citation" data-cites="adolph2025">(<a href="#ref-adolph2025" role="doc-biblioref">Adolph 2025</a>)</span>.</li>
-<li>Outcome: approval of President Bush’s job performance, four categories.</li>
-<li>Predictors: opposition to using military force (1–5), distance between the respondent’s ideology and Bush’s (0–6), evaluation of the economy over the past year (1 = much better … 5 = much worse), party ID (−3 strong Democrat … 3 strong Republican), years of education.</li>
-<li>Ordered <em>probit</em>, as in the problem set: <code>method = "probit"</code>.</li>
+<li>Data: 1992 ANES Time Series Study <span class="citation" data-cites="anes1992">(<a href="#ref-anes1992" role="doc-biblioref">Miller et al. 2016</a>)</span>.</li>
+<li>Outcome: approval of President Bush’s job performance, four categories: strongly disapprove, disapprove, approve, and strongly approve.</li>
+<li>Predictors:
+<ul>
+<li><code>military_force</code>: how willing the United States should be to use military force to solve international problems, from 1 (extremely willing) to 5 (never willing).</li>
+<li><code>ideology_distance</code>: distance between the respondent’s ideology and where they place Bush, from 0 (same position) to 6 (opposite ends of the 7-point scale).</li>
+<li><code>economy</code>: evaluation of the national economy compared with a year ago, from 1 (much better) to 5 (much worse).</li>
+<li><code>party_id</code>: party identification, from −3 (strong Democrat) through 0 (independent) to 3 (strong Republican).</li>
+<li><code>education</code>: years of education.</li>
+</ul></li>
 <li>750 respondents; 558 complete on these variables.</li>
 </ul>
 <div class="no-row-height column-margin column-container"><div id="ref-anes1992" class="csl-entry" role="listitem">
 Miller, Warren E., Donald R. Kinder, Steven J. Rosenstone, and University of Michigan. Institute for Social Research. American National Election Studies. 2016. <span>“<span>ANES</span> 1992 Time Series Study.”</span> Inter-university Consortium for Political; Social Research [distributor]. <a href="https://doi.org/10.3886/ICPSR06067.v3">https://doi.org/10.3886/ICPSR06067.v3</a>.
-</div><div id="ref-adolph2025" class="csl-entry" role="listitem">
+</div><div class="margin-aside">
+<p>This example comes from Chris Adolph’s maximum likelihood course. The model and the codebook are described in his Problem Set 4 <span class="citation" data-cites="adolph2025">(<a href="#ref-adolph2025" role="doc-biblioref">Adolph 2025</a>)</span>. Adolph fits an ordered <em>probit</em> (<code>method = "probit"</code> in <code>polr()</code>). I fit an ordered logit to match this chapter.</p>
+<div id="ref-adolph2025" class="csl-entry" role="listitem">
 Adolph, Christopher. 2025. <span>“Problem Set 4: Modeling Presidential Approval with Ordered Probit.”</span> <span>POLS/CSSS</span> 510: Maximum Likelihood Methods for the Social Sciences, University of Washington, Fall Quarter 2025. <a href="https://faculty.washington.edu/cadolph/mle/510hw4.pdf">https://faculty.washington.edu/cadolph/mle/510hw4.pdf</a>.
-</div></div><div class="cell">
+</div></div></div>
+<div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)  <span class="co"># masks dplyr::select()</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(marginaleffects)</span>
@@ -631,40 +645,43 @@ $ vote_1992         &lt;chr&gt; "Bush", "Bush", "Bush", "Clinton", "Clinton", "C
 <pre><code>[1] "1. Strongly disapprove" "2. Disapprove"          "3. Approve"            
 [4] "4. Strongly approve"   </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit ordered probit</span></span>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit ordered logit</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>fit_approval <span class="ot">&lt;-</span> <span class="fu">polr</span>(bush_approval <span class="sc">~</span> military_force <span class="sc">+</span> ideology_distance <span class="sc">+</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                       economy <span class="sc">+</span> party_id <span class="sc">+</span> education,</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">data =</span> approval, <span class="at">method =</span> <span class="st">"probit"</span>, <span class="at">Hess =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">data =</span> approval, <span class="at">Hess =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_approval)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Call:
 polr(formula = bush_approval ~ military_force + ideology_distance + 
-    economy + party_id + education, data = approval, Hess = TRUE, 
-    method = "probit")
+    economy + party_id + education, data = approval, Hess = TRUE)
 
 Coefficients:
                      Value Std. Error t value
-military_force    -0.33189    0.06163  -5.385
-ideology_distance -0.21472    0.03810  -5.636
-economy           -0.35131    0.05696  -6.167
-party_id           0.25743    0.02957   8.707
-education         -0.04055    0.02160  -1.878
+military_force    -0.56048    0.10861  -5.160
+ideology_distance -0.36441    0.06611  -5.512
+economy           -0.59655    0.09957  -5.991
+party_id           0.43999    0.05214   8.438
+education         -0.07244    0.03710  -1.953
 
 Intercepts:
                                      Value   Std. Error t value
-1. Strongly disapprove|2. Disapprove -4.0804  0.4287    -9.5187
-2. Disapprove|3. Approve             -3.2196  0.4198    -7.6697
-3. Approve|4. Strongly approve       -1.9252  0.4098    -4.6982
+1. Strongly disapprove|2. Disapprove -6.9981  0.7509    -9.3198
+2. Disapprove|3. Approve             -5.5145  0.7286    -7.5684
+3. Approve|4. Strongly approve       -3.2725  0.7031    -4.6544
 
-Residual Deviance: 1175.865 
-AIC: 1191.865 
+Residual Deviance: 1175.889 
+AIC: 1191.889 
 (192 observations deleted due to missingness)</code></pre>
 </div>
 </div>
 <ul>
-<li>Positive <code>party_id</code> coefficient: higher categories more likely (sign convention above), so Republicans approve more.</li>
-<li>Negative coefficients: opposing military force, ideological distance from Bush, and a worse economy each move respondents toward disapproval.</li>
-<li>Cutpoints on the probit scale; not directly interpretable.</li>
+<li>Positive <code>party_id</code> coefficient means that higher categories more likely (sign convention above), so Republicans are more approving.</li>
+<li>Negative coefficients indicate who is more <em>disapproving</em>:
+<ul>
+<li>respondents who are more opposed to military force</li>
+<li>respondents who are are ideologically further from Bush</li>
+<li>respondent who perceive the economy as worse.</li>
+</ul></li>
 </ul>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># probabilities across military_force for strong Democrats and strong Republicans</span></span>
@@ -677,13 +694,13 @@ AIC: 1191.865
 Columns: 15
 $ rowid             &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, …
 $ group             &lt;fct&gt; 1. Strongly disapprove, 1. Strongly disapprove, 1. S…
-$ estimate          &lt;dbl&gt; 0.28302979, 0.01706906, 0.40440036, 0.03700549, 0.53…
-$ std.error         &lt;dbl&gt; 0.056389686, 0.007142304, 0.048524421, 0.010565363, …
-$ statistic         &lt;dbl&gt; 5.019177, 2.389854, 8.333955, 3.502529, 12.744123, 4…
-$ p.value           &lt;dbl&gt; 5.189343e-07, 1.685508e-02, 7.818540e-17, 4.608644e-…
-$ s.value           &lt;dbl&gt; 20.877945, 5.890672, 53.505878, 11.083370, 121.16223…
-$ conf.low          &lt;dbl&gt; 0.172508036, 0.003070403, 0.309294242, 0.016297755, …
-$ conf.high         &lt;dbl&gt; 0.39355154, 0.03106772, 0.49950648, 0.05771322, 0.61…
+$ estimate          &lt;dbl&gt; 0.27122253, 0.02587275, 0.39461553, 0.04445201, 0.53…
+$ std.error         &lt;dbl&gt; 0.058140543, 0.007652858, 0.052186323, 0.010035746, …
+$ statistic         &lt;dbl&gt; 4.664947, 3.380796, 7.561666, 4.429368, 11.877471, 5…
+$ p.value           &lt;dbl&gt; 3.086971e-06, 7.227631e-04, 3.979397e-14, 9.450975e-…
+$ s.value           &lt;dbl&gt; 18.30538, 10.43419, 44.51444, 16.69111, 105.66956, 2…
+$ conf.low          &lt;dbl&gt; 0.15726916, 0.01087342, 0.29233222, 0.02478231, 0.44…
+$ conf.high         &lt;dbl&gt; 0.38517590, 0.04087207, 0.49689884, 0.06412171, 0.62…
 $ military_force    &lt;int&gt; 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 1, 1, 2, 2, 3, 3, 4, 4…
 $ party_id          &lt;dbl&gt; -3, 3, -3, 3, -3, 3, -3, 3, -3, 3, -3, 3, -3, 3, -3,…
 $ df                &lt;dbl&gt; Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, In…
@@ -692,7 +709,7 @@ $ education         &lt;int&gt; 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 
 $ ideology_distance &lt;int&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2…</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(p, <span class="fu">aes</span>(<span class="at">x =</span> military_force, <span class="at">y =</span> estimate, <span class="at">fill =</span> group)) <span class="sc">+</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_area</span>(<span class="at">position =</span> <span class="st">"stack"</span>) <span class="sc">+</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_area</span>(<span class="at">position =</span> <span class="fu">position_stack</span>(<span class="at">reverse =</span> <span class="cn">TRUE</span>)) <span class="sc">+</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(party_id), <span class="at">labeller =</span> label_both)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
@@ -704,44 +721,334 @@ $ ideology_distance &lt;int&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 
 </div>
 <ul>
 <li>Other predictors at their means (<code>datagrid()</code> default).</li>
-<li>Strong Democrats: Pr(strongly disapprove) about 0.28 at <code>military_force = 1</code>, about 0.77 at 5.</li>
-<li>Strong Republicans: Pr(strongly approve) about 0.49 at 1, about 0.09 at 5.</li>
+<li>For strong Democrats: Pr(strongly disapprove) about 0.27 at <code>military_force = 1</code> and about 0.78 at <code>military_force = 5</code>.</li>
+<li>For strong Republicans: Pr(strongly approve) about 0.48 at <code>military_force = 1</code>, about 0.09 at <code>military_force = 5</code>.</li>
+<li>Interactive version: choose the x-axis and facet predictors below and set the rest; the code under the plot reproduces whatever it draws.</li>
 </ul>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb10" data-startfrom="319" data-source-offset="-84"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 318;"><span id="cb10-319"><a href="#cb10-319" aria-hidden="true" tabindex="-1"></a>coef <span class="op">=</span> <span class="bu">Object</span><span class="op">.</span><span class="fu">fromEntries</span>(<span class="bu">Object</span><span class="op">.</span><span class="fu">entries</span>(ol_coef)<span class="op">.</span><span class="fu">map</span>(([v<span class="op">,</span> b]) <span class="kw">=&gt;</span> [v<span class="op">,</span> <span class="bu">Number</span>(b)]))</span>
+<span id="cb10-320"><a href="#cb10-320" aria-hidden="true" tabindex="-1"></a>zeta <span class="op">=</span> ol_zeta<span class="op">.</span><span class="fu">map</span>(<span class="bu">Number</span>)</span>
+<span id="cb10-321"><a href="#cb10-321" aria-hidden="true" tabindex="-1"></a>vars <span class="op">=</span> <span class="fu">transpose</span>(ol_vars)                              <span class="co">// one row per predictor</span></span>
+<span id="cb10-322"><a href="#cb10-322" aria-hidden="true" tabindex="-1"></a>predictors <span class="op">=</span> vars<span class="op">.</span><span class="fu">map</span>(v <span class="kw">=&gt;</span> v<span class="op">.</span><span class="at">name</span>)                     <span class="co">// in the model's order</span></span>
+<span id="cb10-323"><a href="#cb10-323" aria-hidden="true" tabindex="-1"></a>info <span class="op">=</span> <span class="bu">Object</span><span class="op">.</span><span class="fu">fromEntries</span>(vars<span class="op">.</span><span class="fu">map</span>(v <span class="kw">=&gt;</span> [v<span class="op">.</span><span class="at">name</span><span class="op">,</span> v]))  <span class="co">// info.party_id.min, .max, .median, .label</span></span>
+<span id="cb10-324"><a href="#cb10-324" aria-hidden="true" tabindex="-1"></a>colors <span class="op">=</span> [<span class="st">"#F8766D"</span><span class="op">,</span> <span class="st">"#7CAE00"</span><span class="op">,</span> <span class="st">"#00BFC4"</span><span class="op">,</span> <span class="st">"#C77CFF"</span>]  <span class="co">// ggplot2's default hues for levels 1-4</span></span>
+<span id="cb10-325"><a href="#cb10-325" aria-hidden="true" tabindex="-1"></a>seq <span class="op">=</span> (<span class="im">from</span><span class="op">,</span> to) <span class="kw">=&gt;</span> <span class="bu">Array</span><span class="op">.</span><span class="fu">from</span>({<span class="dt">length</span><span class="op">:</span> to <span class="op">-</span> <span class="im">from</span> <span class="op">+</span> <span class="dv">1</span>}<span class="op">,</span> (_<span class="op">,</span> i) <span class="kw">=&gt;</span> <span class="im">from</span> <span class="op">+</span> i)</span>
+<span id="cb10-326"><a href="#cb10-326" aria-hidden="true" tabindex="-1"></a>wide <span class="op">=</span> (form) <span class="kw">=&gt;</span> { form<span class="op">.</span><span class="at">style</span><span class="op">.</span><span class="fu">setProperty</span>(<span class="st">"--label-width"</span><span class="op">,</span> <span class="st">"165px"</span>)<span class="op">;</span> <span class="cf">return</span> form<span class="op">;</span> }</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-3" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-4" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-5" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-6" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-7" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-8" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb11" data-startfrom="332" data-source-offset="-86"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 331;"><span id="cb11-332"><a href="#cb11-332" aria-hidden="true" tabindex="-1"></a>viewof xVar <span class="op">=</span> <span class="fu">wide</span>(Inputs<span class="op">.</span><span class="fu">select</span>(predictors<span class="op">,</span> {<span class="dt">value</span><span class="op">:</span> <span class="st">"military_force"</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"x-axis variable"</span>}))</span>
+<span id="cb11-333"><a href="#cb11-333" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-334"><a href="#cb11-334" aria-hidden="true" tabindex="-1"></a>mutable facetMemory <span class="op">=</span> <span class="st">"party_id"</span>  <span class="co">// the last facet choice, so it survives re-creating the input</span></span>
+<span id="cb11-335"><a href="#cb11-335" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-336"><a href="#cb11-336" aria-hidden="true" tabindex="-1"></a>viewof facetVar <span class="op">=</span> {</span>
+<span id="cb11-337"><a href="#cb11-337" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> options <span class="op">=</span> [<span class="st">"none"</span><span class="op">,</span> <span class="op">...</span>predictors<span class="op">.</span><span class="fu">filter</span>(v <span class="kw">=&gt;</span> v <span class="op">!==</span> xVar)]<span class="op">;</span>  <span class="co">// never the current x</span></span>
+<span id="cb11-338"><a href="#cb11-338" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> last <span class="op">=</span> mutable facetMemory<span class="op">;</span>                                   <span class="co">// read without a reactive dependency</span></span>
+<span id="cb11-339"><a href="#cb11-339" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> value <span class="op">=</span> options<span class="op">.</span><span class="fu">includes</span>(last) <span class="op">?</span> last <span class="op">:</span> <span class="st">"none"</span><span class="op">;</span>               <span class="co">// x took the facet's place -&gt; none</span></span>
+<span id="cb11-340"><a href="#cb11-340" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="fu">wide</span>(Inputs<span class="op">.</span><span class="fu">select</span>(options<span class="op">,</span> {value<span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"Facet variable"</span>}))<span class="op">;</span></span>
+<span id="cb11-341"><a href="#cb11-341" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb11-342"><a href="#cb11-342" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-343"><a href="#cb11-343" aria-hidden="true" tabindex="-1"></a>rememberFacet <span class="op">=</span> { mutable facetMemory <span class="op">=</span> facetVar<span class="op">;</span> }</span>
+<span id="cb11-344"><a href="#cb11-344" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-345"><a href="#cb11-345" aria-hidden="true" tabindex="-1"></a><span class="co">// facet values: a checkbox per integer value, min and max checked by default</span></span>
+<span id="cb11-346"><a href="#cb11-346" aria-hidden="true" tabindex="-1"></a>viewof facetVals <span class="op">=</span> {</span>
+<span id="cb11-347"><a href="#cb11-347" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (facetVar <span class="op">===</span> <span class="st">"none"</span>) {  <span class="co">// hidden placeholder whose value is an empty selection</span></span>
+<span id="cb11-348"><a href="#cb11-348" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> none <span class="op">=</span> <span class="fu">html</span><span class="vs">`&lt;span&gt;&lt;/span&gt;`</span><span class="op">;</span></span>
+<span id="cb11-349"><a href="#cb11-349" aria-hidden="true" tabindex="-1"></a>    none<span class="op">.</span><span class="at">value</span> <span class="op">=</span> []<span class="op">;</span></span>
+<span id="cb11-350"><a href="#cb11-350" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> none<span class="op">;</span></span>
+<span id="cb11-351"><a href="#cb11-351" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb11-352"><a href="#cb11-352" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> d <span class="op">=</span> info[facetVar]<span class="op">;</span></span>
+<span id="cb11-353"><a href="#cb11-353" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="fu">wide</span>(Inputs<span class="op">.</span><span class="fu">checkbox</span>(<span class="fu">seq</span>(d<span class="op">.</span><span class="at">min</span><span class="op">,</span> d<span class="op">.</span><span class="at">max</span>)<span class="op">,</span> {<span class="dt">value</span><span class="op">:</span> [d<span class="op">.</span><span class="at">min</span><span class="op">,</span> d<span class="op">.</span><span class="at">max</span>]<span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="vs">`Facet values (</span><span class="sc">${</span>facetVar<span class="sc">}</span><span class="vs">)`</span>}))<span class="op">;</span></span>
+<span id="cb11-354"><a href="#cb11-354" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb11-355"><a href="#cb11-355" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-356"><a href="#cb11-356" aria-hidden="true" tabindex="-1"></a>mutable sliderMemory <span class="op">=</span> ({})  <span class="co">// slider settings by variable, so they survive role changes</span></span>
+<span id="cb11-357"><a href="#cb11-357" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-358"><a href="#cb11-358" aria-hidden="true" tabindex="-1"></a><span class="co">// fixed variables: one integer slider each, at the sample median unless set</span></span>
+<span id="cb11-359"><a href="#cb11-359" aria-hidden="true" tabindex="-1"></a>viewof fixed <span class="op">=</span> {</span>
+<span id="cb11-360"><a href="#cb11-360" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> fixedVars <span class="op">=</span> predictors<span class="op">.</span><span class="fu">filter</span>(v <span class="kw">=&gt;</span> v <span class="op">!==</span> xVar <span class="op">&amp;&amp;</span> v <span class="op">!==</span> facetVar)<span class="op">;</span></span>
+<span id="cb11-361"><a href="#cb11-361" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> last <span class="op">=</span> mutable sliderMemory<span class="op">;</span></span>
+<span id="cb11-362"><a href="#cb11-362" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> inputs <span class="op">=</span> <span class="bu">Object</span><span class="op">.</span><span class="fu">fromEntries</span>(fixedVars<span class="op">.</span><span class="fu">map</span>(v <span class="kw">=&gt;</span> {</span>
+<span id="cb11-363"><a href="#cb11-363" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> d <span class="op">=</span> info[v]<span class="op">;</span></span>
+<span id="cb11-364"><a href="#cb11-364" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> value <span class="op">=</span> last[v] <span class="op">!==</span> <span class="kw">undefined</span> <span class="op">?</span> last[v] <span class="op">:</span> d<span class="op">.</span><span class="at">median</span><span class="op">;</span></span>
+<span id="cb11-365"><a href="#cb11-365" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> [v<span class="op">,</span> <span class="fu">wide</span>(Inputs<span class="op">.</span><span class="fu">range</span>([d<span class="op">.</span><span class="at">min</span><span class="op">,</span> d<span class="op">.</span><span class="at">max</span>]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span> value<span class="op">,</span> <span class="dt">label</span><span class="op">:</span> v}))]<span class="op">;</span></span>
+<span id="cb11-366"><a href="#cb11-366" aria-hidden="true" tabindex="-1"></a>  }))<span class="op">;</span></span>
+<span id="cb11-367"><a href="#cb11-367" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> template <span class="op">=</span> (inputs) <span class="kw">=&gt;</span> <span class="fu">html</span><span class="vs">`&lt;div&gt;</span></span>
+<span id="cb11-368"><a href="#cb11-368" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;div style="font-weight: 600; margin: 0.75em 0 0.4em"&gt;Fixed variables&lt;/div&gt;</span></span>
+<span id="cb11-369"><a href="#cb11-369" aria-hidden="true" tabindex="-1"></a><span class="vs">    </span><span class="sc">${</span>fixedVars<span class="op">.</span><span class="fu">map</span>(v <span class="kw">=&gt;</span> <span class="fu">html</span><span class="vs">`&lt;div style="margin-bottom: 0.6em"&gt;</span><span class="sc">${</span>inputs[v]<span class="sc">}</span></span>
+<span id="cb11-370"><a href="#cb11-370" aria-hidden="true" tabindex="-1"></a><span class="vs">      &lt;div style="font-size: 0.8em; color: #777; margin-left: 165px"&gt;</span><span class="sc">${</span>info[v]<span class="op">.</span><span class="at">label</span><span class="sc">}</span><span class="vs">&lt;/div&gt;&lt;/div&gt;`</span>)<span class="sc">}</span></span>
+<span id="cb11-371"><a href="#cb11-371" aria-hidden="true" tabindex="-1"></a><span class="vs">  &lt;/div&gt;`</span><span class="op">;</span></span>
+<span id="cb11-372"><a href="#cb11-372" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> Inputs<span class="op">.</span><span class="fu">form</span>(inputs<span class="op">,</span> {template})<span class="op">;</span></span>
+<span id="cb11-373"><a href="#cb11-373" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb11-374"><a href="#cb11-374" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-375"><a href="#cb11-375" aria-hidden="true" tabindex="-1"></a>rememberSliders <span class="op">=</span> { <span class="kw">const</span> last <span class="op">=</span> mutable sliderMemory<span class="op">;</span> mutable sliderMemory <span class="op">=</span> {<span class="op">...</span>last<span class="op">,</span> <span class="op">...</span>fixed}<span class="op">;</span> }</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-2-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-2-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-2-3" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-2-4" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-2-5" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-2-6" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-2-7" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-2-8" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb12" data-startfrom="381" data-source-offset="-81"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 380;"><span id="cb12-381"><a href="#cb12-381" aria-hidden="true" tabindex="-1"></a>facet <span class="op">=</span> (facetVar <span class="op">!==</span> <span class="st">"none"</span> <span class="op">&amp;&amp;</span> facetVals<span class="op">.</span><span class="at">length</span> <span class="op">&gt;</span> <span class="dv">0</span>) <span class="op">?</span> facetVar <span class="op">:</span> <span class="kw">null</span></span>
+<span id="cb12-382"><a href="#cb12-382" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> <span class="fu">seq</span>(info[xVar]<span class="op">.</span><span class="at">min</span><span class="op">,</span> info[xVar]<span class="op">.</span><span class="at">max</span>)</span>
+<span id="cb12-383"><a href="#cb12-383" aria-hidden="true" tabindex="-1"></a>held <span class="op">=</span> <span class="bu">Object</span><span class="op">.</span><span class="fu">fromEntries</span>(predictors<span class="op">.</span><span class="fu">filter</span>(v <span class="kw">=&gt;</span> v <span class="op">!==</span> xVar <span class="op">&amp;&amp;</span> v <span class="op">!==</span> facet)</span>
+<span id="cb12-384"><a href="#cb12-384" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">map</span>(v <span class="kw">=&gt;</span> [v<span class="op">,</span> fixed[v] <span class="op">!==</span> <span class="kw">undefined</span> <span class="op">?</span> fixed[v] <span class="op">:</span> info[v]<span class="op">.</span><span class="at">median</span>]))  <span class="co">// a facet with nothing checked sits at its median</span></span>
+<span id="cb12-385"><a href="#cb12-385" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-386"><a href="#cb12-386" aria-hidden="true" tabindex="-1"></a><span class="co">// ordered-logit probabilities: Pr(y &lt;= j) = logit^-1(zeta_j - eta), differenced across the cutpoints</span></span>
+<span id="cb12-387"><a href="#cb12-387" aria-hidden="true" tabindex="-1"></a>probs <span class="op">=</span> {</span>
+<span id="cb12-388"><a href="#cb12-388" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> rows <span class="op">=</span> []<span class="op">;</span></span>
+<span id="cb12-389"><a href="#cb12-389" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (<span class="kw">const</span> f <span class="kw">of</span> (facet <span class="op">?</span> facetVals <span class="op">:</span> [<span class="kw">null</span>])) {</span>
+<span id="cb12-390"><a href="#cb12-390" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (<span class="kw">const</span> x <span class="kw">of</span> xs) {</span>
+<span id="cb12-391"><a href="#cb12-391" aria-hidden="true" tabindex="-1"></a>      <span class="kw">const</span> point <span class="op">=</span> {<span class="op">...</span>held<span class="op">,</span> [xVar]<span class="op">:</span> x}<span class="op">;</span></span>
+<span id="cb12-392"><a href="#cb12-392" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (facet) point[facet] <span class="op">=</span> f<span class="op">;</span></span>
+<span id="cb12-393"><a href="#cb12-393" aria-hidden="true" tabindex="-1"></a>      <span class="kw">const</span> eta <span class="op">=</span> predictors<span class="op">.</span><span class="fu">reduce</span>((sum<span class="op">,</span> v) <span class="kw">=&gt;</span> sum <span class="op">+</span> coef[v] <span class="op">*</span> point[v]<span class="op">,</span> <span class="dv">0</span>)<span class="op">;</span></span>
+<span id="cb12-394"><a href="#cb12-394" aria-hidden="true" tabindex="-1"></a>      <span class="kw">const</span> cum <span class="op">=</span> [<span class="dv">0</span><span class="op">,</span> <span class="op">...</span>zeta<span class="op">.</span><span class="fu">map</span>(z <span class="kw">=&gt;</span> <span class="dv">1</span> <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">exp</span>(<span class="op">-</span>(z <span class="op">-</span> eta))))<span class="op">,</span> <span class="dv">1</span>]<span class="op">;</span></span>
+<span id="cb12-395"><a href="#cb12-395" aria-hidden="true" tabindex="-1"></a>      ol_levels<span class="op">.</span><span class="fu">forEach</span>((level<span class="op">,</span> j) <span class="kw">=&gt;</span> rows<span class="op">.</span><span class="fu">push</span>({</span>
+<span id="cb12-396"><a href="#cb12-396" aria-hidden="true" tabindex="-1"></a>        x<span class="op">,</span> <span class="dt">group</span><span class="op">:</span> level<span class="op">,</span> <span class="dt">p</span><span class="op">:</span> cum[j <span class="op">+</span> <span class="dv">1</span>] <span class="op">-</span> cum[j]<span class="op">,</span> <span class="dt">facet</span><span class="op">:</span> facet <span class="op">?</span> <span class="vs">`</span><span class="sc">${</span>facet<span class="sc">}</span><span class="vs">: </span><span class="sc">${</span>f<span class="sc">}</span><span class="vs">`</span> <span class="op">:</span> <span class="st">""</span></span>
+<span id="cb12-397"><a href="#cb12-397" aria-hidden="true" tabindex="-1"></a>      }))<span class="op">;</span></span>
+<span id="cb12-398"><a href="#cb12-398" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb12-399"><a href="#cb12-399" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb12-400"><a href="#cb12-400" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> rows<span class="op">;</span></span>
+<span id="cb12-401"><a href="#cb12-401" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb12-402"><a href="#cb12-402" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-403"><a href="#cb12-403" aria-hidden="true" tabindex="-1"></a><span class="co">// stacked areas; the explicit order puts level 1 at the bottom, as position_stack(reverse = TRUE) does</span></span>
+<span id="cb12-404"><a href="#cb12-404" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb12-405"><a href="#cb12-405" aria-hidden="true" tabindex="-1"></a>  width<span class="op">,</span></span>
+<span id="cb12-406"><a href="#cb12-406" aria-hidden="true" tabindex="-1"></a>  <span class="dt">height</span><span class="op">:</span> <span class="dv">320</span><span class="op">,</span></span>
+<span id="cb12-407"><a href="#cb12-407" aria-hidden="true" tabindex="-1"></a>  <span class="dt">style</span><span class="op">:</span> {<span class="dt">fontSize</span><span class="op">:</span> <span class="st">"12px"</span>}<span class="op">,</span></span>
+<span id="cb12-408"><a href="#cb12-408" aria-hidden="true" tabindex="-1"></a>  <span class="dt">x</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> info[xVar]<span class="op">.</span><span class="at">label</span><span class="op">,</span> <span class="dt">labelAnchor</span><span class="op">:</span> <span class="st">"center"</span><span class="op">,</span> <span class="dt">tickFormat</span><span class="op">:</span> <span class="st">"d"</span><span class="op">,</span> <span class="dt">ticks</span><span class="op">:</span> xs<span class="op">.</span><span class="at">length</span> <span class="op">&lt;=</span> <span class="dv">12</span> <span class="op">?</span> xs <span class="op">:</span> <span class="kw">undefined</span>}<span class="op">,</span></span>
+<span id="cb12-409"><a href="#cb12-409" aria-hidden="true" tabindex="-1"></a>  <span class="dt">y</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Pr(y = j)"</span><span class="op">,</span> <span class="dt">domain</span><span class="op">:</span> [<span class="dv">0</span><span class="op">,</span> <span class="dv">1</span>]<span class="op">,</span> <span class="dt">grid</span><span class="op">:</span> <span class="kw">true</span>}<span class="op">,</span></span>
+<span id="cb12-410"><a href="#cb12-410" aria-hidden="true" tabindex="-1"></a>  <span class="op">...</span>(facet <span class="op">?</span> {<span class="dt">fx</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="kw">null</span><span class="op">,</span> <span class="dt">domain</span><span class="op">:</span> facetVals<span class="op">.</span><span class="fu">map</span>(f <span class="kw">=&gt;</span> <span class="vs">`</span><span class="sc">${</span>facet<span class="sc">}</span><span class="vs">: </span><span class="sc">${</span>f<span class="sc">}</span><span class="vs">`</span>)}} <span class="op">:</span> {})<span class="op">,</span></span>
+<span id="cb12-411"><a href="#cb12-411" aria-hidden="true" tabindex="-1"></a>  <span class="dt">color</span><span class="op">:</span> {<span class="dt">domain</span><span class="op">:</span> ol_levels<span class="op">,</span> <span class="dt">range</span><span class="op">:</span> colors<span class="op">,</span> <span class="dt">legend</span><span class="op">:</span> <span class="kw">true</span>}<span class="op">,</span></span>
+<span id="cb12-412"><a href="#cb12-412" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb12-413"><a href="#cb12-413" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">areaY</span>(probs<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"x"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"p"</span><span class="op">,</span> <span class="dt">fill</span><span class="op">:</span> <span class="st">"group"</span><span class="op">,</span> <span class="dt">order</span><span class="op">:</span> ol_levels<span class="op">,</span></span>
+<span id="cb12-414"><a href="#cb12-414" aria-hidden="true" tabindex="-1"></a>                       <span class="op">...</span>(facet <span class="op">?</span> {<span class="dt">fx</span><span class="op">:</span> <span class="st">"facet"</span>} <span class="op">:</span> {})})<span class="op">,</span></span>
+<span id="cb12-415"><a href="#cb12-415" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">ruleY</span>([<span class="dv">0</span>])</span>
+<span id="cb12-416"><a href="#cb12-416" aria-hidden="true" tabindex="-1"></a>  ]</span>
+<span id="cb12-417"><a href="#cb12-417" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-3-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-3-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-3-3" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-3-4" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-3-5" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb13" data-startfrom="423" data-source-offset="-74"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 422;"><span id="cb13-423"><a href="#cb13-423" aria-hidden="true" tabindex="-1"></a>fmt <span class="op">=</span> (x) <span class="kw">=&gt;</span> {  <span class="co">// 1:5, c(-3, 3), or 2</span></span>
+<span id="cb13-424"><a href="#cb13-424" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> s <span class="op">=</span> [<span class="op">...</span><span class="kw">new</span> <span class="bu">Set</span>(x)]<span class="op">.</span><span class="fu">sort</span>((a<span class="op">,</span> b) <span class="kw">=&gt;</span> a <span class="op">-</span> b)<span class="op">;</span></span>
+<span id="cb13-425"><a href="#cb13-425" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (s<span class="op">.</span><span class="at">length</span> <span class="op">===</span> <span class="dv">1</span>) <span class="cf">return</span> <span class="bu">String</span>(s[<span class="dv">0</span>])<span class="op">;</span></span>
+<span id="cb13-426"><a href="#cb13-426" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (s<span class="op">.</span><span class="fu">every</span>((v<span class="op">,</span> i) <span class="kw">=&gt;</span> i <span class="op">===</span> <span class="dv">0</span> <span class="op">||</span> v <span class="op">-</span> s[i <span class="op">-</span> <span class="dv">1</span>] <span class="op">===</span> <span class="dv">1</span>)) <span class="cf">return</span> <span class="vs">`</span><span class="sc">${</span>s[<span class="dv">0</span>]<span class="sc">}</span><span class="vs">:</span><span class="sc">${</span>s[s<span class="op">.</span><span class="at">length</span> <span class="op">-</span> <span class="dv">1</span>]<span class="sc">}</span><span class="vs">`</span><span class="op">;</span></span>
+<span id="cb13-427"><a href="#cb13-427" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="vs">`c(</span><span class="sc">${</span>s<span class="op">.</span><span class="fu">join</span>(<span class="st">", "</span>)<span class="sc">}</span><span class="vs">)`</span><span class="op">;</span></span>
+<span id="cb13-428"><a href="#cb13-428" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb13-429"><a href="#cb13-429" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-430"><a href="#cb13-430" aria-hidden="true" tabindex="-1"></a>codeText <span class="op">=</span> {</span>
+<span id="cb13-431"><a href="#cb13-431" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> args <span class="op">=</span> [[xVar<span class="op">,</span> xs]]<span class="op">;</span>                                       <span class="co">// x first, then the facet,</span></span>
+<span id="cb13-432"><a href="#cb13-432" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (facet) args<span class="op">.</span><span class="fu">push</span>([facet<span class="op">,</span> facetVals])<span class="op">;</span>                        <span class="co">// then the fixed ones in</span></span>
+<span id="cb13-433"><a href="#cb13-433" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (<span class="kw">const</span> v <span class="kw">of</span> predictors) <span class="cf">if</span> (v <span class="kw">in</span> held) args<span class="op">.</span><span class="fu">push</span>([v<span class="op">,</span> [held[v]]])<span class="op">;</span>  <span class="co">// the model's order</span></span>
+<span id="cb13-434"><a href="#cb13-434" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> gridArgs <span class="op">=</span> args<span class="op">.</span><span class="fu">map</span>(([v<span class="op">,</span> vals]) <span class="kw">=&gt;</span> <span class="vs">`</span><span class="sc">${</span>v<span class="sc">}</span><span class="vs"> = </span><span class="sc">${</span><span class="fu">fmt</span>(vals)<span class="sc">}</span><span class="vs">`</span>)<span class="op">.</span><span class="fu">join</span>(<span class="st">",</span><span class="sc">\n</span><span class="st">"</span> <span class="op">+</span> <span class="st">" "</span><span class="op">.</span><span class="fu">repeat</span>(<span class="dv">36</span>))<span class="op">;</span></span>
+<span id="cb13-435"><a href="#cb13-435" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> plotLines <span class="op">=</span> [<span class="vs">`ggplot(p, aes(x = </span><span class="sc">${</span>xVar<span class="sc">}</span><span class="vs">, y = estimate, fill = group)) +`</span><span class="op">,</span></span>
+<span id="cb13-436"><a href="#cb13-436" aria-hidden="true" tabindex="-1"></a>                     <span class="vs">`  geom_area(position = position_stack(reverse = TRUE))`</span>]<span class="op">;</span></span>
+<span id="cb13-437"><a href="#cb13-437" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (facet) {</span>
+<span id="cb13-438"><a href="#cb13-438" aria-hidden="true" tabindex="-1"></a>    plotLines[<span class="dv">1</span>] <span class="op">+=</span> <span class="st">" +"</span><span class="op">;</span></span>
+<span id="cb13-439"><a href="#cb13-439" aria-hidden="true" tabindex="-1"></a>    plotLines<span class="op">.</span><span class="fu">push</span>(<span class="vs">`  facet_wrap(vars(</span><span class="sc">${</span>facet<span class="sc">}</span><span class="vs">), labeller = label_both)`</span>)<span class="op">;</span></span>
+<span id="cb13-440"><a href="#cb13-440" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb13-441"><a href="#cb13-441" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> [<span class="st">"p &lt;- predictions(fit_approval,"</span><span class="op">,</span></span>
+<span id="cb13-442"><a href="#cb13-442" aria-hidden="true" tabindex="-1"></a>          <span class="st">" "</span><span class="op">.</span><span class="fu">repeat</span>(<span class="dv">17</span>) <span class="op">+</span> <span class="vs">`newdata = datagrid(</span><span class="sc">${</span>gridArgs<span class="sc">}</span><span class="vs">))`</span><span class="op">,</span></span>
+<span id="cb13-443"><a href="#cb13-443" aria-hidden="true" tabindex="-1"></a>          <span class="st">""</span><span class="op">,</span> <span class="op">...</span>plotLines]<span class="op">.</span><span class="fu">join</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)<span class="op">;</span></span>
+<span id="cb13-444"><a href="#cb13-444" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb13-445"><a href="#cb13-445" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-446"><a href="#cb13-446" aria-hidden="true" tabindex="-1"></a><span class="fu">html</span><span class="vs">`&lt;p&gt;R code for this plot:&lt;/p&gt;&lt;pre&gt;&lt;code&gt;</span><span class="sc">${</span>codeText<span class="sc">}</span><span class="vs">&lt;/code&gt;&lt;/pre&gt;`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-4-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-4-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-4-3" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
 <section id="cumulative-probabilities" class="level3" data-number="18.3.1">
 <h3 data-number="18.3.1" class="anchored" data-anchor-id="cumulative-probabilities"><span class="header-section-number">18.3.1</span> Computing cumulative probabilities</h3>
 <ul>
-<li>The model is defined through <span class="math inline">\(\Pr(Y_i \leq j)\)</span>; <code>predictions()</code> returns <span class="math inline">\(\Pr(Y_i = j)\)</span>, one row per category.</li>
+<li>Note that <code>predictions()</code> returns <span class="math inline">\(\Pr(Y_i = j)\)</span>—there is <em>one row per category</em>.</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="annotated-cell-6"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-6-1"><a href="#annotated-cell-6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># cumulative probabilities: Pr(Y &lt;= j) and Pr(Y &gt;= j)</span></span>
-<span id="annotated-cell-6-2"><a href="#annotated-cell-6-2" aria-hidden="true" tabindex="-1"></a>cumulative_p <span class="ot">&lt;-</span> p <span class="sc">|&gt;</span></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-6-3" class="code-annotation-target"><a href="#annotated-cell-6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(party_id, military_force, group) <span class="sc">|&gt;</span></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-6-4" class="code-annotation-target"><a href="#annotated-cell-6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(party_id, military_force) <span class="sc">|&gt;</span></span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-6-5" class="code-annotation-target"><a href="#annotated-cell-6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pr_le =</span> <span class="fu">cumsum</span>(estimate),</span>
-<a class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="4" onclick="event.preventDefault();">4</a><span id="annotated-cell-6-6" class="code-annotation-target"><a href="#annotated-cell-6-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">pr_ge =</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">lag</span>(<span class="fu">cumsum</span>(estimate), <span class="at">default =</span> <span class="dv">0</span>)) <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-6-7"><a href="#annotated-cell-6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
-<span id="annotated-cell-6-8"><a href="#annotated-cell-6-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="annotated-cell-6-9"><a href="#annotated-cell-6-9" aria-hidden="true" tabindex="-1"></a><span class="co"># one grid point: strong Democrats at military_force = 3</span></span>
-<span id="annotated-cell-6-10"><a href="#annotated-cell-6-10" aria-hidden="true" tabindex="-1"></a>cumulative_p <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-6-11"><a href="#annotated-cell-6-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(party_id <span class="sc">==</span> <span class="sc">-</span><span class="dv">3</span>, military_force <span class="sc">==</span> <span class="dv">3</span>) <span class="sc">|&gt;</span></span>
-<span id="annotated-cell-6-12"><a href="#annotated-cell-6-12" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(group, estimate, pr_le, pr_ge)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="annotated-cell-10"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-10-1"><a href="#annotated-cell-10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># cumulative probabilities: Pr(Y &lt;= j) and Pr(Y &gt;= j)</span></span>
+<span id="annotated-cell-10-2"><a href="#annotated-cell-10-2" aria-hidden="true" tabindex="-1"></a>cumulative_p <span class="ot">&lt;-</span> p <span class="sc">|&gt;</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-10" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-10-3" class="code-annotation-target"><a href="#annotated-cell-10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(party_id, military_force, group) <span class="sc">|&gt;</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-10" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-10-4" class="code-annotation-target"><a href="#annotated-cell-10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(party_id, military_force) <span class="sc">|&gt;</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-10" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-10-5" class="code-annotation-target"><a href="#annotated-cell-10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pr_le =</span> <span class="fu">cumsum</span>(estimate),</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-10" data-target-annotation="4" onclick="event.preventDefault();">4</a><span id="annotated-cell-10-6" class="code-annotation-target"><a href="#annotated-cell-10-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">pr_ge =</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">lag</span>(<span class="fu">cumsum</span>(estimate), <span class="at">default =</span> <span class="dv">0</span>)) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-10-7"><a href="#annotated-cell-10-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="annotated-cell-10-8"><a href="#annotated-cell-10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-10-9"><a href="#annotated-cell-10-9" aria-hidden="true" tabindex="-1"></a><span class="co"># one grid point: strong Democrats at military_force = 3</span></span>
+<span id="annotated-cell-10-10"><a href="#annotated-cell-10-10" aria-hidden="true" tabindex="-1"></a>cumulative_p <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-10-11"><a href="#annotated-cell-10-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(party_id <span class="sc">==</span> <span class="sc">-</span><span class="dv">3</span>, military_force <span class="sc">==</span> <span class="dv">3</span>) <span class="sc">|&gt;</span></span>
+<span id="annotated-cell-10-12"><a href="#annotated-cell-10-12" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(group, estimate, pr_le, pr_ge)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-annotation">
 <dl class="code-annotation-container-grid">
-<dt data-target-cell="annotated-cell-6" data-target-annotation="1">1</dt>
+<dt data-target-cell="annotated-cell-10" data-target-annotation="1">1</dt>
 <dd>
-<span data-code-cell="annotated-cell-6" data-code-lines="3" data-code-annotation="1">Sort the categories into their order within each grid point, so the running sum accumulates from category 1 upward.</span>
+<span data-code-cell="annotated-cell-10" data-code-lines="3" data-code-annotation="1">Sort the categories into their order within each grid point, so the running sum accumulates from category 1 upward.</span>
 </dd>
-<dt data-target-cell="annotated-cell-6" data-target-annotation="2">2</dt>
+<dt data-target-cell="annotated-cell-10" data-target-annotation="2">2</dt>
 <dd>
-<span data-code-cell="annotated-cell-6" data-code-lines="4" data-code-annotation="2">One running sum per grid point, i.e., per combination of <code>party_id</code> and <code>military_force</code>.</span>
+<span data-code-cell="annotated-cell-10" data-code-lines="4" data-code-annotation="2">One running sum per grid point, i.e., per combination of <code>party_id</code> and <code>military_force</code>.</span>
 </dd>
-<dt data-target-cell="annotated-cell-6" data-target-annotation="3">3</dt>
+<dt data-target-cell="annotated-cell-10" data-target-annotation="3">3</dt>
 <dd>
-<span data-code-cell="annotated-cell-6" data-code-lines="5" data-code-annotation="3"><span class="math inline">\(\Pr(Y_i \leq j)\)</span>: the running sum <span class="math inline">\(\Pr(Y_i = 1) + \cdots + \Pr(Y_i = j)\)</span>.</span>
+<span data-code-cell="annotated-cell-10" data-code-lines="5" data-code-annotation="3"><span class="math inline">\(\Pr(Y_i \leq j)\)</span>: the running sum <span class="math inline">\(\Pr(Y_i = 1) + \cdots + \Pr(Y_i = j)\)</span>.</span>
 </dd>
-<dt data-target-cell="annotated-cell-6" data-target-annotation="4">4</dt>
+<dt data-target-cell="annotated-cell-10" data-target-annotation="4">4</dt>
 <dd>
-<span data-code-cell="annotated-cell-6" data-code-lines="6" data-code-annotation="4"><span class="math inline">\(\Pr(Y_i \geq j) = 1 - \Pr(Y_i \leq j - 1)\)</span>: <code>lag()</code> shifts the running sum down one category, and <code>default = 0</code> covers <span class="math inline">\(j = 1\)</span>.</span>
+<span data-code-cell="annotated-cell-10" data-code-lines="6" data-code-annotation="4"><span class="math inline">\(\Pr(Y_i \geq j) = 1 - \Pr(Y_i \leq j - 1)\)</span>: <code>lag()</code> shifts the running sum down one category, and <code>default = 0</code> covers <span class="math inline">\(j = 1\)</span>.</span>
 </dd>
 </dl>
 </div>
@@ -749,63 +1056,73 @@ $ ideology_distance &lt;int&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 
 <pre><code># A tibble: 4 × 4
   group                  estimate pr_le  pr_ge
   &lt;fct&gt;                     &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;
-1 1. Strongly disapprove   0.536  0.536 1     
-2 2. Disapprove            0.293  0.829 0.464 
-3 3. Approve               0.158  0.988 0.171 
-4 4. Strongly approve      0.0124 1     0.0124</code></pre>
+1 1. Strongly disapprove   0.533  0.533 1     
+2 2. Disapprove            0.301  0.834 0.467 
+3 3. Approve               0.145  0.979 0.166 
+4 4. Strongly approve      0.0207 1     0.0207</code></pre>
 </div>
 </div>
 <ul>
 <li><span class="math inline">\(\Pr(Y_i \leq J)\)</span> and <span class="math inline">\(\Pr(Y_i \geq 1)\)</span> are always 1; drop them before plotting.</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot Pr(Y &lt;= j) for j = 1, 2, 3</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>cumulative_p <span class="sc">|&gt;</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(group <span class="sc">!=</span> <span class="st">"4. Strongly approve"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> military_force, <span class="at">y =</span> pr_le, <span class="at">color =</span> group)) <span class="sc">+</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(party_id), <span class="at">labeller =</span> label_both) <span class="sc">+</span></span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Pr(Y &lt;= j)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot Pr(Y &lt;= j) for j = 1, 2, 3</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>cumulative_p <span class="sc">|&gt;</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(group <span class="sc">!=</span> <span class="st">"4. Strongly approve"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> military_force, <span class="at">y =</span> pr_le, <span class="at">color =</span> group)) <span class="sc">+</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(party_id), <span class="at">labeller =</span> label_both) <span class="sc">+</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Pr(Y &lt;= j)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="03-ordered-logit_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="03-ordered-logit_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 <ul>
-<li>Strong Democrats at <code>military_force = 3</code>: Pr(strongly disapprove) 0.54, Pr(disapprove or worse) 0.83, Pr(approve or worse) 0.99.</li>
-<li>Each curve is one cutpoint: <span class="math inline">\(\Pr(Y_i \leq j) = \Phi(\alpha_j - \eta_i)\)</span> here (probit), so the three curves move together as <span class="math inline">\(\eta_i\)</span> changes. That is the proportional-odds (parallel) structure.</li>
-<li>The stacked <code>geom_area()</code> above draws the same curves, but <em>upper-tail</em>: <code>position = "stack"</code> puts the first level on top, so the boundary above band <span class="math inline">\(j\)</span> is <span class="math inline">\(\Pr(Y_i \geq j)\)</span>, not <span class="math inline">\(\Pr(Y_i \leq j)\)</span>. At <code>military_force = 3</code> for strong Democrats the boundaries sit at 0.46, 0.17, and 0.01, the <code>pr_ge</code> column. <code>position_stack(reverse = TRUE)</code> puts level 1 at the bottom and makes the boundaries <span class="math inline">\(\Pr(Y_i \leq j)\)</span>.</li>
+<li>Strong Democrats at <code>military_force = 3</code>: Pr(strongly disapprove) 0.53, Pr(disapprove or worse) 0.83, Pr(approve or worse) 0.98.</li>
+<li>Each curve is one cutpoint: <span class="math inline">\(\Pr(Y_i \leq j) = \operatorname{logit}^{-1}(\alpha_j - \eta_i)\)</span>, so the three curves move together as <span class="math inline">\(\eta_i\)</span> changes. (This is the proportional-odds (parallel) structure.)</li>
+<li>The stacked <code>geom_area()</code> above draws the same curves: <code>position_stack(reverse = TRUE)</code> puts the first level at the bottom, so the top edge of band <span class="math inline">\(j\)</span> is <span class="math inline">\(\Pr(Y_i \leq j)\)</span>, the <code>pr_le</code> column—at <code>military_force = 3</code> for strong Democrats, 0.53, 0.83, and 0.98. (ggplot’s default, <code>position = "stack"</code>, stacks the first level on top, and the edges become <span class="math inline">\(\Pr(Y_i \geq j)\)</span> instead.)</li>
 </ul>
 </section>
 </section>
 <section id="example-working-mothers-gss-1977-and-1989" class="level2 page-columns page-full" data-number="18.4">
 <h2 data-number="18.4" class="anchored" data-anchor-id="example-working-mothers-gss-1977-and-1989"><span class="header-section-number">18.4</span> Example: Working mothers, GSS 1977 and 1989</h2>
 <ul>
-<li>Data: General Social Survey, 1977 and 1989 <span class="citation" data-cites="gss2019">(<a href="#ref-gss2019" role="doc-biblioref">Smith et al. 2019</a>)</span>; the <code>ordwarm2</code> data of <span class="citation" data-cites="long1997">Long (<a href="#ref-long1997" role="doc-biblioref">1997</a>, ch.&nbsp;5)</span> and <span class="citation" data-cites="longfreese2014">Long and Freese (<a href="#ref-longfreese2014" role="doc-biblioref">2014</a>, ch.&nbsp;7)</span>.</li>
-<li>Outcome: agreement with “A working mother can establish just as warm and secure a relationship with her children as a mother who does not work,” four categories.</li>
-<li>Predictors: survey year, gender, race, age, years of education, occupational prestige.</li>
-<li>Ordered logit, Long &amp; Freese’s specification.</li>
+<li>Data: General Social Survey, 1977 and 1989 <span class="citation" data-cites="gss2019">(<a href="#ref-gss2019" role="doc-biblioref">Smith et al. 2019</a>)</span>.</li>
+<li>Outcome: agreement with “A working mother can establish just as warm and secure a relationship with her children as a mother who does not work,” four categories: strongly disagree, disagree, agree, and strongly agree.</li>
+<li>Predictors:
+<ul>
+<li><code>year</code>: survey year, 1977 or 1989.</li>
+<li><code>gender</code>: female or male.</li>
+<li><code>race</code>: nonwhite or white.</li>
+<li><code>age</code>: age in years, from 18 to 89.</li>
+<li><code>education</code>: years of education, from 0 to 20.</li>
+<li><code>prestige</code>: occupational prestige score, from 12 to 82 (higher scores are more prestigious occupations).</li>
+</ul></li>
 <li>2,293 respondents, no missing values.</li>
 </ul>
 <div class="no-row-height column-margin column-container"><div id="ref-gss2019" class="csl-entry" role="listitem">
 Smith, Tom W., Michael Davern, Jeremy Freese, and Stephen L. Morgan. 2019. <span>“General Social Surveys, 1972–2018 [Machine-Readable Data File].”</span> Chicago: NORC.
-</div><div id="ref-long1997" class="csl-entry" role="listitem">
+</div><div class="margin-aside">
+<p>These are the <code>ordwarm2</code> data of <span class="citation" data-cites="long1997">Long (<a href="#ref-long1997" role="doc-biblioref">1997</a>, ch.&nbsp;5)</span> and <span class="citation" data-cites="longfreese2014">Long and Freese (<a href="#ref-longfreese2014" role="doc-biblioref">2014</a>, ch.&nbsp;7)</span>. The model below is Long and Freese’s ordered logit, and the estimates match theirs.</p>
+<div id="ref-long1997" class="csl-entry" role="listitem">
 Long, J. Scott. 1997. <em>Regression Models for Categorical and Limited Dependent Variables</em>. Vol. 7. Advanced Quantitative Techniques in the Social Sciences. Thousand Oaks, CA: Sage.
 </div><div id="ref-longfreese2014" class="csl-entry" role="listitem">
 Long, J. Scott, and Jeremy Freese. 2014. <em>Regression Models for Categorical Dependent Variables Using <span>Stata</span></em>. 3rd ed. College Station, TX: Stata Press.
-</div></div><div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)  <span class="co"># masks dplyr::select()</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(marginaleffects)</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co"># load data</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>warm <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/working-mothers-gss.csv"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">warm =</span> <span class="fu">factor</span>(warm, <span class="at">ordered =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)  <span class="co"># masks dplyr::select()</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(marginaleffects)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co"># load data</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>warm <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/working-mothers-gss.csv"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">warm =</span> <span class="fu">factor</span>(warm, <span class="at">ordered =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 2,293
 Columns: 7
@@ -817,16 +1134,16 @@ $ age       &lt;dbl&gt; 33, 74, 36, 73, 59, 33, 43, 48, 27, 46, 75, 34, 64, 46, 
 $ education &lt;dbl&gt; 10, 16, 12, 9, 11, 4, 7, 12, 17, 12, 8, 12, 11, 12, 12, 6, 1…
 $ prestige  &lt;dbl&gt; 31, 50, 41, 36, 62, 17, 40, 48, 69, 50, 41, 47, 40, 31, 55, …</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># check the order of the outcome</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(warm<span class="sc">$</span>warm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># check the order of the outcome</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(warm<span class="sc">$</span>warm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "1. Strongly disagree" "2. Disagree"          "3. Agree"            
 [4] "4. Strongly agree"   </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit ordered logit</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>fit_warm <span class="ot">&lt;-</span> <span class="fu">polr</span>(warm <span class="sc">~</span> <span class="fu">factor</span>(year) <span class="sc">+</span> gender <span class="sc">+</span> race <span class="sc">+</span> age <span class="sc">+</span> education <span class="sc">+</span> prestige,</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> warm, <span class="at">Hess =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_warm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit ordered logit</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>fit_warm <span class="ot">&lt;-</span> <span class="fu">polr</span>(warm <span class="sc">~</span> <span class="fu">factor</span>(year) <span class="sc">+</span> gender <span class="sc">+</span> race <span class="sc">+</span> age <span class="sc">+</span> education <span class="sc">+</span> prestige,</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> warm, <span class="at">Hess =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_warm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Call:
 polr(formula = warm ~ factor(year) + gender + race + age + education + 
@@ -856,11 +1173,11 @@ AIC: 5707.825 </code></pre>
 <li>Men, whites, and older respondents less likely to agree; 1989 respondents and the more educated more likely.</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># probabilities across age, by gender</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">predictions</span>(fit_warm,</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">newdata =</span> <span class="fu">datagrid</span>(<span class="at">age =</span> <span class="dv">18</span><span class="sc">:</span><span class="dv">89</span>,</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">gender =</span> unique)) <span class="sc">|&gt;</span></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># probabilities across age, by gender</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">predictions</span>(fit_warm,</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">newdata =</span> <span class="fu">datagrid</span>(<span class="at">age =</span> <span class="dv">18</span><span class="sc">:</span><span class="dv">89</span>,</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">gender =</span> unique)) <span class="sc">|&gt;</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 576
 Columns: 16
@@ -881,13 +1198,13 @@ $ prestige  &lt;int&gt; 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 
 $ race      &lt;chr&gt; "White", "White", "White", "White", "White", "White", "White…
 $ year      &lt;dbl&gt; 1977, 1977, 1977, 1977, 1977, 1977, 1977, 1977, 1977, 1977, …</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(p, <span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> estimate, <span class="at">fill =</span> group)) <span class="sc">+</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_area</span>(<span class="at">position =</span> <span class="st">"stack"</span>) <span class="sc">+</span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(gender))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(p, <span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> estimate, <span class="at">fill =</span> group)) <span class="sc">+</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_area</span>(<span class="at">position =</span> <span class="fu">position_stack</span>(<span class="at">reverse =</span> <span class="cn">TRUE</span>)) <span class="sc">+</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(gender))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="03-ordered-logit_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="03-ordered-logit_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -896,26 +1213,26 @@ $ year      &lt;dbl&gt; 1977, 1977, 1977, 1977, 1977, 1977, 1977, 1977, 1977, 19
 <li>Year and race at their modes, education and prestige at their means.</li>
 <li>Women: Pr(strongly agree) about 0.26 at age 20, about 0.09 at 80.</li>
 <li>Men: Pr(strongly disagree) about 0.12 at 20, about 0.34 at 80.</li>
-<li>Band boundaries are <span class="math inline">\(\Pr(Y_i \geq j)\)</span> (first level stacked on top).</li>
+<li>Band edges are <span class="math inline">\(\Pr(Y_i \leq j)\)</span> (<code>reverse = TRUE</code> stacks the first level at the bottom).</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># cumulative probabilities Pr(Y &lt;= j), then plot j = 1, 2, 3</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>cumulative_p <span class="ot">&lt;-</span> p <span class="sc">|&gt;</span></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(gender, age, group) <span class="sc">|&gt;</span></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(gender, age) <span class="sc">|&gt;</span></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pr_le =</span> <span class="fu">cumsum</span>(estimate)) <span class="sc">|&gt;</span></span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>cumulative_p <span class="sc">|&gt;</span></span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(group <span class="sc">!=</span> <span class="st">"4. Strongly agree"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> pr_le, <span class="at">color =</span> group)) <span class="sc">+</span></span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(gender)) <span class="sc">+</span></span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Pr(Y &lt;= j)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># cumulative probabilities Pr(Y &lt;= j), then plot j = 1, 2, 3</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>cumulative_p <span class="ot">&lt;-</span> p <span class="sc">|&gt;</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(gender, age, group) <span class="sc">|&gt;</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(gender, age) <span class="sc">|&gt;</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pr_le =</span> <span class="fu">cumsum</span>(estimate)) <span class="sc">|&gt;</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>cumulative_p <span class="sc">|&gt;</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(group <span class="sc">!=</span> <span class="st">"4. Strongly agree"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> pr_le, <span class="at">color =</span> group)) <span class="sc">+</span></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(gender)) <span class="sc">+</span></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Pr(Y &lt;= j)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="03-ordered-logit_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="03-ordered-logit_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -924,132 +1241,130 @@ $ year      &lt;dbl&gt; 1977, 1977, 1977, 1977, 1977, 1977, 1977, 1977, 1977, 19
 <li>Three parallel curves per panel, one per cutpoint; men’s curves sit above women’s (less agreement).</li>
 </ul>
 </section>
-<section id="example-political-ideology-by-party-and-gender" class="level2 page-columns page-full" data-number="18.5">
-<h2 data-number="18.5" class="anchored" data-anchor-id="example-political-ideology-by-party-and-gender"><span class="header-section-number">18.5</span> Example: Political ideology by party and gender</h2>
+<section id="example-political-ideology-by-party" class="level2 page-columns page-full" data-number="18.5">
+<h2 data-number="18.5" class="anchored" data-anchor-id="example-political-ideology-by-party"><span class="header-section-number">18.5</span> Example: Political ideology by party</h2>
 <ul>
-<li>Data: Table 6.7 of <span class="citation" data-cites="agresti2007">Agresti (<a href="#ref-agresti2007" role="doc-biblioref">2007, sec. 6.2.2</a>)</span>, a 2 × 2 × 5 table from the General Social Survey (no year given), expanded to one row per respondent (N = 835); the party-only version is the UVA StatLab tutorial <span class="citation" data-cites="ford2015">(<a href="#ref-ford2015" role="doc-biblioref">Ford 2015</a>)</span>.</li>
-<li>Outcome: political ideology, five categories from very liberal to very conservative.</li>
-<li>Predictors: party (Democrat, Republican) and gender.</li>
-<li>Ordered logit; Agresti’s cumulative logit (proportional odds) model.</li>
+<li>Data: General Social Survey (no year given), as tabulated in Table 6.7 of <span class="citation" data-cites="agresti2007">Agresti (<a href="#ref-agresti2007" role="doc-biblioref">2007, sec. 6.2.2</a>)</span>, summed over gender and expanded to one row per respondent.</li>
+<li>Outcome: political ideology, five categories: very liberal, slightly liberal, moderate, slightly conservative, and very conservative.</li>
+<li>Predictor: <code>party</code>, Democrat or Republican.</li>
+<li>835 respondents, no missing values.</li>
 </ul>
-<div class="no-row-height column-margin column-container"><div id="ref-ford2015" class="csl-entry" role="listitem">
+<div class="no-row-height column-margin column-container"><div class="margin-aside">
+<p>This is Agresti’s ordered logit; he calls it a cumulative logit or proportional odds model. The same model is the example in a UVA StatLab tutorial <span class="citation" data-cites="ford2015">(<a href="#ref-ford2015" role="doc-biblioref">Ford 2015</a>)</span>.</p>
+<div id="ref-ford2015" class="csl-entry" role="listitem">
 Ford, Clay. 2015. <span>“Fitting and Interpreting a Proportional Odds Model.”</span> University of Virginia Library, StatLab. <a href="https://library.virginia.edu/data/fitting-and-interpreting-a-proportional-odds-model/">https://library.virginia.edu/data/fitting-and-interpreting-a-proportional-odds-model/</a>.
-</div></div><div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)  <span class="co"># masks dplyr::select()</span></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(marginaleffects)</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="co"># load data</span></span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>ideology <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/ideology-party-gender.csv"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ideology =</span> <span class="fu">factor</span>(ideology, <span class="at">ordered =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)  <span class="co"># masks dplyr::select()</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(marginaleffects)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="co"># load data</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>ideology <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/ideology-party.csv"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ideology =</span> <span class="fu">factor</span>(ideology, <span class="at">ordered =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 835
-Columns: 3
+Columns: 2
 $ ideology &lt;ord&gt; 1. Very liberal, 1. Very liberal, 1. Very liberal, 1. Very li…
-$ party    &lt;chr&gt; "Democrat", "Democrat", "Democrat", "Democrat", "Democrat", "…
-$ gender   &lt;chr&gt; "Female", "Female", "Female", "Female", "Female", "Female", "…</code></pre>
+$ party    &lt;chr&gt; "Democrat", "Democrat", "Democrat", "Democrat", "Democrat", "…</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># check the order of the outcome</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(ideology<span class="sc">$</span>ideology)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># check the order of the outcome</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(ideology<span class="sc">$</span>ideology)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "1. Very liberal"          "2. Slightly liberal"     
 [3] "3. Moderate"              "4. Slightly conservative"
 [5] "5. Very conservative"    </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit ordered logit</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>fit_ideology <span class="ot">&lt;-</span> <span class="fu">polr</span>(ideology <span class="sc">~</span> party <span class="sc">+</span> gender,</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">data =</span> ideology, <span class="at">Hess =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_ideology)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit ordered logit</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>fit_ideology <span class="ot">&lt;-</span> <span class="fu">polr</span>(ideology <span class="sc">~</span> party,</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">data =</span> ideology, <span class="at">Hess =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_ideology)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Call:
-polr(formula = ideology ~ party + gender, data = ideology, Hess = TRUE)
+polr(formula = ideology ~ party, data = ideology, Hess = TRUE)
 
 Coefficients:
                  Value Std. Error t value
-partyRepublican 0.9636     0.1297  7.4311
-genderMale      0.1169     0.1273  0.9177
+partyRepublican 0.9745     0.1292   7.544
 
 Intercepts:
                                               Value    Std. Error t value 
-1. Very liberal|2. Slightly liberal            -1.4518   0.1226   -11.8373
-2. Slightly liberal|3. Moderate                -0.4583   0.1048    -4.3746
-3. Moderate|4. Slightly conservative            1.2550   0.1142    10.9873
-4. Slightly conservative|5. Very conservative   2.0890   0.1293    16.1587
+1. Very liberal|2. Slightly liberal            -1.4944   0.1136   -13.1559
+2. Slightly liberal|3. Moderate                -0.5000   0.0945    -5.2929
+3. Moderate|4. Slightly conservative            1.2116   0.1038    11.6770
+4. Slightly conservative|5. Very conservative   2.0441   0.1193    17.1288
 
-Residual Deviance: 2474.142 
-AIC: 2486.142 </code></pre>
+Residual Deviance: 2474.985 
+AIC: 2484.985 </code></pre>
 </div>
 </div>
 <ul>
-<li>Agresti fits party alone and reports 0.975 (SE 0.129) <span class="citation" data-cites="agresti2007">(<a href="#ref-agresti2007" role="doc-biblioref">Agresti 2007, 183</a>)</span>; with gender added, <code>partyRepublican</code> 0.96 (SE 0.13) and <code>genderMale</code> 0.12 (SE 0.13).</li>
-<li>Republicans much more conservative; gender difference small and uncertain.</li>
+<li>Matches Agresti: <code>partyRepublican</code> 0.975 (SE 0.129) <span class="citation" data-cites="agresti2007">(<a href="#ref-agresti2007" role="doc-biblioref">Agresti 2007, 183</a>)</span>.</li>
+<li>Republicans much more conservative.</li>
 </ul>
 <div class="no-row-height column-margin column-container"><div id="ref-agresti2007" class="csl-entry" role="listitem">
 Agresti, Alan. 2007. <em>An Introduction to Categorical Data Analysis</em>. 2nd ed. Hoboken, NJ: Wiley. <a href="https://doi.org/10.1002/0470114754">https://doi.org/10.1002/0470114754</a>.
 </div></div><div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># probabilities for the four groups</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">predictions</span>(fit_ideology,</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">newdata =</span> <span class="fu">datagrid</span>(<span class="at">party =</span> unique,</span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">gender =</span> unique)) <span class="sc">|&gt;</span></span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># probabilities for Democrats and Republicans</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">predictions</span>(fit_ideology,</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">newdata =</span> <span class="fu">datagrid</span>(<span class="at">party =</span> unique)) <span class="sc">|&gt;</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Rows: 20
-Columns: 12
-$ rowid     &lt;int&gt; 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4
-$ group     &lt;fct&gt; 1. Very liberal, 1. Very liberal, 1. Very liberal, 1. Very l…
-$ estimate  &lt;dbl&gt; 0.18971925, 0.17240324, 0.08200121, 0.07362350, 0.19765910, …
-$ std.error &lt;dbl&gt; 0.01885442, 0.01993272, 0.01082473, 0.01015843, 0.01676040, …
-$ statistic &lt;dbl&gt; 10.062324, 8.649260, 7.575357, 7.247526, 11.793218, 10.76420…
-$ p.value   &lt;dbl&gt; 8.106161e-24, 5.183442e-18, 3.581407e-14, 4.244524e-13, 4.23…
-$ s.value   &lt;dbl&gt; 76.70726, 57.42080, 44.66647, 41.09946, 104.22083, 87.34721,…
-$ conf.low  &lt;dbl&gt; 0.15276527, 0.13333584, 0.06078512, 0.05371334, 0.16480931, …
-$ conf.high &lt;dbl&gt; 0.22667322, 0.21147065, 0.10321729, 0.09353366, 0.23050888, …
-$ party     &lt;chr&gt; "Democrat", "Democrat", "Republican", "Republican", "Democra…
-$ gender    &lt;chr&gt; "Female", "Male", "Female", "Male", "Female", "Male", "Femal…
-$ df        &lt;dbl&gt; Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, …</code></pre>
+<pre><code>Rows: 10
+Columns: 11
+$ rowid     &lt;int&gt; 1, 2, 1, 2, 1, 2, 1, 2, 1, 2
+$ group     &lt;fct&gt; 1. Very liberal, 1. Very liberal, 2. Slightly liberal, 2. Sl…
+$ estimate  &lt;dbl&gt; 0.18325956, 0.07806872, 0.19427045, 0.10818956, 0.39305947, …
+$ std.error &lt;dbl&gt; 0.01700208, 0.00948418, 0.01617828, 0.01097988, 0.01761715, …
+$ statistic &lt;dbl&gt; 10.778658, 8.231468, 12.008104, 9.853440, 22.311179, 21.3126…
+$ p.value   &lt;dbl&gt; 4.341727e-27, 1.849331e-16, 3.221477e-33, 6.623716e-23, 2.87…
+$ s.value   &lt;dbl&gt; 87.57379, 52.26385, 107.93590, 73.67671, 363.88699, 332.4002…
+$ conf.low  &lt;dbl&gt; 0.14993610, 0.05948007, 0.16256161, 0.08666939, 0.35853048, …
+$ conf.high &lt;dbl&gt; 0.21658301, 0.09665737, 0.22597929, 0.12970972, 0.42758845, …
+$ party     &lt;chr&gt; "Democrat", "Republican", "Democrat", "Republican", "Democra…
+$ df        &lt;dbl&gt; Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(p, <span class="fu">aes</span>(<span class="at">x =</span> party, <span class="at">y =</span> estimate, <span class="at">fill =</span> group)) <span class="sc">+</span></span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(gender))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(p, <span class="fu">aes</span>(<span class="at">x =</span> party, <span class="at">y =</span> estimate, <span class="at">fill =</span> group)) <span class="sc">+</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="03-ordered-logit_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="03-ordered-logit_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 <ul>
-<li>Both predictors binary, so <code>x</code> takes two values. <code>geom_area()</code> needs a numeric <code>x</code> and draws nothing for a character <code>x</code>; <code>geom_col()</code> stacks the same probabilities as columns.</li>
-<li>Women: Pr(very conservative) about 0.11 for Democrats, about 0.25 for Republicans.</li>
+<li>One binary predictor, so <code>x</code> takes two values. <code>geom_area()</code> needs a numeric <code>x</code> and draws nothing for a character <code>x</code>; <code>geom_col()</code> stacks the same probabilities as columns.</li>
+<li>Pr(very liberal) about 0.18 for Democrats, about 0.08 for Republicans.</li>
+<li>Pr(moderate) about the same for both parties, 0.39 and 0.37.</li>
 <li>Column boundaries are <span class="math inline">\(\Pr(Y_i \geq j)\)</span> (first level stacked on top), as in the two figures above.</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># cumulative probabilities Pr(Y &lt;= j), then plot j = 1, ..., 4</span></span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>cumulative_p <span class="ot">&lt;-</span> p <span class="sc">|&gt;</span></span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(gender, party, group) <span class="sc">|&gt;</span></span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(gender, party) <span class="sc">|&gt;</span></span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pr_le =</span> <span class="fu">cumsum</span>(estimate)) <span class="sc">|&gt;</span></span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
-<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>cumulative_p <span class="sc">|&gt;</span></span>
-<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(group <span class="sc">!=</span> <span class="st">"5. Very conservative"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> party, <span class="at">y =</span> pr_le, <span class="at">color =</span> group, <span class="at">group =</span> group)) <span class="sc">+</span></span>
-<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(gender)) <span class="sc">+</span></span>
-<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Pr(Y &lt;= j)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># cumulative probabilities Pr(Y &lt;= j), then plot j = 1, ..., 4</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>cumulative_p <span class="ot">&lt;-</span> p <span class="sc">|&gt;</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(party, group) <span class="sc">|&gt;</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(party) <span class="sc">|&gt;</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pr_le =</span> <span class="fu">cumsum</span>(estimate)) <span class="sc">|&gt;</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>cumulative_p <span class="sc">|&gt;</span></span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(group <span class="sc">!=</span> <span class="st">"5. Very conservative"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> party, <span class="at">y =</span> pr_le, <span class="at">color =</span> group, <span class="at">group =</span> group)) <span class="sc">+</span></span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Pr(Y &lt;= j)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="03-ordered-logit_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="03-ordered-logit_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 <ul>
-<li>Every cumulative probability drops from Democrats to Republicans by the same log-odds shift, 0.96.</li>
+<li>Every cumulative probability drops from Democrats to Republicans by the same amount on the log-odds scale, 0.97, the <code>partyRepublican</code> coefficient.</li>
 </ul>
 
 
@@ -1057,6 +1372,17 @@ $ df        &lt;dbl&gt; Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, Inf, I
 </section>
 
 </main> <!-- /main -->
+<script type="ojs-module-contents">
+eyJjb250ZW50cyI6W3sibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6Ii8vIHRoZSBmaXQsIGhhbmRlZCBvdmVyIGJ5IHRoZSBSIGNodW5rIGFib3ZlIChudW1iZXJzIGFycml2ZSBhcyBzdHJpbmdzOyBzZWUgdGhlcmUpXG5jb2VmID0gT2JqZWN0LmZyb21FbnRyaWVzKE9iamVjdC5lbnRyaWVzKG9sX2NvZWYpLm1hcCgoW3YsIGJdKSA9PiBbdiwgTnVtYmVyKGIpXSkpXG56ZXRhID0gb2xfemV0YS5tYXAoTnVtYmVyKVxudmFycyA9IHRyYW5zcG9zZShvbF92YXJzKSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8vIG9uZSByb3cgcGVyIHByZWRpY3RvclxucHJlZGljdG9ycyA9IHZhcnMubWFwKHYgPT4gdi5uYW1lKSAgICAgICAgICAgICAgICAgICAgIC8vIGluIHRoZSBtb2RlbCdzIG9yZGVyXG5pbmZvID0gT2JqZWN0LmZyb21FbnRyaWVzKHZhcnMubWFwKHYgPT4gW3YubmFtZSwgdl0pKSAgLy8gaW5mby5wYXJ0eV9pZC5taW4sIC5tYXgsIC5tZWRpYW4sIC5sYWJlbFxuY29sb3JzID0gW1wiI0Y4NzY2RFwiLCBcIiM3Q0FFMDBcIiwgXCIjMDBCRkM0XCIsIFwiI0M3N0NGRlwiXSAgLy8gZ2dwbG90MidzIGRlZmF1bHQgaHVlcyBmb3IgbGV2ZWxzIDEtNFxuc2VxID0gKGZyb20sIHRvKSA9PiBBcnJheS5mcm9tKHtsZW5ndGg6IHRvIC0gZnJvbSArIDF9LCAoXywgaSkgPT4gZnJvbSArIGkpXG53aWRlID0gKGZvcm0pID0+IHsgZm9ybS5zdHlsZS5zZXRQcm9wZXJ0eShcIi0tbGFiZWwtd2lkdGhcIiwgXCIxNjVweFwiKTsgcmV0dXJuIGZvcm07IH0gIC8vIHJvb20gZm9yIFwiaWRlb2xvZ3lfZGlzdGFuY2VcIlxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC0yIiwiaW5saW5lIjpmYWxzZSwic291cmNlIjoiLy8gcm9sZXM6IG9uZSBwcmVkaWN0b3Igb24gdGhlIHgtYXhpcywgYXQgbW9zdCBvbmUgaW4gdGhlIGZhY2V0cywgdGhlIHJlc3QgaGVsZCBmaXhlZFxudmlld29mIHhWYXIgPSB3aWRlKElucHV0cy5zZWxlY3QocHJlZGljdG9ycywge3ZhbHVlOiBcIm1pbGl0YXJ5X2ZvcmNlXCIsIGxhYmVsOiBcIngtYXhpcyB2YXJpYWJsZVwifSkpXG5cbm11dGFibGUgZmFjZXRNZW1vcnkgPSBcInBhcnR5X2lkXCIgIC8vIHRoZSBsYXN0IGZhY2V0IGNob2ljZSwgc28gaXQgc3Vydml2ZXMgcmUtY3JlYXRpbmcgdGhlIGlucHV0XG5cbnZpZXdvZiBmYWNldFZhciA9IHtcbiAgY29uc3Qgb3B0aW9ucyA9IFtcIm5vbmVcIiwgLi4ucHJlZGljdG9ycy5maWx0ZXIodiA9PiB2ICE9PSB4VmFyKV07ICAvLyBuZXZlciB0aGUgY3VycmVudCB4XG4gIGNvbnN0IGxhc3QgPSBtdXRhYmxlIGZhY2V0TWVtb3J5OyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLy8gcmVhZCB3aXRob3V0IGEgcmVhY3RpdmUgZGVwZW5kZW5jeVxuICBjb25zdCB2YWx1ZSA9IG9wdGlvbnMuaW5jbHVkZXMobGFzdCkgPyBsYXN0IDogXCJub25lXCI7ICAgICAgICAgICAgICAgLy8geCB0b29rIHRoZSBmYWNldCdzIHBsYWNlIC0+IG5vbmVcbiAgcmV0dXJuIHdpZGUoSW5wdXRzLnNlbGVjdChvcHRpb25zLCB7dmFsdWUsIGxhYmVsOiBcIkZhY2V0IHZhcmlhYmxlXCJ9KSk7XG59XG5cbnJlbWVtYmVyRmFjZXQgPSB7IG11dGFibGUgZmFjZXRNZW1vcnkgPSBmYWNldFZhcjsgfVxuXG4vLyBmYWNldCB2YWx1ZXM6IGEgY2hlY2tib3ggcGVyIGludGVnZXIgdmFsdWUsIG1pbiBhbmQgbWF4IGNoZWNrZWQgYnkgZGVmYXVsdFxudmlld29mIGZhY2V0VmFscyA9IHtcbiAgaWYgKGZhY2V0VmFyID09PSBcIm5vbmVcIikgeyAgLy8gaGlkZGVuIHBsYWNlaG9sZGVyIHdob3NlIHZhbHVlIGlzIGFuIGVtcHR5IHNlbGVjdGlvblxuICAgIGNvbnN0IG5vbmUgPSBodG1sYDxzcGFuPjwvc3Bhbj5gO1xuICAgIG5vbmUudmFsdWUgPSBbXTtcbiAgICByZXR1cm4gbm9uZTtcbiAgfVxuICBjb25zdCBkID0gaW5mb1tmYWNldFZhcl07XG4gIHJldHVybiB3aWRlKElucHV0cy5jaGVja2JveChzZXEoZC5taW4sIGQubWF4KSwge3ZhbHVlOiBbZC5taW4sIGQubWF4XSwgbGFiZWw6IGBGYWNldCB2YWx1ZXMgKCR7ZmFjZXRWYXJ9KWB9KSk7XG59XG5cbm11dGFibGUgc2xpZGVyTWVtb3J5ID0gKHt9KSAgLy8gc2xpZGVyIHNldHRpbmdzIGJ5IHZhcmlhYmxlLCBzbyB0aGV5IHN1cnZpdmUgcm9sZSBjaGFuZ2VzXG5cbi8vIGZpeGVkIHZhcmlhYmxlczogb25lIGludGVnZXIgc2xpZGVyIGVhY2gsIGF0IHRoZSBzYW1wbGUgbWVkaWFuIHVubGVzcyBzZXRcbnZpZXdvZiBmaXhlZCA9IHtcbiAgY29uc3QgZml4ZWRWYXJzID0gcHJlZGljdG9ycy5maWx0ZXIodiA9PiB2ICE9PSB4VmFyICYmIHYgIT09IGZhY2V0VmFyKTtcbiAgY29uc3QgbGFzdCA9IG11dGFibGUgc2xpZGVyTWVtb3J5O1xuICBjb25zdCBpbnB1dHMgPSBPYmplY3QuZnJvbUVudHJpZXMoZml4ZWRWYXJzLm1hcCh2ID0+IHtcbiAgICBjb25zdCBkID0gaW5mb1t2XTtcbiAgICBjb25zdCB2YWx1ZSA9IGxhc3Rbdl0gIT09IHVuZGVmaW5lZCA/IGxhc3Rbdl0gOiBkLm1lZGlhbjtcbiAgICByZXR1cm4gW3YsIHdpZGUoSW5wdXRzLnJhbmdlKFtkLm1pbiwgZC5tYXhdLCB7c3RlcDogMSwgdmFsdWUsIGxhYmVsOiB2fSkpXTtcbiAgfSkpO1xuICBjb25zdCB0ZW1wbGF0ZSA9IChpbnB1dHMpID0+IGh0bWxgPGRpdj5cbiAgICA8ZGl2IHN0eWxlPVwiZm9udC13ZWlnaHQ6IDYwMDsgbWFyZ2luOiAwLjc1ZW0gMCAwLjRlbVwiPkZpeGVkIHZhcmlhYmxlczwvZGl2PlxuICAgICR7Zml4ZWRWYXJzLm1hcCh2ID0+IGh0bWxgPGRpdiBzdHlsZT1cIm1hcmdpbi1ib3R0b206IDAuNmVtXCI+JHtpbnB1dHNbdl19XG4gICAgICA8ZGl2IHN0eWxlPVwiZm9udC1zaXplOiAwLjhlbTsgY29sb3I6ICM3Nzc7IG1hcmdpbi1sZWZ0OiAxNjVweFwiPiR7aW5mb1t2XS5sYWJlbH08L2Rpdj48L2Rpdj5gKX1cbiAgPC9kaXY+YDtcbiAgcmV0dXJuIElucHV0cy5mb3JtKGlucHV0cywge3RlbXBsYXRlfSk7XG59XG5cbnJlbWVtYmVyU2xpZGVycyA9IHsgY29uc3QgbGFzdCA9IG11dGFibGUgc2xpZGVyTWVtb3J5OyBtdXRhYmxlIHNsaWRlck1lbW9yeSA9IHsuLi5sYXN0LCAuLi5maXhlZH07IH1cbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMyIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6Ii8vIHRoZSBncmlkOiB4IG92ZXIgaXRzIHJhbmdlLCBvbmUgcGFuZWwgcGVyIGNoZWNrZWQgZmFjZXQgdmFsdWUsIHRoZSByZXN0IGZpeGVkXG5mYWNldCA9IChmYWNldFZhciAhPT0gXCJub25lXCIgJiYgZmFjZXRWYWxzLmxlbmd0aCA+IDApID8gZmFjZXRWYXIgOiBudWxsXG54cyA9IHNlcShpbmZvW3hWYXJdLm1pbiwgaW5mb1t4VmFyXS5tYXgpXG5oZWxkID0gT2JqZWN0LmZyb21FbnRyaWVzKHByZWRpY3RvcnMuZmlsdGVyKHYgPT4gdiAhPT0geFZhciAmJiB2ICE9PSBmYWNldClcbiAgLm1hcCh2ID0+IFt2LCBmaXhlZFt2XSAhPT0gdW5kZWZpbmVkID8gZml4ZWRbdl0gOiBpbmZvW3ZdLm1lZGlhbl0pKSAgLy8gYSBmYWNldCB3aXRoIG5vdGhpbmcgY2hlY2tlZCBzaXRzIGF0IGl0cyBtZWRpYW5cblxuLy8gb3JkZXJlZC1sb2dpdCBwcm9iYWJpbGl0aWVzOiBQcih5IDw9IGopID0gbG9naXReLTEoemV0YV9qIC0gZXRhKSwgZGlmZmVyZW5jZWQgYWNyb3NzIHRoZSBjdXRwb2ludHNcbnByb2JzID0ge1xuICBjb25zdCByb3dzID0gW107XG4gIGZvciAoY29uc3QgZiBvZiAoZmFjZXQgPyBmYWNldFZhbHMgOiBbbnVsbF0pKSB7XG4gICAgZm9yIChjb25zdCB4IG9mIHhzKSB7XG4gICAgICBjb25zdCBwb2ludCA9IHsuLi5oZWxkLCBbeFZhcl06IHh9O1xuICAgICAgaWYgKGZhY2V0KSBwb2ludFtmYWNldF0gPSBmO1xuICAgICAgY29uc3QgZXRhID0gcHJlZGljdG9ycy5yZWR1Y2UoKHN1bSwgdikgPT4gc3VtICsgY29lZlt2XSAqIHBvaW50W3ZdLCAwKTtcbiAgICAgIGNvbnN0IGN1bSA9IFswLCAuLi56ZXRhLm1hcCh6ID0+IDEgLyAoMSArIE1hdGguZXhwKC0oeiAtIGV0YSkpKSksIDFdO1xuICAgICAgb2xfbGV2ZWxzLmZvckVhY2goKGxldmVsLCBqKSA9PiByb3dzLnB1c2goe1xuICAgICAgICB4LCBncm91cDogbGV2ZWwsIHA6IGN1bVtqICsgMV0gLSBjdW1bal0sIGZhY2V0OiBmYWNldCA/IGAke2ZhY2V0fTogJHtmfWAgOiBcIlwiXG4gICAgICB9KSk7XG4gICAgfVxuICB9XG4gIHJldHVybiByb3dzO1xufVxuXG4vLyBzdGFja2VkIGFyZWFzOyB0aGUgZXhwbGljaXQgb3JkZXIgcHV0cyBsZXZlbCAxIGF0IHRoZSBib3R0b20sIGFzIHBvc2l0aW9uX3N0YWNrKHJldmVyc2UgPSBUUlVFKSBkb2VzXG5QbG90LnBsb3Qoe1xuICB3aWR0aCxcbiAgaGVpZ2h0OiAzMjAsXG4gIHN0eWxlOiB7Zm9udFNpemU6IFwiMTJweFwifSxcbiAgeDoge2xhYmVsOiBpbmZvW3hWYXJdLmxhYmVsLCBsYWJlbEFuY2hvcjogXCJjZW50ZXJcIiwgdGlja0Zvcm1hdDogXCJkXCIsIHRpY2tzOiB4cy5sZW5ndGggPD0gMTIgPyB4cyA6IHVuZGVmaW5lZH0sXG4gIHk6IHtsYWJlbDogXCJQcih5ID0gailcIiwgZG9tYWluOiBbMCwgMV0sIGdyaWQ6IHRydWV9LFxuICAuLi4oZmFjZXQgPyB7Zng6IHtsYWJlbDogbnVsbCwgZG9tYWluOiBmYWNldFZhbHMubWFwKGYgPT4gYCR7ZmFjZXR9OiAke2Z9YCl9fSA6IHt9KSxcbiAgY29sb3I6IHtkb21haW46IG9sX2xldmVscywgcmFuZ2U6IGNvbG9ycywgbGVnZW5kOiB0cnVlfSxcbiAgbWFya3M6IFtcbiAgICBQbG90LmFyZWFZKHByb2JzLCB7eDogXCJ4XCIsIHk6IFwicFwiLCBmaWxsOiBcImdyb3VwXCIsIG9yZGVyOiBvbF9sZXZlbHMsXG4gICAgICAgICAgICAgICAgICAgICAgIC4uLihmYWNldCA/IHtmeDogXCJmYWNldFwifSA6IHt9KX0pLFxuICAgIFBsb3QucnVsZVkoWzBdKVxuICBdXG59KVxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC00IiwiaW5saW5lIjpmYWxzZSwic291cmNlIjoiLy8gdGhlIFIgY29kZSB0aGF0IHJlcHJvZHVjZXMgdGhlIGN1cnJlbnQgcGxvdCwgaW4gdGhlIFNoaW55IGFwcCdzIGZvcm1hdFxuZm10ID0gKHgpID0+IHsgIC8vIDE6NSwgYygtMywgMyksIG9yIDJcbiAgY29uc3QgcyA9IFsuLi5uZXcgU2V0KHgpXS5zb3J0KChhLCBiKSA9PiBhIC0gYik7XG4gIGlmIChzLmxlbmd0aCA9PT0gMSkgcmV0dXJuIFN0cmluZyhzWzBdKTtcbiAgaWYgKHMuZXZlcnkoKHYsIGkpID0+IGkgPT09IDAgfHwgdiAtIHNbaSAtIDFdID09PSAxKSkgcmV0dXJuIGAke3NbMF19OiR7c1tzLmxlbmd0aCAtIDFdfWA7XG4gIHJldHVybiBgYygke3Muam9pbihcIiwgXCIpfSlgO1xufVxuXG5jb2RlVGV4dCA9IHtcbiAgY29uc3QgYXJncyA9IFtbeFZhciwgeHNdXTsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyB4IGZpcnN0LCB0aGVuIHRoZSBmYWNldCxcbiAgaWYgKGZhY2V0KSBhcmdzLnB1c2goW2ZhY2V0LCBmYWNldFZhbHNdKTsgICAgICAgICAgICAgICAgICAgICAgICAvLyB0aGVuIHRoZSBmaXhlZCBvbmVzIGluXG4gIGZvciAoY29uc3QgdiBvZiBwcmVkaWN0b3JzKSBpZiAodiBpbiBoZWxkKSBhcmdzLnB1c2goW3YsIFtoZWxkW3ZdXV0pOyAgLy8gdGhlIG1vZGVsJ3Mgb3JkZXJcbiAgY29uc3QgZ3JpZEFyZ3MgPSBhcmdzLm1hcCgoW3YsIHZhbHNdKSA9PiBgJHt2fSA9ICR7Zm10KHZhbHMpfWApLmpvaW4oXCIsXFxuXCIgKyBcIiBcIi5yZXBlYXQoMzYpKTtcbiAgY29uc3QgcGxvdExpbmVzID0gW2BnZ3Bsb3QocCwgYWVzKHggPSAke3hWYXJ9LCB5ID0gZXN0aW1hdGUsIGZpbGwgPSBncm91cCkpICtgLFxuICAgICAgICAgICAgICAgICAgICAgYCAgZ2VvbV9hcmVhKHBvc2l0aW9uID0gcG9zaXRpb25fc3RhY2socmV2ZXJzZSA9IFRSVUUpKWBdO1xuICBpZiAoZmFjZXQpIHtcbiAgICBwbG90TGluZXNbMV0gKz0gXCIgK1wiO1xuICAgIHBsb3RMaW5lcy5wdXNoKGAgIGZhY2V0X3dyYXAodmFycygke2ZhY2V0fSksIGxhYmVsbGVyID0gbGFiZWxfYm90aClgKTtcbiAgfVxuICByZXR1cm4gW1wicCA8LSBwcmVkaWN0aW9ucyhmaXRfYXBwcm92YWwsXCIsXG4gICAgICAgICAgXCIgXCIucmVwZWF0KDE3KSArIGBuZXdkYXRhID0gZGF0YWdyaWQoJHtncmlkQXJnc30pKWAsXG4gICAgICAgICAgXCJcIiwgLi4ucGxvdExpbmVzXS5qb2luKFwiXFxuXCIpO1xufVxuXG5odG1sYDxwPlIgY29kZSBmb3IgdGhpcyBwbG90OjwvcD48cHJlPjxjb2RlPiR7Y29kZVRleHR9PC9jb2RlPjwvcHJlPmBcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldFF1aWV0Iiwic291cmNlIjoic2hpbnlJbnB1dCgneFZhcicpIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0UXVpZXQiLCJzb3VyY2UiOiJzaGlueUlucHV0KCdmYWNldFZhcicpIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0UXVpZXQiLCJzb3VyY2UiOiJzaGlueUlucHV0KCdmYWNldFZhbHMnKSJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldFF1aWV0Iiwic291cmNlIjoic2hpbnlJbnB1dCgnZml4ZWQnKSJ9XX0=
+</script>
+<script type="module">
+if (window.location.protocol === "file:") { alert("The OJS runtime does not work with file:// URLs. Please use a web server to view this document."); }
+window._ojs.paths.runtimeToDoc = "../../wk06";
+window._ojs.paths.runtimeToRoot = "../..";
+window._ojs.paths.docToRoot = "..";
+window._ojs.selfContained = false;
+window._ojs.runtime.interpretFromScriptTags();
+</script>
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

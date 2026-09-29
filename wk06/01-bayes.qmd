@@ -265,52 +265,52 @@ quantile(post_sims, probs = c(0.05, 0.95))
 ```
 
 
-## Example: Poisson Distribution
+## Example: Exponential Distribution {#example-exponential-distribution}
 
-Suppose we collect $N$ random samples $y = \{y_1, y_2, ..., y_N\}$ and model each draw as a random variable $Y \sim \text{Poisson}(\lambda)$. Find the posterior distribution of $\lambda$ for the gamma prior distribution. Hint: the gamma distribution is the conjugate prior for the Poisson likelihood.
+Suppose we collect $N$ random samples $y = \{y_1, y_2, ..., y_N\}$ and model each draw as a random variable $Y \sim \text{exponential}(\lambda)$, with pdf $f(y_i \mid \lambda) = \lambda e^{-\lambda y_i}$ for $y_i > 0$. Find the posterior distribution of $\lambda$ for the gamma prior distribution. Hint: the gamma distribution is the conjugate prior for the exponential likelihood.
 
 $$
 \begin{aligned}
-\text{Poisson likelihood: } f(y \mid \lambda) &= \prod_{i = 1}^N \frac{\lambda^{y_i} e^{-\lambda}}{y_i!} \\
-&= \displaystyle \left[ \frac{1}{\prod_{i = 1}^N y_i !} \right]e^{-N\lambda}\lambda^{\sum_{i = 1}^N y_i}
+\text{exponential likelihood: } f(y \mid \lambda) &= \prod_{i = 1}^N \lambda e^{-\lambda y_i} \\
+&= \lambda^N e^{-\lambda \sum_{i = 1}^N y_i}
 \end{aligned}
 $$
 
 $$
 \text{Gamma prior: } f( \lambda; \alpha^*, \beta^*) = \frac{{\beta^*}^{\alpha^*}}{\Gamma(\alpha^*)} \lambda^{\alpha^* - 1} e^{-\beta^*\lambda}
 $$
-To find the posterior, we multiply the likelihood times the prior and normalize. Because the gamma prior distribution is the conjugate prior for the Poisson likelihood, we know that the posterior will be a gamma distribution.
+To find the posterior, we multiply the likelihood times the prior and normalize. Because the gamma prior distribution is the conjugate prior for the exponential likelihood, we know that the posterior will be a gamma distribution.
 
 $$
 \begin{aligned}
-\text{Gamma posterior: } f( \lambda  \mid y) &= \frac{\left( \displaystyle \left[ \frac{1}{\prod_{i = 1}^N y_i !} \right]e^{-N\lambda}\lambda^{\sum_{i = 1}^N y_i}\right) \times \left( \left[ \frac{{\beta^*}^{\alpha^*}}{\Gamma(\alpha^*)} \right] \lambda^{\alpha^* - 1} e^{-\beta^*\lambda}\right)}{C_1} \\
+\text{Gamma posterior: } f( \lambda  \mid y) &= \frac{\left( \displaystyle \lambda^N e^{-\lambda \sum_{i = 1}^N y_i}\right) \times \left( \left[ \frac{{\beta^*}^{\alpha^*}}{\Gamma(\alpha^*)} \right] \lambda^{\alpha^* - 1} e^{-\beta^*\lambda}\right)}{C_1} \\
 \end{aligned}
 $$
-Because $y$, $\alpha^*$, and $\beta^*$ are fixed, the terms in square brackets are constant, so we can safely consider those part of the normalizing constant.
+Because $\alpha^*$ and $\beta^*$ are fixed, the term in square brackets is constant, so we can safely consider it part of the normalizing constant.
 
 $$
 \begin{aligned}
-&= \frac{\left( \displaystyle  e^{-N\lambda}\lambda^{\sum_{i = 1}^N y_i}\right) \times \left( \lambda^{\alpha^* - 1} e^{-\beta^*\lambda}\right)}{C_2} \\
+&= \frac{\left( \displaystyle  \lambda^N e^{-\lambda \sum_{i = 1}^N y_i}\right) \times \left( \lambda^{\alpha^* - 1} e^{-\beta^*\lambda}\right)}{C_2} \\
 \end{aligned}
 $$
 Now we can collect the exponents with the same base.
 
 $$
 \begin{aligned}
-&= \frac{\left( \lambda^{\alpha^* - 1} \times \lambda^{\sum_{i = 1}^N y_i}\right) \times \left( \displaystyle  e^{-N\lambda} \times e^{-\beta^*\lambda} \right)}{C_2} \\
-&= \frac{\lambda^{ \overbrace{\left[ \alpha^* + \sum_{i = 1}^N y_i \right]}^{\alpha^\prime} - 1}  e^{-\overbrace{[\beta^* + N]}^{\beta^\prime}\lambda} }{C_2} \\
+&= \frac{\left( \lambda^{\alpha^* - 1} \times \lambda^{N}\right) \times \left( \displaystyle  e^{-\lambda \sum_{i = 1}^N y_i} \times e^{-\beta^*\lambda} \right)}{C_2} \\
+&= \frac{\lambda^{ \overbrace{\left[ \alpha^* + N \right]}^{\alpha^\prime} - 1}  e^{-\overbrace{\left[\beta^* + \sum_{i = 1}^N y_i\right]}^{\beta^\prime}\lambda} }{C_2} \\
 \end{aligned}
 $$
 
-We recognize this as *almost* a Gamma distribution with parameters $\alpha^\prime = \alpha^* +  \sum_{i = 1}^N y_i$ and $\beta^\prime = \beta^* + N$. Indeed, if $\frac{1}{C_2} = \frac{{\beta^\prime}^{\alpha^\prime}}{\Gamma(\alpha^{\prime})}$, then we have exactly a gamma distribution. 
+We recognize this as *almost* a Gamma distribution with parameters $\alpha^\prime = \alpha^* + N$ and $\beta^\prime = \beta^* + \sum_{i = 1}^N y_i$. Indeed, if $\frac{1}{C_2} = \frac{{\beta^\prime}^{\alpha^\prime}}{\Gamma(\alpha^{\prime})}$, then we have exactly a gamma distribution.
 
 $$
 \begin{aligned}
-&= \frac{{\beta^\prime}^{\alpha^\prime}}{\Gamma(\alpha^{\prime})} \lambda^{ \alpha^\prime - 1}  e^{-\beta^\prime\lambda}, \text{where } \alpha^\prime = \alpha^* +  \sum_{i = 1}^N y_i \text{ and } \beta^\prime = \beta^* + N
+&= \frac{{\beta^\prime}^{\alpha^\prime}}{\Gamma(\alpha^{\prime})} \lambda^{ \alpha^\prime - 1}  e^{-\beta^\prime\lambda}, \text{where } \alpha^\prime = \alpha^* + N \text{ and } \beta^\prime = \beta^* + \sum_{i = 1}^N y_i
 \end{aligned}
 $$
 
-Like the Bernoulli likelihood with the beta prior, the Poisson likelihood with the gamma prior gives a nice result. We start with values of the parameters of the gamma distribution $\alpha = \alpha^*$ and $\beta = \beta^*$ so that the gamma prior distribution describes our prior beliefs about the parameter $\lambda$ of the Poisson distribution. Then we add the sum of the data $y$ to $\alpha^*$ and the number of samples $N$ to $\beta^*$ to obtain the parameters of the gamma posterior distribution.
+Like the Bernoulli likelihood with the beta prior, the exponential likelihood with the gamma prior gives a nice result. We start with values of the parameters of the gamma distribution $\alpha = \alpha^*$ and $\beta = \beta^*$ so that the gamma prior distribution describes our prior beliefs about the parameter $\lambda$ of the exponential distribution. Then we add the number of samples $N$ to $\alpha^*$ and the sum of the data $y$ to $\beta^*$ to obtain the parameters of the gamma posterior distribution.
 
 The code below shows the posterior distribution.
 
@@ -327,19 +327,19 @@ lambda <- 2
 
 # generate a data set
 N <- 5  # number of samples
-y <- rpois(N, lambda = lambda)
+y <- rexp(N, rate = lambda)
 print(y)  # print the data set
 
 # posterior parameters
-alpha_posterior <- alpha_prior + sum(y)
-beta_posterior <- beta_prior + N
+alpha_posterior <- alpha_prior + N
+beta_posterior <- beta_prior + sum(y)
 
 # plot prior and posterior
-gg_prior <- ggplot() + xlim(0, 5) + 
-  stat_function(fun = dgamma, args = list(shape = alpha_prior, rate = beta_prior)) + 
+gg_prior <- ggplot() + xlim(0, 5) +
+  stat_function(fun = dgamma, args = list(shape = alpha_prior, rate = beta_prior)) +
   labs(title = "prior distribution", x = "lambda", y = "prior density")
-gg_posterior <- ggplot() + xlim(0, 5) + 
-  stat_function(fun = dgamma, args = list(shape = alpha_posterior, rate = beta_posterior)) + 
+gg_posterior <- ggplot() + xlim(0, 5) +
+  stat_function(fun = dgamma, args = list(shape = alpha_posterior, rate = beta_posterior)) +
   labs(title = "posterior distribution", x = "lambda", y = "posterior density")
 gg_prior + gg_posterior  # uses patchwork package
 
