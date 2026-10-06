@@ -29,14 +29,14 @@ showtext_auto()
 
 Previously, we used the rejection algorithm to build intuition about sampling from an unnormalized posterior. We showed that it can be easier to *sample from* a distribution than to work with closed-form results. The rejection algorithm is simple and intuitive, but requires (1) finding a suitable envelope constant and (2) rejecting many samples in realistic problems (e.g., logistic regression). 
 
-We can improve the rejection algorithm by making *adaptive* proposals. Many algorithms---including Stan!---use addaptive proposals. The Metropolis algorithm is one example. The Metropolis algorithm belongs to a larger class of Markov chain Monte Carlo (MCMC) algorithms,^[MCMC refers to a family of algorithms for generating samples from a target probability distribution by constructing a Markov chain whose stationary distribution is that target. Over many iterations, the samples produced by the chain approximate independent draws from the posterior distribution, allowing us to estimate quantities such as means, variances, and credible intervals even when the posterior cannot be computed analytically.] which includes Metropolis-Hastings, Gibbs sampling, and the Hamiltonian Monte Carlo algorithm used by Stan.
+We can improve the rejection algorithm by making proposals that depend on the current value. Many algorithms---including Stan!---do this. The Metropolis algorithm is one example. The Metropolis algorithm belongs to a larger class of Markov chain Monte Carlo (MCMC) algorithms,^[MCMC refers to a family of algorithms for generating samples from a target probability distribution by constructing a Markov chain whose stationary distribution is that target. Over many iterations, the samples produced by the chain approximate (dependent) draws from the posterior distribution, allowing us to estimate quantities such as means, variances, and credible intervals even when the posterior cannot be computed analytically.] which includes Metropolis-Hastings, Gibbs sampling, and the Hamiltonian Monte Carlo algorithm used by Stan.
 
 ## Algorithm: Metropolis
 
 *Inputs:*
 
 - The unnormalized log-posterior $\log f(\theta\mid y)$.
-- Desired number of iterations $S$. *Note: the samples are dependent so choose large $S$ (e.g., $S = 20,000$), perhaps very large (e.g., $S = 200,000$).* 
+- Desired number of iterations $S$. *Note: the samples are dependent so choose large $S$ (e.g., $S = 20{,}000$), perhaps very large (e.g., $S = 200{,}000$).* 
 - Tuning parameter $\tau$, which controls the width of the uniform proposal density.
 
 *Algorithm:*
@@ -45,7 +45,7 @@ We can improve the rejection algorithm by making *adaptive* proposals. Many algo
 - **Repeat until $s=S$:**
   - **Propose:** Draw $z$ from a uniform distribution from $[\theta^{(s)} - \tau]$ to $[\theta^{(s)} + \tau]$.
   - **Compute log-acceptance:** $\Delta = \log f(z)-\log f \big(\theta^{(s)}\big)$
-  - **Accept/reject:** Draw $u \sim \text{Uniform}(0,1)$. Accept iff $\log u \le \Delta$. If accept, set $\theta^{(s+1)}=z$; otherwise $\theta^{(s+1)}=\theta^{(s)}$.^[Importantly, this accepts with probability equal to $\frac{f(\text{proposal})}{f(\text{current})$ if the ratio is between zero and one and always if the ratio is greater than one. This step is similar to the rejection algorithm, except we keep the current value in the rejected values place in Metropolis.]
+  - **Accept/reject:** Draw $u \sim \text{Uniform}(0,1)$. Accept iff $\log u \le \Delta$. If accept, set $\theta^{(s+1)}=z$; otherwise $\theta^{(s+1)}=\theta^{(s)}$.^[Importantly, this accepts with probability equal to $\frac{f(\text{proposal})}{f(\text{current})}$ if the ratio is between zero and one and always if the ratio is greater than one. This step is similar to the rejection algorithm, except we keep the current value in place of the rejected proposal in Metropolis.]
   - **Iterate:** $s\leftarrow s+1$.
 
 *Output:* A Markov chain $\{\theta^{(s)}\}_{s=1}^S$ with stationary distribution $f(\theta\mid y)$. Consecutive draws are not independent; in practice, discard a burn-in and tune $\tau$ to maintain a reasonable acceptance rate (perhaps 0.2-0.5, problem-dependent).
@@ -155,7 +155,7 @@ metrop <- function(logf, theta_start, S = 10000, tau = 0.1, progress_bar = FALSE
       "﹪ Acceptance rate: ", scales::percent(n_accepted / (S - 1), accuracy = 1),
       " (tune tau so that acceptance rate is about 20%-50%).\n",
       "⏰ Total time: ", prettyunits::pretty_dt(Sys.time() - start_time),  "\n",
-      "🧠 Reminder: if a proposal is not accepted, the previous sample is reused. This makes the samples depending on starting values and each other. Discard initial samples, use R-hat to assess convergence, and use ESS to assess effective sample size."
+      "🧠 Reminder: if a proposal is not accepted, the previous sample is reused. This makes the samples depend on starting values and each other. Discard initial samples, use R-hat to assess convergence, and use ESS to assess effective sample size."
     )
   )
 
@@ -168,14 +168,14 @@ metrop <- function(logf, theta_start, S = 10000, tau = 0.1, progress_bar = FALSE
 
 ## Toothpaste Cap
 
-This example has a known analytical solution. For $k=8$ and $N=150$, the posterior is $\text{beta}(11,165)$.
+This example has a known analytical solution. For $k=8$ and $N=150$ with a $\text{beta}(3, 15)$ prior, the posterior is $\text{beta}(11,157)$.
 
 ```{r}
 # create log-target for Beta posterior; -Inf outside (0,1)
 logf <- function(p) {
   ifelse(p <= 0 | p >= 1, 
          -Inf, 
-         dbeta(p, 11, 165, log = TRUE))
+         dbeta(p, 11, 157, log = TRUE))
 }
 
 # run algorithm starting in the middle of (0,1)
@@ -189,7 +189,7 @@ We can compare the analytical posterior mean with the simulation.
 
 ```{r}
 # closed-form posterior mean
-11 / (11 + 165)
+11 / (11 + 157)
 
 # simulations (samples is S x k; here k = 1)
 mean(m$samples)
@@ -217,6 +217,10 @@ There are two things worth noting.
 
 The MCMC samples are heavily dependent on the starting values, so discard early samples that depend strongly on the starting value (the "burn-in"). Discarding the first 10% to 50% of the samples is typical.
 
+::: {.aside}
+Stan and {brms} call this period the "warmup" rather than the burn-in. During warmup, Stan's sampler also tunes itself (e.g., its step size), so the warmup samples are not draws from a fixed algorithm. Our Metropolis sampler keeps $\tau$ fixed, so "burn-in" fits here.
+:::
+
 Rather than use all the samples (including our chosen starting value) to compute the posterior mean, let's use only the last 5,000 samples.
 
 ```{r}
@@ -226,9 +230,14 @@ mean(m$samples[5001:10000, 1])
 
 ### $\hat{R}$ or R-hat
 
-But how do we know how long to run our algorithms? How do we know if the samples have converged to the target distribution. Until recently, this was a difficult problem. Now we simply quickly check that R-hat is less than 1.01.
+But how do we know how long to run our algorithms? How do we know if the samples have converged to the target distribution? This is still a difficult problem. No diagnostic can show that the chains have converged, but R-hat can show that they have *not*. We check that R-hat is less than 1.01 [@vehtari2021]. If R-hat is larger than 1.01, the chains have not converged and we need more iterations. If R-hat is less than 1.01, we have found no sign of a problem.
 
-To compute R-hat, run several chains from overdispersed starting values. It is importantly that these be high and low relevative to the target distribution. If chains have converged, within- and between-chain variation align and $\hat{R}\approx 1$. The literature and practices on R-hat are evolving rapidly; see `?posterior::rhat` for the latest references. 
+To compute R-hat, run several chains from overdispersed starting values. It is important that these be high and low relative to the target distribution. If chains have converged, within- and between-chain variation align and $\hat{R}\approx 1$. The literature and practices on R-hat are evolving rapidly; see `?posterior::rhat` for the latest references. @vats2021 connect the R-hat threshold to the effective sample size, and @margossian2025 develop a version of R-hat for running many short chains in parallel.
+
+::: {.aside}
+{brms} warns only when some R-hat is larger than 1.05. We use the stricter threshold of 1.01 from @vehtari2021, so check R-hat yourself even when {brms} prints no warning.
+:::
+
 
 For example, we can run the algorithm for 25 iterations and see that R-hat is much larger than 1.01.
 
@@ -252,7 +261,7 @@ matrix_of_chains <- cbind(
 posterior::rhat(matrix_of_chains)
 ```
 
-If we increase S to a larger value and discard the intial samples, then R-hat falls below 1.01.
+If we increase S to a larger value and discard the initial samples, then R-hat falls below 1.01.
 
 ```{r}
 #| message: false
@@ -300,7 +309,7 @@ starting_values <- seq(0.05, 0.95, length.out = 10)
 cl <- makeCluster(10)
 registerDoParallel(cl)
 
-# run algorithm 10 times in paralle., combine samples with cbind()
+# run algorithm 10 times in parallel; combine samples with cbind()
 matrix_of_chains <- foreach(s = starting_values, .combine = cbind) %dopar% {
   m <- metrop(
     logf,
@@ -321,7 +330,7 @@ posterior::rhat(matrix_of_chains)
 
 ```
 
-The figure below shows the 25 samples from each of the 10 chains. Notice the strong dependence on starting values! In practice, we'd need to generate many more samples, discard the first samples, and compute the R-hat to demonstrate convergence.
+The figure below shows the 25 samples from each of the 10 chains. Notice the strong dependence on starting values! In practice, we'd need to generate many more samples, discard the first samples, and check that R-hat is less than 1.01.
 
 ```{r}
 #| code-fold: true
@@ -347,10 +356,17 @@ ggplot(gg_df, aes(x = Iteration, y = Sample, color = Chain)) +
 Dependent Metropolis samples carry less information than the same number of independent samples. The Effective Sample Size (ESS) summarizes the amount of information in our dependent samples---"our dependent samples are like ______ independent samples." The literature and practices on ESS are evolving rapidly; see `?posterior::ess_bulk` for the latest references. 
 
 ```{r}
+# the four long chains from above, minus the first 10,000 samples of each
+matrix_of_chains <- cbind(
+  m1$samples[10001:25000, 1],
+  m2$samples[10001:25000, 1],
+  m3$samples[10001:25000, 1],
+  m4$samples[10001:25000, 1]
+)
 dim(matrix_of_chains)  # 15,000 x 4 = 60,000 samples
 
 # are like
-posterior::ess_bulk(matrix_of_chains)  # ESS for mean-like estimands
+posterior::ess_bulk(matrix_of_chains)  # ESS for the center of the distribution
 posterior::ess_tail(matrix_of_chains)  # ESS for tail estimands
 ```
 
@@ -379,7 +395,7 @@ plot(m4$samples, type = "l", main = "tau = 3\nToo wide! (Accept too rarely.)", y
 
 ## Sawtooth Prior
 
-We can use the Metropolis algorithm for our "weird" sawtooth posterior. We'll the log-posterior in this case.
+We can use the Metropolis algorithm for our "weird" sawtooth posterior. We'll use the log-posterior in this case.
 
 ```{r}
 #| fig-height: 4
@@ -415,24 +431,24 @@ hist(m$samples, breaks = 100)
 
 ### Data
 
-Recall the logit model from a previous chapter. This time, let's rescale the numeric variables to have mean of zero and SD of 0.5 This keeps coefficients on a similar scale, which helps us with the computation. For more on this rescaling strategy and it's advantages, see @gelman2008.
+Recall the logit model from a previous chapter. This time, let's rescale the numeric variables to have mean of zero and SD of 0.5. This keeps coefficients on a similar scale, which helps us with the computation. For more on this rescaling strategy and its advantages, see @gelman2008.
 
 ```{r}
 # load only the turnout data frame
 turnout <- ZeligData::turnout  # see ?ZeligData::turnout for details
 
-# fit logit model 
-rs <- function(x) { arm::rescale(x) }  # make an alias to print nicely
+# alias for arm::rescale(): mean 0, SD 0.5
+rs <- function(x) { arm::rescale(x) }
 
-# bug??? for some reason this fails with comparisons()
-f <- vote ~ rs(age) + rs(educate) + rs(income) + race  # rescaling so that coefs are similar makes everything nicer
-
-# just have to hard-code the rescaled variables, which is not optimal
+# create the rescaled variables as columns; rescaling inside the formula
+# (e.g., rs(age)) breaks predictions on new data, because rescale() would
+# then use the new data's mean and SD
 turnout <- turnout |>
   mutate(across(age:income, rs, .names = "rs_{.col}")) |>
   glimpse()
 f <- vote ~ rs_age + rs_educate + rs_income + race
 
+# fit logit model
 fit <- glm(f, family = binomial, data = turnout)
 
 # print estimates
@@ -454,10 +470,12 @@ y <- model.response(mf)
 log_posterior <- function(beta, y, X) {
   linpred <- X %*% beta
   p <- plogis(linpred)
-  sum(dbinom(y, size = 1, prob = plogis(linpred), log = TRUE))  # occassionally makes NaN, b/c 0*Inf
+  # for |linpred| large, plogis() rounds to exactly 0 or 1, so dbinom(log = TRUE) is log(0) = -Inf;
+  #   if the current and proposed values are both -Inf, delta = -Inf - (-Inf) = NaN
+  sum(dbinom(y, size = 1, prob = plogis(linpred), log = TRUE))
 }
 
-# ✅ same unnormalized log posterior, but avoid 0*Inf instability
+# ✅ same unnormalized log posterior, but computed on the log scale to avoid the rounding
 log_posterior <- function(beta, y, X) {
   linpred <- drop(X %*% beta)
   log1pexp <- ifelse(linpred > 0, linpred + log1p(exp(-linpred)), log1p(exp(linpred)))
@@ -467,7 +485,7 @@ log_posterior <- function(beta, y, X) {
 
 ### Running the Algorithm
 
-After some experimenting, I found that I 100,000 iterations with a 20,000 iteration burn-in works well. 
+After some experimenting, I found that 100,000 iterations with a 20,000 iteration burn-in works well. 
 
 ```{r}
 #| message: false
@@ -487,7 +505,7 @@ m4 <- metrop(log_posterior, S = S, tau = 0.1, theta_start = rep(2, ncol(X)), y =
 Now we can verify that the samplers have converged (R-hat less than about 1.01) and that we have enough samples (ESS more than about 2,000).
 
 ```{r}
-# first parameter (intercept) and use first 100,000 as burn-in
+# first parameter (intercept); discard the first 20,000 samples as burn-in
 start <- .2*S + 1
 end <-   S
 matrix_of_chains <- cbind(
@@ -530,7 +548,7 @@ library(patchwork)
 gg1 + gg2
 ```
 
-The code above computes the R-hat and ESS for only the first parameter (intercept)---we should check the rest as well. The table below shows that the model has converged. 
+The code above computes the R-hat and ESS for only the first parameter (intercept)---we should check the rest as well. The table below shows that R-hat is less than 1.01 for every parameter, so we have found no sign that the chains have failed to converge. 
 
 ```{r}
 #| echo: false
@@ -717,13 +735,13 @@ mean(fd_tilde)
 
 ::: {.aside}
 
-And we can replicate this with {marginaleffect}
+And we can replicate this with {marginaleffects}
 
 ```{r}
 # load packages
 library(marginaleffects)
 
-# compute qi; rs(age), etc, not working---not sure why
+# compute qi with the rescaled columns (see the note in the data chunk)
 comparisons(fit, variables = list(rs_age = c(-0.5, 0.5)), 
             newdata = datagrid(grid_type = "mean_or_mode"))
 ```
@@ -740,7 +758,7 @@ MCMC offers a powerful and general way to sample from an unnormalized (log-)post
 
 **R-hat and burn-in**
 
-The first MCMC samples highly dependent on the starting values. Because of this, you need to:
+The first MCMC samples are highly dependent on the starting values. Because of this, you need to:
 
 1. Discard the samples from a burn-in period. 
 2. Run multiple chains and check that R-hat is less than 1.01.
@@ -749,5 +767,5 @@ The first MCMC samples highly dependent on the starting values. Because of this,
 
 The MCMC samples are dependent on the previous samples. Because of this, you need to: 
 
-1. Generate more samples that you would need if they were independent. 
+1. Generate more samples than you would need if they were independent. 
 1. Use ESS to understand your effective sample size. 

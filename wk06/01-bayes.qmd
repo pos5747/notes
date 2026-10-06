@@ -383,6 +383,6 @@ However, there are several practical solutions to these difficulties.
     a. We can use a weakly informative prior that places meaningful prior weight on all the plausible values and little prior weight only on the most implausible values. As a guideline, you might create a weakly informative prior by doubling or tripling the SD of the informative prior.
 1. Computing the posterior.
     a. While analytically deriving the posterior becomes intractable for most applied problems, it's relatively easy to *sample* from the posterior distribution for many models. 
-    a. Algorithms like Gibbs samplers, MCMC, and HMC make this sampling procedure straightforward for a given model.
+    a. MCMC algorithms like Gibbs sampling, Metropolis, and HMC make this sampling procedure straightforward for a given model.
     a. Software such as Stan makes sampling easy to set up and very fast. Post-processing R packages such as tidybayes make it easy to work with the posterior simulations.
     

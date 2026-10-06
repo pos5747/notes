@@ -137,7 +137,7 @@ hist(odds_of_failure_tilde)
 
 ## Rejection Sampling
 
-For more difficult posteriors, we can use algorithms designed to sample from complicated distributions. Most algorithms, including Stan's hyper-optimized^[My description; not a technical term.] implementation of HMC, use a form of rejection.
+For more difficult posteriors, we can use algorithms designed to sample from complicated distributions. Many algorithms, including Metropolis and basic HMC, use a form of rejection.
 
 To highlight how rejection can help us sample from complicated distributions, let's look at a simple *rejection algorithm* that relies *entirely* on rejection.^[This rejection sampling is rarely useful in practice. It turns out that Stan has made most sampling easy. But the rejection algorithm does highlight the intuition of more complicated algorithms that Stan uses.]
 

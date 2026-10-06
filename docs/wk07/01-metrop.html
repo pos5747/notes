@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>19&nbsp; Metropolis Algorithm – Modern Probability Modeling</title>
+<title>19&nbsp; Metropolis – Modern Probability Modeling</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -401,6 +401,12 @@ window.Quarto = {
  <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Multinomial Logit</span></span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk07/05-loo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">LOOIC</span></span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -509,7 +515,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../wk07/01-metrop.html">Week 7</a></li><li class="breadcrumb-item"><a href="../wk07/01-metrop.html"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Metropolis</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Metropolis Algorithm</span></h1>
+<h1 class="title"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Metropolis</span></h1>
 </div>
 
 
@@ -527,13 +533,13 @@ window.Quarto = {
 
 
 <p>Previously, we used the rejection algorithm to build intuition about sampling from an unnormalized posterior. We showed that it can be easier to <em>sample from</em> a distribution than to work with closed-form results. The rejection algorithm is simple and intuitive, but requires (1) finding a suitable envelope constant and (2) rejecting many samples in realistic problems (e.g., logistic regression).</p>
-<p>We can improve the rejection algorithm by making <em>adaptive</em> proposals. Many algorithms—including Stan!—use addaptive proposals. The Metropolis algorithm is one example. The Metropolis algorithm belongs to a larger class of Markov chain Monte Carlo (MCMC) algorithms,<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> which includes Metropolis-Hastings, Gibbs sampling, and the Hamiltonian Monte Carlo algorithm used by Stan.</p>
-<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;MCMC refers to a family of algorithms for generating samples from a target probability distribution by constructing a Markov chain whose stationary distribution is that target. Over many iterations, the samples produced by the chain approximate independent draws from the posterior distribution, allowing us to estimate quantities such as means, variances, and credible intervals even when the posterior cannot be computed analytically.</p></div></div><section id="algorithm-metropolis" class="level2 page-columns page-full" data-number="19.1">
+<p>We can improve the rejection algorithm by making proposals that depend on the current value. Many algorithms—including Stan!—do this. The Metropolis algorithm is one example. The Metropolis algorithm belongs to a larger class of Markov chain Monte Carlo (MCMC) algorithms,<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> which includes Metropolis-Hastings, Gibbs sampling, and the Hamiltonian Monte Carlo algorithm used by Stan.</p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;MCMC refers to a family of algorithms for generating samples from a target probability distribution by constructing a Markov chain whose stationary distribution is that target. Over many iterations, the samples produced by the chain approximate (dependent) draws from the posterior distribution, allowing us to estimate quantities such as means, variances, and credible intervals even when the posterior cannot be computed analytically.</p></div></div><section id="algorithm-metropolis" class="level2 page-columns page-full" data-number="19.1">
 <h2 data-number="19.1" class="anchored" data-anchor-id="algorithm-metropolis"><span class="header-section-number">19.1</span> Algorithm: Metropolis</h2>
 <p><em>Inputs:</em></p>
 <ul>
 <li>The unnormalized log-posterior <span class="math inline">\(\log f(\theta\mid y)\)</span>.</li>
-<li>Desired number of iterations <span class="math inline">\(S\)</span>. <em>Note: the samples are dependent so choose large <span class="math inline">\(S\)</span> (e.g., <span class="math inline">\(S = 20,000\)</span>), perhaps very large (e.g., <span class="math inline">\(S = 200,000\)</span>).</em></li>
+<li>Desired number of iterations <span class="math inline">\(S\)</span>. <em>Note: the samples are dependent so choose large <span class="math inline">\(S\)</span> (e.g., <span class="math inline">\(S = 20{,}000\)</span>), perhaps very large (e.g., <span class="math inline">\(S = 200{,}000\)</span>).</em></li>
 <li>Tuning parameter <span class="math inline">\(\tau\)</span>, which controls the width of the uniform proposal density.</li>
 </ul>
 <p><em>Algorithm:</em></p>
@@ -547,7 +553,7 @@ window.Quarto = {
 <li><strong>Iterate:</strong> <span class="math inline">\(s\leftarrow s+1\)</span>.</li>
 </ul></li>
 </ul>
-<div class="no-row-height column-margin column-container"><div id="fn2"><p><sup>2</sup>&nbsp;Importantly, this accepts with probability equal to <span class="math inline">\(\frac{f(\text{proposal})}{f(\text{current})\)</span> if the ratio is between zero and one and always if the ratio is greater than one. This step is similar to the rejection algorithm, except we keep the current value in the rejected values place in Metropolis.</p></div></div><p><em>Output:</em> A Markov chain <span class="math inline">\(\{\theta^{(s)}\}_{s=1}^S\)</span> with stationary distribution <span class="math inline">\(f(\theta\mid y)\)</span>. Consecutive draws are not independent; in practice, discard a burn-in and tune <span class="math inline">\(\tau\)</span> to maintain a reasonable acceptance rate (perhaps 0.2-0.5, problem-dependent).</p>
+<div class="no-row-height column-margin column-container"><div id="fn2"><p><sup>2</sup>&nbsp;Importantly, this accepts with probability equal to <span class="math inline">\(\frac{f(\text{proposal})}{f(\text{current})}\)</span> if the ratio is between zero and one and always if the ratio is greater than one. This step is similar to the rejection algorithm, except we keep the current value in place of the rejected proposal in Metropolis.</p></div></div><p><em>Output:</em> A Markov chain <span class="math inline">\(\{\theta^{(s)}\}_{s=1}^S\)</span> with stationary distribution <span class="math inline">\(f(\theta\mid y)\)</span>. Consecutive draws are not independent; in practice, discard a burn-in and tune <span class="math inline">\(\tau\)</span> to maintain a reasonable acceptance rate (perhaps 0.2-0.5, problem-dependent).</p>
 <p>We can write this algorithm in R.</p>
 <section id="minimal-version" class="level3" data-number="19.1.1">
 <h3 data-number="19.1.1" class="anchored" data-anchor-id="minimal-version"><span class="header-section-number">19.1.1</span> Minimal version</h3>
@@ -649,7 +655,7 @@ window.Quarto = {
 <span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>      <span class="st">"﹪ Acceptance rate: "</span>, scales<span class="sc">::</span><span class="fu">percent</span>(n_accepted <span class="sc">/</span> (S <span class="sc">-</span> <span class="dv">1</span>), <span class="at">accuracy =</span> <span class="dv">1</span>),</span>
 <span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>      <span class="st">" (tune tau so that acceptance rate is about 20%-50%).</span><span class="sc">\n</span><span class="st">"</span>,</span>
 <span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>      <span class="st">"⏰ Total time: "</span>, prettyunits<span class="sc">::</span><span class="fu">pretty_dt</span>(<span class="fu">Sys.time</span>() <span class="sc">-</span> start_time),  <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>,</span>
-<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>      <span class="st">"🧠 Reminder: if a proposal is not accepted, the previous sample is reused. This makes the samples depending on starting values and each other. Discard initial samples, use R-hat to assess convergence, and use ESS to assess effective sample size."</span></span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>      <span class="st">"🧠 Reminder: if a proposal is not accepted, the previous sample is reused. This makes the samples depend on starting values and each other. Discard initial samples, use R-hat to assess convergence, and use ESS to assess effective sample size."</span></span>
 <span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a></span>
@@ -661,15 +667,15 @@ window.Quarto = {
 </div>
 </section>
 </section>
-<section id="toothpaste-cap" class="level2" data-number="19.2">
+<section id="toothpaste-cap" class="level2 page-columns page-full" data-number="19.2">
 <h2 data-number="19.2" class="anchored" data-anchor-id="toothpaste-cap"><span class="header-section-number">19.2</span> Toothpaste Cap</h2>
-<p>This example has a known analytical solution. For <span class="math inline">\(k=8\)</span> and <span class="math inline">\(N=150\)</span>, the posterior is <span class="math inline">\(\text{beta}(11,165)\)</span>.</p>
+<p>This example has a known analytical solution. For <span class="math inline">\(k=8\)</span> and <span class="math inline">\(N=150\)</span> with a <span class="math inline">\(\text{beta}(3, 15)\)</span> prior, the posterior is <span class="math inline">\(\text{beta}(11,157)\)</span>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create log-target for Beta posterior; -Inf outside (0,1)</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>logf <span class="ot">&lt;-</span> <span class="cf">function</span>(p) {</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ifelse</span>(p <span class="sc">&lt;=</span> <span class="dv">0</span> <span class="sc">|</span> p <span class="sc">&gt;=</span> <span class="dv">1</span>, </span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>         <span class="sc">-</span><span class="cn">Inf</span>, </span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>         <span class="fu">dbeta</span>(p, <span class="dv">11</span>, <span class="dv">165</span>, <span class="at">log =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>         <span class="fu">dbeta</span>(p, <span class="dv">11</span>, <span class="dv">157</span>, <span class="at">log =</span> <span class="cn">TRUE</span>))</span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># run algorithm starting in the middle of (0,1)</span></span>
@@ -681,14 +687,14 @@ window.Quarto = {
 <p>We can compare the analytical posterior mean with the simulation.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># closed-form posterior mean</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="dv">11</span> <span class="sc">/</span> (<span class="dv">11</span> <span class="sc">+</span> <span class="dv">165</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="dv">11</span> <span class="sc">/</span> (<span class="dv">11</span> <span class="sc">+</span> <span class="dv">157</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.0625</code></pre>
+<pre><code>[1] 0.0655</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># simulations (samples is S x k; here k = 1)</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(m<span class="sc">$</span>samples)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.06293733</code></pre>
+<pre><code>[1] 0.0663</code></pre>
 </div>
 </div>
 <p>We can plot the histogram and time series of the samples. The chain explores the posterior nicely overall; zooming into the first 100 iterations shows the initial transient; later windows show dependence across draws.</p>
@@ -711,23 +717,35 @@ window.Quarto = {
 <li>The samples are <strong>not independent</strong>. Many consecutive draws are identical (rejections) or move only a little; the chain <strong>explores the target slowly</strong>.</li>
 <li>It takes a few iterations for the chain to reach the high-probability region (burn-in). Starting at <span class="math inline">\(\pi=0.5\)</span> is far from the posterior mass; it takes roughly a few dozen iterations to reach <span class="math inline">\(\approx 0.1\)</span>.</li>
 </ol>
-<section id="burn-in" class="level3" data-number="19.2.1">
+<section id="burn-in" class="level3 page-columns page-full" data-number="19.2.1">
 <h3 data-number="19.2.1" class="anchored" data-anchor-id="burn-in"><span class="header-section-number">19.2.1</span> Burn-in</h3>
 <p>The MCMC samples are heavily dependent on the starting values, so discard early samples that depend strongly on the starting value (the “burn-in”). Discarding the first 10% to 50% of the samples is typical.</p>
-<p>Rather than use all the samples (including our chosen starting value) to compute the posterior mean, let’s use only the last 5,000 samples.</p>
+
+<div class="no-row-height column-margin column-container"><div class="margin-aside">
+<p>Stan and {brms} call this period the “warmup” rather than the burn-in. During warmup, Stan’s sampler also tunes itself (e.g., its step size), so the warmup samples are not draws from a fixed algorithm. Our Metropolis sampler keeps <span class="math inline">\(\tau\)</span> fixed, so “burn-in” fits here.</p>
+</div></div><p>Rather than use all the samples (including our chosen starting value) to compute the posterior mean, let’s use only the last 5,000 samples.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># simulations, keep only samples 5,001 through 10,000 (discard first half)</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(m<span class="sc">$</span>samples[<span class="dv">5001</span><span class="sc">:</span><span class="dv">10000</span>, <span class="dv">1</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.06248805</code></pre>
+<pre><code>[1] 0.0663</code></pre>
 </div>
 </div>
 </section>
-<section id="hatr-or-r-hat" class="level3" data-number="19.2.2">
+<section id="hatr-or-r-hat" class="level3 page-columns page-full" data-number="19.2.2">
 <h3 data-number="19.2.2" class="anchored" data-anchor-id="hatr-or-r-hat"><span class="header-section-number">19.2.2</span> <span class="math inline">\(\hat{R}\)</span> or R-hat</h3>
-<p>But how do we know how long to run our algorithms? How do we know if the samples have converged to the target distribution. Until recently, this was a difficult problem. Now we simply quickly check that R-hat is less than 1.01.</p>
-<p>To compute R-hat, run several chains from overdispersed starting values. It is importantly that these be high and low relevative to the target distribution. If chains have converged, within- and between-chain variation align and <span class="math inline">\(\hat{R}\approx 1\)</span>. The literature and practices on R-hat are evolving rapidly; see <code>?posterior::rhat</code> for the latest references.</p>
-<p>For example, we can run the algorithm for 25 iterations and see that R-hat is much larger than 1.01.</p>
+<p>But how do we know how long to run our algorithms? How do we know if the samples have converged to the target distribution? This is still a difficult problem. No diagnostic can show that the chains have converged, but R-hat can show that they have <em>not</em>. We check that R-hat is less than 1.01 <span class="citation" data-cites="vehtari2021">(<a href="#ref-vehtari2021" role="doc-biblioref">Vehtari et al. 2021</a>)</span>. If R-hat is larger than 1.01, the chains have not converged and we need more iterations. If R-hat is less than 1.01, we have found no sign of a problem.</p>
+<div class="no-row-height column-margin column-container"><div id="ref-vats2021" class="csl-entry" role="listitem">
+Vats, Dootika, and Christina Knudson. 2021. <span>“Revisiting the <span>Gelman</span>–<span>Rubin</span> Diagnostic.”</span> <em>Statistical Science</em> 36 (4): 518–29. <a href="https://doi.org/10.1214/20-STS812">https://doi.org/10.1214/20-STS812</a>.
+</div><div id="ref-margossian2025" class="csl-entry" role="listitem">
+Margossian, Charles C., Matthew D. Hoffman, Pavel Sountsov, Lionel Riou-Durand, Aki Vehtari, and Andrew Gelman. 2025. <span>“Nested <span class="math inline">\(\widehat{R}\)</span>: Assessing the Convergence of <span>Markov</span> Chain <span>Monte</span> <span>Carlo</span> When Running Many Short Chains.”</span> <em>Bayesian Analysis</em> 20 (4): 1587–1614. <a href="https://doi.org/10.1214/24-BA1453">https://doi.org/10.1214/24-BA1453</a>.
+</div></div><p>To compute R-hat, run several chains from overdispersed starting values. It is important that these be high and low relative to the target distribution. If chains have converged, within- and between-chain variation align and <span class="math inline">\(\hat{R}\approx 1\)</span>. The literature and practices on R-hat are evolving rapidly; see <code>?posterior::rhat</code> for the latest references. <span class="citation" data-cites="vats2021">Vats and Knudson (<a href="#ref-vats2021" role="doc-biblioref">2021</a>)</span> connect the R-hat threshold to the effective sample size, and <span class="citation" data-cites="margossian2025">Margossian et al. (<a href="#ref-margossian2025" role="doc-biblioref">2025</a>)</span> develop a version of R-hat for running many short chains in parallel.</p>
+
+<div class="no-row-height column-margin column-container"><div class="margin-aside">
+<p>{brms} warns only when some R-hat is larger than 1.05. We use the stricter threshold of 1.01 from <span class="citation" data-cites="vehtari2021">Vehtari et al. (<a href="#ref-vehtari2021" role="doc-biblioref">2021</a>)</span>, so check R-hat yourself even when {brms} prints no warning.</p>
+<div id="ref-vehtari2021" class="csl-entry" role="listitem">
+Vehtari, Aki, Andrew Gelman, Daniel Simpson, Bob Carpenter, and Paul-Christian Bürkner. 2021. <span>“Rank-Normalization, Folding, and Localization: An Improved <span class="math inline">\(\widehat{R}\)</span> for Assessing Convergence of <span>MCMC</span> (with Discussion).”</span> <em>Bayesian Analysis</em> 16 (2): 667–718. <a href="https://doi.org/10.1214/20-BA1221">https://doi.org/10.1214/20-BA1221</a>.
+</div></div></div><p>For example, we can run the algorithm for 25 iterations and see that R-hat is much larger than 1.01.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># run algorithm four times, making four "chains"</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">metrop</span>(logf, <span class="at">theta_start =</span> <span class="fl">0.01</span>, <span class="at">S =</span> <span class="dv">25</span>)</span>
@@ -746,10 +764,10 @@ window.Quarto = {
 <span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="co"># compute r-hat using the rhat() function in {posterior}</span></span>
 <span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>posterior<span class="sc">::</span><span class="fu">rhat</span>(matrix_of_chains)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 2.576923</code></pre>
+<pre><code>[1] 2.69</code></pre>
 </div>
 </div>
-<p>If we increase S to a larger value and discard the intial samples, then R-hat falls below 1.01.</p>
+<p>If we increase S to a larger value and discard the initial samples, then R-hat falls below 1.01.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># run algorithm four times, making four "chains"</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">metrop</span>(logf, <span class="at">theta_start =</span> <span class="fl">0.01</span>, <span class="at">S =</span> <span class="dv">25000</span>)</span>
@@ -768,7 +786,7 @@ window.Quarto = {
 <span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="co"># compute r-hat using the rhat() function in {posterior}</span></span>
 <span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>posterior<span class="sc">::</span><span class="fu">rhat</span>(matrix_of_chains)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 1.000696</code></pre>
+<pre><code>[1] 1</code></pre>
 </div>
 </div>
 </section>
@@ -795,7 +813,7 @@ window.Quarto = {
 <span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>cl <span class="ot">&lt;-</span> <span class="fu">makeCluster</span>(<span class="dv">10</span>)</span>
 <span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="fu">registerDoParallel</span>(cl)</span>
 <span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="co"># run algorithm 10 times in paralle., combine samples with cbind()</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="co"># run algorithm 10 times in parallel; combine samples with cbind()</span></span>
 <span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>matrix_of_chains <span class="ot">&lt;-</span> <span class="fu">foreach</span>(<span class="at">s =</span> starting_values, <span class="at">.combine =</span> cbind) <span class="sc">%dopar%</span> {</span>
 <span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>  m <span class="ot">&lt;-</span> <span class="fu">metrop</span>(</span>
 <span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>    logf,</span>
@@ -811,21 +829,21 @@ window.Quarto = {
 <span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a><span class="co"># columns are chains; rows are samples</span></span>
 <span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(matrix_of_chains)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>       [,1]   [,2]  [,3]  [,4]  [,5]  [,6]  [,7] [,8]  [,9] [,10]
-[1,] 0.0500 0.1500 0.250 0.350 0.450 0.550 0.650 0.75 0.850 0.950
-[2,] 0.0500 0.1076 0.250 0.253 0.450 0.499 0.564 0.75 0.850 0.946
-[3,] 0.0746 0.1076 0.200 0.168 0.425 0.465 0.494 0.75 0.768 0.900
-[4,] 0.0746 0.1076 0.200 0.168 0.327 0.465 0.431 0.75 0.768 0.810
-[5,] 0.0746 0.0922 0.178 0.161 0.327 0.465 0.431 0.75 0.768 0.778
-[6,] 0.0746 0.0508 0.178 0.176 0.327 0.394 0.431 0.75 0.768 0.752</code></pre>
+<pre><code>       [,1]   [,2]  [,3]  [,4]  [,5]  [,6]  [,7]  [,8]  [,9] [,10]
+[1,] 0.0500 0.1500 0.250 0.350 0.450 0.550 0.650 0.750 0.850 0.950
+[2,] 0.0466 0.0792 0.250 0.267 0.416 0.482 0.650 0.683 0.850 0.934
+[3,] 0.0640 0.0792 0.257 0.267 0.416 0.459 0.558 0.683 0.850 0.934
+[4,] 0.0660 0.0772 0.157 0.211 0.416 0.401 0.550 0.683 0.850 0.934
+[5,] 0.0660 0.0544 0.157 0.211 0.376 0.330 0.535 0.675 0.850 0.892
+[6,] 0.0776 0.0632 0.128 0.211 0.376 0.330 0.453 0.586 0.809 0.881</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># compute R-hat using {posterior}</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>posterior<span class="sc">::</span><span class="fu">rhat</span>(matrix_of_chains)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 2.5</code></pre>
+<pre><code>[1] 2.06</code></pre>
 </div>
 </div>
-<p>The figure below shows the 25 samples from each of the 10 chains. Notice the strong dependence on starting values! In practice, we’d need to generate many more samples, discard the first samples, and compute the R-hat to demonstrate convergence.</p>
+<p>The figure below shows the 25 samples from each of the 10 chains. Notice the strong dependence on starting values! In practice, we’d need to generate many more samples, discard the first samples, and check that R-hat is less than 1.01.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -857,18 +875,25 @@ window.Quarto = {
 <h3 data-number="19.2.4" class="anchored" data-anchor-id="ess"><span class="header-section-number">19.2.4</span> ESS</h3>
 <p>Dependent Metropolis samples carry less information than the same number of independent samples. The Effective Sample Size (ESS) summarizes the amount of information in our dependent samples—“our dependent samples are like ______ independent samples.” The literature and practices on ESS are evolving rapidly; see <code>?posterior::ess_bulk</code> for the latest references.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(matrix_of_chains)  <span class="co"># 15,000 x 4 = 60,000 samples</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># the four long chains from above, minus the first 10,000 samples of each</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>matrix_of_chains <span class="ot">&lt;-</span> <span class="fu">cbind</span>(</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  m1<span class="sc">$</span>samples[<span class="dv">10001</span><span class="sc">:</span><span class="dv">25000</span>, <span class="dv">1</span>],</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  m2<span class="sc">$</span>samples[<span class="dv">10001</span><span class="sc">:</span><span class="dv">25000</span>, <span class="dv">1</span>],</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  m3<span class="sc">$</span>samples[<span class="dv">10001</span><span class="sc">:</span><span class="dv">25000</span>, <span class="dv">1</span>],</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  m4<span class="sc">$</span>samples[<span class="dv">10001</span><span class="sc">:</span><span class="dv">25000</span>, <span class="dv">1</span>]</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(matrix_of_chains)  <span class="co"># 15,000 x 4 = 60,000 samples</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 25 10</code></pre>
+<pre><code>[1] 15000     4</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># are like</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>posterior<span class="sc">::</span><span class="fu">ess_bulk</span>(matrix_of_chains)  <span class="co"># ESS for mean-like estimands</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>posterior<span class="sc">::</span><span class="fu">ess_bulk</span>(matrix_of_chains)  <span class="co"># ESS for the center of the distribution</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 17.60899</code></pre>
+<pre><code>[1] 13084</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>posterior<span class="sc">::</span><span class="fu">ess_tail</span>(matrix_of_chains)  <span class="co"># ESS for tail estimands</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 22.92971</code></pre>
+<pre><code>[1] 13339</code></pre>
 </div>
 </div>
 </section>
@@ -899,7 +924,7 @@ window.Quarto = {
 </section>
 <section id="sawtooth-prior" class="level2" data-number="19.3">
 <h2 data-number="19.3" class="anchored" data-anchor-id="sawtooth-prior"><span class="header-section-number">19.3</span> Sawtooth Prior</h2>
-<p>We can use the Metropolis algorithm for our “weird” sawtooth posterior. We’ll the log-posterior in this case.</p>
+<p>We can use the Metropolis algorithm for our “weird” sawtooth posterior. We’ll use the log-posterior in this case.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># sawtooth log-prior (unnormalized): log of ((n_teeth*p) %% 1) on (0,1)</span></span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>log_prior_saw <span class="ot">&lt;-</span> <span class="cf">function</span>(p, <span class="at">n_teeth =</span> <span class="dv">5</span>) {</span>
@@ -938,41 +963,41 @@ window.Quarto = {
 <h2 data-number="19.4" class="anchored" data-anchor-id="logistic-regression"><span class="header-section-number">19.4</span> Logistic Regression</h2>
 <section id="data" class="level3 page-columns page-full" data-number="19.4.1">
 <h3 data-number="19.4.1" class="anchored" data-anchor-id="data"><span class="header-section-number">19.4.1</span> Data</h3>
-<p>Recall the logit model from a previous chapter. This time, let’s rescale the numeric variables to have mean of zero and SD of 0.5 This keeps coefficients on a similar scale, which helps us with the computation. For more on this rescaling strategy and it’s advantages, see <span class="citation" data-cites="gelman2008">Gelman (<a href="#ref-gelman2008" role="doc-biblioref">2008</a>)</span>.</p>
+<p>Recall the logit model from a previous chapter. This time, let’s rescale the numeric variables to have mean of zero and SD of 0.5. This keeps coefficients on a similar scale, which helps us with the computation. For more on this rescaling strategy and its advantages, see <span class="citation" data-cites="gelman2008">Gelman (<a href="#ref-gelman2008" role="doc-biblioref">2008</a>)</span>.</p>
 <div class="no-row-height column-margin column-container"><div id="ref-gelman2008" class="csl-entry" role="listitem">
 Gelman, Andrew. 2008. <span>“Scaling Regression Inputs by Dividing by Two Standard Deviations.”</span> <em>Statistics in Medicine</em> 27 (15): 2865–73. <a href="https://doi.org/10.1002/sim.3107">https://doi.org/10.1002/sim.3107</a>.
 </div></div><div class="cell">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load only the turnout data frame</span></span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>turnout <span class="ot">&lt;-</span> ZeligData<span class="sc">::</span>turnout  <span class="co"># see ?ZeligData::turnout for details</span></span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="co"># fit logit model </span></span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>rs <span class="ot">&lt;-</span> <span class="cf">function</span>(x) { arm<span class="sc">::</span><span class="fu">rescale</span>(x) }  <span class="co"># make an alias to print nicely</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="co"># alias for arm::rescale(): mean 0, SD 0.5</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>rs <span class="ot">&lt;-</span> <span class="cf">function</span>(x) { arm<span class="sc">::</span><span class="fu">rescale</span>(x) }</span>
 <span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="co"># bug??? for some reason this fails with comparisons()</span></span>
-<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> vote <span class="sc">~</span> <span class="fu">rs</span>(age) <span class="sc">+</span> <span class="fu">rs</span>(educate) <span class="sc">+</span> <span class="fu">rs</span>(income) <span class="sc">+</span> race  <span class="co"># rescaling so that coefs are similar makes everything nicer</span></span>
-<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a><span class="co"># just have to hard-code the rescaled variables, which is not optimal</span></span>
-<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>turnout <span class="ot">&lt;-</span> turnout <span class="sc">|&gt;</span></span>
-<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(age<span class="sc">:</span>income, rs, <span class="at">.names =</span> <span class="st">"rs_{.col}"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="co"># create the rescaled variables as columns; rescaling inside the formula</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a><span class="co"># (e.g., rs(age)) breaks predictions on new data, because rescale() would</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="co"># then use the new data's mean and SD</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>turnout <span class="ot">&lt;-</span> turnout <span class="sc">|&gt;</span></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(age<span class="sc">:</span>income, rs, <span class="at">.names =</span> <span class="st">"rs_{.col}"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 2,000
 Columns: 8
 $ race       &lt;fct&gt; white, white, white, white, white, white, white, white, whi…
 $ age        &lt;int&gt; 60, 51, 24, 38, 25, 67, 40, 56, 32, 75, 46, 52, 22, 60, 24,…
 $ educate    &lt;dbl&gt; 14, 10, 12, 8, 12, 12, 12, 10, 12, 16, 15, 12, 12, 12, 14, …
-$ income     &lt;dbl&gt; 3.3458, 1.8561, 0.6304, 3.4183, 2.7852, 2.3866, 4.2857, 9.3…
+$ income     &lt;dbl&gt; 3.346, 1.856, 0.630, 3.418, 2.785, 2.387, 4.286, 9.320, 3.8…
 $ vote       &lt;int&gt; 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1,…
-$ rs_age     &lt;dbl&gt; 0.41969664, 0.16280941, -0.60785226, -0.20824991, -0.579309…
-$ rs_educate &lt;dbl&gt; 0.286848797, -0.306657055, -0.009904129, -0.603409981, -0.0…
-$ rs_income  &lt;dbl&gt; -0.095661199, -0.359152251, -0.575948238, -0.082837743, -0.…</code></pre>
+$ rs_age     &lt;dbl&gt; 0.4197, 0.1628, -0.6079, -0.2082, -0.5793, 0.6195, -0.1512,…
+$ rs_educate &lt;dbl&gt; 0.2868, -0.3067, -0.0099, -0.6034, -0.0099, -0.0099, -0.009…
+$ rs_income  &lt;dbl&gt; -0.09566, -0.35915, -0.57595, -0.08284, -0.19482, -0.26532,…</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> vote <span class="sc">~</span> rs_age <span class="sc">+</span> rs_educate <span class="sc">+</span> rs_income <span class="sc">+</span> race</span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(f, <span class="at">family =</span> binomial, <span class="at">data =</span> turnout)</span>
-<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="co"># print estimates</span></span>
-<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>arm<span class="sc">::</span><span class="fu">display</span>(fit, <span class="at">digits =</span> <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="co"># fit logit model</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(f, <span class="at">family =</span> binomial, <span class="at">data =</span> turnout)</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a><span class="co"># print estimates</span></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>arm<span class="sc">::</span><span class="fu">display</span>(fit, <span class="at">digits =</span> <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>glm(formula = f, family = binomial, data = turnout)
             coef.est coef.se
@@ -1000,20 +1025,22 @@ racewhite   0.2508   0.1465
 <span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>log_posterior <span class="ot">&lt;-</span> <span class="cf">function</span>(beta, y, X) {</span>
 <span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>  linpred <span class="ot">&lt;-</span> X <span class="sc">%*%</span> beta</span>
 <span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">&lt;-</span> <span class="fu">plogis</span>(linpred)</span>
-<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(<span class="fu">dbinom</span>(y, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fu">plogis</span>(linpred), <span class="at">log =</span> <span class="cn">TRUE</span>))  <span class="co"># occassionally makes NaN, b/c 0*Inf</span></span>
-<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a><span class="co"># ✅ same unnormalized log posterior, but avoid 0*Inf instability</span></span>
-<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>log_posterior <span class="ot">&lt;-</span> <span class="cf">function</span>(beta, y, X) {</span>
-<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>  linpred <span class="ot">&lt;-</span> <span class="fu">drop</span>(X <span class="sc">%*%</span> beta)</span>
-<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a>  log1pexp <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(linpred <span class="sc">&gt;</span> <span class="dv">0</span>, linpred <span class="sc">+</span> <span class="fu">log1p</span>(<span class="fu">exp</span>(<span class="sc">-</span>linpred)), <span class="fu">log1p</span>(<span class="fu">exp</span>(linpred)))</span>
-<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(y <span class="sc">*</span> linpred <span class="sc">-</span> log1pexp)</span>
-<span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># for |linpred| large, plogis() rounds to exactly 0 or 1, so dbinom(log = TRUE) is log(0) = -Inf;</span></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   if the current and proposed values are both -Inf, delta = -Inf - (-Inf) = NaN</span></span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(<span class="fu">dbinom</span>(y, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fu">plogis</span>(linpred), <span class="at">log =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a><span class="co"># ✅ same unnormalized log posterior, but computed on the log scale to avoid the rounding</span></span>
+<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a>log_posterior <span class="ot">&lt;-</span> <span class="cf">function</span>(beta, y, X) {</span>
+<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a>  linpred <span class="ot">&lt;-</span> <span class="fu">drop</span>(X <span class="sc">%*%</span> beta)</span>
+<span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a>  log1pexp <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(linpred <span class="sc">&gt;</span> <span class="dv">0</span>, linpred <span class="sc">+</span> <span class="fu">log1p</span>(<span class="fu">exp</span>(<span class="sc">-</span>linpred)), <span class="fu">log1p</span>(<span class="fu">exp</span>(linpred)))</span>
+<span id="cb34-19"><a href="#cb34-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(y <span class="sc">*</span> linpred <span class="sc">-</span> log1pexp)</span>
+<span id="cb34-20"><a href="#cb34-20" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="running-the-algorithm" class="level3" data-number="19.4.3">
 <h3 data-number="19.4.3" class="anchored" data-anchor-id="running-the-algorithm"><span class="header-section-number">19.4.3</span> Running the Algorithm</h3>
-<p>After some experimenting, I found that I 100,000 iterations with a 20,000 iteration burn-in works well.</p>
+<p>After some experimenting, I found that 100,000 iterations with a 20,000 iteration burn-in works well.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set seed</span></span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
@@ -1027,7 +1054,7 @@ racewhite   0.2508   0.1465
 </div>
 <p>Now we can verify that the samplers have converged (R-hat less than about 1.01) and that we have enough samples (ESS more than about 2,000).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># first parameter (intercept) and use first 100,000 as burn-in</span></span>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># first parameter (intercept); discard the first 20,000 samples as burn-in</span></span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>start <span class="ot">&lt;-</span> .<span class="dv">2</span><span class="sc">*</span>S <span class="sc">+</span> <span class="dv">1</span></span>
 <span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>end <span class="ot">&lt;-</span>   S</span>
 <span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>matrix_of_chains <span class="ot">&lt;-</span> <span class="fu">cbind</span>(</span>
@@ -1040,16 +1067,16 @@ racewhite   0.2508   0.1465
 <span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a><span class="co"># compute r-hat (for intercept)</span></span>
 <span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>posterior<span class="sc">::</span><span class="fu">rhat</span>(matrix_of_chains)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 1.000428</code></pre>
+<pre><code>[1] 1</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># compute ess (for intercept)</span></span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>posterior<span class="sc">::</span><span class="fu">ess_bulk</span>(matrix_of_chains)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 3187.765</code></pre>
+<pre><code>[1] 3188</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>posterior<span class="sc">::</span><span class="fu">ess_tail</span>(matrix_of_chains)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 7471.759</code></pre>
+<pre><code>[1] 7472</code></pre>
 </div>
 </div>
 <div class="cell">
@@ -1082,121 +1109,86 @@ racewhite   0.2508   0.1465
 </div>
 </div>
 </div>
-<p>The code above computes the R-hat and ESS for only the first parameter (intercept)—we should check the rest as well. The table below shows that the model has converged.</p>
+<p>The code above computes the R-hat and ESS for only the first parameter (intercept)—we should check the rest as well. The table below shows that R-hat is less than 1.01 for every parameter, so we have found no sign that the chains have failed to converge.</p>
 <div class="cell">
 <div class="cell-output-display">
-<!-- preamble start -->
+
+    <script src="https://cdn.jsdelivr.net/gh/vincentarelbundock/tinytable@main/inst/tinytable.js"></script>
 
     <script>
-
-      function styleCell_ya6idqsp3gfsxwuwmwio(i, j, css_id) {
-          var table = document.getElementById("tinytable_ya6idqsp3gfsxwuwmwio");
-          var cell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
-          if (cell) {
-              console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
-              cell.classList.add(css_id);
-          } else {
-              console.warn(`Cell at (${i}, ${j}) not found.`);
-          }
-      }
-      function spanCell_ya6idqsp3gfsxwuwmwio(i, j, rowspan, colspan) {
-        var table = document.getElementById("tinytable_ya6idqsp3gfsxwuwmwio");
-        const targetCell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
-        if (!targetCell) {
-          console.warn(`Cell at (${i}, ${j}) not found.`);
-        }
-
-        // Get all cells that need to be removed
-        const cellsToRemove = [];
-        for (let r = 0; r < rowspan; r++) {
-          for (let c = 0; c < colspan; c++) {
-            if (r === 0 && c === 0) continue; // Skip the target cell
-            const cell = table.querySelector(`[data-row="${i + r}"][data-col="${j + c}"]`);
-            if (cell) {
-              cellsToRemove.push(cell);
-            }
-          }
-        }
-
-        // Remove all cells
-        cellsToRemove.forEach(cell => cell.remove());
-
-        // Set rowspan and colspan of the target cell if it exists
-        if (targetCell) {
-          targetCell.rowSpan = rowspan;
-          targetCell.colSpan = colspan;
-        }
-      }
+      // Create table-specific functions using external factory
+      const tableFns_on1vor6hyy71abw9xjzv = TinyTable.createTableFunctions("tinytable_on1vor6hyy71abw9xjzv");
       // tinytable span after
       window.addEventListener('load', function () {
           var cellsToStyle = [
             // tinytable style arrays after
-          { positions: [ { i: '5', j: 0 }, { i: '5', j: 1 }, { i: '5', j: 2 }, { i: '5', j: 3 }, { i: '5', j: 4 },  ], css_id: 'tinytable_css_9q7k2lx57b0pl6tco399',}, 
-          { positions: [ { i: '0', j: 0 }, { i: '0', j: 1 }, { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 },  ], css_id: 'tinytable_css_cbkwion0dltqwuxxsxx4',}, 
+          { positions: [ { i: '5', j: 1 }, { i: '5', j: 2 }, { i: '5', j: 3 }, { i: '5', j: 4 }, { i: '5', j: 5 } ], css_id: 'tinytable_css_49inzdntds3x542439v3',}, 
+          { positions: [ { i: '0', j: 1 }, { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 }, { i: '0', j: 5 } ], css_id: 'tinytable_css_3ct1voevcgxx66oo6oec',}, 
           ];
 
           // Loop over the arrays to style the cells
           cellsToStyle.forEach(function (group) {
               group.positions.forEach(function (cell) {
-                  styleCell_ya6idqsp3gfsxwuwmwio(cell.i, cell.j, group.css_id);
+                  tableFns_on1vor6hyy71abw9xjzv.styleCell(cell.i, cell.j, group.css_id);
               });
           });
       });
     </script>
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/vincentarelbundock/tinytable@main/inst/tinytable.css">
     <style>
-      /* tinytable css entries after */
-      .table td.tinytable_css_9q7k2lx57b0pl6tco399, .table th.tinytable_css_9q7k2lx57b0pl6tco399 { border-bottom: solid #d3d8dc 0.1em; }
-      .table td.tinytable_css_cbkwion0dltqwuxxsxx4, .table th.tinytable_css_cbkwion0dltqwuxxsxx4 { border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+    /* tinytable css entries after */
+    #tinytable_on1vor6hyy71abw9xjzv td.tinytable_css_49inzdntds3x542439v3, #tinytable_on1vor6hyy71abw9xjzv th.tinytable_css_49inzdntds3x542439v3 {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.08em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --line-type-bottom: solid; --line-type-left: solid; --line-type-right: solid; --line-type-top: solid; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%;  }
+    #tinytable_on1vor6hyy71abw9xjzv td.tinytable_css_3ct1voevcgxx66oo6oec, #tinytable_on1vor6hyy71abw9xjzv th.tinytable_css_3ct1voevcgxx66oo6oec {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 1; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.08em; --line-type-bottom: solid; --line-type-left: solid; --line-type-right: solid; --line-type-top: solid; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%;  }
     </style>
     <div class="container">
-      <table class="table table-borderless" id="tinytable_ya6idqsp3gfsxwuwmwio" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
-        <thead>
+      <table class="tinytable" id="tinytable_on1vor6hyy71abw9xjzv" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
         
+        <thead>
               <tr>
-                <th scope="col" data-row="0" data-col="0">Coefficient</th>
-                <th scope="col" data-row="0" data-col="1">R-hat</th>
-                <th scope="col" data-row="0" data-col="2">Converged (R-hat &lt; 1.01)</th>
-                <th scope="col" data-row="0" data-col="3">ESS (bulk)</th>
-                <th scope="col" data-row="0" data-col="4">ESS (tail)</th>
+                <th scope="col" data-row="0" data-col="1">Coefficient</th>
+                <th scope="col" data-row="0" data-col="2">R-hat</th>
+                <th scope="col" data-row="0" data-col="3">Converged (R-hat &lt; 1.01)</th>
+                <th scope="col" data-row="0" data-col="4">ESS (bulk)</th>
+                <th scope="col" data-row="0" data-col="5">ESS (tail)</th>
               </tr>
         </thead>
         
         <tbody>
                 <tr>
-                  <td data-row="1" data-col="0">(Intercept)</td>
-                  <td data-row="1" data-col="1">1.000</td>
-                  <td data-row="1" data-col="2">✅</td>
-                  <td data-row="1" data-col="3">3,188</td>
-                  <td data-row="1" data-col="4">7,472</td>
+                  <td data-row="1" data-col="1">(Intercept)</td>
+                  <td data-row="1" data-col="2">1</td>
+                  <td data-row="1" data-col="3">✅</td>
+                  <td data-row="1" data-col="4">3,188</td>
+                  <td data-row="1" data-col="5">7,472</td>
                 </tr>
                 <tr>
-                  <td data-row="2" data-col="0">rs(age)</td>
-                  <td data-row="2" data-col="1">1.000</td>
-                  <td data-row="2" data-col="2">✅</td>
-                  <td data-row="2" data-col="3">6,803</td>
-                  <td data-row="2" data-col="4">14,584</td>
+                  <td data-row="2" data-col="1">rs_age</td>
+                  <td data-row="2" data-col="2">1</td>
+                  <td data-row="2" data-col="3">✅</td>
+                  <td data-row="2" data-col="4">6,803</td>
+                  <td data-row="2" data-col="5">14,584</td>
                 </tr>
                 <tr>
-                  <td data-row="3" data-col="0">rs(educate)</td>
-                  <td data-row="3" data-col="1">1.001</td>
-                  <td data-row="3" data-col="2">✅</td>
-                  <td data-row="3" data-col="3">4,889</td>
-                  <td data-row="3" data-col="4">10,768</td>
+                  <td data-row="3" data-col="1">rs_educate</td>
+                  <td data-row="3" data-col="2">1</td>
+                  <td data-row="3" data-col="3">✅</td>
+                  <td data-row="3" data-col="4">4,889</td>
+                  <td data-row="3" data-col="5">10,768</td>
                 </tr>
                 <tr>
-                  <td data-row="4" data-col="0">rs(income)</td>
-                  <td data-row="4" data-col="1">1.000</td>
-                  <td data-row="4" data-col="2">✅</td>
-                  <td data-row="4" data-col="3">4,445</td>
-                  <td data-row="4" data-col="4">9,648</td>
+                  <td data-row="4" data-col="1">rs_income</td>
+                  <td data-row="4" data-col="2">1</td>
+                  <td data-row="4" data-col="3">✅</td>
+                  <td data-row="4" data-col="4">4,445</td>
+                  <td data-row="4" data-col="5">9,648</td>
                 </tr>
                 <tr>
-                  <td data-row="5" data-col="0">racewhite</td>
-                  <td data-row="5" data-col="1">1.000</td>
-                  <td data-row="5" data-col="2">✅</td>
-                  <td data-row="5" data-col="3">3,157</td>
-                  <td data-row="5" data-col="4">7,773</td>
+                  <td data-row="5" data-col="1">racewhite</td>
+                  <td data-row="5" data-col="2">1</td>
+                  <td data-row="5" data-col="3">✅</td>
+                  <td data-row="5" data-col="4">3,157</td>
+                  <td data-row="5" data-col="5">7,773</td>
                 </tr>
         </tbody>
       </table>
@@ -1263,17 +1255,17 @@ racewhite   0.2508   0.1465
 <span id="cb43-38"><a href="#cb43-38" aria-hidden="true" tabindex="-1"></a><span class="co"># posterior mean</span></span>
 <span id="cb43-39"><a href="#cb43-39" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(fd_tilde)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.1668593</code></pre>
+<pre><code>[1] 0.167</code></pre>
 </div>
 </div>
 
 <div class="no-row-height column-margin column-container"><div class="margin-aside">
-<p>And we can replicate this with {marginaleffect}</p>
+<p>And we can replicate this with {marginaleffects}</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load packages</span></span>
 <span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(marginaleffects)</span>
 <span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a><span class="co"># compute qi; rs(age), etc, not working---not sure why</span></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a><span class="co"># compute qi with the rescaled columns (see the note in the data chunk)</span></span>
 <span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a><span class="fu">comparisons</span>(fit, <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">rs_age =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.5</span>, <span class="fl">0.5</span>)), </span>
 <span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">newdata =</span> <span class="fu">datagrid</span>(<span class="at">grid_type =</span> <span class="st">"mean_or_mode"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1294,7 +1286,7 @@ Comparison: 0.5 - -0.5</code></pre>
 <p><strong>MCMC</strong></p>
 <p>MCMC offers a powerful and general way to sample from an unnormalized (log-)posterior. The Metropolis algorithm is one such method. Hamiltonian Monte Carlo (HMC) via Stan is even better.</p>
 <p><strong>R-hat and burn-in</strong></p>
-<p>The first MCMC samples highly dependent on the starting values. Because of this, you need to:</p>
+<p>The first MCMC samples are highly dependent on the starting values. Because of this, you need to:</p>
 <ol type="1">
 <li>Discard the samples from a burn-in period.</li>
 <li>Run multiple chains and check that R-hat is less than 1.01.</li>
@@ -1302,7 +1294,7 @@ Comparison: 0.5 - -0.5</code></pre>
 <p><strong>ESS and large samples</strong></p>
 <p>The MCMC samples are dependent on the previous samples. Because of this, you need to:</p>
 <ol type="1">
-<li>Generate more samples that you would need if they were independent.</li>
+<li>Generate more samples than you would need if they were independent.</li>
 <li>Use ESS to understand your effective sample size.</li>
 </ol>
 

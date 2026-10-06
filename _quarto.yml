@@ -55,6 +55,7 @@ book:
         - wk07/02-stan.qmd
         - wk07/03-brms.qmd
         - wk07/04-multinomial-logit.qmd
+        - wk07/05-loo.qmd
   appendices:
     - appendicies/999-distributions.qmd
     - wk01/frac-exp-log.qmd

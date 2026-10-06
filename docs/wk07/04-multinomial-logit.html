@@ -54,7 +54,27 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -64,7 +84,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../appendicies/999-distributions.html" rel="next">
+<link href="../wk07/05-loo.html" rel="next">
 <link href="../wk07/03-brms.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -147,7 +167,7 @@ window.Quarto = {
 <link rel="stylesheet" href="../_styles.css">
 </head>
 
-<body class="nav-sidebar floating">
+<body class="nav-sidebar floating slimcontent">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -383,6 +403,12 @@ window.Quarto = {
  <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Multinomial Logit</span></span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk07/05-loo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">LOOIC</span></span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -463,11 +489,21 @@ window.Quarto = {
   <li><a href="#the-inverse-logit-function" id="toc-the-inverse-logit-function" class="nav-link active" data-scroll-target="#the-inverse-logit-function"><span class="header-section-number">22.1</span> The Inverse-Logit Function</a></li>
   <li><a href="#the-softmax-function" id="toc-the-softmax-function" class="nav-link" data-scroll-target="#the-softmax-function"><span class="header-section-number">22.2</span> The Softmax Function</a></li>
   <li><a href="#adding-covariates" id="toc-adding-covariates" class="nav-link" data-scroll-target="#adding-covariates"><span class="header-section-number">22.3</span> Adding covariates</a></li>
+  <li><a href="#example-the-1992-presidential-vote" id="toc-example-the-1992-presidential-vote" class="nav-link" data-scroll-target="#example-the-1992-presidential-vote"><span class="header-section-number">22.4</span> Example: The 1992 presidential vote</a>
+  <ul class="collapse">
+  <li><a href="#multinom" id="toc-multinom" class="nav-link" data-scroll-target="#multinom"><span class="header-section-number">22.4.1</span> <code>multinom()</code></a></li>
+  </ul></li>
+  <li><a href="#example-balancing-the-federal-budget-cces-2012" id="toc-example-balancing-the-federal-budget-cces-2012" class="nav-link" data-scroll-target="#example-balancing-the-federal-budget-cces-2012"><span class="header-section-number">22.5</span> Example: Balancing the federal budget, CCES 2012</a></li>
+  <li><a href="#with-brm" id="toc-with-brm" class="nav-link" data-scroll-target="#with-brm"><span class="header-section-number">22.6</span> With <code>brm()</code></a>
+  <ul class="collapse">
+  <li><a href="#the-1992-presidential-vote" id="toc-the-1992-presidential-vote" class="nav-link" data-scroll-target="#the-1992-presidential-vote"><span class="header-section-number">22.6.1</span> The 1992 presidential vote</a></li>
+  <li><a href="#balancing-the-federal-budget" id="toc-balancing-the-federal-budget" class="nav-link" data-scroll-target="#balancing-the-federal-budget"><span class="header-section-number">22.6.2</span> Balancing the federal budget</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content page-columns page-full" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../wk07/01-metrop.html">Week 7</a></li><li class="breadcrumb-item"><a href="../wk07/04-multinomial-logit.html"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Multinomial Logit</span></a></li></ol></nav>
 <div class="quarto-title">
@@ -503,7 +539,7 @@ window.Quarto = {
 </section>
 <section id="the-softmax-function" class="level2" data-number="22.2">
 <h2 data-number="22.2" class="anchored" data-anchor-id="the-softmax-function"><span class="header-section-number">22.2</span> The Softmax Function</h2>
-<p>The softmax generalizes the inverse-logit–it takes <span class="math inline">\(J\)</span> real input (i.e., from <span class="math inline">\(\mathbb{R}^J\)</span> and scales them to sum to one.</p>
+<p>The softmax generalizes the inverse-logit—it takes <span class="math inline">\(J\)</span> real inputs (i.e., from <span class="math inline">\(\mathbb{R}^J\)</span>) and scales them to sum to one.</p>
 <p><span class="math display">\[
 \text{softmax}(z_j) = \frac{\exp(z_j)}{\sum_{k=1}^{J} \exp(z_k)}, \qquad j = 1,\ldots,J.
 \]</span> Because the <span class="math inline">\(J\)</span> outputs must sum to one, it is natural to interpret the outputs as <em>probabilities</em>.</p>
@@ -660,8 +696,8 @@ window.Quarto = {
 <p><span class="math display">\[
 y_i \in \{1, 2, \ldots, J\}.
 \]</span></p>
-<p>Example 1: We might label <em>vote choice</em> in the US as (1) <em>abstain</em>, (2) <em>Repbulican</em>, (3) <em>Democrat</em>, or (4) <em>other</em>.</p>
-<p><em>Example 2</em>: We might label <em>coup attempts</em> in a given country-year as (0) <em>none attempted</em>, (1) <em>failed attempt</em>, or (2) <em>successful attempt</em>.</p>
+<p><em>Example 1.</em> We might label <em>vote choice</em> in the US as (1) <em>abstain</em>, (2) <em>Republican</em>, (3) <em>Democrat</em>, or (4) <em>other</em>.</p>
+<p><em>Example 2.</em> We might label <em>coup attempts</em> in a given country-year as (0) <em>none attempted</em>, (1) <em>failed attempt</em>, or (2) <em>successful attempt</em>.</p>
 <p>For each category <span class="math inline">\(j\)</span>, define a linear predictor <span class="math inline">\(\eta_{ij} = X_i \beta_j\)</span>. Here, each <span class="math inline">\(\beta_j\)</span> is a <em>vector</em> of coefficients.</p>
 <p>We can use the <em>softmax</em> function to convert these linear predictors into probabilities that sum to one.</p>
 <p><span class="math display">\[
@@ -730,7 +766,7 @@ y_i \in \{1, 2, \ldots, J\}.
 </div>
 </div>
 <p>Adding a constant to all inputs leaves the softmax unchanged. This is why the multinomial logit model requires an identification constraint.</p>
-<p>To identify the model, we set <span class="math inline">\(\eta_{iJ} = 1\)</span>. Then for <span class="math inline">\(j = 1, \ldots, J-1\)</span>, we have</p>
+<p>To identify the model, we set <span class="math inline">\(\beta_J = 0\)</span>, so that <span class="math inline">\(\eta_{iJ} = 0\)</span>. Then for <span class="math inline">\(j = 1, \ldots, J-1\)</span>, we have</p>
 <p><span class="math display">\[
 \Pr(Y_i = j) =
 \frac{\exp(X_i \beta_j)}
@@ -742,8 +778,633 @@ y_i \in \{1, 2, \ldots, J\}.
 \frac{1}
      {1 + \sum_{k=1}^{J-1} \exp(X_i \beta_k)}.
 \]</span></p>
+</section>
+<section id="example-the-1992-presidential-vote" class="level2 page-columns page-full" data-number="22.4">
+<h2 data-number="22.4" class="anchored" data-anchor-id="example-the-1992-presidential-vote"><span class="header-section-number">22.4</span> Example: The 1992 presidential vote</h2>
+<ul>
+<li>Data: 1992 ANES Time Series Study <span class="citation" data-cites="anes1992">(<a href="#ref-anes1992" role="doc-biblioref">Miller et al. 2016</a>)</span>; the same respondents as the Bush approval example in the ordered logit chapter.</li>
+<li>Outcome: <code>vote_1992</code>, the reported presidential vote: Bush, Clinton, or Perot.</li>
+<li>Predictors:
+<ul>
+<li><code>party_id</code>: party identification, from −3 (strong Democrat) through 0 (independent) to 3 (strong Republican).</li>
+<li><code>economy</code>: evaluation of the national economy compared with a year ago, from 1 (much better) to 5 (much worse).</li>
+</ul></li>
+<li>[CTK: 592 voters complete on these variables]</li>
+</ul>
+<div class="no-row-height column-margin column-container"><div id="ref-anes1992" class="csl-entry" role="listitem">
+Miller, Warren E., Donald R. Kinder, Steven J. Rosenstone, and University of Michigan. Institute for Social Research. American National Election Studies. 2016. <span>“<span>ANES</span> 1992 Time Series Study.”</span> Inter-university Consortium for Political; Social Research [distributor]. <a href="https://doi.org/10.3886/ICPSR06067.v3">https://doi.org/10.3886/ICPSR06067.v3</a>.
+</div><div class="margin-aside">
+<ul>
+<li>[CTK: provenance — Adolph’s Problem Set 4 <span class="citation" data-cites="adolph2025">(<a href="#ref-adolph2025" role="doc-biblioref">Adolph 2025</a>)</span>; same file as the ordered example; Perot as the reason a nominal model is needed]</li>
+<div id="ref-adolph2025" class="csl-entry" role="listitem">
+Adolph, Christopher. 2025. <span>“Problem Set 4: Modeling Presidential Approval with Ordered Probit.”</span> <span>POLS/CSSS</span> 510: Maximum Likelihood Methods for the Social Sciences, University of Washington, Fall Quarter 2025. <a href="https://faculty.washington.edu/cadolph/mle/510hw4.pdf">https://faculty.washington.edu/cadolph/mle/510hw4.pdf</a>.
+</div></ul>
+</div></div>
+<section id="multinom" class="level3" data-number="22.4.1">
+<h3 data-number="22.4.1" class="anchored" data-anchor-id="multinom"><span class="header-section-number">22.4.1</span> <code>multinom()</code></h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nnet)  <span class="co"># for multinom()</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(marginaleffects)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># load data; keep complete cases on the model's variables</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>vote <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"https://pos5747.github.io/data/bush-approval-1992.csv"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(vote_1992, party_id, economy) <span class="sc">|&gt;</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>() <span class="sc">|&gt;</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">vote_1992 =</span> <span class="fu">factor</span>(vote_1992, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Bush"</span>, <span class="st">"Clinton"</span>, <span class="st">"Perot"</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 592
+Columns: 3
+$ vote_1992 &lt;fct&gt; Bush, Bush, Bush, Clinton, Clinton, Clinton, Bush, Bush, Bus…
+$ party_id  &lt;dbl&gt; 2, 3, 3, 3, -2, -3, 2, 3, 2, 1, -3, -2, 3, 1, -1, -3, -1, -3…
+$ economy   &lt;dbl&gt; 4, 4, 3, 3, 5, 5, 4, 2, 4, 3, 5, 4, 4, 4, 5, 5, 4, 5, 4, 5, …</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># the first level (Bush) is the baseline</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(vote<span class="sc">$</span>vote_1992)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Bush"    "Clinton" "Perot"  </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit multinomial logit</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>fit_vote <span class="ot">&lt;-</span> <span class="fu">multinom</span>(vote_1992 <span class="sc">~</span> party_id <span class="sc">+</span> economy, <span class="at">data =</span> vote)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># weights:  12 (6 variable)
+initial  value 650.378475 
+iter  10 value 434.958942
+final  value 434.953412 
+converged</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_vote)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+multinom(formula = vote_1992 ~ party_id + economy, data = vote)
+
+Coefficients:
+        (Intercept)   party_id   economy
+Clinton   -1.977521 -1.0977031 0.5514930
+Perot     -1.518696 -0.4389651 0.3361671
+
+Std. Errors:
+        (Intercept)   party_id   economy
+Clinton   0.6221333 0.08564888 0.1512617
+Perot     0.5848327 0.07740859 0.1437105
+
+Residual Deviance: 869.9068 
+AIC: 881.9068 </code></pre>
+</div>
+</div>
+<ul>
+<li>[CTK: two rows of coefficients, one linear predictor per non-baseline candidate; each relative to Bush]</li>
+<li>[CTK: baseline first here (<code>multinom()</code>), last in the math above; the probabilities don’t change]</li>
+<li>[CTK: signs: party_id negative for both rows (Republicans → Bush); economy positive for both (worse economy → away from Bush)]</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># probability of each candidate as party ID varies</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">predictions</span>(fit_vote, <span class="at">newdata =</span> <span class="fu">datagrid</span>(<span class="at">party_id =</span> <span class="sc">-</span><span class="dv">3</span><span class="sc">:</span><span class="dv">3</span>), <span class="at">type =</span> <span class="st">"probs"</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># plot</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(p, <span class="fu">aes</span>(<span class="at">x =</span> party_id, <span class="at">y =</span> estimate, <span class="at">ymin =</span> conf.low, <span class="at">ymax =</span> conf.high,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>              <span class="at">color =</span> group, <span class="at">fill =</span> group)) <span class="sc">+</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="at">alpha =</span> <span class="fl">0.2</span>, <span class="at">color =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Party ID"</span>, <span class="at">y =</span> <span class="st">"Probability"</span>, <span class="at">color =</span> <span class="st">"Candidate"</span>, <span class="at">fill =</span> <span class="st">"Candidate"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="04-multinomial-logit_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li>[CTK: Pr(Perot) rises then falls (about 0.08 at −3, peak about 0.28 at 0 to 1, 0.18 at 3), though both linear predictors are linear in party ID]</li>
+<li>[CTK: why: Perot’s party_id coefficient (−0.44) sits between Bush’s (0) and Clinton’s (−1.10); the softmax shares probability]</li>
+<li>[CTK: so the sign of a coefficient doesn’t give the direction of that category’s probability; compute probabilities]</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># change in each candidate's probability as the economy goes from</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># "better" (2) to "worse" (4), for a typical respondent</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">comparisons</span>(fit_vote,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">economy =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">4</span>)),</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">newdata =</span> <span class="fu">datagrid</span>(<span class="at">grid_type =</span> <span class="st">"mean_or_mode"</span>),</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">type =</span> <span class="st">"probs"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+   Group Estimate Std. Error      z Pr(&gt;|z|)    S   2.5 %  97.5 %
+ Bush     -0.2188     0.0628 -3.487   &lt;0.001 11.0 -0.3418 -0.0958
+ Clinton   0.1799     0.0472  3.811   &lt;0.001 12.8  0.0874  0.2724
+ Perot     0.0389     0.0458  0.851    0.395  1.3 -0.0508  0.1287
+
+Term: economy
+Type: probs
+Comparison: 4 - 2</code></pre>
+</div>
+</div>
+<ul>
+<li>[CTK: worse economy: Bush −0.22, Clinton +0.18, Perot +0.04 (CI includes 0)]</li>
+<li>[CTK: Perot’s economy coefficient is positive (0.34), but Clinton gains most of what Bush loses]</li>
+</ul>
+</section>
+</section>
+<section id="example-balancing-the-federal-budget-cces-2012" class="level2 page-columns page-full" data-number="22.5">
+<h2 data-number="22.5" class="anchored" data-anchor-id="example-balancing-the-federal-budget-cces-2012"><span class="header-section-number">22.5</span> Example: Balancing the federal budget, CCES 2012</h2>
+<ul>
+<li>Data: 2012 Cooperative Congressional Election Study, Common Content <span class="citation" data-cites="cces2012">(<a href="#ref-cces2012" role="doc-biblioref">Ansolabehere and Schaffner 2013</a>)</span>.</li>
+<li>Outcome: <code>budget</code>, the answer to “If the Congress were to balance the budget it would have to consider cutting defense spending, cutting domestic spending (such as Medicare and Social Security), or raising taxes to cover the deficit. What would you MOST prefer that Congress do?” Three categories: cut defense spending, cut domestic spending, or raise taxes.</li>
+<li>Predictors:
+<ul>
+<li><code>party_id</code>: party identification, from 1 (strong Democrat) to 7 (strong Republican).</li>
+<li><code>female</code>: 1 for women, 0 for men.</li>
+<li><code>income</code>: family income in 16 brackets, from 1 (less than $10,000) to 16 ($500,000 or more).</li>
+</ul></li>
+<li>45,237 respondents with valid answers on all four variables.</li>
+</ul>
+<div class="no-row-height column-margin column-container"><div id="ref-cces2012" class="csl-entry" role="listitem">
+Ansolabehere, Stephen, and Brian F. Schaffner. 2013. <span>“<span>CCES</span> Common Content, 2012.”</span> Harvard Dataverse. <a href="https://doi.org/10.7910/DVN/HQEVPK">https://doi.org/10.7910/DVN/HQEVPK</a>.
+</div><div class="margin-aside">
+<p>This example is inspired by a SAGE Research Methods Datasets guide <span class="citation" data-cites="reid2020">(<a href="#ref-reid2020" role="doc-biblioref">Reid and Allum 2020</a>)</span>. We use exactly the same model specification as the guide. Our data set is larger than the guide’s (45,237 respondents rather than 35,759). The dataset from the guide is an extract shared with other SAGE guides, and it keeps only respondents who answered all 15 survey items in the larger extract, including questions about immigration, gun control, and race that are not in this model. Our larger dataset includes every respondent who answered the four questions in this model.</p>
+<div id="ref-reid2020" class="csl-entry" role="listitem">
+Reid, Abigail-Kate, and Nick Allum. 2020. <span>“Learn about Multinomial Logit in <span>Stata</span> with Data from the <span>Cooperative Congressional Election Study</span> (2012).”</span> London: <span>SAGE</span> Research Methods Datasets Part 1; SAGE Publications. <a href="https://doi.org/10.4135/9781529710465">https://doi.org/10.4135/9781529710465</a>.
+</div></div></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nnet)  <span class="co"># for multinom()</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(marginaleffects)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="co"># load data; "Raise taxes" first, so it is the baseline</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>cces <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/cces2012-budget.csv"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">budget =</span> <span class="fu">factor</span>(budget, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Raise taxes"</span>,</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>                                            <span class="st">"Cut defense spending"</span>,</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>                                            <span class="st">"Cut domestic spending"</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 45,237
+Columns: 4
+$ budget   &lt;fct&gt; Cut defense spending, Cut defense spending, Raise taxes, Cut …
+$ party_id &lt;dbl&gt; 2, 3, 2, 4, 1, 3, 3, 1, 1, 1, 3, 7, 6, 1, 1, 1, 4, 4, 1, 1, 3…
+$ female   &lt;dbl&gt; 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1…
+$ income   &lt;dbl&gt; 8, 8, 5, 7, 3, 11, 7, 6, 1, 10, 5, 10, 8, 13, 2, 12, 11, 10, …</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit multinomial logit</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>fit_budget <span class="ot">&lt;-</span> <span class="fu">multinom</span>(budget <span class="sc">~</span> party_id <span class="sc">+</span> female <span class="sc">+</span> income, <span class="at">data =</span> cces)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># weights:  15 (8 variable)
+initial  value 49697.924102 
+iter  10 value 40573.505332
+final  value 40539.113501 
+converged</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit_budget)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+multinom(formula = budget ~ party_id + female + income, data = cces)
+
+Coefficients:
+                      (Intercept)   party_id      female      income
+Cut defense spending    0.8627772 -0.0445021  0.06490173 -0.01869888
+Cut domestic spending  -1.6914786  0.5629467 -0.32864044  0.02632282
+
+Std. Errors:
+                      (Intercept)    party_id     female      income
+Cut defense spending   0.03742825 0.006677125 0.02577410 0.003938263
+Cut domestic spending  0.04519703 0.007193643 0.02878465 0.004429042
+
+Residual Deviance: 81078.23 
+AIC: 81094.23 </code></pre>
+</div>
+</div>
+<ul>
+<li>Two rows of coefficients, each relative to raising taxes.</li>
+<li><code>party_id</code>: −0.04 for cutting defense, 0.56 for cutting domestic spending.</li>
+<li><code>female</code>: 0.06 for cutting defense, −0.33 for cutting domestic spending.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># probability of each choice as party ID varies</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">predictions</span>(fit_budget, <span class="at">newdata =</span> <span class="fu">datagrid</span>(<span class="at">party_id =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">7</span>), <span class="at">type =</span> <span class="st">"probs"</span>)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(p, <span class="fu">aes</span>(<span class="at">x =</span> party_id, <span class="at">y =</span> estimate, <span class="at">ymin =</span> conf.low, <span class="at">ymax =</span> conf.high,</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>              <span class="at">color =</span> group, <span class="at">fill =</span> group)) <span class="sc">+</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="at">alpha =</span> <span class="fl">0.2</span>, <span class="at">color =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Party ID"</span>, <span class="at">y =</span> <span class="st">"Probability"</span>, <span class="at">color =</span> <span class="st">"Most preferred"</span>, <span class="at">fill =</span> <span class="st">"Most preferred"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="04-multinomial-logit_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li><code>female</code> at its mode (1) and <code>income</code> at its rounded mean (6, $50,000–59,999).</li>
+<li>Strong Democrats to strong Republicans: Pr(cut domestic spending) 0.08 to 0.75; Pr(cut defense spending) 0.63 to 0.16; Pr(raise taxes) 0.29 to 0.09.</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># women minus men, for an independent with income 6</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">comparisons</span>(fit_budget, <span class="at">variables =</span> <span class="st">"female"</span>, <span class="at">newdata =</span> <span class="fu">datagrid</span>(<span class="at">grid_type =</span> <span class="st">"mean_or_mode"</span>), <span class="at">type =</span> <span class="st">"probs"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+                 Group Estimate Std. Error      z Pr(&gt;|z|)     S   2.5 %
+ Raise taxes             0.0216    0.00411   5.25   &lt;0.001  22.7  0.0136
+ Cut defense spending    0.0655    0.00509  12.86   &lt;0.001 123.4  0.0556
+ Cut domestic spending  -0.0872    0.00551 -15.82   &lt;0.001 184.9 -0.0980
+  97.5 %
+  0.0297
+  0.0755
+ -0.0764
+
+Term: female
+Type: probs
+Comparison: 1 - 0</code></pre>
+</div>
+</div>
+<ul>
+<li>Women: 0.07 more likely to prefer cutting defense, 0.09 less likely to prefer cutting domestic spending, 0.02 more likely to prefer raising taxes.</li>
+</ul>
+</section>
+<section id="with-brm" class="level2" data-number="22.6">
+<h2 data-number="22.6" class="anchored" data-anchor-id="with-brm"><span class="header-section-number">22.6</span> With <code>brm()</code></h2>
+<section id="the-1992-presidential-vote" class="level3" data-number="22.6.1">
+<h3 data-number="22.6.1" class="anchored" data-anchor-id="the-1992-presidential-vote"><span class="header-section-number">22.6.1</span> The 1992 presidential vote</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(brms)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="co"># fit the same model with brm(); categorical() is the multinomial logit,</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co"># with the first level (Bush) as the baseline</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>fit_vote_brm <span class="ot">&lt;-</span> <span class="fu">brm</span>(vote_1992 <span class="sc">~</span> party_id <span class="sc">+</span> economy,</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>                    <span class="at">data =</span> vote,</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>                    <span class="at">family =</span> <span class="fu">categorical</span>(<span class="at">link =</span> <span class="st">"logit"</span>),</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>                    <span class="at">backend =</span> <span class="st">"cmdstanr"</span>,</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>                    <span class="at">chains =</span> <span class="dv">4</span>,</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>                    <span class="at">cores =</span> <span class="dv">4</span>,</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>                    <span class="at">seed =</span> <span class="dv">1234</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code for the table</summary>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tinytable)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="co"># put the multinom() and brm() estimates side by side</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>compare_mnl <span class="ot">&lt;-</span> <span class="cf">function</span>(fit_ml, fit_brm) {</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># multinom(): ML estimates and standard errors</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  ml <span class="ot">&lt;-</span> broom<span class="sc">::</span><span class="fu">tidy</span>(fit_ml) <span class="sc">|&gt;</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">transmute</span>(<span class="at">outcome =</span> y.level,</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>              <span class="at">term =</span> <span class="fu">if_else</span>(term <span class="sc">==</span> <span class="st">"(Intercept)"</span>, <span class="st">"Intercept"</span>, term),</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>              <span class="at">est_ml =</span> estimate,</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>              <span class="at">se_ml =</span> std.error)</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># brm(): posterior means and SDs; mu is brms's prefix for each outcome's</span></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># linear predictor, so the names look like mu&lt;outcome, no spaces&gt;_&lt;term&gt;</span></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>  bayes <span class="ot">&lt;-</span> <span class="fu">fixef</span>(fit_brm) <span class="sc">|&gt;</span></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as_tibble</span>(<span class="at">rownames =</span> <span class="st">"name"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">separate_wider_delim</span>(name, <span class="at">delim =</span> <span class="st">"_"</span>, <span class="at">names =</span> <span class="fu">c</span>(<span class="st">"mu"</span>, <span class="st">"term"</span>),</span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>                         <span class="at">too_many =</span> <span class="st">"merge"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">transmute</span>(mu, term, <span class="at">est_brm =</span> Estimate, <span class="at">se_brm =</span> Est.Error)</span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># match brm()'s names to multinom()'s outcome labels</span></span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a>  ml <span class="sc">|&gt;</span></span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">mu =</span> <span class="fu">paste0</span>(<span class="st">"mu"</span>, <span class="fu">str_remove_all</span>(outcome, <span class="st">"[^[:alnum:]]"</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">left_join</span>(bayes, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"mu"</span>, <span class="st">"term"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="sc">-</span>mu)</span>
+<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-27"><a href="#cb24-27" aria-hidden="true" tabindex="-1"></a><span class="co"># make a table with one block of rows per outcome</span></span>
+<span id="cb24-28"><a href="#cb24-28" aria-hidden="true" tabindex="-1"></a>tt_mnl <span class="ot">&lt;-</span> <span class="cf">function</span>(comparison) {</span>
+<span id="cb24-29"><a href="#cb24-29" aria-hidden="true" tabindex="-1"></a>  comparison <span class="sc">|&gt;</span></span>
+<span id="cb24-30"><a href="#cb24-30" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="sc">-</span>outcome) <span class="sc">|&gt;</span></span>
+<span id="cb24-31"><a href="#cb24-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span></span>
+<span id="cb24-32"><a href="#cb24-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">setNames</span>(<span class="fu">c</span>(<span class="st">"Term"</span>, <span class="st">"Estimate"</span>, <span class="st">"SE"</span>, <span class="st">"Estimate"</span>, <span class="st">"SE"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb24-33"><a href="#cb24-33" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tt</span>(<span class="at">notes =</span> <span class="st">"multinom(): ML estimates and standard errors. brm(): posterior means and standard deviations."</span>) <span class="sc">|&gt;</span></span>
+<span id="cb24-34"><a href="#cb24-34" aria-hidden="true" tabindex="-1"></a>    <span class="fu">format_tt</span>(<span class="at">j =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">5</span>, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">num_fmt =</span> <span class="st">"decimal"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb24-35"><a href="#cb24-35" aria-hidden="true" tabindex="-1"></a>    <span class="fu">style_tt</span>(<span class="at">j =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">5</span>, <span class="at">align =</span> <span class="st">"r"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb24-36"><a href="#cb24-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_tt</span>(<span class="at">i =</span> comparison<span class="sc">$</span>outcome,</span>
+<span id="cb24-37"><a href="#cb24-37" aria-hidden="true" tabindex="-1"></a>             <span class="at">j =</span> <span class="fu">list</span>(<span class="st">"multinom()"</span> <span class="ot">=</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>, <span class="st">"brm()"</span> <span class="ot">=</span> <span class="dv">4</span><span class="sc">:</span><span class="dv">5</span>))</span>
+<span id="cb24-38"><a href="#cb24-38" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb24-39"><a href="#cb24-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-40"><a href="#cb24-40" aria-hidden="true" tabindex="-1"></a><span class="fu">compare_mnl</span>(fit_vote, fit_vote_brm) <span class="sc">|&gt;</span></span>
+<span id="cb24-41"><a href="#cb24-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tt_mnl</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+
+    <script src="https://cdn.jsdelivr.net/gh/vincentarelbundock/tinytable@main/inst/tinytable.js"></script>
+
+    <script>
+      // Create table-specific functions using external factory
+      const tableFns_2pslbxgqtl4qi87k597o = TinyTable.createTableFunctions("tinytable_2pslbxgqtl4qi87k597o");
+      // tinytable span after
+      window.addEventListener('load', function () { tableFns_2pslbxgqtl4qi87k597o.spanCell(5, 1, 1, 5) })
+      window.addEventListener('load', function () { tableFns_2pslbxgqtl4qi87k597o.spanCell(1, 1, 1, 5) })
+      window.addEventListener('load', function () {
+          var cellsToStyle = [
+            // tinytable style arrays after
+          { positions: [ { i: '-1', j: 5 } ], css_id: 'tinytable_css_nizza36teqlbzvqiawd6',}, 
+          { positions: [ { i: '-1', j: 3 } ], css_id: 'tinytable_css_dx4pzy7l4kh3gofdehau',}, 
+          { positions: [ { i: '8', j: 2 }, { i: '8', j: 3 }, { i: '8', j: 4 }, { i: '8', j: 5 } ], css_id: 'tinytable_css_4vwuycqw4u5dwu4mz5h4',}, 
+          { positions: [ { i: '1', j: 2 }, { i: '2', j: 2 }, { i: '3', j: 2 }, { i: '4', j: 2 }, { i: '5', j: 2 }, { i: '6', j: 2 }, { i: '7', j: 2 }, { i: '1', j: 3 }, { i: '2', j: 3 }, { i: '3', j: 3 }, { i: '4', j: 3 }, { i: '5', j: 3 }, { i: '6', j: 3 }, { i: '7', j: 3 }, { i: '1', j: 4 }, { i: '2', j: 4 }, { i: '3', j: 4 }, { i: '4', j: 4 }, { i: '5', j: 4 }, { i: '6', j: 4 }, { i: '7', j: 4 }, { i: '1', j: 5 }, { i: '2', j: 5 }, { i: '3', j: 5 }, { i: '4', j: 5 }, { i: '5', j: 5 }, { i: '6', j: 5 }, { i: '7', j: 5 } ], css_id: 'tinytable_css_5xt4sx4yjn54bbi15ix9',}, 
+          { positions: [ { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 }, { i: '0', j: 5 } ], css_id: 'tinytable_css_5pf1i8iz5lh1uxfqi8zd',}, 
+          { positions: [ { i: '-1', j: 2 }, { i: '-1', j: 4 } ], css_id: 'tinytable_css_g7ttq47z7hreive6hbv6',}, 
+          { positions: [ { i: '8', j: 1 } ], css_id: 'tinytable_css_d77no7bqg6fkh24sj6y4',}, 
+          { positions: [ { i: '0', j: 1 } ], css_id: 'tinytable_css_mu9mt7rnuxuguo2i1slo',}, 
+          { positions: [ { i: '-1', j: 1 } ], css_id: 'tinytable_css_g8j4a77pk5x0a0g8in5s',}, 
+          ];
+
+          // Loop over the arrays to style the cells
+          cellsToStyle.forEach(function (group) {
+              group.positions.forEach(function (cell) {
+                  tableFns_2pslbxgqtl4qi87k597o.styleCell(cell.i, cell.j, group.css_id);
+              });
+          });
+      });
+    </script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/vincentarelbundock/tinytable@main/inst/tinytable.css">
+    <style>
+    /* tinytable css entries after */
+    #tinytable_2pslbxgqtl4qi87k597o td.tinytable_css_nizza36teqlbzvqiawd6, #tinytable_2pslbxgqtl4qi87k597o th.tinytable_css_nizza36teqlbzvqiawd6 {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 1; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.03em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.08em; --line-type-bottom: solid; --line-type-left: solid; --line-type-right: solid; --line-type-top: solid; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: center }
+    #tinytable_2pslbxgqtl4qi87k597o td.tinytable_css_dx4pzy7l4kh3gofdehau, #tinytable_2pslbxgqtl4qi87k597o th.tinytable_css_dx4pzy7l4kh3gofdehau {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 1; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.03em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.08em; --line-type-bottom: solid; --line-type-left: solid; --line-type-right: solid; --line-type-top: solid; --trim-bottom-left: 0%; --trim-bottom-right: 3%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: center }
+    #tinytable_2pslbxgqtl4qi87k597o td.tinytable_css_4vwuycqw4u5dwu4mz5h4, #tinytable_2pslbxgqtl4qi87k597o th.tinytable_css_4vwuycqw4u5dwu4mz5h4 {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.08em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --line-type-bottom: solid; --line-type-left: solid; --line-type-right: solid; --line-type-top: solid; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: right }
+    #tinytable_2pslbxgqtl4qi87k597o td.tinytable_css_5xt4sx4yjn54bbi15ix9, #tinytable_2pslbxgqtl4qi87k597o th.tinytable_css_5xt4sx4yjn54bbi15ix9 { text-align: right }
+    #tinytable_2pslbxgqtl4qi87k597o td.tinytable_css_5pf1i8iz5lh1uxfqi8zd, #tinytable_2pslbxgqtl4qi87k597o th.tinytable_css_5pf1i8iz5lh1uxfqi8zd {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --line-type-bottom: solid; --line-type-left: solid; --line-type-right: solid; --line-type-top: solid; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: right }
+    #tinytable_2pslbxgqtl4qi87k597o td.tinytable_css_g7ttq47z7hreive6hbv6, #tinytable_2pslbxgqtl4qi87k597o th.tinytable_css_g7ttq47z7hreive6hbv6 {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 1; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.03em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.08em; --line-type-bottom: solid; --line-type-left: solid; --line-type-right: solid; --line-type-top: solid; --trim-bottom-left: 3%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: center }
+    #tinytable_2pslbxgqtl4qi87k597o td.tinytable_css_d77no7bqg6fkh24sj6y4, #tinytable_2pslbxgqtl4qi87k597o th.tinytable_css_d77no7bqg6fkh24sj6y4 {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.08em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --line-type-bottom: solid; --line-type-left: solid; --line-type-right: solid; --line-type-top: solid; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%;  }
+    #tinytable_2pslbxgqtl4qi87k597o td.tinytable_css_mu9mt7rnuxuguo2i1slo, #tinytable_2pslbxgqtl4qi87k597o th.tinytable_css_mu9mt7rnuxuguo2i1slo {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --line-type-bottom: solid; --line-type-left: solid; --line-type-right: solid; --line-type-top: solid; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%;  }
+    #tinytable_2pslbxgqtl4qi87k597o td.tinytable_css_g8j4a77pk5x0a0g8in5s, #tinytable_2pslbxgqtl4qi87k597o th.tinytable_css_g8j4a77pk5x0a0g8in5s {  position: relative; --border-bottom: 0; --border-left: 0; --border-right: 0; --border-top: 1; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.1em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.08em; --line-type-bottom: solid; --line-type-left: solid; --line-type-right: solid; --line-type-top: solid; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: center }
+    </style>
+    <div class="container">
+      <table class="tinytable" id="tinytable_2pslbxgqtl4qi87k597o" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+        
+        <thead>
+<tr>
+<th scope="col" align="center" colspan="1" data-row="-1" data-col="1"> </th>
+<th scope="col" align="center" colspan="2" data-row="-1" data-col="2">multinom()</th>
+<th scope="col" align="center" colspan="2" data-row="-1" data-col="4">brm()</th>
+</tr>
+              <tr>
+                <th scope="col" data-row="0" data-col="1">Term</th>
+                <th scope="col" data-row="0" data-col="2">Estimate</th>
+                <th scope="col" data-row="0" data-col="3">SE</th>
+                <th scope="col" data-row="0" data-col="4">Estimate</th>
+                <th scope="col" data-row="0" data-col="5">SE</th>
+              </tr>
+        </thead>
+        <tfoot><tr><td colspan="5">multinom(): ML estimates and standard errors. brm(): posterior means and standard deviations.</td></tr></tfoot>
+        <tbody>
+                <tr>
+                  <td data-row="1" data-col="1">Clinton</td>
+                  <td data-row="1" data-col="2">Clinton</td>
+                  <td data-row="1" data-col="3">Clinton</td>
+                  <td data-row="1" data-col="4">Clinton</td>
+                  <td data-row="1" data-col="5">Clinton</td>
+                </tr>
+                <tr>
+                  <td data-row="2" data-col="1">Intercept</td>
+                  <td data-row="2" data-col="2">-1.978</td>
+                  <td data-row="2" data-col="3">0.622</td>
+                  <td data-row="2" data-col="4">-1.987</td>
+                  <td data-row="2" data-col="5">0.623</td>
+                </tr>
+                <tr>
+                  <td data-row="3" data-col="1">party_id</td>
+                  <td data-row="3" data-col="2">-1.098</td>
+                  <td data-row="3" data-col="3">0.086</td>
+                  <td data-row="3" data-col="4">-1.112</td>
+                  <td data-row="3" data-col="5">0.085</td>
+                </tr>
+                <tr>
+                  <td data-row="4" data-col="1">economy</td>
+                  <td data-row="4" data-col="2">0.551</td>
+                  <td data-row="4" data-col="3">0.151</td>
+                  <td data-row="4" data-col="4">0.554</td>
+                  <td data-row="4" data-col="5">0.151</td>
+                </tr>
+                <tr>
+                  <td data-row="5" data-col="1">Perot</td>
+                  <td data-row="5" data-col="2">Perot</td>
+                  <td data-row="5" data-col="3">Perot</td>
+                  <td data-row="5" data-col="4">Perot</td>
+                  <td data-row="5" data-col="5">Perot</td>
+                </tr>
+                <tr>
+                  <td data-row="6" data-col="1">Intercept</td>
+                  <td data-row="6" data-col="2">-1.519</td>
+                  <td data-row="6" data-col="3">0.585</td>
+                  <td data-row="6" data-col="4">-1.539</td>
+                  <td data-row="6" data-col="5">0.591</td>
+                </tr>
+                <tr>
+                  <td data-row="7" data-col="1">party_id</td>
+                  <td data-row="7" data-col="2">-0.439</td>
+                  <td data-row="7" data-col="3">0.077</td>
+                  <td data-row="7" data-col="4">-0.445</td>
+                  <td data-row="7" data-col="5">0.079</td>
+                </tr>
+                <tr>
+                  <td data-row="8" data-col="1">economy</td>
+                  <td data-row="8" data-col="2">0.336</td>
+                  <td data-row="8" data-col="3">0.144</td>
+                  <td data-row="8" data-col="4">0.341</td>
+                  <td data-row="8" data-col="5">0.146</td>
+                </tr>
+        </tbody>
+      </table>
+    </div>
+<!-- hack to avoid NA insertion in last line -->
+</div>
+</div>
+<ul>
+<li>[CTK: posterior means within about 0.02 of the ML estimates (e.g., Clinton party_id −1.11 vs −1.10; Perot economy 0.34 vs 0.34); default priors barely matter at N = 592]</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># probability of each candidate as party ID varies, now with posterior intervals</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co"># (for this fit, predictions() returns rowid but not the grid columns, so join them back)</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>grid <span class="ot">&lt;-</span> <span class="fu">datagrid</span>(<span class="at">model =</span> fit_vote_brm, <span class="at">party_id =</span> <span class="sc">-</span><span class="dv">3</span><span class="sc">:</span><span class="dv">3</span>)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>p_brm <span class="ot">&lt;-</span> <span class="fu">predictions</span>(fit_vote_brm, <span class="at">newdata =</span> grid) <span class="sc">|&gt;</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(<span class="fu">select</span>(grid, rowid, party_id), <span class="at">by =</span> <span class="st">"rowid"</span>)</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(p_brm, <span class="fu">aes</span>(<span class="at">x =</span> party_id, <span class="at">y =</span> estimate, <span class="at">ymin =</span> conf.low, <span class="at">ymax =</span> conf.high,</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>                  <span class="at">color =</span> group, <span class="at">fill =</span> group)) <span class="sc">+</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="at">alpha =</span> <span class="fl">0.2</span>, <span class="at">color =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Party ID"</span>, <span class="at">y =</span> <span class="st">"Probability"</span>, <span class="at">color =</span> <span class="st">"Candidate"</span>, <span class="at">fill =</span> <span class="st">"Candidate"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="04-multinomial-logit_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li>[CTK: same {marginaleffects} code, no <code>type = "probs"</code>; <code>group</code> column holds the candidate; the grid columns need joining back by <code>rowid</code>]</li>
+<li>[CTK: why bother with brm(): priors, hierarchical extensions (weeks 10–11)]</li>
+</ul>
+</section>
+<section id="balancing-the-federal-budget" class="level3" data-number="22.6.2">
+<h3 data-number="22.6.2" class="anchored" data-anchor-id="balancing-the-federal-budget"><span class="header-section-number">22.6.2</span> Balancing the federal budget</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit the same model with brm(), with "Raise taxes" as the baseline</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>fit_budget_brm <span class="ot">&lt;-</span> <span class="fu">brm</span>(budget <span class="sc">~</span> party_id <span class="sc">+</span> female <span class="sc">+</span> income,</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">data =</span> cces,</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>                      <span class="at">family =</span> <span class="fu">categorical</span>(<span class="at">link =</span> <span class="st">"logit"</span>),</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>                      <span class="at">backend =</span> <span class="st">"cmdstanr"</span>,</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>                      <span class="at">chains =</span> <span class="dv">4</span>,</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>                      <span class="at">cores =</span> <span class="dv">4</span>,</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>                      <span class="at">seed =</span> <span class="dv">1234</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code for the table</summary>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">compare_mnl</span>(fit_budget, fit_budget_brm) <span class="sc">|&gt;</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tt_mnl</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+
+    <script src="https://cdn.jsdelivr.net/gh/vincentarelbundock/tinytable@main/inst/tinytable.js"></script>
+
+    <script>
+      // Create table-specific functions using external factory
+      const tableFns_g78sl26d7awb4j0r9coe = TinyTable.createTableFunctions("tinytable_g78sl26d7awb4j0r9coe");
+      // tinytable span after
+      window.addEventListener('load', function () { tableFns_g78sl26d7awb4j0r9coe.spanCell(6, 1, 1, 5) })
+      window.addEventListener('load', function () { tableFns_g78sl26d7awb4j0r9coe.spanCell(1, 1, 1, 5) })
+      window.addEventListener('load', function () {
+          var cellsToStyle = [
+            // tinytable style arrays after
+          { positions: [ { i: '-1', j: 5 } ], css_id: 'tinytable_css_4gxncq8632k142htfylu',}, 
+          { positions: [ { i: '-1', j: 3 } ], css_id: 'tinytable_css_ojunvccaqt15wj3zoj7w',}, 
+          { positions: [ { i: '10', j: 2 }, { i: '10', j: 3 }, { i: '10', j: 4 }, { i: '10', j: 5 } ], css_id: 'tinytable_css_02zldokyli7zf9lv2q58',}, 
+          { positions: [ { i: '1', j: 2 }, { i: '2', j: 2 }, { i: '3', j: 2 }, { i: '4', j: 2 }, { i: '5', j: 2 }, { i: '6', j: 2 }, { i: '7', j: 2 }, { i: '8', j: 2 }, { i: '9', j: 2 }, { i: '1', j: 3 }, { i: '2', j: 3 }, { i: '3', j: 3 }, { i: '4', j: 3 }, { i: '5', j: 3 }, { i: '6', j: 3 }, { i: '7', j: 3 }, { i: '8', j: 3 }, { i: '9', j: 3 }, { i: '1', j: 4 }, { i: '2', j: 4 }, { i: '3', j: 4 }, { i: '4', j: 4 }, { i: '5', j: 4 }, { i: '6', j: 4 }, { i: '7', j: 4 }, { i: '8', j: 4 }, { i: '9', j: 4 }, { i: '1', j: 5 }, { i: '2', j: 5 }, { i: '3', j: 5 }, { i: '4', j: 5 }, { i: '5', j: 5 }, { i: '6', j: 5 }, { i: '7', j: 5 }, { i: '8', j: 5 }, { i: '9', j: 5 } ], css_id: 'tinytable_css_21ussd2100hvxcuco4y7',}, 
+          { positions: [ { i: '0', j: 2 }, { i: '0', j: 3 }, { i: '0', j: 4 }, { i: '0', j: 5 } ], css_id: 'tinytable_css_ggo3wx2gehk2bfo6fvko',}, 
+          { positions: [ { i: '-1', j: 2 }, { i: '-1', j: 4 } ], css_id: 'tinytable_css_6x324pjlya0fyk64u6lj',}, 
+          { positions: [ { i: '10', j: 1 } ], css_id: 'tinytable_css_g4l1q794vid5eutu4yzn',}, 
+          { positions: [ { i: '0', j: 1 } ], css_id: 'tinytable_css_zqlo58v5v5e2g461gie9',}, 
+          { positions: [ { i: '-1', j: 1 } ], css_id: 'tinytable_css_s9r2r6m7xn1okljgd5v9',}, 
+          ];
+
+          // Loop over the arrays to style the cells
+          cellsToStyle.forEach(function (group) {
+              group.positions.forEach(function (cell) {
+                  tableFns_g78sl26d7awb4j0r9coe.styleCell(cell.i, cell.j, group.css_id);
+              });
+          });
+      });
+    </script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/vincentarelbundock/tinytable@main/inst/tinytable.css">
+    <style>
+    /* tinytable css entries after */
+    #tinytable_g78sl26d7awb4j0r9coe td.tinytable_css_4gxncq8632k142htfylu, #tinytable_g78sl26d7awb4j0r9coe th.tinytable_css_4gxncq8632k142htfylu {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 1; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.03em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.08em; --line-type-bottom: solid; --line-type-left: solid; --line-type-right: solid; --line-type-top: solid; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: center }
+    #tinytable_g78sl26d7awb4j0r9coe td.tinytable_css_ojunvccaqt15wj3zoj7w, #tinytable_g78sl26d7awb4j0r9coe th.tinytable_css_ojunvccaqt15wj3zoj7w {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 1; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.03em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.08em; --line-type-bottom: solid; --line-type-left: solid; --line-type-right: solid; --line-type-top: solid; --trim-bottom-left: 0%; --trim-bottom-right: 3%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: center }
+    #tinytable_g78sl26d7awb4j0r9coe td.tinytable_css_02zldokyli7zf9lv2q58, #tinytable_g78sl26d7awb4j0r9coe th.tinytable_css_02zldokyli7zf9lv2q58 {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.08em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --line-type-bottom: solid; --line-type-left: solid; --line-type-right: solid; --line-type-top: solid; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: right }
+    #tinytable_g78sl26d7awb4j0r9coe td.tinytable_css_21ussd2100hvxcuco4y7, #tinytable_g78sl26d7awb4j0r9coe th.tinytable_css_21ussd2100hvxcuco4y7 { text-align: right }
+    #tinytable_g78sl26d7awb4j0r9coe td.tinytable_css_ggo3wx2gehk2bfo6fvko, #tinytable_g78sl26d7awb4j0r9coe th.tinytable_css_ggo3wx2gehk2bfo6fvko {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --line-type-bottom: solid; --line-type-left: solid; --line-type-right: solid; --line-type-top: solid; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: right }
+    #tinytable_g78sl26d7awb4j0r9coe td.tinytable_css_6x324pjlya0fyk64u6lj, #tinytable_g78sl26d7awb4j0r9coe th.tinytable_css_6x324pjlya0fyk64u6lj {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 1; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.03em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.08em; --line-type-bottom: solid; --line-type-left: solid; --line-type-right: solid; --line-type-top: solid; --trim-bottom-left: 3%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: center }
+    #tinytable_g78sl26d7awb4j0r9coe td.tinytable_css_g4l1q794vid5eutu4yzn, #tinytable_g78sl26d7awb4j0r9coe th.tinytable_css_g4l1q794vid5eutu4yzn {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.08em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --line-type-bottom: solid; --line-type-left: solid; --line-type-right: solid; --line-type-top: solid; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%;  }
+    #tinytable_g78sl26d7awb4j0r9coe td.tinytable_css_zqlo58v5v5e2g461gie9, #tinytable_g78sl26d7awb4j0r9coe th.tinytable_css_zqlo58v5v5e2g461gie9 {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --line-type-bottom: solid; --line-type-left: solid; --line-type-right: solid; --line-type-top: solid; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%;  }
+    #tinytable_g78sl26d7awb4j0r9coe td.tinytable_css_s9r2r6m7xn1okljgd5v9, #tinytable_g78sl26d7awb4j0r9coe th.tinytable_css_s9r2r6m7xn1okljgd5v9 {  position: relative; --border-bottom: 0; --border-left: 0; --border-right: 0; --border-top: 1; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.1em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.08em; --line-type-bottom: solid; --line-type-left: solid; --line-type-right: solid; --line-type-top: solid; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: center }
+    </style>
+    <div class="container">
+      <table class="tinytable" id="tinytable_g78sl26d7awb4j0r9coe" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
+        
+        <thead>
+<tr>
+<th scope="col" align="center" colspan="1" data-row="-1" data-col="1"> </th>
+<th scope="col" align="center" colspan="2" data-row="-1" data-col="2">multinom()</th>
+<th scope="col" align="center" colspan="2" data-row="-1" data-col="4">brm()</th>
+</tr>
+              <tr>
+                <th scope="col" data-row="0" data-col="1">Term</th>
+                <th scope="col" data-row="0" data-col="2">Estimate</th>
+                <th scope="col" data-row="0" data-col="3">SE</th>
+                <th scope="col" data-row="0" data-col="4">Estimate</th>
+                <th scope="col" data-row="0" data-col="5">SE</th>
+              </tr>
+        </thead>
+        <tfoot><tr><td colspan="5">multinom(): ML estimates and standard errors. brm(): posterior means and standard deviations.</td></tr></tfoot>
+        <tbody>
+                <tr>
+                  <td data-row="1" data-col="1">Cut defense spending</td>
+                  <td data-row="1" data-col="2">Cut defense spending</td>
+                  <td data-row="1" data-col="3">Cut defense spending</td>
+                  <td data-row="1" data-col="4">Cut defense spending</td>
+                  <td data-row="1" data-col="5">Cut defense spending</td>
+                </tr>
+                <tr>
+                  <td data-row="2" data-col="1">Intercept</td>
+                  <td data-row="2" data-col="2">0.863</td>
+                  <td data-row="2" data-col="3">0.037</td>
+                  <td data-row="2" data-col="4">0.862</td>
+                  <td data-row="2" data-col="5">0.038</td>
+                </tr>
+                <tr>
+                  <td data-row="3" data-col="1">party_id</td>
+                  <td data-row="3" data-col="2">-0.045</td>
+                  <td data-row="3" data-col="3">0.007</td>
+                  <td data-row="3" data-col="4">-0.045</td>
+                  <td data-row="3" data-col="5">0.006</td>
+                </tr>
+                <tr>
+                  <td data-row="4" data-col="1">female</td>
+                  <td data-row="4" data-col="2">0.065</td>
+                  <td data-row="4" data-col="3">0.026</td>
+                  <td data-row="4" data-col="4">0.065</td>
+                  <td data-row="4" data-col="5">0.026</td>
+                </tr>
+                <tr>
+                  <td data-row="5" data-col="1">income</td>
+                  <td data-row="5" data-col="2">-0.019</td>
+                  <td data-row="5" data-col="3">0.004</td>
+                  <td data-row="5" data-col="4">-0.019</td>
+                  <td data-row="5" data-col="5">0.004</td>
+                </tr>
+                <tr>
+                  <td data-row="6" data-col="1">Cut domestic spending</td>
+                  <td data-row="6" data-col="2">Cut domestic spending</td>
+                  <td data-row="6" data-col="3">Cut domestic spending</td>
+                  <td data-row="6" data-col="4">Cut domestic spending</td>
+                  <td data-row="6" data-col="5">Cut domestic spending</td>
+                </tr>
+                <tr>
+                  <td data-row="7" data-col="1">Intercept</td>
+                  <td data-row="7" data-col="2">-1.691</td>
+                  <td data-row="7" data-col="3">0.045</td>
+                  <td data-row="7" data-col="4">-1.693</td>
+                  <td data-row="7" data-col="5">0.045</td>
+                </tr>
+                <tr>
+                  <td data-row="8" data-col="1">party_id</td>
+                  <td data-row="8" data-col="2">0.563</td>
+                  <td data-row="8" data-col="3">0.007</td>
+                  <td data-row="8" data-col="4">0.563</td>
+                  <td data-row="8" data-col="5">0.007</td>
+                </tr>
+                <tr>
+                  <td data-row="9" data-col="1">female</td>
+                  <td data-row="9" data-col="2">-0.329</td>
+                  <td data-row="9" data-col="3">0.029</td>
+                  <td data-row="9" data-col="4">-0.328</td>
+                  <td data-row="9" data-col="5">0.029</td>
+                </tr>
+                <tr>
+                  <td data-row="10" data-col="1">income</td>
+                  <td data-row="10" data-col="2">0.026</td>
+                  <td data-row="10" data-col="3">0.004</td>
+                  <td data-row="10" data-col="4">0.026</td>
+                  <td data-row="10" data-col="5">0.004</td>
+                </tr>
+        </tbody>
+      </table>
+    </div>
+<!-- hack to avoid NA insertion in last line -->
+</div>
+</div>
+<ul>
+<li>[CTK: posterior means within 0.002 of the ML estimates, and posterior SDs within 0.0003 of the standard errors; N = 45,237]</li>
+</ul>
 
 
+
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -1182,8 +1843,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../appendicies/999-distributions.html" class="pagination-link" aria-label="Common Distributions">
-        <span class="nav-page-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Common Distributions</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../wk07/05-loo.html" class="pagination-link" aria-label="LOOIC">
+        <span class="nav-page-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">LOOIC</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

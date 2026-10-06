@@ -12,3 +12,4 @@ Rcpp
 brms
 modelsummary
 marginaleffects
+posterior

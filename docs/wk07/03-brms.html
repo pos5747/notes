@@ -352,6 +352,12 @@ gtag('config', 'G-ZV1MJ9E632', { 'anonymize_ip': true});
  <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Multinomial Logit</span></span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk07/05-loo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">LOOIC</span></span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -460,7 +466,7 @@ gtag('config', 'G-ZV1MJ9E632', { 'anonymize_ip': true});
 </header>
 
 
-<p>In most cases, we do not have to write our own Stan code, because the {brms} package can do that for us. The <code>brm()</code> function in the {brms} takes <code>glm()</code>-like arguments, and writes accurate and fast Stan code. If <code>brm()</code> works for your application, you should much prefer it to writing your on Stan models. It will (probably) be faster and is less like to have errors.</p>
+<p>In most cases, we do not have to write our own Stan code, because the {brms} package can do that for us. The <code>brm()</code> function in {brms} takes <code>glm()</code>-like arguments, and writes accurate and fast Stan code. If <code>brm()</code> works for your application, you should much prefer it to writing your own Stan models. It will (probably) be faster and is less likely to have errors.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load packages</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(brms)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -469,29 +475,27 @@ gtag('config', 'G-ZV1MJ9E632', { 'anonymize_ip': true});
 <p>See <code>?brms::brm</code> for the details. There are numerous tutorials available for specific models.</p>
 <section id="the-turnout-example" class="level2 page-columns page-full" data-number="21.1">
 <h2 data-number="21.1" class="anchored" data-anchor-id="the-turnout-example"><span class="header-section-number">21.1</span> The <code>turnout</code> example</h2>
-<p>Here’s the syntax for our ususal logistic regression model.</p>
+<p>Here’s the syntax for our usual logistic regression model.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load only the turnout data frame and hard-code rescaled variables</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>turnout <span class="ot">&lt;-</span> ZeligData<span class="sc">::</span>turnout  <span class="sc">|&gt;</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(age<span class="sc">:</span>income, arm<span class="sc">::</span>rescale, <span class="at">.names =</span> <span class="st">"rs_{.col}"</span>))</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># build model frame and design matrices</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># formula</span></span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>f  <span class="ot">&lt;-</span> vote <span class="sc">~</span> rs_age <span class="sc">+</span> rs_educate <span class="sc">+</span> rs_income <span class="sc">+</span> race</span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># fit model with glm()</span></span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>fit_glm <span class="ot">&lt;-</span> <span class="fu">glm</span>(f, <span class="at">data =</span> turnout, <span class="at">family =</span> binomial)</span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># fit model with brm()</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>fit_brm_rstan <span class="ot">&lt;-</span> <span class="fu">brm</span>(f, <span class="at">data =</span> turnout, <span class="at">family =</span> bernoulli, </span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>           <span class="at">chains =</span> <span class="dv">10</span>, <span class="at">cores =</span> <span class="dv">10</span>)</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co"># fit model with brm() via cmdstan!</span></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>fit_brm_cmdstanr <span class="ot">&lt;-</span> <span class="fu">brm</span>(f, <span class="at">data =</span> turnout, <span class="at">family =</span> bernoulli, </span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>           <span class="at">chains =</span> <span class="dv">10</span>, <span class="at">cores =</span> <span class="dv">10</span>, </span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>           <span class="at">backend =</span> <span class="st">"cmdstanr"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># fit model with brm() via cmdstanr</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>fit_brm <span class="ot">&lt;-</span> <span class="fu">brm</span>(f, <span class="at">data =</span> turnout, <span class="at">family =</span> bernoulli, </span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>           <span class="at">chains =</span> <span class="dv">10</span>, <span class="at">cores =</span> <span class="dv">10</span>, </span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>           <span class="at">backend =</span> <span class="st">"cmdstanr"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><code>glm()</code> and <code>brm()</code> obtain the same estimates.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
-<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;The two are not mathematically equal, but they are very close in practice. Outside of cases where maximum likelihood fails, it is rare that a Bayesian estimate or interval differs from the ML estimate or interval.</p></div></div><div class="cell">
+<ul>
+<li>[CTK: <code>brm()</code>’s default backend is still {rstan}; <code>options(brms.backend = "cmdstanr")</code> makes {cmdstanr} the default for the session] <code>glm()</code> and <code>brm()</code> obtain the same estimates.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></li>
+</ul>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;The two are not mathematically equal, but they are very close here because {brms}’s default prior on the coefficients is flat. With flat or weak priors and this much data, it is rare that a Bayesian estimate or interval differs from the ML estimate or interval, outside of cases where maximum likelihood fails.</p></div></div><div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(modelsummary)</span>
@@ -503,226 +507,176 @@ gtag('config', 'G-ZV1MJ9E632', { 'anonymize_ip': true});
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">modelsummary</span>(</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="st">"glm()"</span> <span class="ot">=</span> fit_glm, <span class="st">"brm(); rstan"</span> <span class="ot">=</span> fit_brm_rstan, <span class="st">"brm(); cmdstanr"</span> <span class="ot">=</span> fit_brm_cmdstanr),</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">coef_rename =</span> normalize_terms, </span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">gof_map =</span> <span class="cn">NULL</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="st">"glm()"</span> <span class="ot">=</span> fit_glm, <span class="st">"brm()"</span> <span class="ot">=</span> fit_brm),</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">coef_rename =</span> normalize_terms,</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">statistic =</span> <span class="st">"conf.int"</span>,</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">notes =</span> <span class="st">"95% confidence intervals for glm(); 95% credible intervals for brm()."</span>,</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">gof_map =</span> <span class="cn">NULL</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<!-- preamble start -->
+
+    <script src="https://cdn.jsdelivr.net/gh/vincentarelbundock/tinytable@main/inst/tinytable.js"></script>
 
     <script>
-
-      function styleCell_91jk212huh72cna2rgun(i, j, css_id) {
-          var table = document.getElementById("tinytable_91jk212huh72cna2rgun");
-          var cell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
-          if (cell) {
-              console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
-              cell.classList.add(css_id);
-          } else {
-              console.warn(`Cell at (${i}, ${j}) not found.`);
-          }
-      }
-      function spanCell_91jk212huh72cna2rgun(i, j, rowspan, colspan) {
-        var table = document.getElementById("tinytable_91jk212huh72cna2rgun");
-        const targetCell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
-        if (!targetCell) {
-          console.warn(`Cell at (${i}, ${j}) not found.`);
-        }
-
-        // Get all cells that need to be removed
-        const cellsToRemove = [];
-        for (let r = 0; r < rowspan; r++) {
-          for (let c = 0; c < colspan; c++) {
-            if (r === 0 && c === 0) continue; // Skip the target cell
-            const cell = table.querySelector(`[data-row="${i + r}"][data-col="${j + c}"]`);
-            if (cell) {
-              cellsToRemove.push(cell);
-            }
-          }
-        }
-
-        // Remove all cells
-        cellsToRemove.forEach(cell => cell.remove());
-
-        // Set rowspan and colspan of the target cell if it exists
-        if (targetCell) {
-          targetCell.rowSpan = rowspan;
-          targetCell.colSpan = colspan;
-        }
-      }
+      // Create table-specific functions using external factory
+      const tableFns_rcahto7qgmdusk2mgm2p = TinyTable.createTableFunctions("tinytable_rcahto7qgmdusk2mgm2p");
       // tinytable span after
       window.addEventListener('load', function () {
           var cellsToStyle = [
             // tinytable style arrays after
-          { positions: [ { i: '21', j: 2 }, { i: '21', j: 1 }, { i: '21', j: 3 },  ], css_id: 'tinytable_css_9jmbfmbe1tlmdga9msu7',}, 
-          { positions: [ { i: '10', j: 3 }, { i: '10', j: 2 }, { i: '10', j: 1 },  ], css_id: 'tinytable_css_50fb67hym2r2t3s6koye',}, 
-          { positions: [ { i: '2', j: 1 }, { i: '3', j: 1 }, { i: '4', j: 1 }, { i: '6', j: 1 }, { i: '7', j: 1 }, { i: '8', j: 1 }, { i: '1', j: 1 }, { i: '1', j: 2 }, { i: '11', j: 1 }, { i: '12', j: 1 }, { i: '13', j: 1 }, { i: '14', j: 1 }, { i: '15', j: 1 }, { i: '16', j: 1 }, { i: '17', j: 1 }, { i: '5', j: 1 }, { i: '19', j: 1 }, { i: '20', j: 1 }, { i: '12', j: 2 }, { i: '9', j: 1 }, { i: '14', j: 2 }, { i: '2', j: 2 }, { i: '3', j: 2 }, { i: '4', j: 2 }, { i: '5', j: 2 }, { i: '6', j: 2 }, { i: '7', j: 2 }, { i: '8', j: 2 }, { i: '18', j: 1 }, { i: '1', j: 3 }, { i: '11', j: 2 }, { i: '3', j: 3 }, { i: '13', j: 2 }, { i: '5', j: 3 }, { i: '15', j: 2 }, { i: '16', j: 2 }, { i: '17', j: 2 }, { i: '18', j: 2 }, { i: '19', j: 2 }, { i: '20', j: 2 }, { i: '12', j: 3 }, { i: '9', j: 2 }, { i: '14', j: 3 }, { i: '2', j: 3 }, { i: '16', j: 3 }, { i: '4', j: 3 }, { i: '18', j: 3 }, { i: '6', j: 3 }, { i: '7', j: 3 }, { i: '8', j: 3 }, { i: '9', j: 3 }, { i: '11', j: 3 }, { i: '20', j: 3 }, { i: '13', j: 3 }, { i: '15', j: 3 }, { i: '17', j: 3 }, { i: '19', j: 3 },  ], css_id: 'tinytable_css_ew168gevrp2nzo3uaolv',}, 
-          { positions: [ { i: '0', j: 1 }, { i: '0', j: 3 }, { i: '0', j: 2 },  ], css_id: 'tinytable_css_nj9h8zognhbza4sakdn7',}, 
-          { positions: [ { i: '21', j: 0 },  ], css_id: 'tinytable_css_8989fyojdl58euw7dkpa',}, 
-          { positions: [ { i: '10', j: 0 },  ], css_id: 'tinytable_css_22oo6794j3eel39voppj',}, 
-          { positions: [ { i: '1', j: 0 }, { i: '2', j: 0 }, { i: '3', j: 0 }, { i: '4', j: 0 }, { i: '5', j: 0 }, { i: '6', j: 0 }, { i: '7', j: 0 }, { i: '8', j: 0 }, { i: '9', j: 0 }, { i: '14', j: 0 }, { i: '11', j: 0 }, { i: '12', j: 0 }, { i: '13', j: 0 }, { i: '18', j: 0 }, { i: '15', j: 0 }, { i: '16', j: 0 }, { i: '17', j: 0 }, { i: '19', j: 0 }, { i: '20', j: 0 },  ], css_id: 'tinytable_css_wz3qt469fs4oz6yfpvdu',}, 
-          { positions: [ { i: '0', j: 0 },  ], css_id: 'tinytable_css_3wskrmzbp1cwxntak9dw',}, 
+          { positions: [ { i: '22', j: 2 }, { i: '22', j: 3 } ], css_id: 'tinytable_css_px9oc9vxilh5qsk5gmha',}, 
+          { positions: [ { i: '10', j: 2 }, { i: '10', j: 3 } ], css_id: 'tinytable_css_2k0akc8hlt9ce0u8rdvr',}, 
+          { positions: [ { i: '1', j: 2 }, { i: '2', j: 2 }, { i: '3', j: 2 }, { i: '4', j: 2 }, { i: '5', j: 2 }, { i: '6', j: 2 }, { i: '7', j: 2 }, { i: '8', j: 2 }, { i: '9', j: 2 }, { i: '11', j: 2 }, { i: '12', j: 2 }, { i: '13', j: 2 }, { i: '14', j: 2 }, { i: '15', j: 2 }, { i: '16', j: 2 }, { i: '17', j: 2 }, { i: '18', j: 2 }, { i: '19', j: 2 }, { i: '20', j: 2 }, { i: '21', j: 2 }, { i: '1', j: 3 }, { i: '2', j: 3 }, { i: '3', j: 3 }, { i: '4', j: 3 }, { i: '5', j: 3 }, { i: '6', j: 3 }, { i: '7', j: 3 }, { i: '8', j: 3 }, { i: '9', j: 3 }, { i: '11', j: 3 }, { i: '12', j: 3 }, { i: '13', j: 3 }, { i: '14', j: 3 }, { i: '15', j: 3 }, { i: '16', j: 3 }, { i: '17', j: 3 }, { i: '18', j: 3 }, { i: '19', j: 3 }, { i: '20', j: 3 }, { i: '21', j: 3 } ], css_id: 'tinytable_css_y849395v1845f67xh6jx',}, 
+          { positions: [ { i: '0', j: 2 }, { i: '0', j: 3 } ], css_id: 'tinytable_css_vgo9zfktgnbcur602f21',}, 
+          { positions: [ { i: '22', j: 1 } ], css_id: 'tinytable_css_50cbiep2vkfkrd02nun1',}, 
+          { positions: [ { i: '10', j: 1 } ], css_id: 'tinytable_css_rwpegm1lad5mc9nocq93',}, 
+          { positions: [ { i: '1', j: 1 }, { i: '2', j: 1 }, { i: '3', j: 1 }, { i: '4', j: 1 }, { i: '5', j: 1 }, { i: '6', j: 1 }, { i: '7', j: 1 }, { i: '8', j: 1 }, { i: '9', j: 1 }, { i: '11', j: 1 }, { i: '12', j: 1 }, { i: '13', j: 1 }, { i: '14', j: 1 }, { i: '15', j: 1 }, { i: '16', j: 1 }, { i: '17', j: 1 }, { i: '18', j: 1 }, { i: '19', j: 1 }, { i: '20', j: 1 }, { i: '21', j: 1 } ], css_id: 'tinytable_css_m5hkhikw0xusxyzb4zjh',}, 
+          { positions: [ { i: '0', j: 1 } ], css_id: 'tinytable_css_pmdp5glky5v96rs4488g',}, 
           ];
 
           // Loop over the arrays to style the cells
           cellsToStyle.forEach(function (group) {
               group.positions.forEach(function (cell) {
-                  styleCell_91jk212huh72cna2rgun(cell.i, cell.j, group.css_id);
+                  tableFns_rcahto7qgmdusk2mgm2p.styleCell(cell.i, cell.j, group.css_id);
               });
           });
       });
     </script>
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/vincentarelbundock/tinytable@main/inst/tinytable.css">
     <style>
-      /* tinytable css entries after */
-      .table td.tinytable_css_9jmbfmbe1tlmdga9msu7, .table th.tinytable_css_9jmbfmbe1tlmdga9msu7 { text-align: center; border-bottom: solid #d3d8dc 0.1em; }
-      .table td.tinytable_css_50fb67hym2r2t3s6koye, .table th.tinytable_css_50fb67hym2r2t3s6koye { text-align: center; border-bottom: solid black 0.05em; }
-      .table td.tinytable_css_ew168gevrp2nzo3uaolv, .table th.tinytable_css_ew168gevrp2nzo3uaolv { text-align: center; }
-      .table td.tinytable_css_nj9h8zognhbza4sakdn7, .table th.tinytable_css_nj9h8zognhbza4sakdn7 { text-align: center; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
-      .table td.tinytable_css_8989fyojdl58euw7dkpa, .table th.tinytable_css_8989fyojdl58euw7dkpa { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
-      .table td.tinytable_css_22oo6794j3eel39voppj, .table th.tinytable_css_22oo6794j3eel39voppj { text-align: left; border-bottom: solid black 0.05em; }
-      .table td.tinytable_css_wz3qt469fs4oz6yfpvdu, .table th.tinytable_css_wz3qt469fs4oz6yfpvdu { text-align: left; }
-      .table td.tinytable_css_3wskrmzbp1cwxntak9dw, .table th.tinytable_css_3wskrmzbp1cwxntak9dw { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+    /* tinytable css entries after */
+    #tinytable_rcahto7qgmdusk2mgm2p td.tinytable_css_px9oc9vxilh5qsk5gmha, #tinytable_rcahto7qgmdusk2mgm2p th.tinytable_css_px9oc9vxilh5qsk5gmha {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.08em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --line-type-bottom: solid; --line-type-left: solid; --line-type-right: solid; --line-type-top: solid; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: center }
+    #tinytable_rcahto7qgmdusk2mgm2p td.tinytable_css_2k0akc8hlt9ce0u8rdvr, #tinytable_rcahto7qgmdusk2mgm2p th.tinytable_css_2k0akc8hlt9ce0u8rdvr {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --line-type-bottom: solid; --line-type-left: solid; --line-type-right: solid; --line-type-top: solid; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: center }
+    #tinytable_rcahto7qgmdusk2mgm2p td.tinytable_css_y849395v1845f67xh6jx, #tinytable_rcahto7qgmdusk2mgm2p th.tinytable_css_y849395v1845f67xh6jx { text-align: center }
+    #tinytable_rcahto7qgmdusk2mgm2p td.tinytable_css_vgo9zfktgnbcur602f21, #tinytable_rcahto7qgmdusk2mgm2p th.tinytable_css_vgo9zfktgnbcur602f21 {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 1; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.08em; --line-type-bottom: solid; --line-type-left: solid; --line-type-right: solid; --line-type-top: solid; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: center }
+    #tinytable_rcahto7qgmdusk2mgm2p td.tinytable_css_50cbiep2vkfkrd02nun1, #tinytable_rcahto7qgmdusk2mgm2p th.tinytable_css_50cbiep2vkfkrd02nun1 {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.08em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --line-type-bottom: solid; --line-type-left: solid; --line-type-right: solid; --line-type-top: solid; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: left }
+    #tinytable_rcahto7qgmdusk2mgm2p td.tinytable_css_rwpegm1lad5mc9nocq93, #tinytable_rcahto7qgmdusk2mgm2p th.tinytable_css_rwpegm1lad5mc9nocq93 {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --line-type-bottom: solid; --line-type-left: solid; --line-type-right: solid; --line-type-top: solid; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: left }
+    #tinytable_rcahto7qgmdusk2mgm2p td.tinytable_css_m5hkhikw0xusxyzb4zjh, #tinytable_rcahto7qgmdusk2mgm2p th.tinytable_css_m5hkhikw0xusxyzb4zjh { text-align: left }
+    #tinytable_rcahto7qgmdusk2mgm2p td.tinytable_css_pmdp5glky5v96rs4488g, #tinytable_rcahto7qgmdusk2mgm2p th.tinytable_css_pmdp5glky5v96rs4488g {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 1; --line-color-bottom: var(--tt-line-color); --line-color-left: var(--tt-line-color); --line-color-right: var(--tt-line-color); --line-color-top: var(--tt-line-color); --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.08em; --line-type-bottom: solid; --line-type-left: solid; --line-type-right: solid; --line-type-top: solid; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: left }
     </style>
     <div class="container">
-      <table class="table table-borderless" id="tinytable_91jk212huh72cna2rgun" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
-        <thead>
+      <table class="tinytable" id="tinytable_rcahto7qgmdusk2mgm2p" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing="true">
         
+        <thead>
               <tr>
-                <th scope="col" data-row="0" data-col="0"> </th>
-                <th scope="col" data-row="0" data-col="1">glm()</th>
-                <th scope="col" data-row="0" data-col="2">brm(); rstan</th>
-                <th scope="col" data-row="0" data-col="3">brm(); cmdstanr</th>
+                <th scope="col" data-row="0" data-col="1"> </th>
+                <th scope="col" data-row="0" data-col="2">glm()</th>
+                <th scope="col" data-row="0" data-col="3">brm()</th>
               </tr>
         </thead>
-        
+        <tfoot><tr><td colspan="3">95% confidence intervals for glm(); 95% credible intervals for brm().</td></tr></tfoot>
         <tbody>
                 <tr>
-                  <td data-row="1" data-col="0">Intercept</td>
-                  <td data-row="1" data-col="1">1.058</td>
-                  <td data-row="1" data-col="2">1.062</td>
-                  <td data-row="1" data-col="3">1.062</td>
+                  <td data-row="1" data-col="1">Intercept</td>
+                  <td data-row="1" data-col="2">1.058</td>
+                  <td data-row="1" data-col="3">1.063</td>
                 </tr>
                 <tr>
-                  <td data-row="2" data-col="0"></td>
-                  <td data-row="2" data-col="1">(0.140)</td>
-                  <td data-row="2" data-col="2"></td>
-                  <td data-row="2" data-col="3"></td>
+                  <td data-row="2" data-col="1"></td>
+                  <td data-row="2" data-col="2">[0.787, 1.335]</td>
+                  <td data-row="2" data-col="3">[0.794, 1.344]</td>
                 </tr>
                 <tr>
-                  <td data-row="3" data-col="0">rs_age</td>
-                  <td data-row="3" data-col="1">0.993</td>
-                  <td data-row="3" data-col="2">0.996</td>
-                  <td data-row="3" data-col="3">0.997</td>
+                  <td data-row="3" data-col="1">rs_age</td>
+                  <td data-row="3" data-col="2">0.993</td>
+                  <td data-row="3" data-col="3">0.999</td>
                 </tr>
                 <tr>
-                  <td data-row="4" data-col="0"></td>
-                  <td data-row="4" data-col="1">(0.121)</td>
-                  <td data-row="4" data-col="2"></td>
-                  <td data-row="4" data-col="3"></td>
+                  <td data-row="4" data-col="1"></td>
+                  <td data-row="4" data-col="2">[0.758, 1.234]</td>
+                  <td data-row="4" data-col="3">[0.763, 1.244]</td>
                 </tr>
                 <tr>
-                  <td data-row="5" data-col="0">rs_educate</td>
-                  <td data-row="5" data-col="1">1.184</td>
-                  <td data-row="5" data-col="2">1.188</td>
-                  <td data-row="5" data-col="3">1.186</td>
+                  <td data-row="5" data-col="1">rs_educate</td>
+                  <td data-row="5" data-col="2">1.184</td>
+                  <td data-row="5" data-col="3">1.188</td>
                 </tr>
                 <tr>
-                  <td data-row="6" data-col="0"></td>
-                  <td data-row="6" data-col="1">(0.137)</td>
-                  <td data-row="6" data-col="2"></td>
-                  <td data-row="6" data-col="3"></td>
+                  <td data-row="6" data-col="1"></td>
+                  <td data-row="6" data-col="2">[0.918, 1.456]</td>
+                  <td data-row="6" data-col="3">[0.933, 1.464]</td>
                 </tr>
                 <tr>
-                  <td data-row="7" data-col="0">rs_income</td>
-                  <td data-row="7" data-col="1">1.001</td>
-                  <td data-row="7" data-col="2">1.002</td>
-                  <td data-row="7" data-col="3">1.004</td>
+                  <td data-row="7" data-col="1">rs_income</td>
+                  <td data-row="7" data-col="2">1.001</td>
+                  <td data-row="7" data-col="3">1.005</td>
                 </tr>
                 <tr>
-                  <td data-row="8" data-col="0"></td>
-                  <td data-row="8" data-col="1">(0.154)</td>
-                  <td data-row="8" data-col="2"></td>
-                  <td data-row="8" data-col="3"></td>
+                  <td data-row="8" data-col="1"></td>
+                  <td data-row="8" data-col="2">[0.706, 1.308]</td>
+                  <td data-row="8" data-col="3">[0.708, 1.311]</td>
                 </tr>
                 <tr>
-                  <td data-row="9" data-col="0">racewhite</td>
-                  <td data-row="9" data-col="1">0.251</td>
-                  <td data-row="9" data-col="2">0.248</td>
-                  <td data-row="9" data-col="3">0.251</td>
+                  <td data-row="9" data-col="1">racewhite</td>
+                  <td data-row="9" data-col="2">0.251</td>
+                  <td data-row="9" data-col="3">0.248</td>
                 </tr>
                 <tr>
-                  <td data-row="10" data-col="0"></td>
-                  <td data-row="10" data-col="1">(0.146)</td>
-                  <td data-row="10" data-col="2"></td>
-                  <td data-row="10" data-col="3"></td>
+                  <td data-row="10" data-col="1"></td>
+                  <td data-row="10" data-col="2">[-0.039, 0.536]</td>
+                  <td data-row="10" data-col="3">[-0.045, 0.534]</td>
                 </tr>
                 <tr>
-                  <td data-row="11" data-col="0">Num.Obs.</td>
-                  <td data-row="11" data-col="1">2000</td>
+                  <td data-row="11" data-col="1">Num.Obs.</td>
                   <td data-row="11" data-col="2">2000</td>
                   <td data-row="11" data-col="3">2000</td>
                 </tr>
                 <tr>
-                  <td data-row="12" data-col="0">R2</td>
-                  <td data-row="12" data-col="1"></td>
-                  <td data-row="12" data-col="2">0.119</td>
+                  <td data-row="12" data-col="1">R2</td>
+                  <td data-row="12" data-col="2"></td>
                   <td data-row="12" data-col="3">0.119</td>
                 </tr>
                 <tr>
-                  <td data-row="13" data-col="0">AIC</td>
-                  <td data-row="13" data-col="1">2034.0</td>
-                  <td data-row="13" data-col="2"></td>
+                  <td data-row="13" data-col="1">AIC</td>
+                  <td data-row="13" data-col="2">2034.0</td>
                   <td data-row="13" data-col="3"></td>
                 </tr>
                 <tr>
-                  <td data-row="14" data-col="0">BIC</td>
-                  <td data-row="14" data-col="1">2062.0</td>
-                  <td data-row="14" data-col="2"></td>
+                  <td data-row="14" data-col="1">BIC</td>
+                  <td data-row="14" data-col="2">2062.0</td>
                   <td data-row="14" data-col="3"></td>
                 </tr>
                 <tr>
-                  <td data-row="15" data-col="0">Log.Lik.</td>
-                  <td data-row="15" data-col="1">-1011.991</td>
-                  <td data-row="15" data-col="2"></td>
+                  <td data-row="15" data-col="1">Log.Lik.</td>
+                  <td data-row="15" data-col="2">-1011.991</td>
                   <td data-row="15" data-col="3"></td>
                 </tr>
                 <tr>
-                  <td data-row="16" data-col="0">ELPD</td>
-                  <td data-row="16" data-col="1"></td>
-                  <td data-row="16" data-col="2">-1017.1</td>
-                  <td data-row="16" data-col="3">-1017.2</td>
+                  <td data-row="16" data-col="1">F</td>
+                  <td data-row="16" data-col="2">47.751</td>
+                  <td data-row="16" data-col="3"></td>
                 </tr>
                 <tr>
-                  <td data-row="17" data-col="0">ELPD s.e.</td>
-                  <td data-row="17" data-col="1"></td>
-                  <td data-row="17" data-col="2">23.0</td>
-                  <td data-row="17" data-col="3">23.0</td>
+                  <td data-row="17" data-col="1">ELPD</td>
+                  <td data-row="17" data-col="2"></td>
+                  <td data-row="17" data-col="3">-1017.2</td>
                 </tr>
                 <tr>
-                  <td data-row="18" data-col="0">LOOIC</td>
-                  <td data-row="18" data-col="1"></td>
-                  <td data-row="18" data-col="2">2034.2</td>
-                  <td data-row="18" data-col="3">2034.5</td>
+                  <td data-row="18" data-col="1">ELPD s.e.</td>
+                  <td data-row="18" data-col="2"></td>
+                  <td data-row="18" data-col="3">23.0</td>
                 </tr>
                 <tr>
-                  <td data-row="19" data-col="0">LOOIC s.e.</td>
-                  <td data-row="19" data-col="1"></td>
-                  <td data-row="19" data-col="2">46.1</td>
-                  <td data-row="19" data-col="3">46.0</td>
+                  <td data-row="19" data-col="1">LOOIC</td>
+                  <td data-row="19" data-col="2"></td>
+                  <td data-row="19" data-col="3">2034.4</td>
                 </tr>
                 <tr>
-                  <td data-row="20" data-col="0">WAIC</td>
-                  <td data-row="20" data-col="1"></td>
-                  <td data-row="20" data-col="2">2034.2</td>
-                  <td data-row="20" data-col="3">2034.5</td>
+                  <td data-row="20" data-col="1">LOOIC s.e.</td>
+                  <td data-row="20" data-col="2"></td>
+                  <td data-row="20" data-col="3">46.0</td>
                 </tr>
                 <tr>
-                  <td data-row="21" data-col="0">RMSE</td>
-                  <td data-row="21" data-col="1">0.41</td>
-                  <td data-row="21" data-col="2">0.41</td>
-                  <td data-row="21" data-col="3">0.41</td>
+                  <td data-row="21" data-col="1">WAIC</td>
+                  <td data-row="21" data-col="2"></td>
+                  <td data-row="21" data-col="3">2034.4</td>
+                </tr>
+                <tr>
+                  <td data-row="22" data-col="1">RMSE</td>
+                  <td data-row="22" data-col="2">0.41</td>
+                  <td data-row="22" data-col="3">0.41</td>
                 </tr>
         </tbody>
       </table>
@@ -730,32 +684,57 @@ gtag('config', 'G-ZV1MJ9E632', { 'anonymize_ip': true});
 <!-- hack to avoid NA insertion in last line -->
 </div>
 </div>
+<p>{brms} warns only when an R-hat is larger than 1.05, so we check R-hat, ESS, and divergent transitions ourselves.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(posterior)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># R-hat and ESS for each parameter</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summarise_draws</span>(fit_brm, <span class="st">"rhat"</span>, <span class="st">"ess_bulk"</span>, <span class="st">"ess_tail"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 8 × 4
+  variable      rhat ess_bulk ess_tail
+  &lt;chr&gt;        &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
+1 b_Intercept   1.00    9977.    7302.
+2 b_rs_age      1.00    9177.    7265.
+3 b_rs_educate  1.00    9036.    6706.
+4 b_rs_income   1.00   10362.    7909.
+5 b_racewhite   1.00   10487.    7381.
+6 Intercept     1.00    9378.    7688.
+7 lprior        1.00    9378.    7688.
+8 lp__          1.00    4900.    6602.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># number of divergent transitions after warmup</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">nuts_params</span>(fit_brm, <span class="at">pars =</span> <span class="st">"divergent__"</span>)<span class="sc">$</span>Value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+</div>
 <p>And {brms} plays very nicely with {marginaleffects}.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(marginaleffects)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># compute first different</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">comparisons</span>(fit_brm_cmdstanr, <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">rs_age =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.5</span>, <span class="fl">0.5</span>)), </span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">newdata =</span> <span class="fu">datagrid</span>(<span class="at">grid_type =</span> <span class="st">"mean_or_mode"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(marginaleffects)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># compute first difference</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">comparisons</span>(fit_brm, <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">rs_age =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.5</span>, <span class="fl">0.5</span>)), </span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">newdata =</span> <span class="fu">datagrid</span>(<span class="at">grid_type =</span> <span class="st">"mean_or_mode"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
  Estimate 2.5 % 97.5 %
-    0.167 0.128  0.205
+    0.167 0.128  0.207
 
 Term: rs_age
 Type: response
 Comparison: 0.5 - -0.5</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># compute and plot expected values (i.e., predicted probabilities)</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">predictions</span>(fit_brm_cmdstanr, <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">rs_age =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="at">by =</span> <span class="fl">0.1</span>)), </span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">newdata =</span> <span class="fu">datagrid</span>(<span class="at">grid_type =</span> <span class="st">"mean_or_mode"</span>))</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(p, <span class="fu">aes</span>(<span class="at">x =</span> rs_age, <span class="at">y =</span> estimate, <span class="at">ymin =</span> conf.low, <span class="at">ymax =</span> conf.high)) <span class="sc">+</span> </span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="at">fill =</span> <span class="st">"grey"</span>) <span class="sc">+</span> </span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># compute and plot expected values (i.e., predicted probabilities)</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">predictions</span>(fit_brm, <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">rs_age =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="at">by =</span> <span class="fl">0.1</span>)), </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">newdata =</span> <span class="fu">datagrid</span>(<span class="at">grid_type =</span> <span class="st">"mean_or_mode"</span>))</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(p, <span class="fu">aes</span>(<span class="at">x =</span> rs_age, <span class="at">y =</span> estimate, <span class="at">ymin =</span> conf.low, <span class="at">ymax =</span> conf.high)) <span class="sc">+</span> </span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="at">fill =</span> <span class="st">"grey"</span>) <span class="sc">+</span> </span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="03-brms_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="03-brms_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -765,51 +744,58 @@ Comparison: 0.5 - -0.5</code></pre>
 <h2 data-number="21.2" class="anchored" data-anchor-id="the-flexibility-of-mcmc-and-brm"><span class="header-section-number">21.2</span> The flexibility of MCMC and <code>brm()</code></h2>
 <section id="modeling-smooth-relationships" class="level3" data-number="21.2.1">
 <h3 data-number="21.2.1" class="anchored" data-anchor-id="modeling-smooth-relationships"><span class="header-section-number">21.2.1</span> Modeling “smooth” relationships</h3>
-<p>To illustrate the power of MCMC and <code>brm()</code>, we can imagine fitting a smooth curve for age. The details are not important for now, but this isn’t an easy task in our usual framework. But it’s straightfoward with Bayesian MCMC via <code>brm()</code>.</p>
+<p>To illustrate the power of MCMC and <code>brm()</code>, we can imagine fitting a smooth curve for age. The details are not important for now, but this isn’t an easy task in our usual framework. But it’s straightforward with Bayesian MCMC via <code>brm()</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># smooth relationship between age and voting--notice the s()</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>f  <span class="ot">&lt;-</span> vote <span class="sc">~</span> <span class="fu">s</span>(rs_age) <span class="sc">+</span> rs_educate <span class="sc">+</span> rs_income <span class="sc">+</span> race</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>smooth_fit <span class="ot">&lt;-</span> <span class="fu">brm</span>(f, <span class="at">data =</span> turnout, <span class="at">family =</span> bernoulli, </span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">chains =</span> <span class="dv">10</span>, <span class="at">cores =</span> <span class="dv">10</span>, </span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">backend =</span> <span class="st">"cmdstanr"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># smooth relationship between age and voting--notice the s()</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>f  <span class="ot">&lt;-</span> vote <span class="sc">~</span> <span class="fu">s</span>(rs_age) <span class="sc">+</span> rs_educate <span class="sc">+</span> rs_income <span class="sc">+</span> race</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>smooth_fit <span class="ot">&lt;-</span> <span class="fu">brm</span>(f, <span class="at">data =</span> turnout, <span class="at">family =</span> bernoulli, </span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">chains =</span> <span class="dv">10</span>, <span class="at">cores =</span> <span class="dv">10</span>, </span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">backend =</span> <span class="st">"cmdstanr"</span>,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">control =</span> <span class="fu">list</span>(<span class="at">adapt_delta =</span> <span class="fl">0.99</span>),  <span class="co"># avoids divergent transitions</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">seed =</span> <span class="dv">1234</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># compute and plot expected values (i.e., predicted probabilities)</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">predictions</span>(smooth_fit, <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">rs_age =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="at">by =</span> <span class="fl">0.1</span>)), </span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">newdata =</span> <span class="fu">datagrid</span>(<span class="at">grid_type =</span> <span class="st">"mean_or_mode"</span>))</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(p, <span class="fu">aes</span>(<span class="at">x =</span> rs_age, <span class="at">y =</span> estimate, <span class="at">ymin =</span> conf.low, <span class="at">ymax =</span> conf.high)) <span class="sc">+</span> </span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="at">fill =</span> <span class="st">"grey"</span>) <span class="sc">+</span> </span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># compute and plot expected values (i.e., predicted probabilities)</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">predictions</span>(smooth_fit, <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">rs_age =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="at">by =</span> <span class="fl">0.1</span>)), </span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">newdata =</span> <span class="fu">datagrid</span>(<span class="at">grid_type =</span> <span class="st">"mean_or_mode"</span>))</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(p, <span class="fu">aes</span>(<span class="at">x =</span> rs_age, <span class="at">y =</span> estimate, <span class="at">ymin =</span> conf.low, <span class="at">ymax =</span> conf.high)) <span class="sc">+</span> </span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="at">fill =</span> <span class="st">"grey"</span>) <span class="sc">+</span> </span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="03-brms_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="03-brms_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
+<ul>
+<li>[CTK: smooths often cause divergent transitions; with the default <code>adapt_delta = 0.8</code> these two fits had 60 and 156 (of 10,000; CmdStan 2.40, <code>seed = 1234</code>); <code>adapt_delta = 0.99</code> gives none with <code>seed = 1234</code> (other seeds occasionally leave 1 of 10,000: 2 of 7 seeds checked)]</li>
+</ul>
 </section>
 <section id="awkwardly-scaled-variables" class="level3" data-number="21.2.2">
 <h3 data-number="21.2.2" class="anchored" data-anchor-id="awkwardly-scaled-variables"><span class="header-section-number">21.2.2</span> Awkwardly scaled variables</h3>
-<p>Also, <code>brm()</code> has no trouble with the variables on their original scales. The original scales poses a insurmountable hurdle for our <code>metrop()</code> sampler.</p>
+<p>Also, <code>brm()</code> has no trouble with the variables on their original scales. The original scales pose a serious hurdle for our <code>metrop()</code> sampler.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># smooth relationship between age and voting--notice the s()</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>f  <span class="ot">&lt;-</span> vote <span class="sc">~</span> <span class="fu">s</span>(age) <span class="sc">+</span> educate <span class="sc">+</span> income <span class="sc">+</span> race</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>smooth_fit <span class="ot">&lt;-</span> <span class="fu">brm</span>(f, <span class="at">data =</span> turnout, <span class="at">family =</span> bernoulli, </span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">chains =</span> <span class="dv">10</span>, <span class="at">cores =</span> <span class="dv">10</span>, </span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">backend =</span> <span class="st">"cmdstanr"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># smooth relationship between age and voting--notice the s()</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>f  <span class="ot">&lt;-</span> vote <span class="sc">~</span> <span class="fu">s</span>(age) <span class="sc">+</span> educate <span class="sc">+</span> income <span class="sc">+</span> race</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>smooth_fit <span class="ot">&lt;-</span> <span class="fu">brm</span>(f, <span class="at">data =</span> turnout, <span class="at">family =</span> bernoulli, </span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">chains =</span> <span class="dv">10</span>, <span class="at">cores =</span> <span class="dv">10</span>, </span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">backend =</span> <span class="st">"cmdstanr"</span>,</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">control =</span> <span class="fu">list</span>(<span class="at">adapt_delta =</span> <span class="fl">0.99</span>),  <span class="co"># avoids divergent transitions</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">seed =</span> <span class="dv">1234</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># compute and plot expected values (i.e., predicted probabilities)</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">predictions</span>(smooth_fit, <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">age =</span> <span class="fu">seq</span>(<span class="dv">18</span>, <span class="dv">90</span>, <span class="at">by =</span> <span class="dv">1</span>)), </span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">newdata =</span> <span class="fu">datagrid</span>(<span class="at">grid_type =</span> <span class="st">"mean_or_mode"</span>))</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(p, <span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> estimate, <span class="at">ymin =</span> conf.low, <span class="at">ymax =</span> conf.high)) <span class="sc">+</span> </span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="at">fill =</span> <span class="st">"grey"</span>) <span class="sc">+</span> </span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># compute and plot expected values (i.e., predicted probabilities)</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">predictions</span>(smooth_fit, <span class="at">variables =</span> <span class="fu">list</span>(<span class="at">age =</span> <span class="fu">seq</span>(<span class="dv">18</span>, <span class="dv">90</span>, <span class="at">by =</span> <span class="dv">1</span>)), </span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">newdata =</span> <span class="fu">datagrid</span>(<span class="at">grid_type =</span> <span class="st">"mean_or_mode"</span>))</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(p, <span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> estimate, <span class="at">ymin =</span> conf.low, <span class="at">ymax =</span> conf.high)) <span class="sc">+</span> </span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(<span class="at">fill =</span> <span class="st">"grey"</span>) <span class="sc">+</span> </span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="03-brms_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="03-brms_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>

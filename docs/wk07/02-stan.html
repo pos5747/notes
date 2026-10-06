@@ -401,6 +401,12 @@ window.Quarto = {
  <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Multinomial Logit</span></span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../wk07/05-loo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">LOOIC</span></span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -481,15 +487,15 @@ window.Quarto = {
   <li><a href="#logistic-regression-model" id="toc-logistic-regression-model" class="nav-link active" data-scroll-target="#logistic-regression-model"><span class="header-section-number">20.1</span> Logistic Regression Model</a></li>
   <li><a href="#stan-model" id="toc-stan-model" class="nav-link" data-scroll-target="#stan-model"><span class="header-section-number">20.2</span> Stan Model</a></li>
   <li><a href="#data-for-stan" id="toc-data-for-stan" class="nav-link" data-scroll-target="#data-for-stan"><span class="header-section-number">20.3</span> Data for Stan</a></li>
-  <li><a href="#rstan" id="toc-rstan" class="nav-link" data-scroll-target="#rstan"><span class="header-section-number">20.4</span> <code>rstan</code></a></li>
-  <li><a href="#cmdstanr" id="toc-cmdstanr" class="nav-link" data-scroll-target="#cmdstanr"><span class="header-section-number">20.5</span> <code>cmdstanr</code></a></li>
-  <li><a href="#diagnostics" id="toc-diagnostics" class="nav-link" data-scroll-target="#diagnostics"><span class="header-section-number">20.6</span> Diagnostics</a>
+  <li><a href="#cmdstanr" id="toc-cmdstanr" class="nav-link" data-scroll-target="#cmdstanr"><span class="header-section-number">20.4</span> <code>cmdstanr</code></a></li>
+  <li><a href="#diagnostics" id="toc-diagnostics" class="nav-link" data-scroll-target="#diagnostics"><span class="header-section-number">20.5</span> Diagnostics</a>
   <ul class="collapse">
-  <li><a href="#bayesplot" id="toc-bayesplot" class="nav-link" data-scroll-target="#bayesplot"><span class="header-section-number">20.6.1</span> {bayesplot}</a></li>
-  <li><a href="#shinystan" id="toc-shinystan" class="nav-link" data-scroll-target="#shinystan"><span class="header-section-number">20.6.2</span> {ShinyStan}</a></li>
+  <li><a href="#hmc-diagnostics" id="toc-hmc-diagnostics" class="nav-link" data-scroll-target="#hmc-diagnostics"><span class="header-section-number">20.5.1</span> HMC diagnostics</a></li>
+  <li><a href="#bayesplot" id="toc-bayesplot" class="nav-link" data-scroll-target="#bayesplot"><span class="header-section-number">20.5.2</span> {bayesplot}</a></li>
+  <li><a href="#shinystan" id="toc-shinystan" class="nav-link" data-scroll-target="#shinystan"><span class="header-section-number">20.5.3</span> {ShinyStan}</a></li>
   </ul></li>
-  <li><a href="#quantities-of-interest" id="toc-quantities-of-interest" class="nav-link" data-scroll-target="#quantities-of-interest"><span class="header-section-number">20.7</span> Quantities of Interest</a></li>
-  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">20.8</span> Summary</a></li>
+  <li><a href="#quantities-of-interest" id="toc-quantities-of-interest" class="nav-link" data-scroll-target="#quantities-of-interest"><span class="header-section-number">20.6</span> Quantities of Interest</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">20.7</span> Summary</a></li>
   </ul>
 </nav>
     </div>
@@ -530,7 +536,10 @@ Hoffman, Matthew D., and Andrew Gelman. 2014. <span>“The No-u-Turn Sampler: Ad
 <div class="no-row-height column-margin column-container"><div class="margin-aside">
 <p>Before Stan, Bayesian modeling in R was typically done using <strong>BUGS</strong> or <strong>JAGS</strong>, which relied on Gibbs sampling and Metropolis-within-Gibbs updates. These samplers were intuitive and easy to use but often slow to converge, especially for correlated or high-dimensional parameters.</p>
 <p>Stan was designed to overcome these limitations. It uses gradients of the log-posterior to navigate the parameter space more efficiently, improving both speed and accuracy.</p>
-</div></div><section id="logistic-regression-model" class="level2" data-number="20.1">
+</div><div class="margin-aside">
+<p>These notes use the modern {cmdstanr} package to run Stan from R. An older {rstan} package runs the same Stan programs. For our purposes, {cmdstanr} is faster and will experience fewer crashes than {rstan}. On my laptop, the turnout example takes about 7 seconds to compile and run 12,000 iterations (four chains of 3,000) in {cmdstanr} and about 24 seconds using {rstan}. Almost all of that difference is the time to compile the model; once compiled, both packages sample at about the same speed. I also compared the two on a large hierarchical model with about 9,500 parameters. {cmdstanr} compiled the model in about 9 seconds and {rstan} in about 31 seconds, and both took about 5.5 minutes to run one chain. But {rstan} used about 2.7 times as much memory (1.9 GB versus 0.7 GB), which matters for large models on a laptop. Many researchers use {rstan} and it’s the default backend for {brms}. However, the CRAN version of {rstan} “is often much more out of date” (<a href="https://mc-stan.org/install/">Stan install page</a>), and Aki Vehtari recommends {cmdstanr} over {rstan} in his <a href="https://avehtari.github.io/BDA_course_Aalto/FAQ.html">Bayesian Data Analysis course</a>. See the comparison between {rstan} and {cmdstanr} in the <a href="https://mc-stan.org/cmdstanr/articles/cmdstanr.html#comparison-with-rstan">{cmdstanr} documentation</a>.</p>
+</div></div>
+<section id="logistic-regression-model" class="level2" data-number="20.1">
 <h2 data-number="20.1" class="anchored" data-anchor-id="logistic-regression-model"><span class="header-section-number">20.1</span> Logistic Regression Model</h2>
 <p>Consider our usual logistic regression model.</p>
 <p><span class="math display">\[
@@ -547,27 +556,27 @@ y_i \sim \text{Bernoulli}(\pi_i), \quad \pi_i = \operatorname{logit}^{-1} \left(
 <div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;Stan is a <em>declarative</em> modeling language: you describe the <strong>data</strong> you have, the <strong>parameters</strong> you don’t know, and the <strong>probabilistic relationships</strong> (priors and likelihood) that connect them. Stan then draws samples from the posterior using HMC.</p></div></div><p>Stan’s <a href="https://mc-stan.org">documentation</a> is excellent. They have a <a href="https://mc-stan.org/docs/stan-users-guide/">user’s guide</a>, a <a href="https://mc-stan.org/docs/reference-manual/">reference manual</a>, several <a href="https://mc-stan.org/learn-stan/tutorials.html">tutorials</a>, and many <a href="https://mc-stan.org/learn-stan/case-studies.html">case-studies</a>.</p>
 <p>Each Stan model has three main blocks.</p>
 <ol type="1">
-<li><code>data { ... }</code> Known inputs provided from R .</li>
+<li><code>data { ... }</code> Known inputs provided from R.</li>
 <li><code>parameters { ... }</code> Unknowns to infer (e.g., <code>vector[K] beta;</code>, <code>real&lt;lower=0&gt; sigma;</code>). Put <strong>constraints</strong> that reflect the parameter’s support.</li>
-<li><code>model { ... }</code> Priors and likelihood live here. Use sampling statements (<code>theta ~ normal(0,1);</code>)</li>
+<li><code>model { ... }</code> Priors and likelihood live here. Use distribution statements (<code>theta ~ normal(0,1);</code>)</li>
 </ol>
 <p>There are other blocks you can use as well.</p>
 <p>As an example, the model below is how we can represent our logit model in Stan. We should save this text file as <code>logit.stan</code> in our project directory.</p>
 <p>The Stan model mirrors the math closely.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode stan code-with-copy"><code class="sourceCode stan"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># data block</span></span>
+<div class="sourceCode" id="cb1"><pre class="sourceCode stan code-with-copy"><code class="sourceCode stan"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">// data block</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> {</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span>&lt;<span class="kw">lower</span>=<span class="dv">0</span>&gt; N;  <span class="co">// rows in design matrix</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span>&lt;<span class="kw">lower</span>=<span class="dv">1</span>&gt; K;  <span class="co">// colummns in design matrix</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">int</span>&lt;<span class="kw">lower</span>=<span class="dv">1</span>&gt; K;  <span class="co">// columns in design matrix</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">array</span>[N] <span class="dt">int</span>&lt;<span class="kw">lower</span>=<span class="dv">0</span>, <span class="kw">upper</span>=<span class="dv">1</span>&gt; y;  <span class="co">// binary outcome</span></span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">matrix</span>[N, K] X;  <span class="co">// design matrix</span></span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># parameters block</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">// parameters block</span></span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="kw">parameters</span> {</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">vector</span>[K] beta;  <span class="co">// logit coefficients</span></span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># model block</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co">// model block</span></span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="kw">model</span> {</span>
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  beta ~ normal(<span class="dv">0</span>, <span class="dv">5</span>);               <span class="co">// n(0, 5) prior for each beta</span></span>
 <span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  y ~ bernoulli_logit(X * beta);     <span class="co">// logistic regression likelihood</span></span>
@@ -579,7 +588,7 @@ y_i \sim \text{Bernoulli}(\pi_i), \quad \pi_i = \operatorname{logit}^{-1} \left(
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load only the turnout data frame</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>turnout <span class="ot">&lt;-</span> ZeligData<span class="sc">::</span>turnout  <span class="sc">|&gt;</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># hard code rescaled variables, because comparisons doesn't like them in the formula for some reason I don't understand</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># create rescaled columns (rescaling inside the formula breaks predictions on new data)</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(age<span class="sc">:</span>income, arm<span class="sc">::</span>rescale, <span class="at">.names =</span> <span class="st">"rs_{.col}"</span>)) <span class="sc">|&gt;</span></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -630,63 +639,32 @@ $ rs_income  &lt;dbl&gt; -0.09566, -0.35915, -0.57595, -0.08284, -0.19482, -0.26
 <span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="fu">writeLines</span>(stan_code, <span class="at">con =</span> <span class="st">'logit.stan'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="rstan" class="level2" data-number="20.4">
-<h2 data-number="20.4" class="anchored" data-anchor-id="rstan"><span class="header-section-number">20.4</span> <code>rstan</code></h2>
-<p>The {rstan} package allows us to compile and run Stan models directly inside R.</p>
+<section id="cmdstanr" class="level2" data-number="20.4">
+<h2 data-number="20.4" class="anchored" data-anchor-id="cmdstanr"><span class="header-section-number">20.4</span> <code>cmdstanr</code></h2>
+<p>The {cmdstanr} package runs Stan programs through CmdStan, Stan’s command-line interface. {cmdstanr} is not on CRAN, so we install it from the Stan r-universe and then use it to install CmdStan.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rstan)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>fit_rstan <span class="ot">&lt;-</span> <span class="fu">stan</span>(</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">file =</span> <span class="st">"logit.stan"</span>,</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> stan_data,</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">chains =</span> <span class="dv">4</span>,</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">cores =</span> <span class="dv">4</span>,</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">warmup =</span> <span class="dv">1000</span>,</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter =</span> <span class="dv">3000</span>,  <span class="co"># total iter, incl warmup</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">seed =</span> <span class="dv">123</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"cmdstanr"</span>, <span class="at">repos =</span> <span class="fu">c</span>(<span class="st">"https://stan-dev.r-universe.dev"</span>, <span class="fu">getOption</span>(<span class="st">"repos"</span>)))</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>cmdstanr<span class="sc">::</span><span class="fu">check_cmdstan_toolchain</span>(<span class="at">fix =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>cmdstanr<span class="sc">::</span><span class="fu">install_cmdstan</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>The output of <code>stan()</code> has a handy <code>print()</code> method.</p>
+<p>First, we compile the model with <code>cmdstan_model()</code>. Then we draw samples with the <code>$sample()</code> method.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit_rstan, <span class="at">pars =</span> <span class="st">"beta"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Inference for Stan model: anon_model.
-4 chains, each with iter=3000; warmup=1000; thin=1; 
-post-warmup draws per chain=2000, total post-warmup draws=8000.
-
-        mean se_mean   sd  2.5%  25%  50%  75% 97.5% n_eff Rhat
-beta[1] 1.06       0 0.14  0.79 0.97 1.06 1.16  1.35  4541    1
-beta[2] 1.00       0 0.12  0.76 0.91 1.00 1.08  1.25  6160    1
-beta[3] 1.19       0 0.14  0.93 1.09 1.19 1.28  1.46  6020    1
-beta[4] 1.01       0 0.16  0.71 0.90 1.00 1.11  1.31  6359    1
-beta[5] 0.25       0 0.15 -0.06 0.15 0.25 0.35  0.54  4646    1
-
-Samples were drawn using NUTS(diag_e) at Mon Sep 14 11:41:27 2026.
-For each parameter, n_eff is a crude measure of effective sample size,
-and Rhat is the potential scale reduction factor on split chains (at 
-convergence, Rhat=1).</code></pre>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cmdstanr)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">&lt;-</span> <span class="fu">cmdstan_model</span>(<span class="st">"logit.stan"</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>fit_cmd <span class="ot">&lt;-</span> mod<span class="sc">$</span><span class="fu">sample</span>(</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> stan_data,</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">chains =</span> <span class="dv">4</span>,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">parallel_chains =</span> <span class="dv">4</span>,  <span class="co"># run the chains in parallel</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter_warmup =</span> <span class="dv">1000</span>,</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter_sampling =</span> <span class="dv">2000</span>,  <span class="co"># excluding warmup</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">seed =</span> <span class="dv">123</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div>
-</section>
-<section id="cmdstanr" class="level2" data-number="20.5">
-<h2 data-number="20.5" class="anchored" data-anchor-id="cmdstanr"><span class="header-section-number">20.5</span> <code>cmdstanr</code></h2>
-<p>The {cmdstanr} package interfaces with the CmdStan engine outside R. It compiles quickly and provides clear diagnostic output. This is slightly more tedious to set up and maintain, but is preferred to {rstan}.</p>
+<p>The <code>$summary()</code> method reports posterior summaries along with R-hat, bulk ESS, and tail ESS for each parameter.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cmdstanr)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">&lt;-</span> <span class="fu">cmdstan_model</span>(<span class="st">"logit.stan"</span>)</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>fit_cmd <span class="ot">&lt;-</span> mod<span class="sc">$</span><span class="fu">sample</span>(</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> stan_data,</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">chains =</span> <span class="dv">4</span>,</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">cores =</span> <span class="dv">4</span>,</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter_warmup =</span> <span class="dv">1000</span>,</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter_sampling =</span> <span class="dv">2000</span>,  <span class="co"># excluding warmup</span></span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">seed =</span> <span class="dv">123</span></span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>fit_cmd<span class="sc">$</span><span class="fu">summary</span>(<span class="at">variables =</span> <span class="st">"beta"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fit_cmd<span class="sc">$</span><span class="fu">summary</span>(<span class="at">variables =</span> <span class="st">"beta"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 10
   variable  mean median    sd   mad      q5   q95  rhat ess_bulk ess_tail
@@ -698,73 +676,63 @@ convergence, Rhat=1).</code></pre>
 5 beta[5]  0.246  0.245 0.148 0.149 0.00498 0.490  1.00    4766.    5011.</code></pre>
 </div>
 </div>
-<p>Both interfaces fit the same model and return similar results. Either is fine! I recommend {cmdstanr}, though it is <em>slightly</em> more work to get started.</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Feature</th>
-<th><code>rstan</code></th>
-<th><code>cmdstanr</code></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Compilation</td>
-<td>Inside R</td>
-<td>External CmdStan executable</td>
-</tr>
-<tr class="even">
-<td>Speed</td>
-<td>Slower</td>
-<td>Faster (cached binaries)</td>
-</tr>
-<tr class="odd">
-<td>Debugging</td>
-<td>Less transparent</td>
-<td>Easier (visible console output)</td>
-</tr>
-<tr class="even">
-<td>Recommendation for new users</td>
-<td>✅ Works fine</td>
-<td>✅ Preferred</td>
-</tr>
-</tbody>
-</table>
 </section>
-<section id="diagnostics" class="level2" data-number="20.6">
-<h2 data-number="20.6" class="anchored" data-anchor-id="diagnostics"><span class="header-section-number">20.6</span> Diagnostics</h2>
-<p>Stan reports two essentials:</p>
+<section id="diagnostics" class="level2 page-columns page-full" data-number="20.5">
+<h2 data-number="20.5" class="anchored" data-anchor-id="diagnostics"><span class="header-section-number">20.5</span> Diagnostics</h2>
+<p>After sampling, we check two sets of diagnostics. The first set is the same as for the Metropolis algorithm:</p>
 <ul>
-<li><span class="math inline">\(\hat{R}\)</span>: near 1 indicates convergence across chains.</li>
+<li><span class="math inline">\(\hat{R}\)</span>: an R-hat larger than 1.01 shows that the chains have not converged <span class="citation" data-cites="vehtari2021">(<a href="#ref-vehtari2021" role="doc-biblioref">Vehtari et al. 2021</a>)</span>.</li>
 <li>Effective Sample Size (ESS): how much independent information is in the draws.</li>
 </ul>
-<p>The <code>print()</code> methods make these easy to find, but we can also compute them directlyAs a rule of thumb, check <span class="math inline">\(\hat{R} &lt; 1.01\)</span> and ESS &gt; 2,000.</p>
+<div class="no-row-height column-margin column-container"><div id="ref-vehtari2021" class="csl-entry" role="listitem">
+Vehtari, Aki, Andrew Gelman, Daniel Simpson, Bob Carpenter, and Paul-Christian Bürkner. 2021. <span>“Rank-Normalization, Folding, and Localization: An Improved <span class="math inline">\(\widehat{R}\)</span> for Assessing Convergence of <span>MCMC</span> (with Discussion).”</span> <em>Bayesian Analysis</em> 16 (2): 667–718. <a href="https://doi.org/10.1214/20-BA1221">https://doi.org/10.1214/20-BA1221</a>.
+</div></div><p>The <code>$summary()</code> method reports these, but we can also compute them directly with <code>summarise_draws()</code> from {posterior}, which gives one row per parameter. As a rule of thumb, check <span class="math inline">\(\hat{R} &lt; 1.01\)</span> and ESS &gt; 2,000. The second set is specific to HMC (see below).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(posterior)</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>draws_beta <span class="ot">&lt;-</span> fit_cmd<span class="sc">$</span><span class="fu">draws</span>(<span class="at">variables =</span> <span class="st">"beta"</span>)  <span class="co"># draws array</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">rhat</span>(draws_beta)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(posterior)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>draws_beta <span class="ot">&lt;-</span> fit_cmd<span class="sc">$</span><span class="fu">draws</span>(<span class="at">variables =</span> <span class="st">"beta"</span>)  <span class="co"># draws array</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summarise_draws</span>(draws_beta, <span class="st">"rhat"</span>, <span class="st">"ess_bulk"</span>, <span class="st">"ess_tail"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 1.17</code></pre>
+<pre><code># A tibble: 5 × 4
+  variable  rhat ess_bulk ess_tail
+  &lt;chr&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
+1 beta[1]   1.00    4580.    4749.
+2 beta[2]   1.00    6150.    5310.
+3 beta[3]   1.00    5512.    4635.
+4 beta[4]   1.00    6170.    4874.
+5 beta[5]   1.00    4766.    5011.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ess_bulk</span>(draws_beta)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 5.95</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ess_tail</span>(draws_beta)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 12</code></pre>
-</div>
-</div>
-<section id="bayesplot" class="level3" data-number="20.6.1">
-<h3 data-number="20.6.1" class="anchored" data-anchor-id="bayesplot"><span class="header-section-number">20.6.1</span> {bayesplot}</h3>
-<p>The {bayesplot} packages offers many useful functions for visualizing the simulations. There are three examples below, but there are many more useful tools in {bayesplot}. Again, the <a href="https://mc-stan.org/bayesplot/">documentation</a> is excellent.</p>
+<section id="hmc-diagnostics" class="level3" data-number="20.5.1">
+<h3 data-number="20.5.1" class="anchored" data-anchor-id="hmc-diagnostics"><span class="header-section-number">20.5.1</span> HMC diagnostics</h3>
+<ul>
+<li>[CTK: HMC has its own warnings, printed after sampling: divergent transitions (any after warmup → investigate; raise <code>adapt_delta</code>), maximum treedepth (efficiency, not validity), E-BFMI below 0.3]</li>
+<li>[CTK: this model: 0 divergences, 0 treedepth hits, E-BFMI ≈ 1 in every chain]</li>
+</ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load packages</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bayesplot)</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co"># densities of parameters by chain</span></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_dens_overlay</span>(fit_rstan)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># divergences, treedepth hits, and E-BFMI for each chain ({cmdstanr})</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>fit_cmd<span class="sc">$</span><span class="fu">diagnostic_summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$num_divergent
+[1] 0 0 0 0
+
+$num_max_treedepth
+[1] 0 0 0 0
+
+$ebfmi
+[1] 1.003 1.025 0.974 1.110</code></pre>
+</div>
+</div>
+</section>
+<section id="bayesplot" class="level3" data-number="20.5.2">
+<h3 data-number="20.5.2" class="anchored" data-anchor-id="bayesplot"><span class="header-section-number">20.5.2</span> {bayesplot}</h3>
+<p>The {bayesplot} package offers many useful functions for visualizing the simulations. There are three examples below, but there are many more useful tools in {bayesplot}. Again, the <a href="https://mc-stan.org/bayesplot/">documentation</a> is excellent.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load packages</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bayesplot)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># densities of parameters by chain</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_dens_overlay</span>(draws_beta)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -772,8 +740,8 @@ convergence, Rhat=1).</code></pre>
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ridges plot of densities of parameters</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_areas_ridges</span>(fit_rstan, <span class="at">regex_pars =</span> <span class="st">"beta"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ridges plot of densities of parameters</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_areas_ridges</span>(draws_beta)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -781,8 +749,8 @@ convergence, Rhat=1).</code></pre>
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># r-hat</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_rhat</span>(<span class="fu">rhat</span>(fit_rstan))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># trace plots of parameters by chain</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mcmc_trace</span>(draws_beta)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -792,104 +760,84 @@ convergence, Rhat=1).</code></pre>
 </div>
 </div>
 </section>
-<section id="shinystan" class="level3" data-number="20.6.2">
-<h3 data-number="20.6.2" class="anchored" data-anchor-id="shinystan"><span class="header-section-number">20.6.2</span> {ShinyStan}</h3>
+<section id="shinystan" class="level3" data-number="20.5.3">
+<h3 data-number="20.5.3" class="anchored" data-anchor-id="shinystan"><span class="header-section-number">20.5.3</span> {ShinyStan}</h3>
 <p>The <strong>ShinyStan</strong> app provides an interactive dashboard for convergence diagnostics, traceplots, divergences, and posterior summaries.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># launching a GUI is interactive; keep this non-evaluated by default</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(shinystan)</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co"># for rstan</span></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="fu">launch_shinystan</span>(fit_rstan)</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="co"># for cmdstanr: convert to a stanfit first, then launch</span></span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>sf <span class="ot">&lt;-</span> rstan<span class="sc">::</span><span class="fu">read_stan_csv</span>(fit_cmd<span class="sc">$</span><span class="fu">output_files</span>())</span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="fu">launch_shinystan</span>(sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># launching a GUI is interactive; keep this non-evaluated by default</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(shinystan)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># launch the app for the {cmdstanr} fit</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="fu">launch_shinystan</span>(fit_cmd)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>You can inspect <span class="math inline">\(\hat{R}\)</span>, ESS, and visual diagnostics interactively without additional coding.</p>
+<p>You can inspect trace plots, divergences, and other visual diagnostics interactively without additional coding.</p>
 </section>
 </section>
-<section id="quantities-of-interest" class="level2" data-number="20.7">
-<h2 data-number="20.7" class="anchored" data-anchor-id="quantities-of-interest"><span class="header-section-number">20.7</span> Quantities of Interest</h2>
-<p>We have simulations of <span class="math inline">\(\beta\)</span>. We can summarize these with means, medians, SDs, quantiles, etc. The {posterior} package offers many useful function for working with the simulations from {rstan} and {cmdstanr}. Again, the documentation for {posterior} is excellent. Here, we can use the <code>as_draws_matrix()</code> function to extract the MCMC samples from <code>fit_rstan</code>.</p>
+<section id="quantities-of-interest" class="level2" data-number="20.6">
+<h2 data-number="20.6" class="anchored" data-anchor-id="quantities-of-interest"><span class="header-section-number">20.6</span> Quantities of Interest</h2>
+<p>We have simulations of <span class="math inline">\(\beta\)</span>. We can summarize these with means, medians, SDs, quantiles, etc. The {posterior} package offers many useful functions for working with the simulations from {cmdstanr}. Again, the documentation for {posterior} is excellent. Here, we can use the <code>$draws()</code> method with <code>format = "draws_matrix"</code> to extract the MCMC samples of <span class="math inline">\(\beta\)</span> from <code>fit_cmd</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># put the simulations of the coefficients into a matrix</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>beta_tilde_raw <span class="ot">&lt;-</span> posterior<span class="sc">::</span><span class="fu">as_draws_matrix</span>(fit_rstan, <span class="at">regex_pars =</span> <span class="st">"beta"</span>)</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(beta_tilde_raw)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A draws_matrix: 6 iterations, 1 chains, and 6 variables
-    variable
-draw beta[1] beta[2] beta[3] beta[4] beta[5]  lp__
-   1    1.21    1.06     1.2    0.88   0.089 -1014
-   2    1.21    1.07     1.3    0.96   0.175 -1014
-   3    1.00    0.88     1.1    0.90   0.186 -1014
-   4    1.08    0.84     1.1    0.76   0.272 -1016
-   5    0.99    0.96     1.2    0.87   0.193 -1014
-   6    1.11    0.89     1.1    0.91   0.369 -1018</code></pre>
-</div>
-</div>
-<p>This has an extra column for <code>lp__</code> so let’s grab <em>only</em> the first five columns. Notice that the <code>draw</code> is a rowname, not a column.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># drop the unnecessary cols</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>beta_tilde <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(beta_tilde_raw)[, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(beta_tilde) <span class="co"># first "column" is the row names</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># put the simulations of the coefficients into a matrix</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>beta_tilde <span class="ot">&lt;-</span> fit_cmd<span class="sc">$</span><span class="fu">draws</span>(<span class="at">variables =</span> <span class="st">"beta"</span>, <span class="at">format =</span> <span class="st">"draws_matrix"</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(beta_tilde)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A draws_matrix: 6 iterations, 1 chains, and 5 variables
     variable
 draw beta[1] beta[2] beta[3] beta[4] beta[5]
-   1    1.21    1.06     1.2    0.88   0.089
-   2    1.21    1.07     1.3    0.96   0.175
-   3    1.00    0.88     1.1    0.90   0.186
-   4    1.08    0.84     1.1    0.76   0.272
-   5    0.99    0.96     1.2    0.87   0.193
-   6    1.11    0.89     1.1    0.91   0.369</code></pre>
+   1     1.1    0.93     1.1     1.1   0.125
+   2     1.3    1.27     1.4     1.0  -0.071
+   3     1.1    0.99     1.2     1.1   0.200
+   4     1.1    0.93     1.0     1.1   0.076
+   5     1.1    0.91     1.1     1.1   0.167
+   6     1.0    0.79     1.0     1.1   0.335</code></pre>
 </div>
 </div>
+<p>Each row is one draw of <span class="math inline">\(\beta\)</span>, and each column is one coefficient. Notice that the <code>draw</code> is a rowname, not a column.</p>
 <p>To compute a first difference, transform draws using the invariance principle.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># make X_lo</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>X_lo <span class="ot">&lt;-</span> <span class="fu">cbind</span>(</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"constant"</span> <span class="ot">=</span> <span class="dv">1</span>, <span class="co"># intercept</span></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"rs_age"</span> <span class="ot">=</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="co"># 1 SD above avg -- see ?arm::rescale</span></span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"rs_educate"</span> <span class="ot">=</span> <span class="dv">0</span>,</span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"rs_income"</span> <span class="ot">=</span> <span class="dv">0</span>,</span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"white"</span> <span class="ot">=</span> <span class="dv">1</span> <span class="co"># white indicator = 1 </span></span>
-<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a><span class="co"># make X_hi by modifying the relevant value of X_lo</span></span>
-<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>X_hi <span class="ot">&lt;-</span> X_lo</span>
-<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>X_hi[, <span class="st">"rs_age"</span>] <span class="ot">&lt;-</span> <span class="fl">0.5</span>  <span class="co"># 1 SD below avg</span></span>
-<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a><span class="co"># function to compute first difference</span></span>
-<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>fd_fn <span class="ot">&lt;-</span> <span class="cf">function</span>(beta, hi, lo) {</span>
-<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>  beta <span class="ot">&lt;-</span> <span class="fu">as.vector</span>(beta)  <span class="co"># to prevent column/row confusion</span></span>
-<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plogis</span>(hi<span class="sc">%*%</span>beta) <span class="sc">-</span> <span class="fu">plogis</span>(lo<span class="sc">%*%</span>beta)</span>
-<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a><span class="co"># transform simulations of coefficients into simulations of first-difference</span></span>
-<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a><span class="co"># note 1: for clarity, just do this one simulation at a time,</span></span>
-<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a><span class="co"># note 2: i indexes the simulations</span></span>
-<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a>fd_tilde <span class="ot">&lt;-</span> <span class="fu">numeric</span>(<span class="fu">nrow</span>(beta_tilde))  <span class="co"># container</span></span>
-<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(beta_tilde)) {</span>
-<span id="cb26-25"><a href="#cb26-25" aria-hidden="true" tabindex="-1"></a>  fd_tilde[i] <span class="ot">&lt;-</span> <span class="fu">fd_fn</span>(beta_tilde[i, ], <span class="at">hi =</span> X_hi, <span class="at">lo =</span> X_lo)</span>
-<span id="cb26-26"><a href="#cb26-26" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb26-27"><a href="#cb26-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-28"><a href="#cb26-28" aria-hidden="true" tabindex="-1"></a><span class="co"># posterior mean</span></span>
-<span id="cb26-29"><a href="#cb26-29" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(fd_tilde)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># make X_lo</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>X_lo <span class="ot">&lt;-</span> <span class="fu">cbind</span>(</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"constant"</span> <span class="ot">=</span> <span class="dv">1</span>, <span class="co"># intercept</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"rs_age"</span> <span class="ot">=</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="co"># 1 SD below avg -- see ?arm::rescale</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"rs_educate"</span> <span class="ot">=</span> <span class="dv">0</span>,</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"rs_income"</span> <span class="ot">=</span> <span class="dv">0</span>,</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"white"</span> <span class="ot">=</span> <span class="dv">1</span> <span class="co"># white indicator = 1 </span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="co"># make X_hi by modifying the relevant value of X_lo</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>X_hi <span class="ot">&lt;-</span> X_lo</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>X_hi[, <span class="st">"rs_age"</span>] <span class="ot">&lt;-</span> <span class="fl">0.5</span>  <span class="co"># 1 SD above avg</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a><span class="co"># function to compute first difference</span></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>fd_fn <span class="ot">&lt;-</span> <span class="cf">function</span>(beta, hi, lo) {</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>  beta <span class="ot">&lt;-</span> <span class="fu">as.vector</span>(beta)  <span class="co"># to prevent column/row confusion</span></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plogis</span>(hi<span class="sc">%*%</span>beta) <span class="sc">-</span> <span class="fu">plogis</span>(lo<span class="sc">%*%</span>beta)</span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a><span class="co"># transform simulations of coefficients into simulations of first-difference</span></span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a><span class="co"># note 1: for clarity, just do this one simulation at a time,</span></span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a><span class="co"># note 2: i indexes the simulations</span></span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>fd_tilde <span class="ot">&lt;-</span> <span class="fu">numeric</span>(<span class="fu">nrow</span>(beta_tilde))  <span class="co"># container</span></span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(beta_tilde)) {</span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>  fd_tilde[i] <span class="ot">&lt;-</span> <span class="fu">fd_fn</span>(beta_tilde[i, ], <span class="at">hi =</span> X_hi, <span class="at">lo =</span> X_lo)</span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a><span class="co"># posterior mean</span></span>
+<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(fd_tilde)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.167</code></pre>
+<pre><code>[1] 0.166</code></pre>
 </div>
 </div>
 </section>
-<section id="summary" class="level2" data-number="20.8">
-<h2 data-number="20.8" class="anchored" data-anchor-id="summary"><span class="header-section-number">20.8</span> Summary</h2>
+<section id="summary" class="level2" data-number="20.7">
+<h2 data-number="20.7" class="anchored" data-anchor-id="summary"><span class="header-section-number">20.7</span> Summary</h2>
 <p>There are three important points to remember.</p>
 <p><strong>Stan as modern MCMC</strong><br>
 Stan automates MCMC using a hyper-optimized version of HMC. It efficiently samples from posteriors that are otherwise difficult to explore.</p>
 <p><strong>Interfaces</strong></p>
-<p>Both <code>rstan</code> and <code>cmdstanr</code> run the same Stan model. They differ mainly in compilation method and speed.</p>
+<p>We run Stan from R with {cmdstanr}. The older {rstan} package runs the same Stan programs, but its summaries use older versions of R-hat and ESS.</p>
 <p><strong>Diagnostics and Visualization</strong></p>
-<p>Always check <span class="math inline">\(\hat{R}\)</span> and ESS to ensure convergence. ShinyStan makes it easy to explore diagnostics interactively. <code>summary()</code> and <code>print()</code> methods make these easily available.</p>
+<p>Check <span class="math inline">\(\hat{R}\)</span>, ESS, and the HMC diagnostics (divergent transitions, maximum treedepth, E-BFMI). An R-hat larger than 1.01 or any divergent transitions after warmup mean that we cannot yet trust the draws. The <code>$summary()</code> and <code>$diagnostic_summary()</code> methods report these, and {bayesplot} and ShinyStan make it easy to explore them visually.</p>
 <p>Stan generalizes what we learned with the Metropolis algorithm: the logic is the same, but the computation is vastly more efficient.</p>
 
 

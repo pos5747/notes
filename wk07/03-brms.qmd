@@ -6,7 +6,7 @@
 library(tidyverse)
 ```
 
-In most cases, we do not have to write our own Stan code, because the {brms} package can do that for us. The `brm()` function in the {brms} takes `glm()`-like arguments, and writes accurate and fast Stan code. If `brm()` works for your application, you should much prefer it to writing your on Stan models. It will (probably) be faster and is less like to have errors.
+In most cases, we do not have to write our own Stan code, because the {brms} package can do that for us. The `brm()` function in {brms} takes `glm()`-like arguments, and writes accurate and fast Stan code. If `brm()` works for your application, you should much prefer it to writing your own Stan models. It will (probably) be faster and is less likely to have errors.
 
 ```{r}
 # load packages
@@ -19,7 +19,7 @@ See `?brms::brm` for the details. There are numerous tutorials available for spe
 
 ## The `turnout` example
 
-Here's the syntax for our ususal logistic regression model.
+Here's the syntax for our usual logistic regression model.
 
 ```{r}
 #| results: hide
@@ -28,22 +28,20 @@ Here's the syntax for our ususal logistic regression model.
 turnout <- ZeligData::turnout  |>
   mutate(across(age:income, arm::rescale, .names = "rs_{.col}"))
 
-# build model frame and design matrices
+# formula
 f  <- vote ~ rs_age + rs_educate + rs_income + race
 
 # fit model with glm()
 fit_glm <- glm(f, data = turnout, family = binomial)
 
-# fit model with brm()
-fit_brm_rstan <- brm(f, data = turnout, family = bernoulli, 
-           chains = 10, cores = 10)
-
-# fit model with brm() via cmdstan!
-fit_brm_cmdstanr <- brm(f, data = turnout, family = bernoulli, 
+# fit model with brm() via cmdstanr
+fit_brm <- brm(f, data = turnout, family = bernoulli, 
            chains = 10, cores = 10, 
            backend = "cmdstanr")
 ```
-`glm()` and `brm()` obtain the same estimates.^[The two are not mathematically equal, but they are very close in practice. Outside of cases where maximum likelihood fails, it is rare that a Bayesian estimate or interval differs from the ML estimate or interval.]
+
+- [CTK: `brm()`'s default backend is still {rstan}; `options(brms.backend = "cmdstanr")` makes {cmdstanr} the default for the session]
+`glm()` and `brm()` obtain the same estimates.^[The two are not mathematically equal, but they are very close here because {brms}'s default prior on the coefficients is flat. With flat or weak priors and this much data, it is rare that a Bayesian estimate or interval differs from the ML estimate or interval, outside of cases where maximum likelihood fails.]
 
 ```{r}
 #| code-fold: true
@@ -56,10 +54,24 @@ normalize_terms <- function(x) {
 }
 
 modelsummary(
-  list("glm()" = fit_glm, "brm(); rstan" = fit_brm_rstan, "brm(); cmdstanr" = fit_brm_cmdstanr),
-  coef_rename = normalize_terms, 
+  list("glm()" = fit_glm, "brm()" = fit_brm),
+  coef_rename = normalize_terms,
+  statistic = "conf.int",
+  notes = "95% confidence intervals for glm(); 95% credible intervals for brm().",
   gof_map = NULL
 )
+```
+
+{brms} warns only when an R-hat is larger than 1.05, so we check R-hat, ESS, and divergent transitions ourselves.
+
+```{r}
+library(posterior)
+
+# R-hat and ESS for each parameter
+summarise_draws(fit_brm, "rhat", "ess_bulk", "ess_tail")
+
+# number of divergent transitions after warmup
+sum(nuts_params(fit_brm, pars = "divergent__")$Value)
 ```
 
 And {brms} plays very nicely with {marginaleffects}.
@@ -67,13 +79,13 @@ And {brms} plays very nicely with {marginaleffects}.
 ```{r}
 library(marginaleffects)
 
-# compute first different
-comparisons(fit_brm_cmdstanr, variables = list(rs_age = c(-0.5, 0.5)), 
+# compute first difference
+comparisons(fit_brm, variables = list(rs_age = c(-0.5, 0.5)), 
             newdata = datagrid(grid_type = "mean_or_mode"))
 
 
 # compute and plot expected values (i.e., predicted probabilities)
-p <- predictions(fit_brm_cmdstanr, variables = list(rs_age = seq(-1, 1, by = 0.1)), 
+p <- predictions(fit_brm, variables = list(rs_age = seq(-1, 1, by = 0.1)), 
             newdata = datagrid(grid_type = "mean_or_mode"))
 ggplot(p, aes(x = rs_age, y = estimate, ymin = conf.low, ymax = conf.high)) + 
   geom_ribbon(fill = "grey") + 
@@ -84,7 +96,7 @@ ggplot(p, aes(x = rs_age, y = estimate, ymin = conf.low, ymax = conf.high)) +
 
 ### Modeling "smooth" relationships
 
-To illustrate the power of MCMC and `brm()`, we can imagine fitting a smooth curve for age. The details are not important for now, but this isn't an easy task in our usual framework. But it's straightfoward with Bayesian MCMC via `brm()`.
+To illustrate the power of MCMC and `brm()`, we can imagine fitting a smooth curve for age. The details are not important for now, but this isn't an easy task in our usual framework. But it's straightforward with Bayesian MCMC via `brm()`.
 
 ```{r}
 #| results: hide
@@ -92,7 +104,9 @@ To illustrate the power of MCMC and `brm()`, we can imagine fitting a smooth cur
 f  <- vote ~ s(rs_age) + rs_educate + rs_income + race
 smooth_fit <- brm(f, data = turnout, family = bernoulli, 
            chains = 10, cores = 10, 
-           backend = "cmdstanr")
+           backend = "cmdstanr",
+           control = list(adapt_delta = 0.99),  # avoids divergent transitions
+           seed = 1234)
 ```
 
 ```{r}
@@ -104,9 +118,11 @@ ggplot(p, aes(x = rs_age, y = estimate, ymin = conf.low, ymax = conf.high)) +
   geom_line()
 ```
 
+- [CTK: smooths often cause divergent transitions; with the default `adapt_delta = 0.8` these two fits had 60 and 156 (of 10,000; CmdStan 2.40, `seed = 1234`); `adapt_delta = 0.99` gives none with `seed = 1234` (other seeds occasionally leave 1 of 10,000: 2 of 7 seeds checked)]
+
 ### Awkwardly scaled variables
 
-Also, `brm()` has no trouble with the variables on their original scales. The original scales poses a insurmountable hurdle for our `metrop()` sampler.
+Also, `brm()` has no trouble with the variables on their original scales. The original scales pose a serious hurdle for our `metrop()` sampler.
 
 ```{r}
 #| results: hide
@@ -114,7 +130,9 @@ Also, `brm()` has no trouble with the variables on their original scales. The or
 f  <- vote ~ s(age) + educate + income + race
 smooth_fit <- brm(f, data = turnout, family = bernoulli, 
            chains = 10, cores = 10, 
-           backend = "cmdstanr")
+           backend = "cmdstanr",
+           control = list(adapt_delta = 0.99),  # avoids divergent transitions
+           seed = 1234)
 ```
 
 ```{r}
